@@ -1,0 +1,16 @@
+{
+  "name": "@lax-db/functions",
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "test": "sst shell -- bun test --timeout 15000",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@lax-db/core": "*",
+    "sst": "*"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.149"
+  }
+}
