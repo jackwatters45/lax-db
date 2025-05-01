@@ -3,10 +3,14 @@
   "version": "0.0.0",
   "type": "module",
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.799.0",
+    "@aws-sdk/lib-dynamodb": "^3.799.0",
     "@lax-db/core": "*",
-    "sst": "*"
+    "sst": "*",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
-    "@types/aws-lambda": "^8"
+    "@types/aws-lambda": "^8.10.149",
+    "@types/uuid": "^10.0.0"
   }
 }
