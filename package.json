@@ -4,12 +4,25 @@
   "workspaces": [
     "packages/*"
   ],
-  "scripts": {},
+  "packageManager": "bun@1.2.1",
+  "scripts": {
+    "dev": "sst dev",
+    "build": "sst build",
+    "deploy": "sst deploy",
+    "remove": "sst remove",
+    "console": "sst console",
+    "typecheck": "turbo typecheck",
+    "sso": "aws sso login --sso-session=laxdb",
+    "prepare": "git config --local core.hooksPath .githooks"
+  },
   "devDependencies": {
-    "@tsconfig/node22": "^22",
-    "typescript": "^5"
+    "@biomejs/biome": "2.0.5",
+    "@tsconfig/node20": "^20.1.5",
+    "@types/bun": "^1.2.14",
+    "@types/node": "^22.15.21",
+    "typescript": "^5.8.3"
   },
   "dependencies": {
-    "sst": "^3"
+    "sst": "3.14.28"
   }
 }

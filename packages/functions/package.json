@@ -2,16 +2,15 @@
   "name": "@lax-db/functions",
   "version": "0.0.0",
   "type": "module",
+  "scripts": {
+    "test": "sst shell -- bun test --timeout 15000",
+    "typecheck": "tsc --noEmit"
+  },
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.799.0",
-    "@aws-sdk/lib-dynamodb": "^3.799.0",
     "@lax-db/core": "*",
-    "sst": "*",
-    "stripe": "^18.1.0",
-    "uuid": "^11.1.0"
+    "sst": "*"
   },
   "devDependencies": {
-    "@types/aws-lambda": "^8.10.149",
-    "@types/uuid": "^10.0.0"
+    "@types/aws-lambda": "^8.10.149"
   }
 }

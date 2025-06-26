@@ -1,14 +1,10 @@
-// Create an S3 bucket
-export const bucket = new sst.aws.Bucket("Uploads");
 
-// Create the DynamoDB table
-export const table = new sst.aws.Dynamo("Notes", {
-	fields: {
-		userId: "string",
-		noteId: "string",
-	},
-	primaryIndex: { hashKey: "userId", rangeKey: "noteId" },
+// export const bucket = isPermanentStage
+//   ? new sst.aws.Bucket('Bucket', {
+//       access: 'public',
+//     })
+//   : sst.aws.Bucket.get('Bucket', 'goalbound-dev-bucketbucket-hnvevbtm');
+
+export const bucket = new sst.aws.Bucket('Bucket', {
+  access: 'public',
 });
-
-// Create a secret for Stripe
-export const secret = new sst.Secret("StripeSecretKey");

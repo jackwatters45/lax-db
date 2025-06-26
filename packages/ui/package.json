@@ -1,0 +1,15 @@
+{
+  "name": "@lax-db/ui",
+  "type": "module",
+  "version": "0.0.1",
+  "exports": {
+    "./*": "./src/*"
+  },
+  "dependencies": {
+    "@radix-ui/react-slot": "^1.2.3",
+    "class-variance-authority": "^0.7.1",
+    "lucide-react": "^0.511.0",
+    "tailwind-merge": "^3.3.0",
+    "tailwindcss": "^4.0.8"
+  }
+}

@@ -1,21 +1,30 @@
 {
   "name": "@lax-db/core",
-  "type": "module",
   "version": "0.0.0",
-  "scripts": {
-    "test": "sst shell vitest"
-  },
+  "type": "module",
+  "sideEffects": false,
   "exports": {
-    "./*": [
-      "./src/*/index.ts",
-      "./src/*.ts"
-    ]
+    "./*": "./src/*.ts"
   },
-  "dependencies": {
-    "sst": "*"
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "db": "sst shell drizzle-kit",
+    "db:push": "sst shell drizzle-kit push",
+    "test": "sst shell vitest"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.149",
+    "@types/pg": "^8.15.4",
     "vitest": "^2"
+  },
+  "dependencies": {
+    "@hono/zod-openapi": "^0.19.6",
+    "drizzle-kit": "^0.31.1",
+    "drizzle-orm": "^0.43.1",
+    "effect": "^3.16.10",
+    "hono": "*",
+    "pg": "^8.16.2",
+    "sst": "3.14.28",
+    "zod": "^3.24.4"
   }
 }

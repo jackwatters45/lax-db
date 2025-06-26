@@ -5,34 +5,29 @@
 
 declare module "sst" {
   export interface Resource {
-    "Api": {
-      "type": "sst.aws.ApiGatewayV2"
+    "Auth": {
+      "type": "sst.aws.Auth"
       "url": string
     }
-    "IdentityPool": {
-      "id": string
-      "type": "sst.aws.CognitoIdentityPool"
-    }
-    "Notes": {
-      "name": string
-      "type": "sst.aws.Dynamo"
-    }
-    "StripeSecretKey": {
-      "type": "sst.sst.Secret"
-      "value": string
-    }
-    "Uploads": {
+    "Bucket": {
       "name": string
       "type": "sst.aws.Bucket"
     }
-    "UserPool": {
-      "id": string
-      "type": "sst.aws.CognitoUserPool"
+    "Database": {
+      "database": string
+      "host": string
+      "password": string
+      "port": number
+      "type": "sst.aws.Postgres"
+      "username": string
     }
-    "UserPoolClient": {
-      "id": string
-      "secret": string
-      "type": "sst.aws.CognitoUserPoolClient"
+    "Frontend": {
+      "type": "sst.aws.TanstackStart"
+      "url": string
+    }
+    "Vpc": {
+      "bastion": string
+      "type": "sst.aws.Vpc"
     }
   }
 }

@@ -1,81 +1,29 @@
-# Monorepo Template
+# Lax DB
 
-A template to create a monorepo SST v3 project. [Learn more](https://sst.dev/docs/set-up-a-monorepo).
+## Features
 
-## Get started
+- historical db
+   - just well done basic analysis on games players, etc. basically what i would want to do with gb if I had all the time in the world. Start with just ncaa stats and then try to move to some more personal data. eventually add pll, wll as well
+- film
+   - literally just compile some good film resources
+- something with computer vision
+- blog
+   - opinions, technical breakdowns, history (expand on this probably)
+- cameo like player analysis
+   - pro / college players can break down user submitted game film for a fee.
+   - similar thing with stringers
+- Stringing DB
 
-1. Use this template to [create your own repo](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template).
+## Tech
 
-2. Clone the new repo.
+- tanstack start
+- effect for core/backend?
+- drizzle
+- zero
+- eventually hono api
+- openauth -> eventually try out better auth
+- maybe planetscale down the road
 
-   ```bash
-   git clone <REPO_URL> MY_APP
-   cd MY_APP
-   ```
+## TODO
 
-3. Rename the files in the project to the name of your app.
-
-   ```bash
-   npx replace-in-file '/lax-db/g' 'MY_APP' '**/*.*' --verbose
-   ```
-
-4. Deploy!
-
-   ```bash
-   npm install
-   npx sst deploy
-   ```
-
-5. Optionally, enable [_git push to deploy_](https://sst.dev/docs/console/#autodeploy).
-
-## Usage
-
-This template uses [npm Workspaces](https://docs.npmjs.com/cli/v8/using-npm/workspaces). It has 3 packages to start with and you can add more it.
-
-1. `core/`
-
-   This is for any shared code. It's defined as modules. For example, there's the `Example` module.
-
-   ```ts
-   export module Example {
-     export function hello() {
-       return "Hello, world!";
-     }
-   }
-   ```
-
-   That you can use across other packages using.
-
-   ```ts
-   import { Example } from "@aws-monorepo/core/example";
-
-   Example.hello();
-   ```
-
-   We also have [Vitest](https://vitest.dev/) configured for testing this package with the `sst shell` CLI.
-
-   ```bash
-   npm test
-   ```
-
-2. `functions/`
-
-   This is for your Lambda functions and it uses the `core` package as a local dependency.
-
-3. `scripts/`
-
-    This is for any scripts that you can run on your SST app using the `sst shell` CLI and [`tsx`](https://www.npmjs.com/package/tsx). For example, you can run the example script using:
-
-   ```bash
-   npm run shell src/example.ts
-   ```
-
-### Infrastructure
-
-The `infra/` directory allows you to logically split the infrastructure of your app into separate files. This can be helpful as your app grows.
-
-In the template, we have an `api.ts`, and `storage.ts`. These export the created resources. And are imported in the `sst.config.ts`.
-
----
-
-**Join our community** [Discord](https://sst.dev/discord) | [YouTube](https://www.youtube.com/c/sst-dev) | [X.com](https://x.com/SST_dev)
+- Get basic infra set up -> core, frontend, ui

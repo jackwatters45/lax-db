@@ -1,46 +1,22 @@
-import { api } from "./api";
-import { bucket } from "./storage";
+import { database } from './database';
+// import { DEV, PRODUCTION } from './dns';
+import { allSecrets } from './secret';
+import { vpc } from './vpc';
 
-const region = aws.getRegionOutput().name;
+// const domain =
+//   $app.stage === 'production'
+//     ? `auth-${PRODUCTION}`
+//     : `${$app.stage}-auth.${DEV}`;
 
-export const userPool = new sst.aws.CognitoUserPool("UserPool", {
-	usernames: ["email"],
-});
-
-export const userPoolClient = userPool.addClient("UserPoolClient");
-
-export const identityPool = new sst.aws.CognitoIdentityPool("IdentityPool", {
-	userPools: [
-		{
-			userPool: userPool.id,
-			client: userPoolClient.id,
-		},
-	],
-	permissions: {
-		authenticated: [
-			{
-				actions: ["s3:*"],
-				resources: [
-					$concat(
-						bucket.arn,
-						"/private/${cognito-identity.amazonaws.com:sub}/*",
-					),
-				],
-			},
-			{
-				actions: ["execute-api:*"],
-				resources: [
-					$concat(
-						"arn:aws:execute-api:",
-						region,
-						":",
-						aws.getCallerIdentityOutput({}).accountId,
-						":",
-						api.nodes.api.id,
-						"/*/*/*",
-					),
-				],
-			},
-		],
-	},
+export const auth = new sst.aws.Auth('Auth', {
+  forceUpgrade: 'v2',
+  issuer: {
+    vpc: vpc,
+    link: [database, ...allSecrets],
+    handler: './packages/functions/src/auth/index.handler',
+  },
+  // domain: {
+  //   name: domain,
+  //   dns: sst.cloudflare.dns(),
+  // },
 });

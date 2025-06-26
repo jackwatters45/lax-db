@@ -1,24 +1,27 @@
 /// <reference path="./.sst/platform/config.d.ts" />
-
 export default $config({
-	app(input) {
-		return {
-			name: "lax-db",
-			removal: input?.stage === "production" ? "retain" : "remove",
-			protect: ["production"].includes(input?.stage),
-			home: "aws",
-		};
-	},
-	async run() {
-		await import("./infra/storage");
-		await import("./infra/api");
-		const auth = await import("./infra/auth");
+  app(input) {
+    return {
+      name: 'lax-db',
+      removal: input?.stage === 'production' ? 'retain' : 'remove',
+      protect: ['production'].includes(input?.stage),
+      home: 'aws',
+      providers: {
+        aws: {
+          region: 'us-west-2',
+          profile:
+            input.stage === 'production'
+              ? 'laxdb-production'
+              : 'laxdb-dev',
+        },
+        cloudflare: '6.2.0',
+      },
+    };
+  },
+  async run() {
+    const _infra = await import('./infra');
 
-		return {
-			UserPool: auth.userPool.id,
-			Region: aws.getRegionOutput().name,
-			IdentityPool: auth.identityPool.id,
-			UserPoolClient: auth.userPoolClient.id,
-		};
-	},
+
+    return {};
+  },
 });
