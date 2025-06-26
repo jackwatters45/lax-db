@@ -2,18 +2,12 @@ import { createContext } from '../context';
 
 export namespace Log {
   const ctx = createContext<{
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-    tags: Record<string, any>;
+    tags: Record<string, unknown>;
   }>();
 
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  export function create(tags?: Record<string, any>) {
-    // biome-ignore lint/style/noParameterAssign: <explanation>
-    tags = tags || {};
-
+  export function create(tags: Record<string, unknown> = {}) {
     const result = {
-      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-      info(msg: string, extra?: Record<string, any>) {
+      info(msg: string, extra?: Record<string, unknown>) {
         const prefix = Object.entries({
           ...use().tags,
           ...tags,
@@ -24,8 +18,7 @@ export namespace Log {
         console.log(prefix, msg);
         return result;
       },
-      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-      warn(msg: string, extra?: Record<string, any>) {
+      warn(msg: string, extra?: Record<string, unknown>) {
         const prefix = Object.entries({
           ...use().tags,
           ...tags,
@@ -58,8 +51,7 @@ export namespace Log {
     return result;
   }
 
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  export function provide<R>(tags: Record<string, any>, cb: () => R) {
+  export function provide<R>(tags: Record<string, unknown>, cb: () => R) {
     const existing = use();
     return ctx.provide(
       {
@@ -75,7 +67,7 @@ export namespace Log {
   function use() {
     try {
       return ctx.use();
-    } catch (e) {
+    } catch (_e) {
       return { tags: {} };
     }
   }
