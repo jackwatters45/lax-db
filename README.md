@@ -26,4 +26,6 @@
 
 ## TODO
 
-- Get basic infra set up -> core, frontend, ui
+- Get basic infra set up -> core, frontend, ui, auth
+- set up blog
+- pipeline -> historical db
