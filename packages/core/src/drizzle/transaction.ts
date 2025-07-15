@@ -15,7 +15,7 @@ type TxOrDb = Transaction | typeof db;
 const TransactionContext = createContext<{
   tx: Transaction;
   effects: (() => void | Promise<void>)[];
-}>();
+}>('transaction');
 
 export async function useTransaction<T>(callback: (trx: TxOrDb) => Promise<T>) {
   try {
@@ -46,7 +46,7 @@ export async function createTransaction<T>(
     const effects: (() => void | Promise<void>)[] = [];
     const result = await db.transaction(
       async (tx) => {
-        return TransactionContext.provide({ tx, effects }, () => callback(tx));
+        return TransactionContext.with({ tx, effects }, () => callback(tx));
       },
       {
         isolationLevel: isolationLevel || 'read committed',

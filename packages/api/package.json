@@ -1,0 +1,18 @@
+{
+  "name": "@lax-db/api",
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "dev": "bun run --watch ./src/index.ts"
+  },
+  "exports": {
+    "./*": "./src/*.ts"
+  },
+  "devDependencies": {},
+  "dependencies": {
+    "@lax-db/core": "workspace:*",
+    "@lax-db/zero": "workspace:*",
+    "hono": "4.6.5"
+  }
+}

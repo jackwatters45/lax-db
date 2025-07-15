@@ -1,12 +1,11 @@
 import { database } from './database';
-// import { DEV, PRODUCTION } from './dns';
 import { allSecrets } from './secret';
 import { vpc } from './vpc';
 
-// const domain =
-//   $app.stage === 'production'
-//     ? `auth-${PRODUCTION}`
-//     : `${$app.stage}-auth.${DEV}`;
+const domain =
+  $app.stage === 'production'
+    ? `auth-${PRODUCTION}`
+    : `${$app.stage}-auth.${DEV}`;
 
 export const auth = new sst.aws.Auth('Auth', {
   forceUpgrade: 'v2',
@@ -15,8 +14,8 @@ export const auth = new sst.aws.Auth('Auth', {
     link: [database, ...allSecrets],
     handler: './packages/functions/src/auth/index.handler',
   },
-  // domain: {
-  //   name: domain,
-  //   dns: sst.cloudflare.dns(),
-  // },
+  domain: {
+    name: domain,
+    dns: sst.cloudflare.dns(),
+  },
 });
