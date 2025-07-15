@@ -7,6 +7,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@ai-sdk/google": "^1.2.22",
     "@lax-db/core": "*",
     "sst": "*"
   },

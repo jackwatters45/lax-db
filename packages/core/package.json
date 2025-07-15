@@ -2,29 +2,35 @@
   "name": "@lax-db/core",
   "version": "0.0.0",
   "type": "module",
-  "sideEffects": false,
   "exports": {
     "./*": "./src/*.ts"
   },
   "scripts": {
-    "typecheck": "tsc --noEmit",
-    "db": "sst shell drizzle-kit",
-    "db:push": "sst shell drizzle-kit push",
-    "test": "sst shell vitest"
-  },
-  "devDependencies": {
-    "@types/aws-lambda": "^8.10.149",
-    "@types/pg": "^8.15.4",
-    "vitest": "^2"
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@hono/zod-openapi": "^0.19.6",
-    "drizzle-kit": "^0.31.1",
-    "drizzle-orm": "^0.43.1",
-    "effect": "^3.16.10",
-    "hono": "*",
-    "pg": "^8.16.2",
-    "sst": "3.14.28",
-    "zod": "^3.24.4"
+    "effect": "latest"
+  },
+  "devDependencies": {
+    "@effect/build-utils": "^0.7.7",
+    "@effect/language-service": "^0.1.0",
+    "@effect/vitest": "latest",
+    "@types/node": "^22.5.2",
+    "babel-plugin-annotate-pure-calls": "^0.4.0",
+    "tsx": "^4.17.0",
+    "typescript": "^5.6.2",
+    "vitest": "^2.0.5"
+  },
+  "effect": {
+    "generateExports": {
+      "include": [
+        "**/*.ts"
+      ]
+    },
+    "generateIndex": {
+      "include": [
+        "**/*.ts"
+      ]
+    }
   }
 }

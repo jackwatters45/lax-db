@@ -1,7 +1,7 @@
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
 import { Resource } from 'sst';
-import { Log } from '../util/log';
+import { Log } from '../util/log.js';
 
 const pool = new Pool({
   host: Resource.Database.host,
@@ -13,14 +13,16 @@ const pool = new Pool({
 
 const log = Log.create({ namespace: 'drizzle' });
 
-export const db = drizzle(pool, {
-  logger:
-    process.env.DRIZZLE_LOG === 'true'
-      ? {
-          logQuery(query, params) {
+const drizzleConfig =
+  process.env.DRIZZLE_LOG === 'true'
+    ? {
+        logger: {
+          logQuery(query: string, params: unknown[]) {
             log.info('query', { query });
             log.info('params', { params });
           },
-        }
-      : undefined,
-});
+        },
+      }
+    : {};
+
+export const db = drizzle(pool, drizzleConfig);

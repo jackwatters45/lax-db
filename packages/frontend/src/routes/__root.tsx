@@ -1,3 +1,6 @@
+import { schema } from '@lax-db/zero/schemas';
+import { Zero } from '@rocicorp/zero';
+import { ZeroProvider } from '@rocicorp/zero/react';
 import {
   createRootRoute,
   HeadContent,
@@ -30,11 +33,24 @@ export const Route = createRootRoute({
 
   component: () => (
     <RootDocument>
-      <Outlet />
+      <Providers>
+        <Outlet />
+      </Providers>
       <TanStackRouterDevtools />
     </RootDocument>
   ),
 });
+
+const z = new Zero({
+  userID: 'your-user-id',
+  auth: 'your-auth-token',
+  server: import.meta.env.VITE_PUBLIC_SERVER,
+  schema,
+});
+
+const Providers = ({ children }: { children: React.ReactNode }) => {
+  return <ZeroProvider zero={z}>{children}</ZeroProvider>;
+};
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (

@@ -1,4 +1,5 @@
 /// <reference path="./.sst/platform/config.d.ts" />
+
 export default $config({
   app(input) {
     return {
@@ -10,17 +11,15 @@ export default $config({
         aws: {
           region: 'us-west-2',
           profile:
-            input.stage === 'production'
-              ? 'laxdb-production'
-              : 'laxdb-dev',
+            input.stage === 'production' ? 'laxdb-production' : 'laxdb-dev',
         },
         cloudflare: '6.2.0',
+        command: true,
       },
     };
   },
   async run() {
     const _infra = await import('./infra');
-
 
     return {};
   },

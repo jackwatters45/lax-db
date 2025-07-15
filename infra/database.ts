@@ -1,25 +1,49 @@
+import { isPermanentStage } from './stage';
 import { vpc } from './vpc';
 
-// export const database = isPermanentStage
-//   ? new sst.aws.Postgres('Database', {
-//       vpc,
-//       proxy: true,
-//     })
-//   : sst.aws.Postgres.get('Database', {
-//       id: 'goalbound-dev-databaseinstance-cnssdunx',
-//       proxyId: 'goalbound-dev-databaseproxy-bdhmbwuo',
-//     });
+export const database = isPermanentStage
+  ? new sst.aws.Postgres('Database', {
+      vpc,
+      proxy: true,
+      version: '17.4',
+    })
+  : $dev
+    ? new sst.aws.Postgres('Database', {
+        vpc,
+        proxy: true,
+        version: '17.4',
+        dev: {
+          username: 'laxdb',
+          password: 'laxdb_password',
+          database: 'laxdb',
+          port: 5432,
+        },
+      })
+    : sst.aws.Postgres.get('Database', {
+        id: 'goalbound-dev-databaseinstance-eddrmoxa',
+        proxyId: 'goalbound-dev-databaseproxy-xbktaxsf',
+      });
 
-export const database = new sst.aws.Postgres('Database', {
+
+
+const migrator = new sst.aws.Function('DatabaseMigrator', {
+  handler: 'packages/functions/src/drizzle/migrator.handler',
+  link: [database],
   vpc,
-  proxy: true,
-  dev: {
-    username: 'goalbound',
-    password: 'goalbound_password',
-    database: 'goalbound',
-    port: 5432,
-  },
+  copyFiles: [
+    {
+      from: 'packages/core/migrations',
+      to: './packages/core/migrations',
+    },
+  ],
 });
+
+if (!$dev) {
+  new aws.lambda.Invocation('DatabaseMigratorInvocation', {
+    input: Date.now().toString(),
+    functionName: migrator.name,
+  });
+}
 
 export const studio = new sst.x.DevCommand('Studio', {
   link: [database],
@@ -30,21 +54,12 @@ export const studio = new sst.x.DevCommand('Studio', {
   },
 });
 
-// const migrator = new sst.aws.Function('DatabaseMigrator', {
-//   handler: 'src/migrator.handler',
-//   link: [database],
-//   vpc,
-//   copyFiles: [
-//     {
-//       from: 'migrations',
-//       to: './migrations',
-//     },
-//   ],
-// });
-
-// if (!$dev) {
-//   new aws.lambda.Invocation('DatabaseMigratorInvocation', {
-//     input: Date.now().toString(),
-//     functionName: migrator.name,
-//   });
-// }
+// Register the sync-pipeline script as a DevCommand for local development
+export const syncPipeline = new sst.x.DevCommand('db:sync-pipeline', {
+  link: [database],
+  dev: {
+    autostart: false,
+    command: 'bun run packages/scripts/src/sync-pipeline.ts',
+    directory: '.',
+  },
+});
