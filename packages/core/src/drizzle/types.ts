@@ -1,9 +1,5 @@
 import { sql } from 'drizzle-orm';
-import {
-  bigint,
-  timestamp as pgTimestamp,
-  uuid,
-} from 'drizzle-orm/pg-core';
+import { timestamp as pgTimestamp, uuid } from 'drizzle-orm/pg-core';
 
 export const id = {
   get id() {
@@ -15,11 +11,6 @@ export const timestamp = (name: string) =>
   pgTimestamp(name, {
     mode: 'date',
     precision: 3,
-  });
-
-export const dollar = (name: string) =>
-  bigint(name, {
-    mode: 'number',
   });
 
 export const timestamps = {

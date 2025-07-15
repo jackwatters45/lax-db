@@ -1,0 +1,14 @@
+{
+  "name": "@lax-db/zero",
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    "./*": "./src/*.ts"
+  },
+  "scripts": {
+    "dev": "zero-deploy-permissions && zero-cache"
+  },
+  "dependencies": {
+    "@rocicorp/zero": "0.19.2025051702"
+  }
+}

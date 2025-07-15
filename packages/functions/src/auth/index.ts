@@ -1,4 +1,3 @@
-import { User } from '@lax-db/core/user/index';
 import { issuer } from '@openauthjs/openauth';
 import { GoogleOidcProvider } from '@openauthjs/openauth/provider/google';
 import { DynamoStorage } from '@openauthjs/openauth/storage/dynamo';
@@ -26,7 +25,13 @@ const MY_THEME: Theme = {
   },
 };
 
-const getUser = async (email: string) => await User.fromEmail(email);
+const getUser = async (email: string) => {
+  return {
+    id: '123',
+    email,
+    name: 'John Doe',
+  };
+};
 
 const app = issuer({
   theme: MY_THEME,
@@ -52,11 +57,7 @@ const app = issuer({
       const email = value.id.email as string;
       const user = await getUser(email);
       if (!user) {
-        const id = await User.create({
-          email,
-          name: null,
-        });
-        return ctx.subject('user', { id: id });
+        return ctx.subject('user', { id: '123' });
       }
       return ctx.subject('user', { id: user.id });
     }
