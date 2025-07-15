@@ -3,7 +3,7 @@ import { createContext } from './context.js';
 export namespace Log {
   const ctx = createContext<{
     tags: Record<string, unknown>;
-  }>();
+  }>('log');
 
   export function create(tags: Record<string, unknown> = {}) {
     const result = {
@@ -53,7 +53,7 @@ export namespace Log {
 
   export function provide<R>(tags: Record<string, unknown>, cb: () => R) {
     const existing = use();
-    return ctx.provide(
+    return ctx.with(
       {
         tags: {
           ...existing.tags,

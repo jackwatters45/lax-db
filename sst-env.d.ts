@@ -37,6 +37,14 @@ declare module 'sst' {
       type: 'sst.aws.Secret';
       value: string;
     };
+    Database: {
+      database: string;
+      host: string;
+      password: string;
+      port: number;
+      type: 'sst.aws.Postgres';
+      username: string;
+    };
   }
 }
 /// <reference path="sst-env.d.ts" />
