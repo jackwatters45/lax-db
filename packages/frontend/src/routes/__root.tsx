@@ -1,23 +1,20 @@
 /// <reference types="vite/client" />
 
-import { NotFound } from '@/components/NotFound';
-import { DefaultCatchBoundary } from '@/components/DefaultCatchBoundary';
-import { seo } from '@/utils/seo';
-import { schema } from '@lax-db/zero/schemas';
-import { Zero } from '@rocicorp/zero';
-import { ZeroProvider } from '@rocicorp/zero/react';
 import type { QueryClient } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import {
+  createRootRouteWithContext,
   HeadContent,
   Link,
   Outlet,
   Scripts,
-  createRootRouteWithContext,
 } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 import type * as React from 'react';
+import { DefaultCatchBoundary } from '@/components/DefaultCatchBoundary';
+import { NotFound } from '@/components/NotFound';
 import appCss from '@/styles/app.css?url';
+import { seo } from '@/utils/seo';
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
@@ -34,7 +31,8 @@ export const Route = createRootRouteWithContext<{
       ...seo({
         title:
           'TanStack Start | Type-Safe, Client-First, Full-Stack React Framework',
-        description: 'TanStack Start is a type-safe, client-first, full-stack React framework. ',
+        description:
+          'TanStack Start is a type-safe, client-first, full-stack React framework. ',
       }),
     ],
     links: [
@@ -71,24 +69,11 @@ export const Route = createRootRouteWithContext<{
   component: RootComponent,
 });
 
-const z = new Zero({
-  userID: 'your-user-id',
-  auth: 'your-auth-token',
-  server: import.meta.env.VITE_PUBLIC_SERVER,
-  schema,
-});
-
-const Providers = ({ children }: { children: React.ReactNode }) => {
-  return <ZeroProvider zero={z}>{children}</ZeroProvider>;
-};
-
 function RootComponent() {
   return (
-    <Providers>
-      <RootDocument>
-        <Outlet />
-      </RootDocument>
-    </Providers>
+    <RootDocument>
+      <Outlet />
+    </RootDocument>
   );
 }
 

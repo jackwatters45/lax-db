@@ -19,9 +19,9 @@
 - tanstack start
 - effect for core/backend?
 - drizzle
-- zero
-- eventually hono api
+- zero - eventually
 - openauth -> eventually try out better auth
+- eventually hono api
 - maybe planetscale down the road
 
 ## TODO
