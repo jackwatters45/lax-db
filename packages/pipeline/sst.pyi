@@ -28,7 +28,5 @@ class Resource:
     class Vpc:
         bastion: str
         type: str
-    class ZeroAuthSecret:
-        type: str
-        value: str
+ 
 
