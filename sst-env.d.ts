@@ -37,10 +37,6 @@ declare module 'sst' {
       bastion: string;
       type: 'sst.aws.Vpc';
     };
-    ZeroAuthSecret: {
-      type: 'sst.sst.Secret';
-      value: string;
-    };
   }
 }
 /// <reference path="sst-env.d.ts" />

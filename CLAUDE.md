@@ -17,7 +17,7 @@ Lax DB is a lacrosse-focused web application with features including:
 - **Package Manager**: Bun (v1.2.1)
 - **Frontend**: TanStack Start (React meta-framework), Tailwind CSS v4, Vite
 - **Backend**: SST v3, AWS Lambda, Effect library for functional programming
-- **Database**: PostgreSQL v17.4 with RDS Proxy, Zero (local-first), Drizzle ORM
+- **Database**: PostgreSQL v17.4 with RDS Proxy, Drizzle ORM
 - **Infrastructure**: AWS via SST, Cloudflare
 - **Code Quality**: Biome (linting/formatting), TypeScript, Lefthook (git hooks)
 
@@ -64,8 +64,6 @@ The project uses a monorepo structure with Turbo for build orchestration:
 - `/packages/frontend` - Main web app (TanStack Start)
 - `/packages/functions` - AWS Lambda serverless functions
 - `/packages/ui` - Shared UI components (Radix UI + shadcn/ui)
-- `/packages/hello-zero` - Zero database experiment
-- `/packages/zero` - Zero database configuration
 - `/infra` - SST infrastructure code
 
 ## Development Guidelines

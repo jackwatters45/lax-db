@@ -7,4 +7,3 @@ export * from './secret';
 export * from './storage';
 export * from './vpc';
 export * from './web';
-// export * from './zero';
