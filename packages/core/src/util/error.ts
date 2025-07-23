@@ -1,45 +1,22 @@
-import 'zod-openapi/extend';
 import { z } from 'zod';
 
 /**
  * Standard error response schema used for OpenAPI documentation
  */
-export const ErrorResponse = z
-  .object({
-    type: z
-      .enum([
-        'validation',
-        'authentication',
-        'forbidden',
-        'not_found',
-        'rate_limit',
-        'internal',
-      ])
-      .openapi({
-        description: 'The error type category',
-        examples: ['validation', 'authentication'],
-      }),
-    code: z.string().openapi({
-      description: 'Machine-readable error code identifier',
-      examples: ['invalid_parameter', 'missing_required_field', 'unauthorized'],
-    }),
-    message: z.string().openapi({
-      description: 'Human-readable error message',
-      examples: ['The request was invalid', 'Authentication required'],
-    }),
-    param: z
-      .string()
-      .optional()
-      .openapi({
-        description: 'The parameter that caused the error (if applicable)',
-        examples: ['email', 'user_id'],
-      }),
-    details: z.any().optional().openapi({
-      description: 'Additional error context information',
-    }),
-  })
-  // @ts-ignore
-  .openapi({ ref: 'ErrorResponse' });
+export const ErrorResponse = z.object({
+  type: z.enum([
+    'validation',
+    'authentication',
+    'forbidden',
+    'not_found',
+    'rate_limit',
+    'internal',
+  ]),
+  code: z.string(),
+  message: z.string(),
+  param: z.string().optional(),
+  details: z.any().optional(),
+});
 
 export type ErrorResponseType = z.infer<typeof ErrorResponse>;
 

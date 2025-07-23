@@ -1,34 +1,16 @@
-import { z } from '@hono/zod-openapi';
 import { eq } from 'drizzle-orm';
-import { db } from 'src/drizzle/index.js';
+import { z } from 'zod';
+import { db } from '../drizzle/index.js';
 import { createTransaction } from '../drizzle/transaction.js';
-import { Common } from '../util/common.js';
-import { Examples } from '../util/examples.js';
 import { fn } from '../util/fn.js';
 import { userTable } from './user.sql.js';
 
 export namespace User {
-  export const Info = z
-    .object({
-      id: z.string().openapi({
-        description: Common.IdDescription,
-        example: Examples.User.id,
-      }),
-      name: z.string().nullable().openapi({
-        description: 'Name of the user.',
-        example: Examples.User.name,
-      }),
-      email: z.string().openapi({
-        description: 'Email address of the user.',
-        example: Examples.User.email,
-      }),
-    })
-    // @ts-expect-error
-    .openapi({
-      ref: 'User',
-      description: 'A Gaoalbound User',
-      example: Examples.User,
-    });
+  export const Info = z.object({
+    id: z.string(),
+    name: z.string().nullable(),
+    email: z.string(),
+  });
 
   export const create = fn(
     z.object({

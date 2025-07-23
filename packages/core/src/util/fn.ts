@@ -1,7 +1,7 @@
-import type { ZodSchema, z } from 'zod';
+import type { ZodType, z } from 'zod';
 
 export function fn<
-  Arg1 extends ZodSchema,
+  Arg1 extends ZodType,
   Callback extends (arg1: z.output<Arg1>) => ReturnType<Callback>,
 >(arg1: Arg1, cb: Callback) {
   const result = (input: z.input<typeof arg1>): ReturnType<Callback> => {

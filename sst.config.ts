@@ -19,8 +19,16 @@ export default $config({
     };
   },
   async run() {
-    const _infra = await import('./infra');
+    const infra = await import('./infra');
 
-    return {};
+    return {
+      frontend: infra.frontend.url,
+      vpc: infra.vpc.id,
+      auth: infra.auth.url,
+      storage: infra.bucket.name,
+      databaseId: infra.database.id,
+      databaseProxy: infra.database.proxyId,
+      database: infra.database.getSSTLink(),
+    };
   },
 });

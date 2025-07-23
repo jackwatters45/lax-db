@@ -1,7 +1,7 @@
 import { database } from './database';
+import { DEV, PRODUCTION } from './dns';
 import { allSecrets } from './secret';
 import { vpc } from './vpc';
-import { DEV, PRODUCTION } from './dns';
 
 const domain =
   $app.stage === 'production'

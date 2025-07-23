@@ -6,7 +6,6 @@ import { logger } from 'hono/logger';
 import { ZodError } from 'zod';
 import { auth } from './auth';
 
-
 export const app = new Hono()
   .use(cors())
   .use(logger())
@@ -35,7 +34,7 @@ export const app = new Hono()
     }
     console.error(error);
     if (error instanceof ZodError) {
-      const e = error.errors[0];
+      const e = (error as ZodError).issues[0]; // no idea why not working with type assertion
       if (e) {
         return c.json(
           {
@@ -61,5 +60,3 @@ export const app = new Hono()
     console.error(new Error('bad error oh no'));
     return c.text('ok');
   });
-
-  

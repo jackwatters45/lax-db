@@ -45,7 +45,17 @@ export const auth: MiddlewareHandler = async (c, next) => {
     const workspaceID =
       c.req.header('x-sst-workspace') || c.req.query('workspaceID');
 
-    if (!workspaceID) return withActor(result.subject, next);
+    if (!workspaceID)
+      return withActor(
+        {
+          type: 'account',
+          properties: {
+            accountID: result.subject.properties.id,
+            email: result.subject.properties.email,
+          },
+        },
+        next,
+      );
     const email = result.subject.properties.email;
     return withActor(
       {
@@ -55,7 +65,8 @@ export const auth: MiddlewareHandler = async (c, next) => {
         },
       },
       async () => {
-        const user = await User.fromEmail(email);
+        const users = await User.fromEmail({ email });
+        const user = users[0];
         if (!user || user.timeDeleted) {
           c.status(401);
           return c.text('Unauthorized: User not found');
@@ -63,7 +74,7 @@ export const auth: MiddlewareHandler = async (c, next) => {
         return withActor(
           {
             type: 'user',
-            properties: { userID: user.id, workspaceID: user.workspaceID },
+            properties: { userID: user.id, workspaceID },
           },
           next,
         );
