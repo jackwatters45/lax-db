@@ -3,51 +3,39 @@
 /* eslint-disable */
 /* deno-fmt-ignore-file */
 
-declare module 'sst' {
+declare module "sst" {
   export interface Resource {
-    Auth: {
-      type: 'sst.aws.Auth';
-      url: string;
-    };
-    Bucket: {
-      name: string;
-      type: 'sst.aws.Bucket';
-    };
-    Database: {
-      database: string;
-      host: string;
-      password: string;
-      port: number;
-      type: 'sst.aws.Postgres';
-      username: string;
-    };
-    Frontend: {
-      type: 'sst.aws.TanstackStart';
-      url: string;
-    };
-    Vpc: {
-      bastion: string;
-      type: 'sst.aws.Vpc';
-    };
-    ZeroAuthSecret: {
-      type: 'sst.aws.Secret';
-      value: string;
-    };
-    GeminiKey: {
-      type: 'sst.aws.Secret';
-      value: string;
-    };
-    Database: {
-      database: string;
-      host: string;
-      password: string;
-      port: number;
-      type: 'sst.aws.Postgres';
-      username: string;
-    };
+    "Bucket": {
+      "name": string
+      "type": "sst.aws.Bucket"
+    }
+    "Database": {
+      "database": string
+      "host": string
+      "password": string
+      "port": number
+      "type": "sst.aws.Postgres"
+      "username": string
+    }
+    "Frontend": {
+      "type": "sst.aws.TanstackStart"
+      "url": string
+    }
+    "GoogleGenAIKey": {
+      "type": "sst.sst.Secret"
+      "value": string
+    }
+    "Vpc": {
+      "bastion": string
+      "type": "sst.aws.Vpc"
+    }
+    "ZeroAuthSecret": {
+      "type": "sst.sst.Secret"
+      "value": string
+    }
   }
 }
 /// <reference path="sst-env.d.ts" />
 
-import 'sst';
-export {};
+import "sst"
+export {}

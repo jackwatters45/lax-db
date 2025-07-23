@@ -1,6 +1,6 @@
 export const secret = {
   ZeroAuthSecret: new sst.Secret('ZeroAuthSecret'),
-  GeminiKey: new sst.Secret('GeminiKey'),
+  GoogleGenAIKey: new sst.Secret('GoogleGenAIKey'),
 };
 
 export const allSecrets = Object.values(secret);

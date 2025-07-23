@@ -1,0 +1,16 @@
+Content-Length: 6128
+Content-Type: application/json
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+Strict-Transport-Security: max-age=31536000 ; includeSubDomains
+X-Trace: 2B08E74EB0857E22643B9D0089404C9C012C53A2EC000000000000000000
+X-Content-Type-Options: nosniff
+X-Xss-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Date: Tue, 22 Jul 2025 15:14:28 GMT
+Server-Timing: cdn-cache; desc=MISS
+Server-Timing: edge; dur=41
+Server-Timing: origin; dur=216
+Server-Timing: ak_p; desc="1753197268338_388936726_327374254_25654_3926_26_0_-";dur=1
