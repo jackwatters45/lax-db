@@ -1,6 +1,7 @@
 import { database } from './database';
 import { allSecrets } from './secret';
 import { vpc } from './vpc';
+import { DEV, PRODUCTION } from './dns';
 
 const domain =
   $app.stage === 'production'

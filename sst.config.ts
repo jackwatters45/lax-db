@@ -11,7 +11,7 @@ export default $config({
         aws: {
           region: 'us-west-2',
           profile:
-            input.stage === 'production' ? 'laxdb-production' : 'laxdb-dev',
+            input.stage === 'production' ? 'lax-db-production' : 'lax-db-dev',
         },
         cloudflare: '6.2.0',
         command: true,

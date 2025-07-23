@@ -12,7 +12,7 @@
     "remove": "sst remove",
     "console": "sst console",
     "typecheck": "turbo typecheck",
-    "sso": "aws sso login --sso-session=laxdb",
+    "sso": "aws sso login --sso-session=yats",
     "prepare": "git config --local core.hooksPath .githooks"
   },
   "devDependencies": {

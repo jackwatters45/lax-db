@@ -40,7 +40,7 @@ const app = create({
   // })("claude-3-7-sonnet-20250219"),
   /* @ts-expect-error */
   model: createGoogleGenerativeAI({
-    apiKey: Resource.GeminiKey.value,
+    apiKey: Resource.GoogleGenAIKey.value,
   })('gemini-2.5-pro-exp-03-25'),
   /* @ts-expect-error */
   tools: [databaseRead, databaseWrite, stripe, tools[0]],
