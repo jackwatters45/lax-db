@@ -6,8 +6,10 @@
 - `bun build` - Build all packages
 - `bun deploy` - Deploy to AWS
 - `bun typecheck` - Run TypeScript checks across all packages
-- `cd packages/functions && bun test` - Run function tests (single test: add `--grep "test name"`)
-- `cd packages/core && bunx vitest` - Run core package tests (single test: add `-t "test name"`)
+- `cd packages/functions && bun test` - Run function tests (single test: add
+  `--grep "test name"`)
+- `cd packages/core && bunx vitest` - Run core package tests (single test: add
+  `-t "test name"`)
 
 ## Code Style (Biome enforced)
 
@@ -19,13 +21,17 @@
 
 ## Architecture Patterns
 
-- **Core**: Effect library for functional programming, Zod schemas, error handling via `VisibleError` class
-- **Frontend**: TanStack Start/Router, React 19, Tailwind CSS, Zero database
+- **Core**: Effect library for functional programming, Zod schemas, error
+  handling via `VisibleError` class
+- **Frontend**: TanStack Start/Router, React 19, Tailwind CSS
 - **Functions**: AWS Lambda with SST, Bun test runner
-- **Monorepo**: Turbo build orchestration, workspace packages with `@lax-db/*` naming
+- **Monorepo**: Turbo build orchestration, workspace packages with `@lax-db/*`
+  naming
 
 ## Error Handling
 
-- Use `VisibleError` class for client-facing errors with proper HTTP status codes
-- Follow standardized error codes in `ErrorCodes` object (validation, authentication, etc.)
+- Use `VisibleError` class for client-facing errors with proper HTTP status
+  codes
+- Follow standardized error codes in `ErrorCodes` object (validation,
+  authentication, etc.)
 - Database errors should implement `DatabaseError` interface
