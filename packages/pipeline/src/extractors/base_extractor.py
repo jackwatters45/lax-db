@@ -1,9 +1,10 @@
 import asyncio
-import httpx
+import time
 from abc import ABC, abstractmethod
+
+import httpx
 import structlog
 from tenacity import retry, stop_after_attempt, wait_exponential
-import time
 
 logger = structlog.get_logger()
 
@@ -20,7 +21,7 @@ class BaseExtractor(ABC):
         """Async context manager entry"""
         self.session = httpx.AsyncClient(
             timeout=httpx.Timeout(30.0),
-            headers={"User-Agent": "Goalbound Data Pipeline v2.0"},
+            headers={"User-Agent": "Lax Db Data Pipeline v2.0"},
         )
         return self
 
@@ -73,8 +74,9 @@ class BaseExtractor(ABC):
     async def extract(self) -> list[any]:
         """Extract data - must be implemented by subclasses"""
         pass
-    
-    def validate_data(self, data: list[any], model_class) -> list[any]:        """Validate extracted data using Pydantic model"""
+
+    def validate_data(self, data: list[any], model_class) -> list[any]:
+        """Validate extracted data using Pydantic model"""
         validated_records = []
         errors = []
 
