@@ -35,3 +35,7 @@
 - Follow standardized error codes in `ErrorCodes` object (validation,
   authentication, etc.)
 - Database errors should implement `DatabaseError` interface
+
+## LLM Documentation
+
+The `/llms` folder contains library-specific documentation files (`.txt` format) to help AI assistants understand project patterns and conventions. Reference these files when working with specific libraries or frameworks.
