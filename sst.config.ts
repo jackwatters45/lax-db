@@ -24,7 +24,6 @@ export default $config({
     return {
       frontend: infra.frontend.url,
       vpc: infra.vpc.id,
-      auth: infra.auth.url,
       storage: infra.bucket.name,
       databaseId: infra.database.id,
       databaseProxy: infra.database.proxyId,
