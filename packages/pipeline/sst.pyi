@@ -3,6 +3,10 @@
 from typing import Any
 
 class Resource:
+    class Api:
+        name: str
+        type: str
+        url: str
     class App:
         name: str
         stage: str
@@ -25,8 +29,10 @@ class Resource:
     class GoogleGenAIKey:
         type: str
         value: str
+    class OpenControlRouter:
+        type: str
+        url: str
     class Vpc:
         bastion: str
         type: str
- 
 
