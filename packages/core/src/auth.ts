@@ -9,6 +9,7 @@ import {
 import { Polar } from '@polar-sh/sdk';
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
+import { openAPI } from 'better-auth/plugins';
 import { reactStartCookies } from 'better-auth/react-start';
 
 const polarClient = new Polar({
@@ -30,9 +31,9 @@ export const auth = betterAuth({
     polar({
       client: polarClient,
       createCustomerOnSignUp: true,
-      getCustomerCreateParams: ({ user }, _request) => ({
+      getCustomerCreateParams: async ({ user }, _request) => ({
         metadata: {
-          myCustomProperty: 123,
+          myCustomProperty: '123',
         },
       }),
       use: [
@@ -57,6 +58,7 @@ export const auth = betterAuth({
         }),
       ],
     }),
+    openAPI(),
     reactStartCookies(), // make sure this is the last plugin in the array
   ],
 

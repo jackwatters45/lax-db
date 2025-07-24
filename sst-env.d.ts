@@ -5,8 +5,9 @@
 
 declare module 'sst' {
   export interface Resource {
-    Auth: {
-      type: 'sst.aws.Auth';
+    Api: {
+      name: string;
+      type: 'sst.aws.Function';
       url: string;
     };
     Bucket: {
@@ -32,6 +33,10 @@ declare module 'sst' {
     GoogleGenAIKey: {
       type: 'sst.sst.Secret';
       value: string;
+    };
+    OpenControlRouter: {
+      type: 'sst.aws.Router';
+      url: string;
     };
     Vpc: {
       bastion: string;
