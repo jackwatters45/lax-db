@@ -1,5 +1,4 @@
 import { database } from './database';
-import { domain } from './dns';
 import { allSecrets } from './secret';
 
 const opencontrol = new sst.aws.OpenControl('OpenControl', {
@@ -22,5 +21,5 @@ new sst.aws.Router('OpenControlRouter', {
   routes: {
     '/*': opencontrol.url,
   },
-  domain: `opencontrol.${domain}`,
+  // domain: { name: `opencontrol.${permanentDomain}`, dns: sst.cloudflare.dns() },
 });
