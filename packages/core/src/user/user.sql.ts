@@ -1,14 +1,14 @@
-import { pgEnum, pgTable, varchar } from 'drizzle-orm/pg-core';
-
+import { boolean, pgTable, text } from 'drizzle-orm/pg-core';
 import { id, timestamps } from '../drizzle/types';
-
-export const userTypeEnum = pgEnum('user_type', ['student', 'coach']);
 
 export const userTable = pgTable('user', {
   ...id,
+  name: text('name').notNull(),
+  email: text('email').notNull().unique(),
+  emailVerified: boolean('email_verified')
+    .$defaultFn(() => false)
+    .notNull(),
+  image: text('image'),
   ...timestamps,
-  name: varchar('name', { length: 255 }),
-  email: varchar('email', { length: 255 }).notNull().unique(),
 });
-
 export type User = typeof userTable.$inferSelect;
