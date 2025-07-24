@@ -1,19 +1,49 @@
+import { auth } from '@lax-db/core/auth';
 import { VisibleError } from '@lax-db/core/util/error';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { HTTPException } from 'hono/http-exception';
 import { logger } from 'hono/logger';
 import { ZodError } from 'zod';
-import { auth } from './auth';
 
-export const app = new Hono()
+export const app = new Hono<{
+  Variables: {
+    user: typeof auth.$Infer.Session.user | null;
+    session: typeof auth.$Infer.Session.session | null;
+  };
+}>()
   .use(cors())
   .use(logger())
   .use(async (c, next) => {
     c.header('Cache-Control', 'no-store');
     return next();
   })
-  .use(auth)
+  .use(
+    '/api/auth/*', // or replace with "*" to enable cors for all routes
+    cors({
+      origin: 'http://localhost:3001', // replace with your origin
+      allowHeaders: ['Content-Type', 'Authorization'],
+      allowMethods: ['POST', 'GET', 'OPTIONS'],
+      exposeHeaders: ['Content-Length'],
+      maxAge: 600,
+      credentials: true,
+    }),
+  )
+  .use('*', async (c, next) => {
+    const session = await auth.api.getSession({ headers: c.req.raw.headers });
+
+    if (!session) {
+      c.set('user', null);
+      c.set('session', null);
+      return next();
+    }
+
+    c.set('user', session.user);
+    c.set('session', session.session);
+    return next();
+  })
+  .on(['POST', 'GET'], '/api/auth/**', (c) => auth.handler(c.req.raw))
+
   .onError((error, c) => {
     if (error instanceof VisibleError) {
       return c.json(
