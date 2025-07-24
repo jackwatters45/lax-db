@@ -1,9 +1,9 @@
 import { eq } from 'drizzle-orm';
 import { z } from 'zod';
-import { db } from '../drizzle/index.js';
-import { createTransaction } from '../drizzle/transaction.js';
-import { fn } from '../util/fn.js';
-import { userTable } from './user.sql.js';
+import { db } from '../drizzle/index';
+import { createTransaction } from '../drizzle/transaction';
+import { fn } from '../util/fn';
+import { userTable } from './user.sql';
 
 export namespace User {
   export const Info = z.object({

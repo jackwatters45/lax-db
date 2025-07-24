@@ -1,7 +1,7 @@
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
 import { Resource } from 'sst';
-import { Log } from '../util/log.js';
+import { Log } from '../util/log';
 
 const pool = new Pool({
   host: Resource.Database.host,

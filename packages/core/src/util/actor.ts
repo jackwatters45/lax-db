@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { createContext } from './context.js';
+import { createContext } from './context';
 
 export const PublicActor = z.object({
   type: z.literal('public'),
