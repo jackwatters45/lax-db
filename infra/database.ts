@@ -24,8 +24,6 @@ export const database = isPermanentStage
         proxyId: 'goalbound-dev-databaseproxy-xbktaxsf',
       });
 
-
-
 const migrator = new sst.aws.Function('DatabaseMigrator', {
   handler: 'packages/functions/src/drizzle/migrator.handler',
   link: [database],
@@ -51,15 +49,5 @@ export const studio = new sst.x.DevCommand('Studio', {
     autostart: true,
     command: 'npx drizzle-kit studio',
     directory: 'packages/core',
-  },
-});
-
-// Register the sync-pipeline script as a DevCommand for local development
-export const syncPipeline = new sst.x.DevCommand('db:sync-pipeline', {
-  link: [database],
-  dev: {
-    autostart: false,
-    command: 'bun run packages/scripts/src/sync-pipeline.ts',
-    directory: '.',
   },
 });
