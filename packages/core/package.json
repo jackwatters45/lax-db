@@ -6,7 +6,8 @@
     "./*": "./src/*.ts"
   },
   "scripts": {
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "db": "sst shell drizzle-kit"
   },
   "dependencies": {
     "@hono/zod-openapi": "^0.19.6",

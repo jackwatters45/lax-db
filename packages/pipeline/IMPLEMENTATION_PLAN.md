@@ -242,7 +242,7 @@ airflow dags trigger ncaa_directory_sync
 ```bash
 # Database connection issues
 python -c "import asyncpg; print('AsyncPG OK')"
-export DATABASE_URL="postgresql://user:pass@localhost:5432/goalbound"
+export DATABASE_URL="postgresql://user:pass@localhost:5432/lax-db"
 
 # Missing dependencies
 uv sync --reinstall

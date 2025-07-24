@@ -1,7 +1,7 @@
 # AGENTS.md
 
-This file provides guidance to agentic coding agents working with the Goalbound
-Pipeline V2 codebase.
+This file provides guidance to agentic coding agents working with the Lax-db
+Pipeline codebase.
 
 ## Commands
 
