@@ -9,11 +9,13 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "effect": "latest",
     "@hono/zod-openapi": "^0.19.6",
+    "@polar-sh/better-auth": "^1.0.7",
+    "@polar-sh/sdk": "^0.34.6",
     "drizzle-kit": "^0.31.1",
     "drizzle-orm": "^0.44.0",
     "drizzle-zod": "^0.8.2",
+    "effect": "latest",
     "hono": "*",
     "zod": "^3.25.28"
   },
