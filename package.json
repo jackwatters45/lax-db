@@ -27,7 +27,7 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "sst": "3.14.28"
+    "sst": "^3.17.10"
   },
   "overrides": {
     "esbuild": "0.25.0"
