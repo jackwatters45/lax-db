@@ -5,6 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Project Overview
 
 Lax DB is a lacrosse-focused web application with features including:
+
 - Historical database for NCAA/PLL/WLL game statistics
 - Film resources compilation
 - Computer vision features (planned)
@@ -24,6 +25,7 @@ Lax DB is a lacrosse-focused web application with features including:
 ## Essential Commands
 
 ### Development
+
 ```bash
 bun dev        # Start SST development mode
 bun build      # Build all packages
@@ -35,6 +37,7 @@ bun sso        # Login to AWS SSO (laxdb session)
 ```
 
 ### Testing
+
 ```bash
 # Frontend tests (Vitest)
 cd packages/frontend && bun test
@@ -49,6 +52,7 @@ cd packages/core && bunx vitest
 ```
 
 ### Code Quality
+
 ```bash
 # Biome automatically runs on pre-commit via git hooks
 # Manual formatting/linting
@@ -65,6 +69,7 @@ The project uses a monorepo structure with Turbo for build orchestration:
 - `/packages/functions` - AWS Lambda serverless functions
 - `/packages/ui` - Shared UI components (Radix UI + shadcn/ui)
 - `/infra` - SST infrastructure code
+- `/llms` - Library-specific documentation for AI assistants
 
 ## Development Guidelines
 
@@ -78,16 +83,20 @@ The project uses a monorepo structure with Turbo for build orchestration:
 
 5. **Error Handling**: Use `VisibleError` class for client-facing errors with proper HTTP status codes. Follow standardized error codes in `ErrorCodes` object.
 
-6. **Testing**: 
+6. **Testing**:
+
    - Frontend: Use Vitest with @testing-library/react
    - Functions: Use Bun test runner with SST shell
    - Core: Use Vitest for business logic testing
 
 7. **Git Workflow**: Pre-commit hooks run Biome checks and type checking automatically. Pre-push runs typecheck.
 
+8. **LLM Documentation**: The `/llms` folder contains `.txt` files with library-specific documentation and patterns. Reference these files when working with specific frameworks or libraries to follow established conventions.
+
 ## Infrastructure
 
 AWS deployment via SST with the following components:
+
 - **Region**: us-west-2
 - **Database**: PostgreSQL v17.4 with RDS Proxy, automated migrations via Drizzle
 - **Authentication**: OpenAuth with Google OIDC provider
