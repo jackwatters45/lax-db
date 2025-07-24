@@ -1,6 +1,6 @@
 import { pgEnum, pgTable, varchar } from 'drizzle-orm/pg-core';
 
-import { id, timestamps } from '../drizzle/types.js';
+import { id, timestamps } from '../drizzle/types';
 
 export const userTypeEnum = pgEnum('user_type', ['student', 'coach']);
 
