@@ -15,7 +15,7 @@ export namespace User {
   export const create = fn(
     z.object({
       email: z.string().email(),
-      name: z.string().optional(),
+      name: z.string(),
     }),
     async (input) =>
       await createTransaction(async (tx) => {
