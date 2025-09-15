@@ -1,6 +1,6 @@
 import { bucket } from './storage';
 
-export const frontend = new sst.aws.TanStackStart('Frontend', {
-  path: 'packages/frontend',
+export const web = new sst.aws.TanStackStart('Web', {
+  path: 'packages/web',
   link: [bucket],
 });

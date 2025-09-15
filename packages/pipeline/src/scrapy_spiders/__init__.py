@@ -1,1 +1,0 @@
-# Scrapy spiders package
