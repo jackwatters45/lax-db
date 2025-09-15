@@ -3,11 +3,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "test": "sst shell -- bun test --timeout 15000",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@ai-sdk/google": "^1.2.22",
     "@lax-db/core": "*",
     "sst": "*"
   },
