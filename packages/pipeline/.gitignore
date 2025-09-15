@@ -1,60 +1,34 @@
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-.scrapy/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
+# dependencies (bun install)
+node_modules
 
-# Virtual environments
+# output
+out
+dist
+*.tgz
+
+# code coverage
+coverage
+*.lcov
+
+# logs
+logs
+_.log
+report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
+
+# dotenv environment variable files
 .env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
 
-# Generated models
-generated/models/*.py
-!generated/models/__init__.py
+# caches
+.eslintcache
+.cache
+*.tsbuildinfo
 
-# Airflow
-airflow.cfg
-airflow.db
-logs/
-dags/__pycache__/
+# IntelliJ based IDEs
+.idea
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# OS
+# Finder (MacOS) folder config
 .DS_Store
-Thumbs.db
-
-# Testing
-.pytest_cache/
-.coverage
-htmlcov/
-
-# Temporary files
-*.tmp
-*.log

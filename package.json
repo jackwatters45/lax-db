@@ -7,27 +7,22 @@
   "packageManager": "bun@1.2.1",
   "scripts": {
     "dev": "sst dev",
-    "build": "sst build",
     "deploy": "sst deploy",
-    "remove": "sst remove",
-    "console": "sst console",
     "typecheck": "turbo typecheck",
-    "sso": "aws sso login --sso-session=yats",
-    "prepare": "git config --local core.hooksPath .githooks"
+    "sso": "aws sso login --sso-session=yats"
   },
   "devDependencies": {
     "@biomejs/biome": "2.1.2",
-    "@changesets/changelog-github": "^0.5.0",
-    "@changesets/cli": "^2.27.8",
-    "@tsconfig/node20": "^20.1.5",
-    "@types/bun": "^1.2.14",
-    "@types/node": "^22.15.21",
-    "lefthook": "^1.11.13",
-    "turbo": "^2.5.5",
-    "typescript": "^5.8.3"
+    "@tsconfig/node22": "^22.0.2",
+    "@types/bun": "^1.2.22",
+    "@types/node": "^22.18.3",
+    "@types/pg": "^8.15.5",
+    "lefthook": "^1.13.0",
+    "turbo": "^2.5.6",
+    "typescript": "^5.9.2"
   },
   "dependencies": {
-    "sst": "^3.17.10"
+    "sst": "^3.17.13"
   },
   "overrides": {
     "esbuild": "0.25.0"

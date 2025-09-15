@@ -1,0 +1,25 @@
+{
+  "name": "@lax-db/pipeline",
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@effect/platform-node": "^0.96.1",
+    "@effect/platform-bun": "^0.79.0",
+    "@effect/schema": "^0.75.5",
+    "@lax-db/core": "*",
+    "cheerio": "^1.1.2",
+    "@effect/platform": "^0.90.9",
+    "sst": "*"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "module": "src/index.ts",
+  "private": true,
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}

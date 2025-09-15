@@ -1,1 +1,0 @@
-# NCAA Directory spiders package
