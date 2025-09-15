@@ -22,6 +22,8 @@
     "typescript": "^5.9.2"
   },
   "dependencies": {
+    "@changesets/changelog-github": "^0.5.1",
+    "@changesets/cli": "^2.29.7",
     "sst": "^3.17.13"
   },
   "overrides": {
