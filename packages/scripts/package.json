@@ -1,0 +1,18 @@
+{
+  "name": "@lax-db/scripts",
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "shell": "sst shell",
+    "script": "sst shell -- bun",
+    "typecheck": "sst shell -- tsc --noEmit"
+  },
+  "devDependencies": {
+    "@vitest/ui": "^3.2.4",
+    "vitest": "^2.1.8"
+  },
+  "dependencies": {
+    "@lax-db/core": "*",
+    "effect": "^3.17.1"
+  }
+}
