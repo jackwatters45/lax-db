@@ -16,3 +16,10 @@ yarn.lock
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+dist
+dist-ssr
+*.local
+.nitro
+.tanstack
+.output
+.vinxi

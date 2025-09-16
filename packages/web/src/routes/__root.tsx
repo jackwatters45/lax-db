@@ -1,20 +1,24 @@
 /// <reference types="vite/client" />
 
+import { TanstackDevtools } from '@tanstack/react-devtools';
 import type { QueryClient } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import {
   createRootRouteWithContext,
   HeadContent,
-  Link,
   Outlet,
   Scripts,
 } from '@tanstack/react-router';
-import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
+import {
+  TanStackRouterDevtools,
+  TanStackRouterDevtoolsPanel,
+} from '@tanstack/react-router-devtools';
 import type * as React from 'react';
-import { DefaultCatchBoundary } from '@/components/DefaultCatchBoundary';
-import { NotFound } from '@/components/NotFound';
-import appCss from '@/styles/app.css?url';
-import { seo } from '@/utils/seo';
+import { DefaultCatchBoundary } from '@/components/default-catch-boundary';
+import HeaderTmp from '@/components/header';
+import { NotFound } from '@/components/not-found';
+import { seo } from '@/lib/seo';
+import TanStackQueryDevtools from '@/lib/tanstack-query/devtools';
+import globalsCss from '@/styles/globals.css?url';
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
@@ -36,7 +40,7 @@ export const Route = createRootRouteWithContext<{
       }),
     ],
     links: [
-      { rel: 'stylesheet', href: appCss },
+      { rel: 'stylesheet', href: globalsCss },
       {
         rel: 'apple-touch-icon',
         sizes: '180x180',
@@ -84,62 +88,21 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        <div className="flex gap-2 p-2 text-lg">
-          <Link
-            to="/"
-            activeProps={{
-              className: 'font-bold',
-            }}
-            activeOptions={{ exact: true }}
-          >
-            Home
-          </Link>{' '}
-          <Link
-            to="/posts"
-            activeProps={{
-              className: 'font-bold',
-            }}
-          >
-            Posts
-          </Link>{' '}
-          <Link
-            to="/users"
-            activeProps={{
-              className: 'font-bold',
-            }}
-          >
-            Users
-          </Link>{' '}
-          <Link
-            to="/route-a"
-            activeProps={{
-              className: 'font-bold',
-            }}
-          >
-            Pathless Layout
-          </Link>{' '}
-          <Link
-            to="/deferred"
-            activeProps={{
-              className: 'font-bold',
-            }}
-          >
-            Deferred
-          </Link>{' '}
-          <Link
-            // @ts-expect-error
-            to="/this-route-does-not-exist"
-            activeProps={{
-              className: 'font-bold',
-            }}
-          >
-            This Route Does Not Exist
-          </Link>
-        </div>
-        <hr />
+        <HeaderTmp />
         {children}
         <TanStackRouterDevtools position="bottom-right" />
-        <ReactQueryDevtools buttonPosition="bottom-left" />
+        <TanstackDevtools
+          config={{
+            position: 'bottom-left',
+          }}
+          plugins={[
+            {
+              name: 'Tanstack Router',
+              render: <TanStackRouterDevtoolsPanel />,
+            },
+            TanStackQueryDevtools,
+          ]}
+        />
         <Scripts />
       </body>
     </html>
