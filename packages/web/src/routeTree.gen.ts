@@ -13,9 +13,15 @@ import { createServerRootRoute } from '@tanstack/react-start/server';
 import { Route as rootRouteImport } from './routes/__root';
 import { ServerRoute as ApiAuthSplatServerRouteImport } from './routes/api/auth/$';
 import { Route as IndexRouteImport } from './routes/index';
+import { Route as TeamRouteImport } from './routes/team';
 
 const rootServerRouteImport = createServerRootRoute();
 
+const TeamRoute = TeamRouteImport.update({
+  id: '/team',
+  path: '/team',
+  getParentRoute: () => rootRouteImport,
+} as any);
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -29,24 +35,28 @@ const ApiAuthSplatServerRoute = ApiAuthSplatServerRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute;
+  '/team': typeof TeamRoute;
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute;
+  '/team': typeof TeamRoute;
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport;
   '/': typeof IndexRoute;
+  '/team': typeof TeamRoute;
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
-  fullPaths: '/';
+  fullPaths: '/' | '/team';
   fileRoutesByTo: FileRoutesByTo;
-  to: '/';
-  id: '__root__' | '/';
+  to: '/' | '/team';
+  id: '__root__' | '/' | '/team';
   fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute;
+  TeamRoute: typeof TeamRoute;
 }
 export interface FileServerRoutesByFullPath {
   '/api/auth/$': typeof ApiAuthSplatServerRoute;
@@ -72,6 +82,13 @@ export interface RootServerRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/team': {
+      id: '/team';
+      path: '/team';
+      fullPath: '/team';
+      preLoaderRoute: typeof TeamRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/': {
       id: '/';
       path: '/';
@@ -95,6 +112,7 @@ declare module '@tanstack/react-start/server' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  TeamRoute: TeamRoute,
 };
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

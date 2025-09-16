@@ -14,13 +14,12 @@ export default function HeaderTmp() {
           Home
         </Link>{' '}
         <Link
-          // @ts-expect-error
-          to="/this-route-does-not-exist"
+          to="/team"
           activeProps={{
             className: 'font-bold',
           }}
         >
-          This Route Does Not Exist
+          Team
         </Link>
       </div>
       <hr />
