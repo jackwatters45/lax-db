@@ -13,6 +13,11 @@ const config = defineConfig({
     }),
     viteReact(),
   ],
+  css: {
+    modules: {
+      localsConvention: 'camelCase',
+    },
+  },
 });
 
 export default config;

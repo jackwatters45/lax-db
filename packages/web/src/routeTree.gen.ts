@@ -13,18 +13,18 @@ import { createServerRootRoute } from '@tanstack/react-start/server';
 import { Route as rootRouteImport } from './routes/__root';
 import { ServerRoute as ApiAuthSplatServerRouteImport } from './routes/api/auth/$';
 import { Route as IndexRouteImport } from './routes/index';
-import { Route as TeamRouteImport } from './routes/team';
+import { Route as TeamIndexRouteImport } from './routes/team/index';
 
 const rootServerRouteImport = createServerRootRoute();
 
-const TeamRoute = TeamRouteImport.update({
-  id: '/team',
-  path: '/team',
-  getParentRoute: () => rootRouteImport,
-} as any);
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any);
+const TeamIndexRoute = TeamIndexRouteImport.update({
+  id: '/team/',
+  path: '/team/',
   getParentRoute: () => rootRouteImport,
 } as any);
 const ApiAuthSplatServerRoute = ApiAuthSplatServerRouteImport.update({
@@ -35,28 +35,28 @@ const ApiAuthSplatServerRoute = ApiAuthSplatServerRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute;
-  '/team': typeof TeamRoute;
+  '/team': typeof TeamIndexRoute;
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute;
-  '/team': typeof TeamRoute;
+  '/team': typeof TeamIndexRoute;
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport;
   '/': typeof IndexRoute;
-  '/team': typeof TeamRoute;
+  '/team/': typeof TeamIndexRoute;
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
   fullPaths: '/' | '/team';
   fileRoutesByTo: FileRoutesByTo;
   to: '/' | '/team';
-  id: '__root__' | '/' | '/team';
+  id: '__root__' | '/' | '/team/';
   fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute;
-  TeamRoute: typeof TeamRoute;
+  TeamIndexRoute: typeof TeamIndexRoute;
 }
 export interface FileServerRoutesByFullPath {
   '/api/auth/$': typeof ApiAuthSplatServerRoute;
@@ -82,18 +82,18 @@ export interface RootServerRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/team': {
-      id: '/team';
-      path: '/team';
-      fullPath: '/team';
-      preLoaderRoute: typeof TeamRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
     '/': {
       id: '/';
       path: '/';
       fullPath: '/';
       preLoaderRoute: typeof IndexRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    '/team/': {
+      id: '/team/';
+      path: '/team';
+      fullPath: '/team';
+      preLoaderRoute: typeof TeamIndexRouteImport;
       parentRoute: typeof rootRouteImport;
     };
   }
@@ -112,7 +112,7 @@ declare module '@tanstack/react-start/server' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  TeamRoute: TeamRoute,
+  TeamIndexRoute: TeamIndexRoute,
 };
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

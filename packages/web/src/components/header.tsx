@@ -2,8 +2,8 @@ import { Link } from '@tanstack/react-router';
 
 export default function HeaderTmp() {
   return (
-    <>
-      <div className="flex gap-2 p-2 text-lg">
+    <header className="flex items-center justify-between gap-2 border-border border-b p-2">
+      <nav className="flex gap-2 text-lg">
         <Link
           to="/"
           activeProps={{
@@ -21,8 +21,8 @@ export default function HeaderTmp() {
         >
           Team
         </Link>
-      </div>
-      <hr />
-    </>
+      </nav>
+      <div />
+    </header>
   );
 }

@@ -66,3 +66,8 @@ Lax DB aims to better equip lacrosse players with modern tools and features to e
 _Last updated: September 16, 2025_
 
 _This document is living and will be updated regularly as the project evolves._
+
+
+---
+
+*Last updated: September 16, 2025*
