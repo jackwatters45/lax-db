@@ -94,12 +94,6 @@
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
-
-  .theme {
-    --animate-orbit: orbit calc(var(--duration) * 1s) linear infinite;
-    --animate-marquee: marquee var(--duration) infinite linear;
-    --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
-  }
 }
 
 @layer base {
