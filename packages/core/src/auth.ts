@@ -11,8 +11,9 @@ import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { openAPI } from 'better-auth/plugins';
 import { reactStartCookies } from 'better-auth/react-start';
+import { Effect, Runtime } from 'effect';
 import { Resource } from 'sst';
-import { client as redis } from './redis';
+import { RedisLive, RedisService } from './redis';
 
 const polarClient = new Polar({
   accessToken: process.env.POLAR_ACCESS_TOKEN,
@@ -21,6 +22,9 @@ const polarClient = new Polar({
   // Access tokens obtained in Production are for instance not usable in the Sandbox environment.
   server: 'sandbox',
 });
+
+// Create a runtime with Redis layer
+const runtime = Runtime.defaultRuntime;
 
 export const auth = betterAuth({
   appName: 'Goalbound',
@@ -47,15 +51,34 @@ export const auth = betterAuth({
   },
   secondaryStorage: {
     get: async (key) => {
-      const value = await redis.get(key);
-      return value ? value : null;
+      const effect = Effect.gen(function* () {
+        const redis = yield* RedisService;
+        return yield* redis.get(key);
+      });
+
+      try {
+        return await Runtime.runPromise(runtime)(
+          Effect.provide(effect, RedisLive),
+        );
+      } catch {
+        return null;
+      }
     },
     set: async (key, value, ttl) => {
-      if (ttl) await redis.set(key, value, 'EX', ttl);
-      else await redis.set(key, value);
+      const effect = Effect.gen(function* () {
+        const redis = yield* RedisService;
+        return yield* redis.set(key, value, ttl);
+      });
+
+      await Runtime.runPromise(runtime)(Effect.provide(effect, RedisLive));
     },
     delete: async (key) => {
-      await redis.del(key);
+      const effect = Effect.gen(function* () {
+        const redis = yield* RedisService;
+        return yield* redis.delete(key);
+      });
+
+      await Runtime.runPromise(runtime)(Effect.provide(effect, RedisLive));
     },
   },
   plugins: [
