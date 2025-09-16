@@ -11,9 +11,9 @@ export default $config({
         aws: {
           region: 'us-west-2',
           profile:
-            input.stage === 'production' ? 'lax-db-production' : 'lax-db-dev',
+            input.stage === 'production' ? 'laxdb-production' : 'laxdb-dev',
         },
-        cloudflare: '6.2.0',
+        cloudflare: '6.6.0',
         command: true,
       },
     };
@@ -22,12 +22,13 @@ export default $config({
     const infra = await import('./infra');
 
     return {
-      frontend: infra.frontend.url,
-      vpc: infra.vpc.id,
-      storage: infra.bucket.name,
       databaseId: infra.database.id,
       databaseProxy: infra.database.proxyId,
       database: infra.database.getSSTLink(),
+      redisClusterId: infra.redis.clusterId,
+      storage: infra.bucket.name,
+      vpc: infra.vpc.id,
+      web: infra.web.url,
     };
   },
 });

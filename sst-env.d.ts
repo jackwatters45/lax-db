@@ -10,6 +10,10 @@ declare module 'sst' {
       type: 'sst.aws.Function';
       url: string;
     };
+    BetterAuthSecret: {
+      type: 'sst.sst.Secret';
+      value: string;
+    };
     Bucket: {
       name: string;
       type: 'sst.aws.Bucket';
@@ -26,21 +30,28 @@ declare module 'sst' {
       name: string;
       type: 'sst.aws.Function';
     };
-    Frontend: {
-      type: 'sst.aws.TanstackStart';
-      url: string;
-    };
-    GoogleGenAIKey: {
+    GoogleAuthClientId: {
       type: 'sst.sst.Secret';
       value: string;
     };
-    OpenControlRouter: {
-      type: 'sst.aws.Router';
-      url: string;
+    GoogleAuthClientSecret: {
+      type: 'sst.sst.Secret';
+      value: string;
+    };
+    Redis: {
+      host: string;
+      password: string;
+      port: number;
+      type: 'sst.aws.Redis';
+      username: string;
     };
     Vpc: {
       bastion: string;
       type: 'sst.aws.Vpc';
+    };
+    Web: {
+      type: 'sst.aws.TanstackStart';
+      url: string;
     };
   }
 }

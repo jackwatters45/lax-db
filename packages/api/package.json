@@ -13,7 +13,6 @@
   "dependencies": {
     "@lax-db/core": "workspace:*",
     "@lax-db/functions": "workspace:*",
-    "@openauthjs/openauth": "^0.4.3",
     "hono": "4.6.5",
     "zod": "^4.0.5"
   }

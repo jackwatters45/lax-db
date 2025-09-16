@@ -6,12 +6,7 @@
       "file_edited": {
         ".json,.ts,.tsx": [
           {
-            "command": [
-              "bun",
-              "run",
-              "check",
-              "$FILE"
-            ]
+            "command": ["bun", "run", "check", "$FILE"]
           }
         ]
       }

@@ -36,7 +36,7 @@
         "noUselessElse": "error"
       }
     },
-    "includes": ["**", "!**/tests/**/*", "!**/dist/**/*"]
+    "includes": ["**", "!**/tests/**/*", "!**/dist/**/*", "!**/*.gen.ts"]
   },
   "javascript": {
     "formatter": {
