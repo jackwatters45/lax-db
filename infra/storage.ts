@@ -1,4 +1,3 @@
-
 // export const bucket = isPermanentStage
 //   ? new sst.aws.Bucket('Bucket', {
 //       access: 'public',

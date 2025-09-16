@@ -1,6 +1,6 @@
-import { domain } from "./dns";
+import { domain } from './dns';
 
-export const email = new sst.aws.Email("Email", {
+export const email = new sst.aws.Email('Email', {
   sender: domain,
   dns: sst.aws.dns({
     override: true,
