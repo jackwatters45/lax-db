@@ -6,13 +6,24 @@ const config: Config = {
   theme: {
     container: {
       center: true,
-      padding: '1rem',
+      padding: '2rem',
       screens: {
         sm: '100%',
         md: '100%',
         lg: '100%',
         xl: '1408px',
       },
+    },
+    fontSize: {
+      sm: '13px',
+      base: '16px',
+      italic: '17px',
+    },
+    fontFamily: {
+      sans: ['Helectiva', 'sans-serif'],
+      inter: ['Inter', 'sans-serif'],
+      serif: ['Newsreader', 'serif'],
+      mono: ['Newsreader', 'serif'],
     },
     extend: {
       screens: {
@@ -91,7 +102,7 @@ const config: Config = {
       },
     },
   },
-  plugins: [require('@tailwindcss/typography')],
+  plugins: [require('@tailwindcss/typography'), require('tailwindcss-animate')],
 };
 
 export default config;
