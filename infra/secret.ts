@@ -1,5 +1,7 @@
 export const secret = {
-  GoogleGenAIKey: new sst.Secret('GoogleGenAIKey'),
+  GoogleAuthClientSecret: new sst.Secret('GoogleAuthClientSecret'),
+  GoogleAuthClientId: new sst.Secret('GoogleAuthClientId'),
+  BetterAuthSecret: new sst.Secret('BetterAuthSecret'),
   // POLAR_WEBHOOK_SECRET
 };
 

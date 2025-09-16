@@ -1,1 +1,1 @@
-export const isPermanentStage = ["production", "dev"].includes($app.stage);
+export const isPermanentStage = ['production', 'dev'].includes($app.stage);
