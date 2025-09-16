@@ -6,28 +6,32 @@ Lax DB aims to better equip lacrosse players with modern tools and features to e
 
 ## Current Status
 
-### ✅ Completed Features
-
-- **Core Infrastructure**: SST deployment setup with AWS
-- **Database Layer**: Drizzle ORM with PostgreSQL
-- **Authentication**: Better Auth with Google OAuth
-- **Redis Integration**: Effect-based Redis service for caching
-- **Frontend**: TanStack Router with React 19
-- **Styling**: Tailwind CSS with custom design system
-
 ### 🚧 In Progress
 
-- **Effect Service Migration**: Converting Redis client to Effect service
-- **UI Components**: Building reusable component library
-- **API Routes**: Setting up backend endpoints
+- begin setting up teams
+  - create team (be able to upload with csv or something)
+  - add athletes
+  - add schedule
+  - add stats
 
 ### 📋 Planned Features
 
-#### Team Oriented
+- whiteboard
+- scouting reports for other teams
+- add db of sets, plays, etc
+- allow tracking/planning of workouts
+- film review feature
+- add db of moves with drills, examples, players to study, etc for players
+- some crazy ai film evals
 
-#### Coach Oriented
+### ✅ Completed Features
 
-#### Player Oriented
+- [x] **Core Infrastructure**: SST deployment setup with AWS
+- [x] **Database Layer**: Drizzle ORM with PostgreSQL
+- [x] **Authentication**: Better Auth with Google OAuth
+- [x] **Redis Integration**: Effect-based Redis service for caching
+- [x] **Frontend**: TanStack Router with React 19
+- [x] **Styling**: Tailwind CSS with custom design system
 
 ---
 
@@ -67,7 +71,6 @@ _Last updated: September 16, 2025_
 
 _This document is living and will be updated regularly as the project evolves._
 
-
 ---
 
-*Last updated: September 16, 2025*
+_Last updated: September 16, 2025_
