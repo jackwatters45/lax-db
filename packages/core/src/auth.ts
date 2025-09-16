@@ -11,6 +11,8 @@ import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { openAPI } from 'better-auth/plugins';
 import { reactStartCookies } from 'better-auth/react-start';
+import { Resource } from 'sst';
+import { client as redis } from './redis';
 
 const polarClient = new Polar({
   accessToken: process.env.POLAR_ACCESS_TOKEN,
@@ -21,17 +23,46 @@ const polarClient = new Polar({
 });
 
 export const auth = betterAuth({
+  appName: 'Goalbound',
+  secret: Resource.BetterAuthSecret.value,
   database: drizzleAdapter(db, {
     provider: 'pg',
   }),
-  emailAndPassword: {
-    enabled: true,
+  socialProviders: {
+    google: {
+      clientId: Resource.GoogleAuthClientId.value,
+      clientSecret: Resource.GoogleAuthClientSecret.value,
+    },
+  },
+  session: {
+    cookieCache: {
+      enabled: true,
+      maxAge: 5 * 60, // Cache duration in seconds
+    },
+  },
+  rateLimit: {
+    window: 10, // time window in seconds
+    max: 100, // max requests in the window
+    storage: 'secondary-storage',
+  },
+  secondaryStorage: {
+    get: async (key) => {
+      const value = await redis.get(key);
+      return value ? value : null;
+    },
+    set: async (key, value, ttl) => {
+      if (ttl) await redis.set(key, value, 'EX', ttl);
+      else await redis.set(key, value);
+    },
+    delete: async (key) => {
+      await redis.del(key);
+    },
   },
   plugins: [
     polar({
       client: polarClient,
       createCustomerOnSignUp: true,
-      getCustomerCreateParams: async ({ user }, _request) => ({
+      getCustomerCreateParams: async ({ user: _user }, _request) => ({
         metadata: {
           myCustomProperty: '123',
         },
@@ -61,10 +92,4 @@ export const auth = betterAuth({
     openAPI(),
     reactStartCookies(), // make sure this is the last plugin in the array
   ],
-
-  // ,advanced: {
-  //   crossSubDomainCookies: {
-  //     enabled: true
-  //   }
-  // }
 });
