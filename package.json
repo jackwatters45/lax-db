@@ -10,7 +10,8 @@
     "deploy": "sst deploy",
     "typecheck": "turbo typecheck",
     "check": "biome check --fix .",
-    "sso": "aws sso login --sso-session=laxdb"
+    "sso": "aws sso login --sso-session=laxdb",
+    "update-planning": "node scripts/update-planning.js"
   },
   "devDependencies": {
     "@biomejs/biome": "2.1.2",

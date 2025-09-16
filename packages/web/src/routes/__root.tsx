@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
 
-import { TanstackDevtools } from '@tanstack/react-devtools';
+import { TanStackDevtools } from '@tanstack/react-devtools';
 import type { QueryClient } from '@tanstack/react-query';
 import {
   createRootRouteWithContext,
@@ -91,7 +91,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeaderTmp />
         {children}
         <TanStackRouterDevtools position="bottom-right" />
-        <TanstackDevtools
+        <TanStackDevtools
           config={{
             position: 'bottom-left',
           }}
