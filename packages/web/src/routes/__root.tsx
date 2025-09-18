@@ -14,7 +14,6 @@ import {
 } from '@tanstack/react-router-devtools';
 import type * as React from 'react';
 import { DefaultCatchBoundary } from '@/components/default-catch-boundary';
-import HeaderTmp from '@/components/header';
 import { NotFound } from '@/components/not-found';
 import { seo } from '@/lib/seo';
 import TanStackQueryDevtools from '@/lib/tanstack-query/devtools';
@@ -88,7 +87,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        <HeaderTmp />
         {children}
         <TanStackRouterDevtools position="bottom-right" />
         <TanStackDevtools
