@@ -2,13 +2,18 @@ import { db } from '@lax-db/core/drizzle/index';
 import { Polar } from '@polar-sh/sdk';
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
-import { openAPI, organization } from 'better-auth/plugins';
+import {
+  admin,
+  lastLoginMethod,
+  openAPI,
+  organization,
+} from 'better-auth/plugins';
 import { reactStartCookies } from 'better-auth/react-start';
 import { Effect, Runtime } from 'effect';
 import { Resource } from 'sst';
-import { RedisLive, RedisService } from '../redis';
-import { userTable } from '../user/user.sql';
-import * as authSchema from './auth.sql';
+import * as authSchema from './auth/auth.sql';
+import { RedisLive, RedisService } from './redis';
+import { userTable } from './user/user.sql';
 
 const _polarClient = new Polar({
   accessToken: process.env.POLAR_ACCESS_TOKEN,
@@ -120,8 +125,10 @@ export const auth = betterAuth({
     //     }),
     //   ],
     // }),
+    admin(),
     organization(),
     openAPI(),
+    lastLoginMethod(),
     reactStartCookies(), // make sure this is the last plugin in the array
   ],
 });
