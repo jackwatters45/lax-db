@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { GalleryVerticalEnd } from 'lucide-react';
-import { RegisterForm } from '@/components/register-form';
+import { RegisterForm } from '@/components/auth/register-form';
 
 export const Route = createFileRoute('/register')({
   component: RegisterPage,
@@ -27,7 +27,7 @@ function RegisterPage() {
       <div className="relative hidden bg-muted lg:block">
         <img
           src="/placeholder.svg"
-          alt="Image"
+          alt="Placeholder"
           className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
         />
       </div>

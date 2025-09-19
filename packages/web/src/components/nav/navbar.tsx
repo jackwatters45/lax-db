@@ -1,5 +1,3 @@
-'use client';
-
 import { Link } from '@tanstack/react-router';
 import { useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';

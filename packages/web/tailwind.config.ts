@@ -14,11 +14,6 @@ const config: Config = {
         xl: '1408px',
       },
     },
-    fontSize: {
-      sm: '13px',
-      base: '16px',
-      italic: '17px',
-    },
     fontFamily: {
       sans: ['Helectiva', 'sans-serif'],
       inter: ['Inter', 'sans-serif'],
@@ -26,6 +21,11 @@ const config: Config = {
       mono: ['Newsreader', 'serif'],
     },
     extend: {
+      fontSize: {
+        sm: '13px',
+        base: '16px',
+        italic: '17px',
+      },
       screens: {
         xs: '476px',
         'toast-mobile': '600px',
