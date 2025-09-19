@@ -13,6 +13,9 @@ export const userTable = pgTable(
     image: text('image'),
     ...timestamps,
   },
-  (table) => [index('user_email_idx').on(table.email)],
+  (table) => [
+    index('user_email_idx').on(table.email),
+    index('user_name_idx').on(table.name),
+  ],
 );
 export type User = typeof userTable.$inferSelect;

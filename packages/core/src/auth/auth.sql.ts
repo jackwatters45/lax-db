@@ -61,6 +61,29 @@ export const verificationTable = pgTable(
   (table) => [index('verification_identifier_idx').on(table.identifier)],
 );
 
+export const teamTable = pgTable('team', {
+  id: text('id').primaryKey(),
+  name: text('name').notNull(),
+  organizationId: text('organization_id')
+    .notNull()
+    .references(() => organizationTable.id, { onDelete: 'cascade' }),
+  createdAt: timestamp('created_at').notNull(),
+  updatedAt: timestamp('updated_at').$onUpdate(
+    () => /* @__PURE__ */ new Date(),
+  ),
+});
+
+export const teamMemberTable = pgTable('team_member', {
+  id: text('id').primaryKey(),
+  teamId: text('team_id')
+    .notNull()
+    .references(() => teamTable.id, { onDelete: 'cascade' }),
+  userId: text('user_id')
+    .notNull()
+    .references(() => userTable.id, { onDelete: 'cascade' }),
+  createdAt: timestamp('created_at'),
+});
+
 export const organizationTable = pgTable(
   'organization',
   {
@@ -88,8 +111,8 @@ export const memberTable = pgTable(
     createdAt: timestamp('created_at').notNull(),
   },
   (table) => [
-    index('member_user_id_idx').on(table.userId),
     index('member_organization_id_idx').on(table.organizationId),
+    index('member_user_id_idx').on(table.userId),
   ],
 );
 
@@ -102,6 +125,7 @@ export const invitationTable = pgTable(
       .references(() => organizationTable.id, { onDelete: 'cascade' }),
     email: text('email').notNull(),
     role: text('role'),
+    teamId: text('team_id'),
     status: text('status').default('pending').notNull(),
     expiresAt: timestamp('expires_at').notNull(),
     inviterId: text('inviter_id')
@@ -109,7 +133,7 @@ export const invitationTable = pgTable(
       .references(() => userTable.id, { onDelete: 'cascade' }),
   },
   (table) => [
-    index('invitation_email_idx').on(table.email),
     index('invitation_organization_id_idx').on(table.organizationId),
+    index('invitation_email_idx').on(table.email),
   ],
 );

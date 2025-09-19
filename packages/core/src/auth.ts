@@ -126,7 +126,11 @@ export const auth = betterAuth({
     //   ],
     // }),
     admin(),
-    organization(),
+    organization({
+      teams: {
+        enabled: true,
+      },
+    }),
     openAPI(),
     lastLoginMethod(),
     reactStartCookies(), // make sure this is the last plugin in the array

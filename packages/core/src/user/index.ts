@@ -1,5 +1,7 @@
+import { randomUUID } from 'node:crypto';
 import { eq } from 'drizzle-orm';
 import { Context, Effect, Layer, Schema } from 'effect';
+import type { ParseError } from 'effect/ParseResult';
 import { DatabaseError, DatabaseLive, DatabaseService } from '../drizzle/index';
 import { type User, userTable } from './user.sql';
 
@@ -8,21 +10,23 @@ export const CreateInput = Schema.Struct({
   email: Schema.String,
   name: Schema.String,
 });
+type CreateInput = typeof CreateInput.Type;
 
 export const FromEmailInput = Schema.Struct({
   email: Schema.String,
 });
+type FromEmailInput = typeof FromEmailInput.Type;
 
 // User Service
 class UserService extends Context.Tag('UserService')<
   UserService,
   {
     readonly create: (
-      input: unknown,
-    ) => Effect.Effect<void, DatabaseError | Error>;
+      input: CreateInput,
+    ) => Effect.Effect<void, DatabaseError | ParseError>;
     readonly fromEmail: (
-      input: unknown,
-    ) => Effect.Effect<User[], DatabaseError | Error>;
+      input: FromEmailInput,
+    ) => Effect.Effect<User[], DatabaseError | ParseError>;
   }
 >() {}
 
@@ -33,20 +37,20 @@ export const UserServiceLive = Layer.effect(
     const dbService = yield* DatabaseService;
 
     return {
-      create: (input: unknown) =>
+      create: (input) =>
         Effect.gen(function* () {
-          const validated = yield* Schema.decodeUnknown(CreateInput)(input);
+          const validated = yield* Schema.decode(CreateInput)(input);
           return yield* dbService.transaction(async (tx) => {
             await tx.insert(userTable).values({
-              id: crypto.randomUUID(),
+              id: randomUUID(),
               email: validated.email.toLowerCase(),
               name: validated.name,
             });
           });
         }),
-      fromEmail: (input: unknown) =>
+      fromEmail: (input) =>
         Effect.gen(function* () {
-          const validated = yield* Schema.decodeUnknown(FromEmailInput)(input);
+          const validated = yield* Schema.decode(FromEmailInput)(input);
           return yield* Effect.tryPromise(() =>
             dbService.db
               .select()
@@ -57,5 +61,3 @@ export const UserServiceLive = Layer.effect(
     };
   }),
 ).pipe(Layer.provide(DatabaseLive));
-
-// Schemas are exported above
