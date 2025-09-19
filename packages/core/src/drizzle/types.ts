@@ -1,4 +1,3 @@
-import { sql } from 'drizzle-orm';
 import { timestamp as pgTimestamp, uuid } from 'drizzle-orm/pg-core';
 
 export const id = {
@@ -14,9 +13,11 @@ export const timestamp = (name: string) =>
   });
 
 export const timestamps = {
-  timeCreated: timestamp('time_created').notNull().defaultNow(),
-  timeUpdated: timestamp('time_updated')
+  createdAt: timestamp('created_at')
     .notNull()
-    .default(sql`CURRENT_TIMESTAMP`),
-  timeDeleted: timestamp('time_deleted'),
+    .$defaultFn(() => new Date()),
+  updatedAt: timestamp('updated_at').$onUpdate(
+    () => /* @__PURE__ */ new Date(),
+  ),
+  deletedAt: timestamp('updated_at'),
 };

@@ -9,7 +9,11 @@ import { createAuthClient } from 'better-auth/react';
 export const authClient = createAuthClient({
   plugins: [
     polarClient(),
-    organizationClient(),
+    organizationClient({
+      teams: {
+        enabled: true,
+      },
+    }),
     lastLoginMethodClient(),
     adminClient(),
   ],
