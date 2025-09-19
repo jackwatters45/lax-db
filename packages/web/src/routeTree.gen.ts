@@ -12,15 +12,14 @@ import { createServerRootRoute } from '@tanstack/react-start/server';
 
 import { Route as rootRouteImport } from './routes/__root';
 import { Route as DashboardRouteImport } from './routes/_dashboard';
-import { Route as DashboardHomeRouteImport } from './routes/_dashboard/home';
-import { Route as DashboardIndexRouteImport } from './routes/_dashboard/index';
 import { Route as DashboardOrganizationsCreateRouteImport } from './routes/_dashboard/organizations/create';
 import { Route as DashboardOrganizationsJoinRouteImport } from './routes/_dashboard/organizations/join';
-import { Route as DashboardTeamIndexRouteImport } from './routes/_dashboard/team/index';
+import { Route as DashboardPlanRouteImport } from './routes/_dashboard/plan';
 import { Route as DashboardTeamsTeamIdRouteImport } from './routes/_dashboard/teams/$teamId';
 import { Route as DashboardTeamsCreateRouteImport } from './routes/_dashboard/teams/create';
 import { Route as DashboardTeamsIndexRouteImport } from './routes/_dashboard/teams/index';
 import { ServerRoute as ApiAuthSplatServerRouteImport } from './routes/api/auth/$';
+import { Route as IndexRouteImport } from './routes/index';
 import { Route as LoginRouteImport } from './routes/login';
 import { Route as RegisterRouteImport } from './routes/register';
 
@@ -40,24 +39,19 @@ const DashboardRoute = DashboardRouteImport.update({
   id: '/_dashboard',
   getParentRoute: () => rootRouteImport,
 } as any);
-const DashboardIndexRoute = DashboardIndexRouteImport.update({
+const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => DashboardRoute,
+  getParentRoute: () => rootRouteImport,
 } as any);
-const DashboardHomeRoute = DashboardHomeRouteImport.update({
-  id: '/home',
-  path: '/home',
+const DashboardPlanRoute = DashboardPlanRouteImport.update({
+  id: '/plan',
+  path: '/plan',
   getParentRoute: () => DashboardRoute,
 } as any);
 const DashboardTeamsIndexRoute = DashboardTeamsIndexRouteImport.update({
   id: '/teams/',
   path: '/teams/',
-  getParentRoute: () => DashboardRoute,
-} as any);
-const DashboardTeamIndexRoute = DashboardTeamIndexRouteImport.update({
-  id: '/team/',
-  path: '/team/',
   getParentRoute: () => DashboardRoute,
 } as any);
 const DashboardTeamsCreateRoute = DashboardTeamsCreateRouteImport.update({
@@ -89,84 +83,79 @@ const ApiAuthSplatServerRoute = ApiAuthSplatServerRouteImport.update({
 } as any);
 
 export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute;
   '/login': typeof LoginRoute;
   '/register': typeof RegisterRoute;
-  '/home': typeof DashboardHomeRoute;
-  '/': typeof DashboardIndexRoute;
+  '/plan': typeof DashboardPlanRoute;
   '/organizations/create': typeof DashboardOrganizationsCreateRoute;
   '/organizations/join': typeof DashboardOrganizationsJoinRoute;
   '/teams/$teamId': typeof DashboardTeamsTeamIdRoute;
   '/teams/create': typeof DashboardTeamsCreateRoute;
-  '/team': typeof DashboardTeamIndexRoute;
   '/teams': typeof DashboardTeamsIndexRoute;
 }
 export interface FileRoutesByTo {
+  '/': typeof IndexRoute;
   '/login': typeof LoginRoute;
   '/register': typeof RegisterRoute;
-  '/home': typeof DashboardHomeRoute;
-  '/': typeof DashboardIndexRoute;
+  '/plan': typeof DashboardPlanRoute;
   '/organizations/create': typeof DashboardOrganizationsCreateRoute;
   '/organizations/join': typeof DashboardOrganizationsJoinRoute;
   '/teams/$teamId': typeof DashboardTeamsTeamIdRoute;
   '/teams/create': typeof DashboardTeamsCreateRoute;
-  '/team': typeof DashboardTeamIndexRoute;
   '/teams': typeof DashboardTeamsIndexRoute;
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport;
+  '/': typeof IndexRoute;
   '/_dashboard': typeof DashboardRouteWithChildren;
   '/login': typeof LoginRoute;
   '/register': typeof RegisterRoute;
-  '/_dashboard/home': typeof DashboardHomeRoute;
-  '/_dashboard/': typeof DashboardIndexRoute;
+  '/_dashboard/plan': typeof DashboardPlanRoute;
   '/_dashboard/organizations/create': typeof DashboardOrganizationsCreateRoute;
   '/_dashboard/organizations/join': typeof DashboardOrganizationsJoinRoute;
   '/_dashboard/teams/$teamId': typeof DashboardTeamsTeamIdRoute;
   '/_dashboard/teams/create': typeof DashboardTeamsCreateRoute;
-  '/_dashboard/team/': typeof DashboardTeamIndexRoute;
   '/_dashboard/teams/': typeof DashboardTeamsIndexRoute;
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
   fullPaths:
+    | '/'
     | '/login'
     | '/register'
-    | '/home'
-    | '/'
+    | '/plan'
     | '/organizations/create'
     | '/organizations/join'
     | '/teams/$teamId'
     | '/teams/create'
-    | '/team'
     | '/teams';
   fileRoutesByTo: FileRoutesByTo;
   to:
+    | '/'
     | '/login'
     | '/register'
-    | '/home'
-    | '/'
+    | '/plan'
     | '/organizations/create'
     | '/organizations/join'
     | '/teams/$teamId'
     | '/teams/create'
-    | '/team'
     | '/teams';
   id:
     | '__root__'
+    | '/'
     | '/_dashboard'
     | '/login'
     | '/register'
-    | '/_dashboard/home'
-    | '/_dashboard/'
+    | '/_dashboard/plan'
     | '/_dashboard/organizations/create'
     | '/_dashboard/organizations/join'
     | '/_dashboard/teams/$teamId'
     | '/_dashboard/teams/create'
-    | '/_dashboard/team/'
     | '/_dashboard/teams/';
   fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute;
   DashboardRoute: typeof DashboardRouteWithChildren;
   LoginRoute: typeof LoginRoute;
   RegisterRoute: typeof RegisterRoute;
@@ -216,18 +205,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardRouteImport;
       parentRoute: typeof rootRouteImport;
     };
-    '/_dashboard/': {
-      id: '/_dashboard/';
+    '/': {
+      id: '/';
       path: '/';
       fullPath: '/';
-      preLoaderRoute: typeof DashboardIndexRouteImport;
-      parentRoute: typeof DashboardRoute;
+      preLoaderRoute: typeof IndexRouteImport;
+      parentRoute: typeof rootRouteImport;
     };
-    '/_dashboard/home': {
-      id: '/_dashboard/home';
-      path: '/home';
-      fullPath: '/home';
-      preLoaderRoute: typeof DashboardHomeRouteImport;
+    '/_dashboard/plan': {
+      id: '/_dashboard/plan';
+      path: '/plan';
+      fullPath: '/plan';
+      preLoaderRoute: typeof DashboardPlanRouteImport;
       parentRoute: typeof DashboardRoute;
     };
     '/_dashboard/teams/': {
@@ -235,13 +224,6 @@ declare module '@tanstack/react-router' {
       path: '/teams';
       fullPath: '/teams';
       preLoaderRoute: typeof DashboardTeamsIndexRouteImport;
-      parentRoute: typeof DashboardRoute;
-    };
-    '/_dashboard/team/': {
-      id: '/_dashboard/team/';
-      path: '/team';
-      fullPath: '/team';
-      preLoaderRoute: typeof DashboardTeamIndexRouteImport;
       parentRoute: typeof DashboardRoute;
     };
     '/_dashboard/teams/create': {
@@ -287,24 +269,20 @@ declare module '@tanstack/react-start/server' {
 }
 
 interface DashboardRouteChildren {
-  DashboardHomeRoute: typeof DashboardHomeRoute;
-  DashboardIndexRoute: typeof DashboardIndexRoute;
+  DashboardPlanRoute: typeof DashboardPlanRoute;
   DashboardOrganizationsCreateRoute: typeof DashboardOrganizationsCreateRoute;
   DashboardOrganizationsJoinRoute: typeof DashboardOrganizationsJoinRoute;
   DashboardTeamsTeamIdRoute: typeof DashboardTeamsTeamIdRoute;
   DashboardTeamsCreateRoute: typeof DashboardTeamsCreateRoute;
-  DashboardTeamIndexRoute: typeof DashboardTeamIndexRoute;
   DashboardTeamsIndexRoute: typeof DashboardTeamsIndexRoute;
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
-  DashboardHomeRoute: DashboardHomeRoute,
-  DashboardIndexRoute: DashboardIndexRoute,
+  DashboardPlanRoute: DashboardPlanRoute,
   DashboardOrganizationsCreateRoute: DashboardOrganizationsCreateRoute,
   DashboardOrganizationsJoinRoute: DashboardOrganizationsJoinRoute,
   DashboardTeamsTeamIdRoute: DashboardTeamsTeamIdRoute,
   DashboardTeamsCreateRoute: DashboardTeamsCreateRoute,
-  DashboardTeamIndexRoute: DashboardTeamIndexRoute,
   DashboardTeamsIndexRoute: DashboardTeamsIndexRoute,
 };
 
@@ -313,6 +291,7 @@ const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
 );
 
 const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
   DashboardRoute: DashboardRouteWithChildren,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,

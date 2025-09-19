@@ -54,7 +54,7 @@ export class TeamsError extends Error {
 }
 
 // Teams Service
-class TeamsService extends Context.Tag('TeamsService')<
+export class TeamsService extends Context.Tag('TeamsService')<
   TeamsService,
   {
     readonly createTeam: (
@@ -74,6 +74,7 @@ class TeamsService extends Context.Tag('TeamsService')<
     ) => Effect.Effect<void, ParseError | TeamsError>;
     readonly createOrganization: (
       input: CreateOrganizationInput,
+      headers: Headers,
     ) => Effect.Effect<Organization, ParseError | TeamsError>;
     readonly acceptInvitation: (
       input: AcceptInvitationInput,
@@ -176,21 +177,23 @@ export const TeamsServiceLive = Layer.succeed(TeamsService, {
       );
     }),
 
-  createOrganization: (input) =>
+  createOrganization: (input, headers) =>
     Effect.gen(function* () {
       const validated = yield* Schema.decode(CreateOrganizationInput)(input);
 
       const result = yield* Effect.tryPromise(() =>
         auth.api.createOrganization({
+          headers,
           body: {
             name: validated.name,
             slug: validated.slug,
           },
         }),
       ).pipe(
-        Effect.mapError(
-          (cause) => new TeamsError(cause, 'Failed to create organization'),
-        ),
+        Effect.mapError((cause) => {
+          console.error('Create organization error details:', cause);
+          return new TeamsError(cause, 'Failed to create organization');
+        }),
       );
 
       return result as Organization;
@@ -282,10 +285,11 @@ export const TeamsAPI = {
 
   async createOrganization(
     input: CreateOrganizationInput,
+    headers: Headers,
   ): Promise<Organization> {
     const effect = Effect.gen(function* () {
       const service = yield* TeamsService;
-      return yield* service.createOrganization(input);
+      return yield* service.createOrganization(input, headers);
     });
     return await Runtime.runPromise(runtime)(
       Effect.provide(effect, TeamsServiceLive),

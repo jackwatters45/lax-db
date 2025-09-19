@@ -2,6 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { createFileRoute, Link, useRouter } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
+import { getWebRequest } from '@tanstack/react-start/server';
 import { ArrowLeft } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -24,7 +25,9 @@ const createOrganization = createServerFn({ method: 'POST' })
   .validator((data: { name: string; slug: string }) => data)
   .handler(async ({ data }) => {
     const { TeamsAPI } = await import('@lax-db/core/teams/index');
-    return await TeamsAPI.createOrganization(data);
+
+    const request = getWebRequest();
+    return await TeamsAPI.createOrganization(data, request.headers);
   });
 
 const formSchema = z.object({
