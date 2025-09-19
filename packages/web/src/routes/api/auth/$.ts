@@ -1,4 +1,4 @@
-import { auth } from '@lax-db/core/auth/index';
+import { auth } from '@lax-db/core/auth';
 import { createServerFileRoute } from '@tanstack/react-start/server';
 
 export const ServerRoute = createServerFileRoute('/api/auth/$').methods({
