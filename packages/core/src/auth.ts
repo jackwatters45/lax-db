@@ -12,6 +12,14 @@ import { reactStartCookies } from 'better-auth/react-start';
 import { Effect, Runtime } from 'effect';
 import { Resource } from 'sst';
 import * as authSchema from './auth/auth.sql';
+import {
+  ac,
+  assistantCoach,
+  coach,
+  headCoach,
+  parent,
+  player,
+} from './auth/permissions';
 import { RedisLive, RedisService } from './redis';
 import { userTable } from './user/user.sql';
 
@@ -39,6 +47,8 @@ export const auth = betterAuth({
       organization: authSchema.organizationTable,
       member: authSchema.memberTable,
       invitation: authSchema.invitationTable,
+      team: authSchema.teamTable,
+      teamMember: authSchema.teamMemberTable,
       // subscription: authSchema.subscriptionTable,
     },
   }),
@@ -127,8 +137,42 @@ export const auth = betterAuth({
     // }),
     admin(),
     organization({
+      ac,
+      roles: {
+        headCoach,
+        coach,
+        assistantCoach,
+        player,
+        parent,
+      },
       teams: {
         enabled: true,
+      },
+      creatorRole: 'headCoach', // Club creator becomes head coach
+      allowUserToCreateOrganization: true, // Allow creating new clubs
+      sendInvitationEmail: async (data) => {
+        const inviteLink = `${process.env.APP_URL || 'http://localhost:3000'}/accept-invitation/${data.id}`;
+
+        console.log('Invitation email would be sent:', {
+          to: data.email,
+          subject: `Join ${data.organization.name} on LaxDB`,
+          inviteLink,
+          clubName: data.organization.name,
+          role: data.role,
+        });
+
+        // TODO: Implement actual email sending
+        // await sendEmail({
+        //   to: data.email,
+        //   subject: `Join ${data.organization.name} on LaxDB`,
+        //   template: "player-invitation",
+        //   data: {
+        //     inviteLink,
+        //     clubName: data.organization.name,
+        //     role: data.role,
+        //     teamName: data.teamId ? await getTeamName(data.teamId) : null,
+        //   },
+        // });
       },
     }),
     openAPI(),

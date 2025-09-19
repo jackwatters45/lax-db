@@ -18,6 +18,7 @@ Athletic Club (Organization)
 ## 1. Database Structure (Already Handled by Better Auth)
 
 The existing tables work perfectly:
+
 - `organization` → Athletic Club
 - `member` → Coaches and Players with roles
 - `team` → Individual teams (U18s, Senior A, etc.)
@@ -30,7 +31,10 @@ Create custom permissions for your athletic club:
 
 ```typescript
 // packages/core/src/auth/permissions.ts
-import { createAccessControl, defaultStatements } from "better-auth/plugins/organization";
+import {
+  createAccessControl,
+  defaultStatements,
+} from "better-auth/plugins/organization";
 
 const athleticStatements = {
   ...defaultStatements,
@@ -87,8 +91,6 @@ export const auth = betterAuth({
       },
       teams: {
         enabled: true,
-        maximumTeams: 20, // Limit teams per club
-        allowRemovingAllTeams: false,
       },
       creatorRole: "headCoach", // Club creator becomes head coach
       allowUserToCreateOrganization: true, // Allow creating new clubs
@@ -117,21 +119,23 @@ export const auth = betterAuth({
 ### A. Player Management Flow
 
 1. **Adding Players to Club**:
+
    - Coach invites via email
    - Player accepts invitation → becomes club member
    - Coach assigns player to one or more teams
 
 2. **Moving Players Between Teams**:
+
    ```typescript
    // Add player to new team
    await authClient.organization.addTeamMember({
      teamId: "senior-a-team-id",
      userId: "player-user-id",
    });
-   
+
    // Remove from old team (if exclusive)
    await authClient.organization.removeTeamMember({
-     teamId: "u18s-team-id", 
+     teamId: "u18s-team-id",
      userId: "player-user-id",
    });
    ```
@@ -159,15 +163,18 @@ export const auth = betterAuth({
 ## 5. UI/UX Components to Build
 
 1. **Dashboard Views**:
+
    - Coach dashboard with team management
    - Player dashboard with team memberships
 
 2. **Team Management**:
+
    - Create/edit team forms
    - Team roster tables with player management
    - Drag-and-drop player assignment
 
 3. **Invitation System**:
+
    - Invite player form with team selection
    - Pending invitations list
    - Accept invitation page
@@ -183,49 +190,53 @@ export const auth = betterAuth({
 
 ```typescript
 // Organization (Club) Management
-authClient.organization.create() // Create new club
-authClient.organization.update() // Update club details
-authClient.organization.setActive() // Switch active club
+authClient.organization.create(); // Create new club
+authClient.organization.update(); // Update club details
+authClient.organization.setActive(); // Switch active club
 
-// Team Management  
-authClient.organization.createTeam() // Create new team
-authClient.organization.listTeams() // List all club teams
-authClient.organization.updateTeam() // Edit team details
-authClient.organization.removeTeam() // Delete team
+// Team Management
+authClient.organization.createTeam(); // Create new team
+authClient.organization.listTeams(); // List all club teams
+authClient.organization.updateTeam(); // Edit team details
+authClient.organization.removeTeam(); // Delete team
 
 // Player Management
-authClient.organization.inviteMember() // Invite player with role & team
-authClient.organization.listMembers() // List all club members
-authClient.organization.updateMemberRole() // Change player to coach
-authClient.organization.removeMember() // Remove from club
-authClient.organization.addTeamMember() // Add to team
-authClient.organization.removeTeamMember() // Remove from team
-authClient.organization.listTeamMembers() // Get team roster
+authClient.organization.inviteMember(); // Invite player with role & team
+authClient.organization.listMembers(); // List all club members
+authClient.organization.updateMemberRole(); // Change player to coach
+authClient.organization.removeMember(); // Remove from club
+authClient.organization.addTeamMember(); // Add to team
+authClient.organization.removeTeamMember(); // Remove from team
+authClient.organization.listTeamMembers(); // Get team roster
 
 // Permissions
-authClient.organization.hasPermission() // Check if can perform action
+authClient.organization.hasPermission(); // Check if can perform action
 ```
 
 ## 7. Implementation Steps
 
 ### High Priority
+
 1. ✅ Plan database schema for teams and player memberships
 2. ✅ Design role-based access control (RBAC) system
 3. ⏳ Configure Better Auth with teams and custom roles
 4. ⏳ Create permissions file with coach/player roles
 
 ### Medium Priority
+
 5. ⏳ Build coach dashboard with team management
 6. ⏳ Create team roster component with player management
 7. ⏳ Implement invitation system for players
 
 ### Low Priority
+
 8. ⏳ Add multi-team assignment functionality
 9. ⏳ Create player dashboard with team views
 
 ## 8. Example User Flows
 
 ### Coach Workflow
+
 1. Coach logs in → sees all teams they manage
 2. Creates new team "U16s"
 3. Invites players via email with team assignment
@@ -233,6 +244,7 @@ authClient.organization.hasPermission() // Check if can perform action
 5. Updates player role from "player" to "coach"
 
 ### Player Workflow
+
 1. Player receives invitation email
 2. Accepts invitation → joins club
 3. Views dashboard showing teams they're on
@@ -241,17 +253,17 @@ authClient.organization.hasPermission() // Check if can perform action
 
 ## 9. Permission Matrix
 
-| Action | Head Coach | Coach | Player |
-|--------|------------|-------|--------|
-| Create club | ✅ | ❌ | ❌ |
-| Create teams | ✅ | ✅ | ❌ |
-| Invite players | ✅ | ✅ | ❌ |
-| Move players | ✅ | ✅ | ❌ |
-| Remove players | ✅ | ✅ | ❌ |
-| View rosters | ✅ | ✅ | ✅ |
-| Edit schedules | ✅ | ✅ | ❌ |
-| View schedules | ✅ | ✅ | ✅ |
-| Edit stats | ✅ | ✅ | ❌ |
-| View stats | ✅ | ✅ | ✅ |
+| Action         | Head Coach | Coach | Player |
+| -------------- | ---------- | ----- | ------ |
+| Create club    | ✅         | ❌    | ❌     |
+| Create teams   | ✅         | ✅    | ❌     |
+| Invite players | ✅         | ✅    | ❌     |
+| Move players   | ✅         | ✅    | ❌     |
+| Remove players | ✅         | ✅    | ❌     |
+| View rosters   | ✅         | ✅    | ✅     |
+| Edit schedules | ✅         | ✅    | ❌     |
+| View schedules | ✅         | ✅    | ✅     |
+| Edit stats     | ✅         | ✅    | ❌     |
+| View stats     | ✅         | ✅    | ✅     |
 
 This plan leverages Better Auth's organization plugin perfectly for athletic club management, requiring no database changes while providing comprehensive role-based access control and team management capabilities.
