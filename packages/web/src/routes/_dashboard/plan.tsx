@@ -1,8 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router';
 import ReactMarkdown from 'react-markdown';
-import planningContent from '../../content/planning.md?raw';
+import planningContent from '@/content/planning.md?raw';
 
-export const Route = createFileRoute('/_dashboard/')({
+export const Route = createFileRoute('/_dashboard/plan')({
   component: Home,
 });
 
