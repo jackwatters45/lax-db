@@ -53,7 +53,7 @@ export function LoginForm({
         setError(result.error.message || 'Login failed');
       } else {
         // Login successful - redirect
-        window.location.href = '/dashboard';
+        window.location.href = '/teams';
       }
     } catch (error) {
       setError(
@@ -68,7 +68,7 @@ export function LoginForm({
     try {
       await authClient.signIn.social({
         provider: 'google',
-        callbackURL: '/dashboard',
+        callbackURL: '/teams',
       });
     } catch (error) {
       setError(

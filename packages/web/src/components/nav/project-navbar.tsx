@@ -4,6 +4,7 @@ import { Navbar } from '@/components/nav/navbar';
 const projectNavItems = [
   { label: 'Index', href: '/' },
   { label: 'Home', href: '/home' },
+  { label: 'Teams', href: '/teams' },
   { label: 'Team', href: '/team' },
 ];
 
@@ -12,7 +13,10 @@ export function ProjectNavbar() {
 
   const navItems = projectNavItems.map((item) => ({
     ...item,
-    isActive: location.pathname === item.href,
+    isActive:
+      item.href === '/teams'
+        ? location.pathname.startsWith('/teams')
+        : location.pathname === item.href,
   }));
 
   return <Navbar items={navItems} />;

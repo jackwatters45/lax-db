@@ -11,7 +11,7 @@ export const web = new sst.aws.TanStackStart('Web', {
   domain: {
     name: domain,
     redirects: [`www.${domain}`],
-    dns: sst.cloudflare.dns({}),
+    dns: sst.cloudflare.dns(),
   },
   link: [bucket, database, redis, ...allSecrets],
 });

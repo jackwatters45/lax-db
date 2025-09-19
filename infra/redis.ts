@@ -11,4 +11,4 @@ export const redis = isPermanentStage
           port: 6379,
         },
       })
-    : sst.aws.Redis.get('Redis', '');
+    : sst.aws.Redis.get('Redis', 'lax-db-dev-rediscluster-bhvocztt');
