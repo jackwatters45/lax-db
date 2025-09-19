@@ -1,6 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
-import TeamLayout from './_layout';
 import { DataTable } from './roster-table/roster-table';
 import { columns } from './roster-table/roster-table-columns';
 import styles from './team.module.css';
@@ -20,7 +19,7 @@ const getData = createServerFn().handler(async () => {
   ];
 });
 
-export const Route = createFileRoute('/team/')({
+export const Route = createFileRoute('/_dashboard/team/')({
   component: RouteComponent,
   loader: async () => await getData(),
 });
@@ -31,7 +30,7 @@ function RouteComponent() {
   console.log(state);
 
   return (
-    <TeamLayout>
+    <div className="container py-8">
       <h2 className={styles.teamName}>Team Name</h2>
       <ul className={styles.teamList}>
         <li>Season Selector</li>
@@ -39,6 +38,6 @@ function RouteComponent() {
         <li>Add player</li>
       </ul>
       <DataTable data={state} columns={columns} />
-    </TeamLayout>
+    </div>
   );
 }
