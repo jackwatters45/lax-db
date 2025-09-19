@@ -1,5 +1,4 @@
-import { auth } from '@lax-db/core/auth';
-import { VisibleError } from '@lax-db/core/util/error';
+import { auth } from '@lax-db/core/auth/index';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { HTTPException } from 'hono/http-exception';
@@ -45,15 +44,6 @@ export const app = new Hono<{
   .on(['POST', 'GET'], '/api/auth/**', (c) => auth.handler(c.req.raw))
 
   .onError((error, c) => {
-    if (error instanceof VisibleError) {
-      return c.json(
-        {
-          code: error.code,
-          message: error.message,
-        },
-        400,
-      );
-    }
     if (error instanceof HTTPException) {
       return c.json(
         {
