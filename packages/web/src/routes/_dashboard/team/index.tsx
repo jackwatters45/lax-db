@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
-import { DataTable } from './roster-table/roster-table';
-import { columns } from './roster-table/roster-table-columns';
+import { DataTable } from '../../../components/roster-table/roster-table';
+import { columns } from '../../../components/roster-table/roster-table-columns';
 import styles from './team.module.css';
 
 const getData = createServerFn().handler(async () => {
