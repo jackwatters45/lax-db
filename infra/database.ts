@@ -20,8 +20,8 @@ export const database = isPermanentStage
         },
       })
     : sst.aws.Postgres.get('Database', {
-        id: 'goalbound-dev-databaseinstance-eddrmoxa',
-        proxyId: 'goalbound-dev-databaseproxy-xbktaxsf',
+        id: 'lax-db-dev-databaseinstance-tsvdrfux',
+        proxyId: 'lax-db-dev-databaseproxy-bccuvdtd',
       });
 
 const migrator = new sst.aws.Function('DatabaseMigrator', {

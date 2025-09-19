@@ -85,7 +85,7 @@ export function RegisterForm({
     try {
       await authClient.signIn.social({
         provider: 'google',
-        callbackURL: '/dashboard',
+        callbackURL: '/teams',
       });
     } catch (error) {
       setError(

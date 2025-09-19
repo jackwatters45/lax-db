@@ -15,6 +15,7 @@ import {
 import type * as React from 'react';
 import { DefaultCatchBoundary } from '@/components/default-catch-boundary';
 import { NotFound } from '@/components/not-found';
+import { Toaster } from '@/components/ui/sonner';
 import { seo } from '@/lib/seo';
 import TanStackQueryDevtools from '@/lib/tanstack-query/devtools';
 import globalsCss from '@/styles/globals.css?url';
@@ -88,6 +89,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         {children}
+        <Toaster />
         <TanStackRouterDevtools position="bottom-right" />
         <TanStackDevtools
           config={{

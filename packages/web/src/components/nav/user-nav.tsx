@@ -1,5 +1,5 @@
-import { Link } from '@tanstack/react-router';
-import { ChevronsUpDown, LogIn, LogOut, UserPlus } from 'lucide-react';
+import { Link, useRouteContext } from '@tanstack/react-router';
+import { LogIn, LogOut, UserPlus } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
@@ -13,9 +13,9 @@ import { authClient } from '@/lib/auth/auth-client';
 import { Button } from '../ui/button';
 
 export function NavUser() {
-  const { data: session } = authClient.useSession();
+  const { user } = useRouteContext({ from: '/_dashboard' });
 
-  if (!session?.user)
+  if (!user)
     return (
       <div className="flex items-center gap-2">
         <Button size={'sm'} variant="outline" asChild>
@@ -35,21 +35,16 @@ export function NavUser() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+      <DropdownMenuTrigger>
         <Avatar className="h-8 w-8 rounded-lg">
           <AvatarImage
-            src={session.user.image ?? undefined}
-            alt={session.user.name ?? 'user profile'}
+            src={user.image ?? undefined}
+            alt={user.name ?? 'user profile'}
           />
           <AvatarFallback className="rounded-lg uppercase">
-            {session.user.name?.slice(0, 2) ?? session.user.email?.slice(0, 2)}
+            {user.name?.slice(0, 2) ?? user.email?.slice(0, 2)}
           </AvatarFallback>
         </Avatar>
-        <div className="grid flex-1 text-left text-sm leading-tight">
-          <span className="truncate font-semibold">{session.user.name}</span>
-          <span className="truncate text-xs">{session.user.email}</span>
-        </div>
-        <ChevronsUpDown className="ml-auto size-4" />
       </DropdownMenuTrigger>
       <DropdownMenuContent
         className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
@@ -60,16 +55,14 @@ export function NavUser() {
           <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
             <Avatar className="h-8 w-8 rounded-lg">
               <AvatarImage
-                src={session.user.image ?? undefined}
-                alt={session.user.name ?? 'user profile'}
+                src={user.image ?? undefined}
+                alt={user.name ?? 'user profile'}
               />
               <AvatarFallback className="rounded-lg">CN</AvatarFallback>
             </Avatar>
             <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-semibold">
-                {session.user.name}
-              </span>
-              <span className="truncate text-xs">{session.user.email}</span>
+              <span className="truncate font-semibold">{user.name}</span>
+              <span className="truncate text-xs">{user.email}</span>
             </div>
           </div>
         </DropdownMenuLabel>

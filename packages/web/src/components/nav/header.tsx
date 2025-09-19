@@ -115,9 +115,12 @@ function SearchCommand() {
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
           {/* TODO: implement search */}
-          <CommandGroup heading="Suggestions">
+          <CommandGroup heading="Navigation">
             <CommandItem>
-              <span>Calendar</span>
+              <span>Teams</span>
+            </CommandItem>
+            <CommandItem>
+              <span>Home</span>
             </CommandItem>
           </CommandGroup>
           <CommandSeparator />

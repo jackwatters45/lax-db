@@ -1,5 +1,5 @@
 import { boolean, index, pgTable, text } from 'drizzle-orm/pg-core';
-import { timestamps } from '../drizzle/types';
+import { timestamp, timestamps } from '../drizzle/types';
 
 export const userTable = pgTable(
   'user',
@@ -7,10 +7,12 @@ export const userTable = pgTable(
     id: text('id').primaryKey(),
     name: text('name').notNull(),
     email: text('email').notNull().unique(),
-    emailVerified: boolean('email_verified')
-      .$defaultFn(() => false)
-      .notNull(),
+    emailVerified: boolean('email_verified').default(false).notNull(),
     image: text('image'),
+    role: text('role'),
+    banned: boolean('banned').default(false),
+    banReason: text('ban_reason'),
+    banExpires: timestamp('ban_expires'),
     ...timestamps,
   },
   (table) => [

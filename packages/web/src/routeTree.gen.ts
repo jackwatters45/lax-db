@@ -8,82 +8,149 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { createServerRootRoute } from '@tanstack/react-start/server'
+import { createServerRootRoute } from '@tanstack/react-start/server';
 
-import { Route as rootRouteImport } from './routes/__root'
-import { Route as RegisterRouteImport } from './routes/register'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as DashboardRouteImport } from './routes/_dashboard'
-import { Route as DashboardIndexRouteImport } from './routes/_dashboard/index'
-import { Route as DashboardHomeRouteImport } from './routes/_dashboard/home'
-import { Route as DashboardTeamIndexRouteImport } from './routes/_dashboard/team/index'
-import { ServerRoute as ApiAuthSplatServerRouteImport } from './routes/api/auth/$'
+import { Route as rootRouteImport } from './routes/__root';
+import { Route as DashboardRouteImport } from './routes/_dashboard';
+import { Route as DashboardHomeRouteImport } from './routes/_dashboard/home';
+import { Route as DashboardIndexRouteImport } from './routes/_dashboard/index';
+import { Route as DashboardOrganizationsCreateRouteImport } from './routes/_dashboard/organizations/create';
+import { Route as DashboardOrganizationsJoinRouteImport } from './routes/_dashboard/organizations/join';
+import { Route as DashboardTeamIndexRouteImport } from './routes/_dashboard/team/index';
+import { Route as DashboardTeamsTeamIdRouteImport } from './routes/_dashboard/teams/$teamId';
+import { Route as DashboardTeamsCreateRouteImport } from './routes/_dashboard/teams/create';
+import { Route as DashboardTeamsIndexRouteImport } from './routes/_dashboard/teams/index';
+import { ServerRoute as ApiAuthSplatServerRouteImport } from './routes/api/auth/$';
+import { Route as LoginRouteImport } from './routes/login';
+import { Route as RegisterRouteImport } from './routes/register';
 
-const rootServerRouteImport = createServerRootRoute()
+const rootServerRouteImport = createServerRootRoute();
 
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const DashboardRoute = DashboardRouteImport.update({
   id: '/_dashboard',
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const DashboardIndexRoute = DashboardIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => DashboardRoute,
-} as any)
+} as any);
 const DashboardHomeRoute = DashboardHomeRouteImport.update({
   id: '/home',
   path: '/home',
   getParentRoute: () => DashboardRoute,
-} as any)
+} as any);
+const DashboardTeamsIndexRoute = DashboardTeamsIndexRouteImport.update({
+  id: '/teams/',
+  path: '/teams/',
+  getParentRoute: () => DashboardRoute,
+} as any);
 const DashboardTeamIndexRoute = DashboardTeamIndexRouteImport.update({
   id: '/team/',
   path: '/team/',
   getParentRoute: () => DashboardRoute,
-} as any)
+} as any);
+const DashboardTeamsCreateRoute = DashboardTeamsCreateRouteImport.update({
+  id: '/teams/create',
+  path: '/teams/create',
+  getParentRoute: () => DashboardRoute,
+} as any);
+const DashboardTeamsTeamIdRoute = DashboardTeamsTeamIdRouteImport.update({
+  id: '/teams/$teamId',
+  path: '/teams/$teamId',
+  getParentRoute: () => DashboardRoute,
+} as any);
+const DashboardOrganizationsJoinRoute =
+  DashboardOrganizationsJoinRouteImport.update({
+    id: '/organizations/join',
+    path: '/organizations/join',
+    getParentRoute: () => DashboardRoute,
+  } as any);
+const DashboardOrganizationsCreateRoute =
+  DashboardOrganizationsCreateRouteImport.update({
+    id: '/organizations/create',
+    path: '/organizations/create',
+    getParentRoute: () => DashboardRoute,
+  } as any);
 const ApiAuthSplatServerRoute = ApiAuthSplatServerRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
   getParentRoute: () => rootServerRouteImport,
-} as any)
+} as any);
 
 export interface FileRoutesByFullPath {
-  '/login': typeof LoginRoute
-  '/register': typeof RegisterRoute
-  '/home': typeof DashboardHomeRoute
-  '/': typeof DashboardIndexRoute
-  '/team': typeof DashboardTeamIndexRoute
+  '/login': typeof LoginRoute;
+  '/register': typeof RegisterRoute;
+  '/home': typeof DashboardHomeRoute;
+  '/': typeof DashboardIndexRoute;
+  '/organizations/create': typeof DashboardOrganizationsCreateRoute;
+  '/organizations/join': typeof DashboardOrganizationsJoinRoute;
+  '/teams/$teamId': typeof DashboardTeamsTeamIdRoute;
+  '/teams/create': typeof DashboardTeamsCreateRoute;
+  '/team': typeof DashboardTeamIndexRoute;
+  '/teams': typeof DashboardTeamsIndexRoute;
 }
 export interface FileRoutesByTo {
-  '/login': typeof LoginRoute
-  '/register': typeof RegisterRoute
-  '/home': typeof DashboardHomeRoute
-  '/': typeof DashboardIndexRoute
-  '/team': typeof DashboardTeamIndexRoute
+  '/login': typeof LoginRoute;
+  '/register': typeof RegisterRoute;
+  '/home': typeof DashboardHomeRoute;
+  '/': typeof DashboardIndexRoute;
+  '/organizations/create': typeof DashboardOrganizationsCreateRoute;
+  '/organizations/join': typeof DashboardOrganizationsJoinRoute;
+  '/teams/$teamId': typeof DashboardTeamsTeamIdRoute;
+  '/teams/create': typeof DashboardTeamsCreateRoute;
+  '/team': typeof DashboardTeamIndexRoute;
+  '/teams': typeof DashboardTeamsIndexRoute;
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport
-  '/_dashboard': typeof DashboardRouteWithChildren
-  '/login': typeof LoginRoute
-  '/register': typeof RegisterRoute
-  '/_dashboard/home': typeof DashboardHomeRoute
-  '/_dashboard/': typeof DashboardIndexRoute
-  '/_dashboard/team/': typeof DashboardTeamIndexRoute
+  __root__: typeof rootRouteImport;
+  '/_dashboard': typeof DashboardRouteWithChildren;
+  '/login': typeof LoginRoute;
+  '/register': typeof RegisterRoute;
+  '/_dashboard/home': typeof DashboardHomeRoute;
+  '/_dashboard/': typeof DashboardIndexRoute;
+  '/_dashboard/organizations/create': typeof DashboardOrganizationsCreateRoute;
+  '/_dashboard/organizations/join': typeof DashboardOrganizationsJoinRoute;
+  '/_dashboard/teams/$teamId': typeof DashboardTeamsTeamIdRoute;
+  '/_dashboard/teams/create': typeof DashboardTeamsCreateRoute;
+  '/_dashboard/team/': typeof DashboardTeamIndexRoute;
+  '/_dashboard/teams/': typeof DashboardTeamsIndexRoute;
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/login' | '/register' | '/home' | '/' | '/team'
-  fileRoutesByTo: FileRoutesByTo
-  to: '/login' | '/register' | '/home' | '/' | '/team'
+  fileRoutesByFullPath: FileRoutesByFullPath;
+  fullPaths:
+    | '/login'
+    | '/register'
+    | '/home'
+    | '/'
+    | '/organizations/create'
+    | '/organizations/join'
+    | '/teams/$teamId'
+    | '/teams/create'
+    | '/team'
+    | '/teams';
+  fileRoutesByTo: FileRoutesByTo;
+  to:
+    | '/login'
+    | '/register'
+    | '/home'
+    | '/'
+    | '/organizations/create'
+    | '/organizations/join'
+    | '/teams/$teamId'
+    | '/teams/create'
+    | '/team'
+    | '/teams';
   id:
     | '__root__'
     | '/_dashboard'
@@ -91,121 +158,171 @@ export interface FileRouteTypes {
     | '/register'
     | '/_dashboard/home'
     | '/_dashboard/'
+    | '/_dashboard/organizations/create'
+    | '/_dashboard/organizations/join'
+    | '/_dashboard/teams/$teamId'
+    | '/_dashboard/teams/create'
     | '/_dashboard/team/'
-  fileRoutesById: FileRoutesById
+    | '/_dashboard/teams/';
+  fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
-  DashboardRoute: typeof DashboardRouteWithChildren
-  LoginRoute: typeof LoginRoute
-  RegisterRoute: typeof RegisterRoute
+  DashboardRoute: typeof DashboardRouteWithChildren;
+  LoginRoute: typeof LoginRoute;
+  RegisterRoute: typeof RegisterRoute;
 }
 export interface FileServerRoutesByFullPath {
-  '/api/auth/$': typeof ApiAuthSplatServerRoute
+  '/api/auth/$': typeof ApiAuthSplatServerRoute;
 }
 export interface FileServerRoutesByTo {
-  '/api/auth/$': typeof ApiAuthSplatServerRoute
+  '/api/auth/$': typeof ApiAuthSplatServerRoute;
 }
 export interface FileServerRoutesById {
-  __root__: typeof rootServerRouteImport
-  '/api/auth/$': typeof ApiAuthSplatServerRoute
+  __root__: typeof rootServerRouteImport;
+  '/api/auth/$': typeof ApiAuthSplatServerRoute;
 }
 export interface FileServerRouteTypes {
-  fileServerRoutesByFullPath: FileServerRoutesByFullPath
-  fullPaths: '/api/auth/$'
-  fileServerRoutesByTo: FileServerRoutesByTo
-  to: '/api/auth/$'
-  id: '__root__' | '/api/auth/$'
-  fileServerRoutesById: FileServerRoutesById
+  fileServerRoutesByFullPath: FileServerRoutesByFullPath;
+  fullPaths: '/api/auth/$';
+  fileServerRoutesByTo: FileServerRoutesByTo;
+  to: '/api/auth/$';
+  id: '__root__' | '/api/auth/$';
+  fileServerRoutesById: FileServerRoutesById;
 }
 export interface RootServerRouteChildren {
-  ApiAuthSplatServerRoute: typeof ApiAuthSplatServerRoute
+  ApiAuthSplatServerRoute: typeof ApiAuthSplatServerRoute;
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/register': {
-      id: '/register'
-      path: '/register'
-      fullPath: '/register'
-      preLoaderRoute: typeof RegisterRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/register';
+      path: '/register';
+      fullPath: '/register';
+      preLoaderRoute: typeof RegisterRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/login';
+      path: '/login';
+      fullPath: '/login';
+      preLoaderRoute: typeof LoginRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/_dashboard': {
-      id: '/_dashboard'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof DashboardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/_dashboard';
+      path: '';
+      fullPath: '';
+      preLoaderRoute: typeof DashboardRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/_dashboard/': {
-      id: '/_dashboard/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof DashboardIndexRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/';
+      path: '/';
+      fullPath: '/';
+      preLoaderRoute: typeof DashboardIndexRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
     '/_dashboard/home': {
-      id: '/_dashboard/home'
-      path: '/home'
-      fullPath: '/home'
-      preLoaderRoute: typeof DashboardHomeRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/home';
+      path: '/home';
+      fullPath: '/home';
+      preLoaderRoute: typeof DashboardHomeRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
+    '/_dashboard/teams/': {
+      id: '/_dashboard/teams/';
+      path: '/teams';
+      fullPath: '/teams';
+      preLoaderRoute: typeof DashboardTeamsIndexRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
     '/_dashboard/team/': {
-      id: '/_dashboard/team/'
-      path: '/team'
-      fullPath: '/team'
-      preLoaderRoute: typeof DashboardTeamIndexRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/team/';
+      path: '/team';
+      fullPath: '/team';
+      preLoaderRoute: typeof DashboardTeamIndexRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
+    '/_dashboard/teams/create': {
+      id: '/_dashboard/teams/create';
+      path: '/teams/create';
+      fullPath: '/teams/create';
+      preLoaderRoute: typeof DashboardTeamsCreateRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
+    '/_dashboard/teams/$teamId': {
+      id: '/_dashboard/teams/$teamId';
+      path: '/teams/$teamId';
+      fullPath: '/teams/$teamId';
+      preLoaderRoute: typeof DashboardTeamsTeamIdRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
+    '/_dashboard/organizations/join': {
+      id: '/_dashboard/organizations/join';
+      path: '/organizations/join';
+      fullPath: '/organizations/join';
+      preLoaderRoute: typeof DashboardOrganizationsJoinRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
+    '/_dashboard/organizations/create': {
+      id: '/_dashboard/organizations/create';
+      path: '/organizations/create';
+      fullPath: '/organizations/create';
+      preLoaderRoute: typeof DashboardOrganizationsCreateRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
   }
 }
 declare module '@tanstack/react-start/server' {
   interface ServerFileRoutesByPath {
     '/api/auth/$': {
-      id: '/api/auth/$'
-      path: '/api/auth/$'
-      fullPath: '/api/auth/$'
-      preLoaderRoute: typeof ApiAuthSplatServerRouteImport
-      parentRoute: typeof rootServerRouteImport
-    }
+      id: '/api/auth/$';
+      path: '/api/auth/$';
+      fullPath: '/api/auth/$';
+      preLoaderRoute: typeof ApiAuthSplatServerRouteImport;
+      parentRoute: typeof rootServerRouteImport;
+    };
   }
 }
 
 interface DashboardRouteChildren {
-  DashboardHomeRoute: typeof DashboardHomeRoute
-  DashboardIndexRoute: typeof DashboardIndexRoute
-  DashboardTeamIndexRoute: typeof DashboardTeamIndexRoute
+  DashboardHomeRoute: typeof DashboardHomeRoute;
+  DashboardIndexRoute: typeof DashboardIndexRoute;
+  DashboardOrganizationsCreateRoute: typeof DashboardOrganizationsCreateRoute;
+  DashboardOrganizationsJoinRoute: typeof DashboardOrganizationsJoinRoute;
+  DashboardTeamsTeamIdRoute: typeof DashboardTeamsTeamIdRoute;
+  DashboardTeamsCreateRoute: typeof DashboardTeamsCreateRoute;
+  DashboardTeamIndexRoute: typeof DashboardTeamIndexRoute;
+  DashboardTeamsIndexRoute: typeof DashboardTeamsIndexRoute;
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardHomeRoute: DashboardHomeRoute,
   DashboardIndexRoute: DashboardIndexRoute,
+  DashboardOrganizationsCreateRoute: DashboardOrganizationsCreateRoute,
+  DashboardOrganizationsJoinRoute: DashboardOrganizationsJoinRoute,
+  DashboardTeamsTeamIdRoute: DashboardTeamsTeamIdRoute,
+  DashboardTeamsCreateRoute: DashboardTeamsCreateRoute,
   DashboardTeamIndexRoute: DashboardTeamIndexRoute,
-}
+  DashboardTeamsIndexRoute: DashboardTeamsIndexRoute,
+};
 
 const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
   DashboardRouteChildren,
-)
+);
 
 const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRouteWithChildren,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
-}
+};
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+  ._addFileTypes<FileRouteTypes>();
 const rootServerRouteChildren: RootServerRouteChildren = {
   ApiAuthSplatServerRoute: ApiAuthSplatServerRoute,
-}
+};
 export const serverRouteTree = rootServerRouteImport
   ._addFileChildren(rootServerRouteChildren)
-  ._addFileTypes<FileServerRouteTypes>()
+  ._addFileTypes<FileServerRouteTypes>();
