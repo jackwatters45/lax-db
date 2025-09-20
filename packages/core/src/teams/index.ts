@@ -149,7 +149,6 @@ export const TeamsServiceLive = Layer.succeed(TeamsService, {
 
       // Now create the team with Better Auth API
       const result = yield* Effect.tryPromise(() => {
-        console.log('Creating team with Better Auth API...');
         return auth.api.createTeam({
           headers,
           body: {
@@ -354,9 +353,15 @@ export const TeamsServiceLive = Layer.succeed(TeamsService, {
 
       // Better Auth doesn't expose listTeams or getActiveMember APIs yet
       // So we'll implement basic functionality for now and enhance later
-      const teams: Team[] = [];
       const activeMember: OrganizationMember | null = null;
 
+      const teams = yield* Effect.tryPromise(() =>
+        auth.api.listUserTeams({ headers }),
+      ).pipe(
+        Effect.mapError(
+          (cause) => new TeamsError(cause, 'Failed to get organizations'),
+        ),
+      );
       // Assume users who have an organization can manage teams for now
       // This will be refined when Better Auth exposes more granular member APIs
       const canManageTeams = true;
