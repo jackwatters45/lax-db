@@ -39,3 +39,7 @@
 ## LLM Documentation
 
 The `/llms` folder contains library-specific documentation files (`.txt` format) to help AI assistants understand project patterns and conventions. Reference these files when working with specific libraries or frameworks.
+
+## Notes
+
+- DO NOT RUN MIGRATIONS OR THE DEV SERVER EVER
