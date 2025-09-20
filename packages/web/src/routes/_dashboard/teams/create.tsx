@@ -12,7 +12,10 @@ const createTeam = createServerFn({ method: 'POST' })
   .validator((data: { name: string }) => data)
   .handler(async ({ data }) => {
     const { TeamsAPI } = await import('@lax-db/core/teams/index');
-    return await TeamsAPI.createTeam(data);
+    const { getWebRequest } = await import('@tanstack/react-start/server');
+
+    const request = getWebRequest();
+    return await TeamsAPI.createTeam(data, request.headers);
   });
 
 export const Route = createFileRoute('/_dashboard/teams/create')({
@@ -53,12 +56,12 @@ function CreateTeamPage() {
   return (
     <div className="container mx-auto max-w-2xl py-8">
       <div className="mb-8">
-        <Button variant="ghost" className="mb-4">
-          <Link to="/teams">
+        <Link to="/teams">
+          <Button variant="ghost" className="mb-4">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Teams
-          </Link>
-        </Button>
+          </Button>
+        </Link>
 
         <h1 className="font-bold text-3xl">Create New Team</h1>
         <p className="text-muted-foreground">
