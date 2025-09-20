@@ -12,6 +12,7 @@ const checkAuthAndGetOrganizations = createServerFn({ method: 'GET' })
     );
 
     try {
+      const { getWebRequest } = await import('@tanstack/react-start/server');
       const request = getWebRequest();
       const session = await auth.api.getSession({
         headers: request.headers,

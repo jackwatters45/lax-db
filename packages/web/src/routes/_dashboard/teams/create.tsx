@@ -12,9 +12,33 @@ const createTeam = createServerFn({ method: 'POST' })
   .validator((data: { name: string }) => data)
   .handler(async ({ data }) => {
     const { TeamsAPI } = await import('@lax-db/core/teams/index');
-    const { getWebRequest } = await import('@tanstack/react-start/server');
+    const { getWebRequest, getCookie } = await import(
+      '@tanstack/react-start/server'
+    );
+    const { auth } = await import('@lax-db/core/auth');
 
     const request = getWebRequest();
+
+    // Get the active organization from cookie and ensure it's set in Better Auth
+    const activeOrgId = getCookie('active-organization-id');
+    console.log('Active organization ID from cookie:', activeOrgId);
+
+    if (activeOrgId) {
+      // Make sure Better Auth knows about the active organization
+      try {
+        await auth.api.setActiveOrganization({
+          headers: request.headers,
+          body: { organizationId: activeOrgId },
+        });
+        console.log('Successfully set active organization:', activeOrgId);
+      } catch (error) {
+        console.error(
+          'Failed to set active organization before creating team:',
+          error,
+        );
+      }
+    }
+
     return await TeamsAPI.createTeam(data, request.headers);
   });
 
@@ -32,6 +56,8 @@ function CreateTeamPage() {
     mutationFn: (data: { name: string }) => createTeam({ data }),
     onSuccess: () => {
       toast.success(`Team "${teamName.trim()}" created successfully!`);
+      // Invalidate router cache to ensure fresh data and navigate back
+      router.invalidate();
       router.navigate({ to: '/teams' });
     },
     onError: (error) => {

@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { createFileRoute, Link } from '@tanstack/react-router';
+import { createFileRoute, Link, useRouter } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { getWebRequest } from '@tanstack/react-start/server';
 import type { Team } from 'better-auth/plugins';
@@ -22,10 +22,8 @@ const getTeamMembers = createServerFn({ method: 'GET' })
   .validator((data: { teamId: string }) => data)
   .handler(async ({ data }) => {
     const { TeamsAPI } = await import('@lax-db/core/teams/index');
-    const { getWebRequest } = await import('@tanstack/react-start/server');
 
-    const request = getWebRequest();
-    return await TeamsAPI.getTeamMembers(data, request.headers);
+    return await TeamsAPI.getTeamMembers(data, getWebRequest().headers);
   });
 
 // Server function for deleting teams
@@ -33,10 +31,8 @@ const deleteTeam = createServerFn({ method: 'POST' })
   .validator((data: { teamId: string }) => data)
   .handler(async ({ data }) => {
     const { TeamsAPI } = await import('@lax-db/core/teams/index');
-    const { getWebRequest } = await import('@tanstack/react-start/server');
 
-    const request = getWebRequest();
-    return await TeamsAPI.deleteTeam(data, request.headers);
+    return await TeamsAPI.deleteTeam(data, getWebRequest().headers);
   });
 
 export const Route = createFileRoute('/_dashboard/teams/')({
@@ -111,6 +107,7 @@ function TeamOverviewCard({
   team: Team;
   canManage: boolean;
 }) {
+  const router = useRouter();
   const { data: members = [], isLoading } = useQuery({
     queryKey: ['teamMembers', team.id],
     queryFn: () => getTeamMembers({ data: { teamId: team.id } }),
@@ -134,7 +131,7 @@ function TeamOverviewCard({
       });
 
       toast.success(`Team "${team.name}" deleted successfully.`);
-      window.location.reload(); // Simple refresh for now
+      router.invalidate(); // Refresh the route data
     } catch (error) {
       toast.error(`Failed to delete team. Please try again. ${error}`);
     }

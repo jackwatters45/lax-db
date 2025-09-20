@@ -2,6 +2,7 @@ import type { Organization } from '@lax-db/core/teams/index';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link, useRouteContext } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
+import { getWebRequest, setHeader } from '@tanstack/react-start/server';
 import { ChevronsUpDown, Plus } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -15,22 +16,17 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Button } from '../ui/button';
 
-// No server function needed - data comes from route context
-
 // Server function to switch active organization
 const switchActiveOrganization = createServerFn({ method: 'POST' })
   .validator((data: { organizationId: string }) => data)
   .handler(async ({ data }) => {
-    const { getWebRequest, setHeader } = await import(
-      '@tanstack/react-start/server'
-    );
     const { auth } = await import('@lax-db/core/auth');
 
-    const request = getWebRequest();
+    const { headers } = getWebRequest();
 
     // Set the active organization in Better Auth
     await auth.api.setActiveOrganization({
-      headers: request.headers,
+      headers,
       body: {
         organizationId: data.organizationId,
       },
