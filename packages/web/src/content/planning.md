@@ -8,23 +8,37 @@ Lax DB aims to better equip lacrosse players with modern tools and features to e
 
 ### 🚧 In Progress
 
-- begin setting up teams
-  - create team (be able to upload with csv or something)
-  - add athletes
-  - add schedule
-  - add stats
+- **Team Management**: Team creation, roster management, coaching staff organization
+- **Organization Management**: Multi-team organization structure and administration
 
 ### 📋 Planned Features
 
-- whiteboard
-- scouting reports for other teams
-- add db of sets, plays, etc
-- allow tracking/planning of workouts
-- film review feature
-- add db of moves with drills, examples, players to study, etc for players
-- some crazy ai film evals
+#### Immediate Next Features
+
+- **Player Management**: Individual player profiles, development tracking, goal setting
+
+#### Features with Mock UI (Ready for Development)
+
+- **Game Management System**: Game scheduling, roster management, and game tracking
+- **Playbook Management**: Digital playbook with play creation, categorization, and assignments
+- **Scouting System**: Opponent team analysis, scouting reports, and strategic insights
+- **Practice Planning**: Drill bank, practice templates, session management, and scheduling
+- **Game Film Integration**: Upload/link game footage with timestamped events
+- **Advanced Statistics**: Shot charts, possession analytics, player performance metrics
+- **Game Reports**: Automated post-game analysis and player evaluations
+- **Overall Calendar System**: Unified calendar for club access to view practices, games, and team events
+
+#### Future Features (Not Started)
+
+- **Whiteboard**: Digital whiteboard for play drawing and strategy sessions
+- **AI Film Analysis**: Automated game film evaluation and insights
+- **Learning Management**: Rules & strategy library, video tutorials, quizzes
+- **Recruitment Tools**: Player highlight reels, college recruiting profiles, showcase tracking
+- **Mobile App**: Offline capability, GPS integration, camera integration, fitness tracker sync
 
 ### ✅ Completed Features
+
+#### Core Platform
 
 - [x] **Core Infrastructure**: SST deployment setup with AWS
 - [x] **Database Layer**: Drizzle ORM with PostgreSQL
@@ -67,10 +81,6 @@ Lax DB aims to better equip lacrosse players with modern tools and features to e
 
 ---
 
-_Last updated: September 16, 2025_
+_Last updated: September 20, 2025_
 
 _This document is living and will be updated regularly as the project evolves._
-
----
-
-_Last updated: September 16, 2025_
