@@ -22,6 +22,7 @@ import {
   CommandShortcut,
 } from '@/components/ui/command';
 import { Separator } from '@/components/ui/separator';
+import { OrganizationSwitcher } from './organization-switcher';
 import { ProjectNavbar } from './project-navbar';
 import { NavUser } from './user-nav';
 
@@ -34,14 +35,15 @@ export function DashboardHeader() {
   return (
     <header className="sticky top-0 right-0 left-0 z-40 border-b bg-background px-6 pt-4">
       <div className="flex h-full shrink-0 items-center justify-between gap-2">
-        <div className="flex min-w-0 flex-1 items-center gap-2">
+        <div className="flex min-w-0 flex-1 items-center">
           <Link to="/">
             <Circle className="-ml-1" />
           </Link>
           <Separator
             orientation="vertical"
-            className="mr-4 ml-2 h-6 rotate-[18deg]"
+            className="mr-2 ml-4 h-6 rotate-[18deg] "
           />
+          <OrganizationSwitcher />
           <Breadcrumb className="min-w-0 flex-1">
             <BreadcrumbList className="flex-nowrap">
               {breadcrumbItems.map((item, i) => (
