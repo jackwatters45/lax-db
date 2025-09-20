@@ -59,12 +59,15 @@ export class TeamsService extends Context.Tag('TeamsService')<
   {
     readonly createTeam: (
       input: CreateTeamInput,
+      headers: Headers,
     ) => Effect.Effect<Team, ParseError | TeamsError>;
     readonly deleteTeam: (
       input: DeleteTeamInput,
+      headers: Headers,
     ) => Effect.Effect<void, ParseError | TeamsError>;
     readonly getTeamMembers: (
       input: GetTeamMembersInput,
+      headers: Headers,
     ) => Effect.Effect<TeamMember[], ParseError | TeamsError>;
     readonly invitePlayer: (
       input: InvitePlayerInput,
@@ -78,38 +81,98 @@ export class TeamsService extends Context.Tag('TeamsService')<
     ) => Effect.Effect<Organization, ParseError | TeamsError>;
     readonly acceptInvitation: (
       input: AcceptInvitationInput,
+      headers: Headers,
     ) => Effect.Effect<void, ParseError | TeamsError>;
-    readonly getDashboardData: () => Effect.Effect<DashboardData, TeamsError>;
+    readonly getUserOrganizationContext: (
+      headers: Headers,
+    ) => Effect.Effect<DashboardData, TeamsError>;
   }
 >() {}
 
 // Teams Service Implementation
 export const TeamsServiceLive = Layer.succeed(TeamsService, {
-  createTeam: (input) =>
+  createTeam: (input, headers) =>
     Effect.gen(function* () {
       const validated = yield* Schema.decode(CreateTeamInput)(input);
 
-      const result = yield* Effect.tryPromise(() =>
-        auth.api.createTeam({
+      // First get the user session to get organization context
+      const session = yield* Effect.tryPromise(() =>
+        auth.api.getSession({ headers }),
+      ).pipe(
+        Effect.mapError(
+          (cause) => new TeamsError(cause, 'Failed to get session'),
+        ),
+      );
+
+      if (!session?.user) {
+        return yield* Effect.fail(
+          new TeamsError(null, 'User not authenticated'),
+        );
+      }
+
+      // Get user's organizations to find active organization
+      const organizations = yield* Effect.tryPromise(() =>
+        auth.api.listOrganizations({ headers }),
+      ).pipe(
+        Effect.mapError(
+          (cause) => new TeamsError(cause, 'Failed to get organizations'),
+        ),
+      );
+
+      if (!organizations || organizations.length === 0) {
+        return yield* Effect.fail(
+          new TeamsError(null, 'No organization found for user'),
+        );
+      }
+
+      const activeOrganization = organizations[0];
+      if (!activeOrganization) {
+        return yield* Effect.fail(
+          new TeamsError(null, 'Active organization not found'),
+        );
+      }
+
+      // Ensure the user's organization is active (safety measure for multi-org users)
+      yield* Effect.tryPromise(() =>
+        auth.api.setActiveOrganization({
+          headers,
           body: {
-            name: validated.name,
+            organizationId: activeOrganization.id,
           },
         }),
       ).pipe(
-        Effect.mapError(
-          (cause) => new TeamsError(cause, 'Failed to create team'),
-        ),
+        Effect.mapError((cause) => {
+          console.error('Failed to set active organization:', cause);
+          return new TeamsError(cause, 'Failed to set active organization');
+        }),
+      );
+
+      // Now create the team with Better Auth API
+      const result = yield* Effect.tryPromise(() => {
+        console.log('Creating team with Better Auth API...');
+        return auth.api.createTeam({
+          headers,
+          body: {
+            name: validated.name,
+          },
+        });
+      }).pipe(
+        Effect.mapError((cause) => {
+          console.error('Create team error details:', cause);
+          return new TeamsError(cause, 'Failed to create team');
+        }),
       );
 
       return result as Team;
     }),
 
-  deleteTeam: (input) =>
+  deleteTeam: (input, headers) =>
     Effect.gen(function* () {
       const validated = yield* Schema.decode(DeleteTeamInput)(input);
 
       yield* Effect.tryPromise(() =>
         auth.api.removeTeam({
+          headers,
           body: {
             teamId: validated.teamId,
           },
@@ -121,12 +184,13 @@ export const TeamsServiceLive = Layer.succeed(TeamsService, {
       );
     }),
 
-  getTeamMembers: (input) =>
+  getTeamMembers: (input, headers) =>
     Effect.gen(function* () {
       const validated = yield* Schema.decode(GetTeamMembersInput)(input);
 
       const result = yield* Effect.tryPromise(() =>
         auth.api.listTeamMembers({
+          headers,
           query: {
             teamId: validated.teamId,
           },
@@ -196,15 +260,38 @@ export const TeamsServiceLive = Layer.succeed(TeamsService, {
         }),
       );
 
+      // Set the newly created organization as the active one
+      if (result?.id) {
+        yield* Effect.tryPromise(() =>
+          auth.api.setActiveOrganization({
+            headers,
+            body: {
+              organizationId: result.id,
+            },
+          }),
+        ).pipe(
+          Effect.mapError((cause) => {
+            console.error('Failed to set new organization as active:', cause);
+            // Don't fail the whole operation if setting active fails
+            return new TeamsError(
+              cause,
+              'Organization created but failed to set as active',
+            );
+          }),
+          Effect.orElse(() => Effect.succeed(null)), // Continue even if this fails
+        );
+      }
+
       return result as Organization;
     }),
 
-  acceptInvitation: (input) =>
+  acceptInvitation: (input, headers) =>
     Effect.gen(function* () {
       const validated = yield* Schema.decode(AcceptInvitationInput)(input);
 
       yield* Effect.tryPromise(() =>
         auth.api.acceptInvitation({
+          headers,
           body: {
             invitationId: validated.invitationId,
           },
@@ -216,14 +303,69 @@ export const TeamsServiceLive = Layer.succeed(TeamsService, {
       );
     }),
 
-  getDashboardData: () =>
+  getUserOrganizationContext: (headers) =>
     Effect.gen(function* () {
-      // TODO: Implement proper session-based data fetching
+      // Get user session first
+      const session = yield* Effect.tryPromise(() =>
+        auth.api.getSession({ headers }),
+      ).pipe(
+        Effect.mapError(
+          (cause) => new TeamsError(cause, 'Failed to get session'),
+        ),
+      );
+
+      if (!session?.user) {
+        return yield* Effect.succeed({
+          activeOrganization: null,
+          teams: [],
+          activeMember: null,
+          canManageTeams: false,
+        });
+      }
+
+      // Get user's organizations
+      const organizations = yield* Effect.tryPromise(() =>
+        auth.api.listOrganizations({ headers }),
+      ).pipe(
+        Effect.mapError(
+          (cause) => new TeamsError(cause, 'Failed to get organizations'),
+        ),
+      );
+
+      if (!organizations || organizations.length === 0) {
+        return yield* Effect.succeed({
+          activeOrganization: null,
+          teams: [],
+          activeMember: null,
+          canManageTeams: false,
+        });
+      }
+
+      const activeOrganization = organizations[0];
+
+      if (!activeOrganization) {
+        return yield* Effect.succeed({
+          activeOrganization: null,
+          teams: [],
+          activeMember: null,
+          canManageTeams: false,
+        });
+      }
+
+      // Better Auth doesn't expose listTeams or getActiveMember APIs yet
+      // So we'll implement basic functionality for now and enhance later
+      const teams: Team[] = [];
+      const activeMember: OrganizationMember | null = null;
+
+      // Assume users who have an organization can manage teams for now
+      // This will be refined when Better Auth exposes more granular member APIs
+      const canManageTeams = true;
+
       return yield* Effect.succeed({
-        activeOrganization: null,
-        teams: [],
-        activeMember: null,
-        canManageTeams: false,
+        activeOrganization,
+        teams: teams || [],
+        activeMember,
+        canManageTeams,
       });
     }),
 });
@@ -233,30 +375,33 @@ const runtime = Runtime.defaultRuntime;
 
 // Simple async API - no Effect boilerplate needed
 export const TeamsAPI = {
-  async createTeam(input: CreateTeamInput): Promise<Team> {
+  async createTeam(input: CreateTeamInput, headers: Headers): Promise<Team> {
     const effect = Effect.gen(function* () {
       const service = yield* TeamsService;
-      return yield* service.createTeam(input);
+      return yield* service.createTeam(input, headers);
     });
     return await Runtime.runPromise(runtime)(
       Effect.provide(effect, TeamsServiceLive),
     );
   },
 
-  async deleteTeam(input: DeleteTeamInput): Promise<void> {
+  async deleteTeam(input: DeleteTeamInput, headers: Headers): Promise<void> {
     const effect = Effect.gen(function* () {
       const service = yield* TeamsService;
-      return yield* service.deleteTeam(input);
+      return yield* service.deleteTeam(input, headers);
     });
     return await Runtime.runPromise(runtime)(
       Effect.provide(effect, TeamsServiceLive),
     );
   },
 
-  async getTeamMembers(input: GetTeamMembersInput): Promise<TeamMember[]> {
+  async getTeamMembers(
+    input: GetTeamMembersInput,
+    headers: Headers,
+  ): Promise<TeamMember[]> {
     const effect = Effect.gen(function* () {
       const service = yield* TeamsService;
-      return yield* service.getTeamMembers(input);
+      return yield* service.getTeamMembers(input, headers);
     });
     return await Runtime.runPromise(runtime)(
       Effect.provide(effect, TeamsServiceLive),
@@ -296,20 +441,23 @@ export const TeamsAPI = {
     );
   },
 
-  async acceptInvitation(input: AcceptInvitationInput): Promise<void> {
+  async acceptInvitation(
+    input: AcceptInvitationInput,
+    headers: Headers,
+  ): Promise<void> {
     const effect = Effect.gen(function* () {
       const service = yield* TeamsService;
-      return yield* service.acceptInvitation(input);
+      return yield* service.acceptInvitation(input, headers);
     });
     return await Runtime.runPromise(runtime)(
       Effect.provide(effect, TeamsServiceLive),
     );
   },
 
-  async getDashboardData(): Promise<DashboardData> {
+  async getUserOrganizationContext(headers: Headers): Promise<DashboardData> {
     const effect = Effect.gen(function* () {
       const service = yield* TeamsService;
-      return yield* service.getDashboardData();
+      return yield* service.getUserOrganizationContext(headers);
     });
     return await Runtime.runPromise(runtime)(
       Effect.provide(effect, TeamsServiceLive),

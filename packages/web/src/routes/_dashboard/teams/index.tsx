@@ -1,18 +1,48 @@
+import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
-import { Plus, Users } from 'lucide-react';
+import { getWebRequest } from '@tanstack/react-start/server';
+import type { Team } from 'better-auth/plugins';
+import { ArrowRight, Plus, Trash2, Users } from 'lucide-react';
+import { toast } from 'sonner';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-// Server function for getting dashboard data
-const getDashboardData = createServerFn().handler(async () => {
+// Server function for getting user organization context
+const getUserOrganizationContext = createServerFn().handler(async () => {
   const { TeamsAPI } = await import('@lax-db/core/teams/index');
-  return await TeamsAPI.getDashboardData();
+
+  const request = getWebRequest();
+  return await TeamsAPI.getUserOrganizationContext(request.headers);
 });
+
+// Server function for getting team members
+const getTeamMembers = createServerFn({ method: 'GET' })
+  .validator((data: { teamId: string }) => data)
+  .handler(async ({ data }) => {
+    const { TeamsAPI } = await import('@lax-db/core/teams/index');
+    const { getWebRequest } = await import('@tanstack/react-start/server');
+
+    const request = getWebRequest();
+    return await TeamsAPI.getTeamMembers(data, request.headers);
+  });
+
+// Server function for deleting teams
+const deleteTeam = createServerFn({ method: 'POST' })
+  .validator((data: { teamId: string }) => data)
+  .handler(async ({ data }) => {
+    const { TeamsAPI } = await import('@lax-db/core/teams/index');
+    const { getWebRequest } = await import('@tanstack/react-start/server');
+
+    const request = getWebRequest();
+    return await TeamsAPI.deleteTeam(data, request.headers);
+  });
 
 export const Route = createFileRoute('/_dashboard/teams/')({
   component: TeamsOverviewPage,
   loader: async () => {
-    return await getDashboardData();
+    return await getUserOrganizationContext();
   },
 });
 
@@ -46,7 +76,11 @@ function TeamsOverviewPage() {
       {teams && teams.length > 0 ? (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {teams.map((team) => (
-            <div key={team.id}>Team: {team.name}</div>
+            <TeamOverviewCard
+              key={team.id}
+              team={team}
+              canManage={canManageTeams}
+            />
           ))}
         </div>
       ) : (
@@ -70,85 +104,84 @@ function TeamsOverviewPage() {
   );
 }
 
-// function TeamOverviewCard({
-//   team,
-//   canManage,
-// }: {
-//   team: Team;
-//   canManage: boolean;
-// }) {
-//   // Use React Query for team members
-//   const { data: members = [], isLoading } = useQuery({
-//     queryKey: ['teamMembers', team.id],
-//     queryFn: () => TeamsAPI.getTeamMembers({ teamId: team.id }),
-//     staleTime: 1000 * 60 * 5, // 5 minutes
-//   });
+function TeamOverviewCard({
+  team,
+  canManage,
+}: {
+  team: Team;
+  canManage: boolean;
+}) {
+  const { data: members = [], isLoading } = useQuery({
+    queryKey: ['teamMembers', team.id],
+    queryFn: () => getTeamMembers({ data: { teamId: team.id } }),
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
 
-//   const memberCount = members.length;
+  const memberCount = members.length;
 
-//   const handleDeleteTeam = async () => {
-//     if (
-//       !confirm(
-//         `Are you sure you want to delete ${team.name}? This cannot be undone.`,
-//       )
-//     ) {
-//       return;
-//     }
+  const handleDeleteTeam = async () => {
+    if (
+      !confirm(
+        `Are you sure you want to delete ${team.name}? This cannot be undone.`,
+      )
+    ) {
+      return;
+    }
 
-//     try {
-//       await TeamsAPI.deleteTeam({
-//         teamId: team.id,
-//       });
+    try {
+      await deleteTeam({
+        data: { teamId: team.id },
+      });
 
-//       toast.success(`Team "${team.name}" deleted successfully.`);
-//       window.location.reload(); // Simple refresh for now
-//     } catch (error) {
-//       toast.error(`Failed to delete team. Please try again. ${error}`);
-//     }
-//   };
+      toast.success(`Team "${team.name}" deleted successfully.`);
+      window.location.reload(); // Simple refresh for now
+    } catch (error) {
+      toast.error(`Failed to delete team. Please try again. ${error}`);
+    }
+  };
 
-//   return (
-//     <Card className="hover:shadow-md transition-shadow">
-//       <CardHeader className="pb-3">
-//         <div className="flex items-center justify-between">
-//           <CardTitle className="text-lg">{team.name}</CardTitle>
-//           {canManage && (
-//             <div className="flex gap-2">
-//               <Button
-//                 variant="ghost"
-//                 size="sm"
-//                 className="text-destructive hover:text-destructive"
-//                 onClick={handleDeleteTeam}
-//               >
-//                 <Trash2 className="w-4 h-4" />
-//               </Button>
-//             </div>
-//           )}
-//         </div>
-//       </CardHeader>
+  return (
+    <Card className="transition-shadow hover:shadow-md">
+      <CardHeader className="pb-3">
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-lg">{team.name}</CardTitle>
+          {canManage && (
+            <div className="flex gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-destructive hover:text-destructive"
+                onClick={handleDeleteTeam}
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </div>
+          )}
+        </div>
+      </CardHeader>
 
-//       <CardContent>
-//         <div className="flex items-center justify-between mb-4">
-//           <div className="flex items-center gap-2">
-//             <Users className="w-4 h-4 text-muted-foreground" />
-//             <span className="text-sm text-muted-foreground">
-//               {isLoading ? 'Loading...' : `${memberCount} members`}
-//             </span>
-//           </div>
+      <CardContent>
+        <div className="mb-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Users className="h-4 w-4 text-muted-foreground" />
+            <span className="text-muted-foreground text-sm">
+              {isLoading ? 'Loading...' : `${memberCount} members`}
+            </span>
+          </div>
 
-//           <Badge variant="secondary">Active</Badge>
-//         </div>
+          <Badge variant="secondary">Active</Badge>
+        </div>
 
-//         <div className="space-y-2">
-//           <Button variant="outline" className="w-full" size="sm">
-//             Manage Team
-//             <ArrowRight className="w-4 h-4 ml-2" />
-//           </Button>
-//         </div>
-//       </CardContent>
-//     </Card>
-//   );
-// }
+        <div className="space-y-2">
+          <Button variant="outline" className="w-full" size="sm">
+            Manage Team
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
 
 function NoOrganizationPrompt() {
   return (

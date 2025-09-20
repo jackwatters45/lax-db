@@ -12,7 +12,10 @@ const acceptInvitation = createServerFn({ method: 'POST' })
   .validator((data: { invitationId: string }) => data)
   .handler(async ({ data }) => {
     const { TeamsAPI } = await import('@lax-db/core/teams/index');
-    return await TeamsAPI.acceptInvitation(data);
+    const { getWebRequest } = await import('@tanstack/react-start/server');
+
+    const request = getWebRequest();
+    return await TeamsAPI.acceptInvitation(data, request.headers);
   });
 
 import { Button } from '@/components/ui/button';

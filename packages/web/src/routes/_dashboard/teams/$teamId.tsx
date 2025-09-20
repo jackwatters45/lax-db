@@ -83,12 +83,12 @@ function TeamManagementPage() {
     <div className="container mx-auto py-8">
       {/* Header */}
       <div className="mb-8 flex items-center gap-4">
-        <Button variant="ghost" size="sm">
-          <Link to="/teams">
+        <Link to="/teams">
+          <Button variant="ghost" size="sm">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Teams
-          </Link>
-        </Button>
+          </Button>
+        </Link>
 
         <div className="flex-1">
           <h1 className="font-bold text-3xl">{teamName}</h1>
