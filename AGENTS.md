@@ -43,3 +43,4 @@ The `/llms` folder contains library-specific documentation files (`.txt` format)
 ## Notes
 
 - DO NOT RUN MIGRATIONS OR THE DEV SERVER EVER
+- DO NOT UPDATE THE API FOR NOW. IT WILL BE UPDATED IN THE FUTURE.

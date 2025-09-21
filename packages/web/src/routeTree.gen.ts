@@ -16,6 +16,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as DashboardRouteImport } from './routes/_dashboard'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardPlanRouteImport } from './routes/_dashboard/plan'
+import { Route as DashboardFeedbackRouteImport } from './routes/_dashboard/feedback'
 import { Route as DashboardTeamsIndexRouteImport } from './routes/_dashboard/teams/index'
 import { Route as DashboardScoutingIndexRouteImport } from './routes/_dashboard/scouting/index'
 import { Route as DashboardPracticeIndexRouteImport } from './routes/_dashboard/practice/index'
@@ -72,6 +73,11 @@ const IndexRoute = IndexRouteImport.update({
 const DashboardPlanRoute = DashboardPlanRouteImport.update({
   id: '/plan',
   path: '/plan',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardFeedbackRoute = DashboardFeedbackRouteImport.update({
+  id: '/feedback',
+  path: '/feedback',
   getParentRoute: () => DashboardRoute,
 } as any)
 const DashboardTeamsIndexRoute = DashboardTeamsIndexRouteImport.update({
@@ -251,6 +257,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/feedback': typeof DashboardFeedbackRoute
   '/plan': typeof DashboardPlanRoute
   '/film/$filmId': typeof DashboardFilmFilmIdRoute
   '/film/upload': typeof DashboardFilmUploadRoute
@@ -287,6 +294,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/feedback': typeof DashboardFeedbackRoute
   '/plan': typeof DashboardPlanRoute
   '/film/$filmId': typeof DashboardFilmFilmIdRoute
   '/film/upload': typeof DashboardFilmUploadRoute
@@ -325,6 +333,7 @@ export interface FileRoutesById {
   '/_dashboard': typeof DashboardRouteWithChildren
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/_dashboard/feedback': typeof DashboardFeedbackRoute
   '/_dashboard/plan': typeof DashboardPlanRoute
   '/_dashboard/film/$filmId': typeof DashboardFilmFilmIdRoute
   '/_dashboard/film/upload': typeof DashboardFilmUploadRoute
@@ -363,6 +372,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/register'
+    | '/feedback'
     | '/plan'
     | '/film/$filmId'
     | '/film/upload'
@@ -399,6 +409,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/register'
+    | '/feedback'
     | '/plan'
     | '/film/$filmId'
     | '/film/upload'
@@ -436,6 +447,7 @@ export interface FileRouteTypes {
     | '/_dashboard'
     | '/login'
     | '/register'
+    | '/_dashboard/feedback'
     | '/_dashboard/plan'
     | '/_dashboard/film/$filmId'
     | '/_dashboard/film/upload'
@@ -532,6 +544,13 @@ declare module '@tanstack/react-router' {
       path: '/plan'
       fullPath: '/plan'
       preLoaderRoute: typeof DashboardPlanRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/_dashboard/feedback': {
+      id: '/_dashboard/feedback'
+      path: '/feedback'
+      fullPath: '/feedback'
+      preLoaderRoute: typeof DashboardFeedbackRouteImport
       parentRoute: typeof DashboardRoute
     }
     '/_dashboard/teams/': {
@@ -770,6 +789,7 @@ const DashboardGamesGameIdRouteWithChildren =
   DashboardGamesGameIdRoute._addFileChildren(DashboardGamesGameIdRouteChildren)
 
 interface DashboardRouteChildren {
+  DashboardFeedbackRoute: typeof DashboardFeedbackRoute
   DashboardPlanRoute: typeof DashboardPlanRoute
   DashboardFilmFilmIdRoute: typeof DashboardFilmFilmIdRoute
   DashboardFilmUploadRoute: typeof DashboardFilmUploadRoute
@@ -803,6 +823,7 @@ interface DashboardRouteChildren {
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardFeedbackRoute: DashboardFeedbackRoute,
   DashboardPlanRoute: DashboardPlanRoute,
   DashboardFilmFilmIdRoute: DashboardFilmFilmIdRoute,
   DashboardFilmUploadRoute: DashboardFilmUploadRoute,
