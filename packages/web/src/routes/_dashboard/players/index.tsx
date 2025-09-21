@@ -587,12 +587,22 @@ function PlayerCard({
         {/* Actions */}
         <div className="flex gap-2 pt-2">
           <Button variant="outline" size="sm" className="flex-1" asChild>
-            <Link to={`/players/${player.id}`}>View Profile</Link>
+            <Link
+              to={'/players/$playerId'}
+              params={{
+                playerId: player.id,
+              }}
+            >
+              View Profile
+            </Link>
           </Button>
 
           {permissions.canCreateNotes && (
             <Button variant="outline" size="sm" asChild>
-              <Link to={`/players/notes/create?playerId=${player.id}`}>
+              <Link
+                to={'/players/notes/create'}
+                search={{ playerId: player.id }}
+              >
                 <FileText className="mr-1 h-3 w-3" />
                 Note
               </Link>
@@ -601,7 +611,10 @@ function PlayerCard({
 
           {permissions.canAssess && (
             <Button variant="outline" size="sm" asChild>
-              <Link to={`/players/assessments/create?playerId=${player.id}`}>
+              <Link
+                to={'/players/assessments/create'}
+                search={{ playerId: player.id }}
+              >
                 <TrendingUp className="mr-1 h-3 w-3" />
                 Assess
               </Link>

@@ -26,7 +26,6 @@ import { Route as DashboardGamesIndexRouteImport } from './routes/_dashboard/gam
 import { Route as DashboardFilmIndexRouteImport } from './routes/_dashboard/film/index'
 import { Route as DashboardTeamsCreateRouteImport } from './routes/_dashboard/teams/create'
 import { Route as DashboardTeamsTeamIdRouteImport } from './routes/_dashboard/teams/$teamId'
-import { Route as DashboardPlayersPlayerIdRouteImport } from './routes/_dashboard/players/$playerId'
 import { Route as DashboardOrganizationsJoinRouteImport } from './routes/_dashboard/organizations/join'
 import { Route as DashboardOrganizationsCreateRouteImport } from './routes/_dashboard/organizations/create'
 import { Route as DashboardGamesCreateRouteImport } from './routes/_dashboard/games/create'
@@ -37,6 +36,7 @@ import { Route as DashboardScoutingTeamsIndexRouteImport } from './routes/_dashb
 import { Route as DashboardPracticeTemplatesIndexRouteImport } from './routes/_dashboard/practice/templates/index'
 import { Route as DashboardPracticeScheduleIndexRouteImport } from './routes/_dashboard/practice/schedule/index'
 import { Route as DashboardPracticeDrillsIndexRouteImport } from './routes/_dashboard/practice/drills/index'
+import { Route as DashboardPlayersPlayerIdIndexRouteImport } from './routes/_dashboard/players/$playerId/index'
 import { Route as DashboardPlaybookPlaysIndexRouteImport } from './routes/_dashboard/playbook/plays/index'
 import { Route as DashboardScoutingTeamsCreateRouteImport } from './routes/_dashboard/scouting/teams/create'
 import { Route as DashboardScoutingTeamsTeamIdRouteImport } from './routes/_dashboard/scouting/teams/$teamId'
@@ -44,6 +44,14 @@ import { Route as DashboardPracticeTemplatesCreateRouteImport } from './routes/_
 import { Route as DashboardPracticeTemplatesTemplateIdRouteImport } from './routes/_dashboard/practice/templates/$templateId'
 import { Route as DashboardPracticeSessionsSessionIdRouteImport } from './routes/_dashboard/practice/sessions/$sessionId'
 import { Route as DashboardPracticeDrillsCreateRouteImport } from './routes/_dashboard/practice/drills/create'
+import { Route as DashboardPlayersResourcesCreateRouteImport } from './routes/_dashboard/players/resources.create'
+import { Route as DashboardPlayersNotesCreateRouteImport } from './routes/_dashboard/players/notes.create'
+import { Route as DashboardPlayersGoalsCreateRouteImport } from './routes/_dashboard/players/goals.create'
+import { Route as DashboardPlayersAssessmentsCreateRouteImport } from './routes/_dashboard/players/assessments.create'
+import { Route as DashboardPlayersPlayerIdStatsRouteImport } from './routes/_dashboard/players/$playerId/stats'
+import { Route as DashboardPlayersPlayerIdResourcesRouteImport } from './routes/_dashboard/players/$playerId/resources'
+import { Route as DashboardPlayersPlayerIdNotesRouteImport } from './routes/_dashboard/players/$playerId/notes'
+import { Route as DashboardPlayersPlayerIdEditRouteImport } from './routes/_dashboard/players/$playerId/edit'
 import { Route as DashboardPlaybookPlaysCreateRouteImport } from './routes/_dashboard/playbook/plays/create'
 import { Route as DashboardPlaybookPlaysPlayIdRouteImport } from './routes/_dashboard/playbook/plays/$playId'
 import { Route as DashboardGamesGameIdRosterRouteImport } from './routes/_dashboard/games/$gameId.roster'
@@ -125,12 +133,6 @@ const DashboardTeamsTeamIdRoute = DashboardTeamsTeamIdRouteImport.update({
   path: '/teams/$teamId',
   getParentRoute: () => DashboardRoute,
 } as any)
-const DashboardPlayersPlayerIdRoute =
-  DashboardPlayersPlayerIdRouteImport.update({
-    id: '/players/$playerId',
-    path: '/players/$playerId',
-    getParentRoute: () => DashboardRoute,
-  } as any)
 const DashboardOrganizationsJoinRoute =
   DashboardOrganizationsJoinRouteImport.update({
     id: '/organizations/join',
@@ -187,6 +189,12 @@ const DashboardPracticeDrillsIndexRoute =
     path: '/practice/drills/',
     getParentRoute: () => DashboardRoute,
   } as any)
+const DashboardPlayersPlayerIdIndexRoute =
+  DashboardPlayersPlayerIdIndexRouteImport.update({
+    id: '/players/$playerId/',
+    path: '/players/$playerId/',
+    getParentRoute: () => DashboardRoute,
+  } as any)
 const DashboardPlaybookPlaysIndexRoute =
   DashboardPlaybookPlaysIndexRouteImport.update({
     id: '/playbook/plays/',
@@ -229,6 +237,54 @@ const DashboardPracticeDrillsCreateRoute =
     path: '/practice/drills/create',
     getParentRoute: () => DashboardRoute,
   } as any)
+const DashboardPlayersResourcesCreateRoute =
+  DashboardPlayersResourcesCreateRouteImport.update({
+    id: '/players/resources/create',
+    path: '/players/resources/create',
+    getParentRoute: () => DashboardRoute,
+  } as any)
+const DashboardPlayersNotesCreateRoute =
+  DashboardPlayersNotesCreateRouteImport.update({
+    id: '/players/notes/create',
+    path: '/players/notes/create',
+    getParentRoute: () => DashboardRoute,
+  } as any)
+const DashboardPlayersGoalsCreateRoute =
+  DashboardPlayersGoalsCreateRouteImport.update({
+    id: '/players/goals/create',
+    path: '/players/goals/create',
+    getParentRoute: () => DashboardRoute,
+  } as any)
+const DashboardPlayersAssessmentsCreateRoute =
+  DashboardPlayersAssessmentsCreateRouteImport.update({
+    id: '/players/assessments/create',
+    path: '/players/assessments/create',
+    getParentRoute: () => DashboardRoute,
+  } as any)
+const DashboardPlayersPlayerIdStatsRoute =
+  DashboardPlayersPlayerIdStatsRouteImport.update({
+    id: '/players/$playerId/stats',
+    path: '/players/$playerId/stats',
+    getParentRoute: () => DashboardRoute,
+  } as any)
+const DashboardPlayersPlayerIdResourcesRoute =
+  DashboardPlayersPlayerIdResourcesRouteImport.update({
+    id: '/players/$playerId/resources',
+    path: '/players/$playerId/resources',
+    getParentRoute: () => DashboardRoute,
+  } as any)
+const DashboardPlayersPlayerIdNotesRoute =
+  DashboardPlayersPlayerIdNotesRouteImport.update({
+    id: '/players/$playerId/notes',
+    path: '/players/$playerId/notes',
+    getParentRoute: () => DashboardRoute,
+  } as any)
+const DashboardPlayersPlayerIdEditRoute =
+  DashboardPlayersPlayerIdEditRouteImport.update({
+    id: '/players/$playerId/edit',
+    path: '/players/$playerId/edit',
+    getParentRoute: () => DashboardRoute,
+  } as any)
 const DashboardPlaybookPlaysCreateRoute =
   DashboardPlaybookPlaysCreateRouteImport.update({
     id: '/playbook/plays/create',
@@ -265,7 +321,6 @@ export interface FileRoutesByFullPath {
   '/games/create': typeof DashboardGamesCreateRoute
   '/organizations/create': typeof DashboardOrganizationsCreateRoute
   '/organizations/join': typeof DashboardOrganizationsJoinRoute
-  '/players/$playerId': typeof DashboardPlayersPlayerIdRoute
   '/teams/$teamId': typeof DashboardTeamsTeamIdRoute
   '/teams/create': typeof DashboardTeamsCreateRoute
   '/film': typeof DashboardFilmIndexRoute
@@ -278,6 +333,14 @@ export interface FileRoutesByFullPath {
   '/games/$gameId/roster': typeof DashboardGamesGameIdRosterRoute
   '/playbook/plays/$playId': typeof DashboardPlaybookPlaysPlayIdRoute
   '/playbook/plays/create': typeof DashboardPlaybookPlaysCreateRoute
+  '/players/$playerId/edit': typeof DashboardPlayersPlayerIdEditRoute
+  '/players/$playerId/notes': typeof DashboardPlayersPlayerIdNotesRoute
+  '/players/$playerId/resources': typeof DashboardPlayersPlayerIdResourcesRoute
+  '/players/$playerId/stats': typeof DashboardPlayersPlayerIdStatsRoute
+  '/players/assessments/create': typeof DashboardPlayersAssessmentsCreateRoute
+  '/players/goals/create': typeof DashboardPlayersGoalsCreateRoute
+  '/players/notes/create': typeof DashboardPlayersNotesCreateRoute
+  '/players/resources/create': typeof DashboardPlayersResourcesCreateRoute
   '/practice/drills/create': typeof DashboardPracticeDrillsCreateRoute
   '/practice/sessions/$sessionId': typeof DashboardPracticeSessionsSessionIdRoute
   '/practice/templates/$templateId': typeof DashboardPracticeTemplatesTemplateIdRoute
@@ -285,6 +348,7 @@ export interface FileRoutesByFullPath {
   '/scouting/teams/$teamId': typeof DashboardScoutingTeamsTeamIdRoute
   '/scouting/teams/create': typeof DashboardScoutingTeamsCreateRoute
   '/playbook/plays': typeof DashboardPlaybookPlaysIndexRoute
+  '/players/$playerId': typeof DashboardPlayersPlayerIdIndexRoute
   '/practice/drills': typeof DashboardPracticeDrillsIndexRoute
   '/practice/schedule': typeof DashboardPracticeScheduleIndexRoute
   '/practice/templates': typeof DashboardPracticeTemplatesIndexRoute
@@ -302,7 +366,6 @@ export interface FileRoutesByTo {
   '/games/create': typeof DashboardGamesCreateRoute
   '/organizations/create': typeof DashboardOrganizationsCreateRoute
   '/organizations/join': typeof DashboardOrganizationsJoinRoute
-  '/players/$playerId': typeof DashboardPlayersPlayerIdRoute
   '/teams/$teamId': typeof DashboardTeamsTeamIdRoute
   '/teams/create': typeof DashboardTeamsCreateRoute
   '/film': typeof DashboardFilmIndexRoute
@@ -315,6 +378,14 @@ export interface FileRoutesByTo {
   '/games/$gameId/roster': typeof DashboardGamesGameIdRosterRoute
   '/playbook/plays/$playId': typeof DashboardPlaybookPlaysPlayIdRoute
   '/playbook/plays/create': typeof DashboardPlaybookPlaysCreateRoute
+  '/players/$playerId/edit': typeof DashboardPlayersPlayerIdEditRoute
+  '/players/$playerId/notes': typeof DashboardPlayersPlayerIdNotesRoute
+  '/players/$playerId/resources': typeof DashboardPlayersPlayerIdResourcesRoute
+  '/players/$playerId/stats': typeof DashboardPlayersPlayerIdStatsRoute
+  '/players/assessments/create': typeof DashboardPlayersAssessmentsCreateRoute
+  '/players/goals/create': typeof DashboardPlayersGoalsCreateRoute
+  '/players/notes/create': typeof DashboardPlayersNotesCreateRoute
+  '/players/resources/create': typeof DashboardPlayersResourcesCreateRoute
   '/practice/drills/create': typeof DashboardPracticeDrillsCreateRoute
   '/practice/sessions/$sessionId': typeof DashboardPracticeSessionsSessionIdRoute
   '/practice/templates/$templateId': typeof DashboardPracticeTemplatesTemplateIdRoute
@@ -322,6 +393,7 @@ export interface FileRoutesByTo {
   '/scouting/teams/$teamId': typeof DashboardScoutingTeamsTeamIdRoute
   '/scouting/teams/create': typeof DashboardScoutingTeamsCreateRoute
   '/playbook/plays': typeof DashboardPlaybookPlaysIndexRoute
+  '/players/$playerId': typeof DashboardPlayersPlayerIdIndexRoute
   '/practice/drills': typeof DashboardPracticeDrillsIndexRoute
   '/practice/schedule': typeof DashboardPracticeScheduleIndexRoute
   '/practice/templates': typeof DashboardPracticeTemplatesIndexRoute
@@ -341,7 +413,6 @@ export interface FileRoutesById {
   '/_dashboard/games/create': typeof DashboardGamesCreateRoute
   '/_dashboard/organizations/create': typeof DashboardOrganizationsCreateRoute
   '/_dashboard/organizations/join': typeof DashboardOrganizationsJoinRoute
-  '/_dashboard/players/$playerId': typeof DashboardPlayersPlayerIdRoute
   '/_dashboard/teams/$teamId': typeof DashboardTeamsTeamIdRoute
   '/_dashboard/teams/create': typeof DashboardTeamsCreateRoute
   '/_dashboard/film/': typeof DashboardFilmIndexRoute
@@ -354,6 +425,14 @@ export interface FileRoutesById {
   '/_dashboard/games/$gameId/roster': typeof DashboardGamesGameIdRosterRoute
   '/_dashboard/playbook/plays/$playId': typeof DashboardPlaybookPlaysPlayIdRoute
   '/_dashboard/playbook/plays/create': typeof DashboardPlaybookPlaysCreateRoute
+  '/_dashboard/players/$playerId/edit': typeof DashboardPlayersPlayerIdEditRoute
+  '/_dashboard/players/$playerId/notes': typeof DashboardPlayersPlayerIdNotesRoute
+  '/_dashboard/players/$playerId/resources': typeof DashboardPlayersPlayerIdResourcesRoute
+  '/_dashboard/players/$playerId/stats': typeof DashboardPlayersPlayerIdStatsRoute
+  '/_dashboard/players/assessments/create': typeof DashboardPlayersAssessmentsCreateRoute
+  '/_dashboard/players/goals/create': typeof DashboardPlayersGoalsCreateRoute
+  '/_dashboard/players/notes/create': typeof DashboardPlayersNotesCreateRoute
+  '/_dashboard/players/resources/create': typeof DashboardPlayersResourcesCreateRoute
   '/_dashboard/practice/drills/create': typeof DashboardPracticeDrillsCreateRoute
   '/_dashboard/practice/sessions/$sessionId': typeof DashboardPracticeSessionsSessionIdRoute
   '/_dashboard/practice/templates/$templateId': typeof DashboardPracticeTemplatesTemplateIdRoute
@@ -361,6 +440,7 @@ export interface FileRoutesById {
   '/_dashboard/scouting/teams/$teamId': typeof DashboardScoutingTeamsTeamIdRoute
   '/_dashboard/scouting/teams/create': typeof DashboardScoutingTeamsCreateRoute
   '/_dashboard/playbook/plays/': typeof DashboardPlaybookPlaysIndexRoute
+  '/_dashboard/players/$playerId/': typeof DashboardPlayersPlayerIdIndexRoute
   '/_dashboard/practice/drills/': typeof DashboardPracticeDrillsIndexRoute
   '/_dashboard/practice/schedule/': typeof DashboardPracticeScheduleIndexRoute
   '/_dashboard/practice/templates/': typeof DashboardPracticeTemplatesIndexRoute
@@ -380,7 +460,6 @@ export interface FileRouteTypes {
     | '/games/create'
     | '/organizations/create'
     | '/organizations/join'
-    | '/players/$playerId'
     | '/teams/$teamId'
     | '/teams/create'
     | '/film'
@@ -393,6 +472,14 @@ export interface FileRouteTypes {
     | '/games/$gameId/roster'
     | '/playbook/plays/$playId'
     | '/playbook/plays/create'
+    | '/players/$playerId/edit'
+    | '/players/$playerId/notes'
+    | '/players/$playerId/resources'
+    | '/players/$playerId/stats'
+    | '/players/assessments/create'
+    | '/players/goals/create'
+    | '/players/notes/create'
+    | '/players/resources/create'
     | '/practice/drills/create'
     | '/practice/sessions/$sessionId'
     | '/practice/templates/$templateId'
@@ -400,6 +487,7 @@ export interface FileRouteTypes {
     | '/scouting/teams/$teamId'
     | '/scouting/teams/create'
     | '/playbook/plays'
+    | '/players/$playerId'
     | '/practice/drills'
     | '/practice/schedule'
     | '/practice/templates'
@@ -417,7 +505,6 @@ export interface FileRouteTypes {
     | '/games/create'
     | '/organizations/create'
     | '/organizations/join'
-    | '/players/$playerId'
     | '/teams/$teamId'
     | '/teams/create'
     | '/film'
@@ -430,6 +517,14 @@ export interface FileRouteTypes {
     | '/games/$gameId/roster'
     | '/playbook/plays/$playId'
     | '/playbook/plays/create'
+    | '/players/$playerId/edit'
+    | '/players/$playerId/notes'
+    | '/players/$playerId/resources'
+    | '/players/$playerId/stats'
+    | '/players/assessments/create'
+    | '/players/goals/create'
+    | '/players/notes/create'
+    | '/players/resources/create'
     | '/practice/drills/create'
     | '/practice/sessions/$sessionId'
     | '/practice/templates/$templateId'
@@ -437,6 +532,7 @@ export interface FileRouteTypes {
     | '/scouting/teams/$teamId'
     | '/scouting/teams/create'
     | '/playbook/plays'
+    | '/players/$playerId'
     | '/practice/drills'
     | '/practice/schedule'
     | '/practice/templates'
@@ -455,7 +551,6 @@ export interface FileRouteTypes {
     | '/_dashboard/games/create'
     | '/_dashboard/organizations/create'
     | '/_dashboard/organizations/join'
-    | '/_dashboard/players/$playerId'
     | '/_dashboard/teams/$teamId'
     | '/_dashboard/teams/create'
     | '/_dashboard/film/'
@@ -468,6 +563,14 @@ export interface FileRouteTypes {
     | '/_dashboard/games/$gameId/roster'
     | '/_dashboard/playbook/plays/$playId'
     | '/_dashboard/playbook/plays/create'
+    | '/_dashboard/players/$playerId/edit'
+    | '/_dashboard/players/$playerId/notes'
+    | '/_dashboard/players/$playerId/resources'
+    | '/_dashboard/players/$playerId/stats'
+    | '/_dashboard/players/assessments/create'
+    | '/_dashboard/players/goals/create'
+    | '/_dashboard/players/notes/create'
+    | '/_dashboard/players/resources/create'
     | '/_dashboard/practice/drills/create'
     | '/_dashboard/practice/sessions/$sessionId'
     | '/_dashboard/practice/templates/$templateId'
@@ -475,6 +578,7 @@ export interface FileRouteTypes {
     | '/_dashboard/scouting/teams/$teamId'
     | '/_dashboard/scouting/teams/create'
     | '/_dashboard/playbook/plays/'
+    | '/_dashboard/players/$playerId/'
     | '/_dashboard/practice/drills/'
     | '/_dashboard/practice/schedule/'
     | '/_dashboard/practice/templates/'
@@ -616,13 +720,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardTeamsTeamIdRouteImport
       parentRoute: typeof DashboardRoute
     }
-    '/_dashboard/players/$playerId': {
-      id: '/_dashboard/players/$playerId'
-      path: '/players/$playerId'
-      fullPath: '/players/$playerId'
-      preLoaderRoute: typeof DashboardPlayersPlayerIdRouteImport
-      parentRoute: typeof DashboardRoute
-    }
     '/_dashboard/organizations/join': {
       id: '/_dashboard/organizations/join'
       path: '/organizations/join'
@@ -693,6 +790,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardPracticeDrillsIndexRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/_dashboard/players/$playerId/': {
+      id: '/_dashboard/players/$playerId/'
+      path: '/players/$playerId'
+      fullPath: '/players/$playerId'
+      preLoaderRoute: typeof DashboardPlayersPlayerIdIndexRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/_dashboard/playbook/plays/': {
       id: '/_dashboard/playbook/plays/'
       path: '/playbook/plays'
@@ -740,6 +844,62 @@ declare module '@tanstack/react-router' {
       path: '/practice/drills/create'
       fullPath: '/practice/drills/create'
       preLoaderRoute: typeof DashboardPracticeDrillsCreateRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/_dashboard/players/resources/create': {
+      id: '/_dashboard/players/resources/create'
+      path: '/players/resources/create'
+      fullPath: '/players/resources/create'
+      preLoaderRoute: typeof DashboardPlayersResourcesCreateRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/_dashboard/players/notes/create': {
+      id: '/_dashboard/players/notes/create'
+      path: '/players/notes/create'
+      fullPath: '/players/notes/create'
+      preLoaderRoute: typeof DashboardPlayersNotesCreateRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/_dashboard/players/goals/create': {
+      id: '/_dashboard/players/goals/create'
+      path: '/players/goals/create'
+      fullPath: '/players/goals/create'
+      preLoaderRoute: typeof DashboardPlayersGoalsCreateRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/_dashboard/players/assessments/create': {
+      id: '/_dashboard/players/assessments/create'
+      path: '/players/assessments/create'
+      fullPath: '/players/assessments/create'
+      preLoaderRoute: typeof DashboardPlayersAssessmentsCreateRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/_dashboard/players/$playerId/stats': {
+      id: '/_dashboard/players/$playerId/stats'
+      path: '/players/$playerId/stats'
+      fullPath: '/players/$playerId/stats'
+      preLoaderRoute: typeof DashboardPlayersPlayerIdStatsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/_dashboard/players/$playerId/resources': {
+      id: '/_dashboard/players/$playerId/resources'
+      path: '/players/$playerId/resources'
+      fullPath: '/players/$playerId/resources'
+      preLoaderRoute: typeof DashboardPlayersPlayerIdResourcesRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/_dashboard/players/$playerId/notes': {
+      id: '/_dashboard/players/$playerId/notes'
+      path: '/players/$playerId/notes'
+      fullPath: '/players/$playerId/notes'
+      preLoaderRoute: typeof DashboardPlayersPlayerIdNotesRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/_dashboard/players/$playerId/edit': {
+      id: '/_dashboard/players/$playerId/edit'
+      path: '/players/$playerId/edit'
+      fullPath: '/players/$playerId/edit'
+      preLoaderRoute: typeof DashboardPlayersPlayerIdEditRouteImport
       parentRoute: typeof DashboardRoute
     }
     '/_dashboard/playbook/plays/create': {
@@ -797,7 +957,6 @@ interface DashboardRouteChildren {
   DashboardGamesCreateRoute: typeof DashboardGamesCreateRoute
   DashboardOrganizationsCreateRoute: typeof DashboardOrganizationsCreateRoute
   DashboardOrganizationsJoinRoute: typeof DashboardOrganizationsJoinRoute
-  DashboardPlayersPlayerIdRoute: typeof DashboardPlayersPlayerIdRoute
   DashboardTeamsTeamIdRoute: typeof DashboardTeamsTeamIdRoute
   DashboardTeamsCreateRoute: typeof DashboardTeamsCreateRoute
   DashboardFilmIndexRoute: typeof DashboardFilmIndexRoute
@@ -809,6 +968,14 @@ interface DashboardRouteChildren {
   DashboardTeamsIndexRoute: typeof DashboardTeamsIndexRoute
   DashboardPlaybookPlaysPlayIdRoute: typeof DashboardPlaybookPlaysPlayIdRoute
   DashboardPlaybookPlaysCreateRoute: typeof DashboardPlaybookPlaysCreateRoute
+  DashboardPlayersPlayerIdEditRoute: typeof DashboardPlayersPlayerIdEditRoute
+  DashboardPlayersPlayerIdNotesRoute: typeof DashboardPlayersPlayerIdNotesRoute
+  DashboardPlayersPlayerIdResourcesRoute: typeof DashboardPlayersPlayerIdResourcesRoute
+  DashboardPlayersPlayerIdStatsRoute: typeof DashboardPlayersPlayerIdStatsRoute
+  DashboardPlayersAssessmentsCreateRoute: typeof DashboardPlayersAssessmentsCreateRoute
+  DashboardPlayersGoalsCreateRoute: typeof DashboardPlayersGoalsCreateRoute
+  DashboardPlayersNotesCreateRoute: typeof DashboardPlayersNotesCreateRoute
+  DashboardPlayersResourcesCreateRoute: typeof DashboardPlayersResourcesCreateRoute
   DashboardPracticeDrillsCreateRoute: typeof DashboardPracticeDrillsCreateRoute
   DashboardPracticeSessionsSessionIdRoute: typeof DashboardPracticeSessionsSessionIdRoute
   DashboardPracticeTemplatesTemplateIdRoute: typeof DashboardPracticeTemplatesTemplateIdRoute
@@ -816,6 +983,7 @@ interface DashboardRouteChildren {
   DashboardScoutingTeamsTeamIdRoute: typeof DashboardScoutingTeamsTeamIdRoute
   DashboardScoutingTeamsCreateRoute: typeof DashboardScoutingTeamsCreateRoute
   DashboardPlaybookPlaysIndexRoute: typeof DashboardPlaybookPlaysIndexRoute
+  DashboardPlayersPlayerIdIndexRoute: typeof DashboardPlayersPlayerIdIndexRoute
   DashboardPracticeDrillsIndexRoute: typeof DashboardPracticeDrillsIndexRoute
   DashboardPracticeScheduleIndexRoute: typeof DashboardPracticeScheduleIndexRoute
   DashboardPracticeTemplatesIndexRoute: typeof DashboardPracticeTemplatesIndexRoute
@@ -831,7 +999,6 @@ const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardGamesCreateRoute: DashboardGamesCreateRoute,
   DashboardOrganizationsCreateRoute: DashboardOrganizationsCreateRoute,
   DashboardOrganizationsJoinRoute: DashboardOrganizationsJoinRoute,
-  DashboardPlayersPlayerIdRoute: DashboardPlayersPlayerIdRoute,
   DashboardTeamsTeamIdRoute: DashboardTeamsTeamIdRoute,
   DashboardTeamsCreateRoute: DashboardTeamsCreateRoute,
   DashboardFilmIndexRoute: DashboardFilmIndexRoute,
@@ -843,6 +1010,16 @@ const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardTeamsIndexRoute: DashboardTeamsIndexRoute,
   DashboardPlaybookPlaysPlayIdRoute: DashboardPlaybookPlaysPlayIdRoute,
   DashboardPlaybookPlaysCreateRoute: DashboardPlaybookPlaysCreateRoute,
+  DashboardPlayersPlayerIdEditRoute: DashboardPlayersPlayerIdEditRoute,
+  DashboardPlayersPlayerIdNotesRoute: DashboardPlayersPlayerIdNotesRoute,
+  DashboardPlayersPlayerIdResourcesRoute:
+    DashboardPlayersPlayerIdResourcesRoute,
+  DashboardPlayersPlayerIdStatsRoute: DashboardPlayersPlayerIdStatsRoute,
+  DashboardPlayersAssessmentsCreateRoute:
+    DashboardPlayersAssessmentsCreateRoute,
+  DashboardPlayersGoalsCreateRoute: DashboardPlayersGoalsCreateRoute,
+  DashboardPlayersNotesCreateRoute: DashboardPlayersNotesCreateRoute,
+  DashboardPlayersResourcesCreateRoute: DashboardPlayersResourcesCreateRoute,
   DashboardPracticeDrillsCreateRoute: DashboardPracticeDrillsCreateRoute,
   DashboardPracticeSessionsSessionIdRoute:
     DashboardPracticeSessionsSessionIdRoute,
@@ -852,6 +1029,7 @@ const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardScoutingTeamsTeamIdRoute: DashboardScoutingTeamsTeamIdRoute,
   DashboardScoutingTeamsCreateRoute: DashboardScoutingTeamsCreateRoute,
   DashboardPlaybookPlaysIndexRoute: DashboardPlaybookPlaysIndexRoute,
+  DashboardPlayersPlayerIdIndexRoute: DashboardPlayersPlayerIdIndexRoute,
   DashboardPracticeDrillsIndexRoute: DashboardPracticeDrillsIndexRoute,
   DashboardPracticeScheduleIndexRoute: DashboardPracticeScheduleIndexRoute,
   DashboardPracticeTemplatesIndexRoute: DashboardPracticeTemplatesIndexRoute,

@@ -218,7 +218,7 @@ const getPlayerPermissions = createServerFn().handler(async () => {
   };
 });
 
-export const Route = createFileRoute('/_dashboard/players/$playerId')({
+export const Route = createFileRoute('/_dashboard/players/$playerId/')({
   component: PlayerDetailsPage,
   loader: async ({ params }) => {
     const [player, permissions] = await Promise.all([
@@ -347,7 +347,10 @@ function PlayerDetailsPage() {
             </Badge>
             {permissions.canEdit && (
               <Button variant="outline" size="sm" asChild>
-                <Link to={`/players/${player.id}/edit`}>
+                <Link
+                  to={'/players/$playerId/edit'}
+                  params={{ playerId: player.id }}
+                >
                   <Edit className="mr-2 h-4 w-4" />
                   Edit Profile
                 </Link>
@@ -415,7 +418,10 @@ function PlayerDetailsPage() {
                 <CardTitle>Active Goals</CardTitle>
                 {permissions.canSetGoals && (
                   <Button variant="outline" size="sm" asChild>
-                    <Link to={`/players/goals/create?playerId=${player.id}`}>
+                    <Link
+                      to={'/players/goals/create'}
+                      search={{ playerId: player.id }}
+                    >
                       <Plus className="mr-2 h-4 w-4" />
                       Set Goal
                     </Link>
@@ -470,7 +476,10 @@ function PlayerDetailsPage() {
                 <CardTitle>Recent Development Notes</CardTitle>
                 {permissions.canCreateNotes && (
                   <Button variant="outline" size="sm" asChild>
-                    <Link to={`/players/notes/create?playerId=${player.id}`}>
+                    <Link
+                      to={'/players/notes/create'}
+                      search={{ playerId: player.id }}
+                    >
                       <Plus className="mr-2 h-4 w-4" />
                       Add Note
                     </Link>
@@ -497,7 +506,10 @@ function PlayerDetailsPage() {
                           {note.priority}
                         </Badge>
                         <Button variant="ghost" size="sm" asChild>
-                          <Link to={`/players/${player.id}/notes`}>
+                          <Link
+                            to={'/players/$playerId/notes'}
+                            params={{ playerId: player.id }}
+                          >
                             View All
                           </Link>
                         </Button>
@@ -573,7 +585,10 @@ function PlayerDetailsPage() {
                   className="w-full justify-start"
                   asChild
                 >
-                  <Link to={`/players/notes/create?playerId=${player.id}`}>
+                  <Link
+                    to={'/players/notes/create'}
+                    search={{ playerId: player.id }}
+                  >
                     <FileText className="mr-2 h-4 w-4" />
                     Add Development Note
                   </Link>
@@ -587,7 +602,8 @@ function PlayerDetailsPage() {
                   asChild
                 >
                   <Link
-                    to={`/players/assessments/create?playerId=${player.id}`}
+                    to={'/players/assessments/create'}
+                    search={{ playerId: player.id }}
                   >
                     <TrendingUp className="mr-2 h-4 w-4" />
                     Create Assessment
@@ -601,7 +617,10 @@ function PlayerDetailsPage() {
                   className="w-full justify-start"
                   asChild
                 >
-                  <Link to={`/players/resources/create?playerId=${player.id}`}>
+                  <Link
+                    to={'/players/resources/create'}
+                    search={{ playerId: player.id }}
+                  >
                     <BookOpen className="mr-2 h-4 w-4" />
                     Assign Resource
                   </Link>
@@ -614,7 +633,10 @@ function PlayerDetailsPage() {
                   className="w-full justify-start"
                   asChild
                 >
-                  <Link to={`/players/goals/create?playerId=${player.id}`}>
+                  <Link
+                    to={'/players/goals/create'}
+                    search={{ playerId: player.id }}
+                  >
                     <Target className="mr-2 h-4 w-4" />
                     Set Goal
                   </Link>
@@ -626,7 +648,10 @@ function PlayerDetailsPage() {
                 className="w-full justify-start"
                 asChild
               >
-                <Link to={`/players/${player.id}/stats`}>
+                <Link
+                  to={'/players/$playerId/stats'}
+                  params={{ playerId: player.id }}
+                >
                   <Trophy className="mr-2 h-4 w-4" />
                   Detailed Stats
                 </Link>
@@ -665,7 +690,10 @@ function PlayerDetailsPage() {
                       className="w-full"
                       asChild
                     >
-                      <Link to={`/players/${player.id}/resources`}>
+                      <Link
+                        to={'/players/$playerId/resources'}
+                        params={{ playerId: player.id }}
+                      >
                         View All ({player.assignedResources.length})
                       </Link>
                     </Button>
