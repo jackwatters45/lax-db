@@ -161,24 +161,26 @@ const mockSessionData = {
 };
 
 // Server function for getting session data
-const getSessionData = createServerFn().handler(async (sessionId: string) => {
-  // TODO: Replace with actual API call
-  // const { PracticeAPI } = await import('@lax-db/core/practice/sessions');
-  // const request = getWebRequest();
-  // return await PracticeAPI.getSession(teamId, sessionId, request.headers);
+const getSessionData = createServerFn({ method: 'GET' })
+  .validator((sessionId: string) => sessionId)
+  .handler(async ({ data: sessionId }) => {
+    // TODO: Replace with actual API call
+    // const { PracticeAPI } = await import('@lax-db/core/practice/sessions');
+    // const request = getWebRequest();
+    // return await PracticeAPI.getSession(teamId, sessionId, request.headers);
 
-  console.log('Getting session data for:', sessionId);
-  return mockSessionData;
-});
+    console.log('Getting session data for:', sessionId);
+    return mockSessionData;
+  });
 
 // Server function for updating session
-const updateSession = createServerFn().handler(
-  async (sessionId: string, updates: any) => {
+const updateSession = createServerFn({ method: 'POST' })
+  .validator((data: { sessionId: string; updates: any }) => data)
+  .handler(async ({ data: { sessionId, updates } }) => {
     // TODO: Replace with actual API call
     console.log('Updating session:', sessionId, updates);
     return { success: true };
-  },
-);
+  });
 
 // Server function for permissions
 const getSessionPermissions = createServerFn().handler(async () => {
@@ -196,7 +198,7 @@ export const Route = createFileRoute(
   component: PracticeSession,
   loader: async ({ params }) => {
     const [data, permissions] = await Promise.all([
-      getSessionData(params.sessionId),
+      getSessionData({ data: params.sessionId }),
       getSessionPermissions(),
     ]);
 
@@ -257,11 +259,16 @@ function PracticeSession() {
 
   const handleStartDrill = async (drillId: string) => {
     // Update drill status to in_progress
-    await updateSession(session.id, {
-      drillUpdates: {
-        [drillId]: {
-          status: 'in_progress',
-          startTime: new Date(),
+    await updateSession({
+      data: {
+        sessionId: session.id,
+        updates: {
+          drillUpdates: {
+            [drillId]: {
+              status: 'in_progress',
+              startTime: new Date(),
+            },
+          },
         },
       },
     });
@@ -270,11 +277,16 @@ function PracticeSession() {
 
   const handleCompleteDrill = async (drillId: string) => {
     // Update drill status to completed
-    await updateSession(session.id, {
-      drillUpdates: {
-        [drillId]: {
-          status: 'completed',
-          endTime: new Date(),
+    await updateSession({
+      data: {
+        sessionId: session.id,
+        updates: {
+          drillUpdates: {
+            [drillId]: {
+              status: 'completed',
+              endTime: new Date(),
+            },
+          },
         },
       },
     });
@@ -283,9 +295,14 @@ function PracticeSession() {
 
   const handleEndSession = async () => {
     // End the practice session
-    await updateSession(session.id, {
-      status: 'completed',
-      actualEndTime: new Date(),
+    await updateSession({
+      data: {
+        sessionId: session.id,
+        updates: {
+          status: 'completed',
+          actualEndTime: new Date(),
+        },
+      },
     });
   };
 
@@ -515,8 +532,8 @@ function PracticeSession() {
                 <div>
                   <h4 className="mb-2 font-medium">Objectives</h4>
                   <ul className="space-y-1 text-sm">
-                    {session.objectives.map((objective, index) => (
-                      <li key={index} className="flex items-start gap-2">
+                    {session.objectives.map((objective) => (
+                      <li key={objective} className="flex items-start gap-2">
                         <span className="text-muted-foreground">•</span>
                         {objective}
                       </li>

@@ -131,9 +131,11 @@ function CreateOpposingTeamPage() {
 
   const handleInputChange = (
     field: keyof CreateOpposingTeamInput,
-    value: string,
+    value: string | undefined,
   ) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    if (value !== undefined) {
+      setFormData((prev) => ({ ...prev, [field]: value }));
+    }
   };
 
   return (

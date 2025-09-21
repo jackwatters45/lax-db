@@ -177,9 +177,9 @@ function ScoutingDashboard() {
           )}
           {permissions.canCreateReports && (
             <Button asChild>
-              <Link to="/scouting/reports/create">
+              <Link to="/scouting/teams/create">
                 <Plus className="mr-2 h-4 w-4" />
-                New Report
+                Add Team
               </Link>
             </Button>
           )}
@@ -280,7 +280,7 @@ function ScoutingDashboard() {
             <div className="flex items-center justify-between">
               <CardTitle>Recent Scouting Reports</CardTitle>
               <Button variant="ghost" size="sm" asChild>
-                <Link to="/scouting/reports">View All</Link>
+                <Link to="/scouting/teams">View All</Link>
               </Button>
             </div>
           </CardHeader>
@@ -308,7 +308,7 @@ function ScoutingDashboard() {
                       </div>
                     </div>
                     <Button variant="ghost" size="sm" asChild>
-                      <Link to={`/scouting/reports/${report.id}`}>
+                      <Link to="/scouting/teams" params={{}}>
                         <Eye className="h-3 w-3" />
                       </Link>
                     </Button>
@@ -353,7 +353,10 @@ function ScoutingDashboard() {
                       <Badge variant="destructive">No Reports</Badge>
                     )}
                     <Button variant="ghost" size="sm" asChild>
-                      <Link to={`/scouting/teams/${opponent.id}`}>
+                      <Link
+                        to="/scouting/teams/$teamId"
+                        params={{ teamId: opponent.id }}
+                      >
                         <Eye className="h-3 w-3" />
                       </Link>
                     </Button>
@@ -378,7 +381,7 @@ function ScoutingDashboard() {
                 className="h-auto flex-col gap-2 p-4"
                 asChild
               >
-                <Link to="/scouting/reports/create">
+                <Link to="/scouting/teams/create">
                   <FileText className="h-6 w-6" />
                   <div className="text-center">
                     <div className="font-medium">Create Report</div>

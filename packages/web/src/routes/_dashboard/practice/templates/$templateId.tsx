@@ -2,7 +2,6 @@ import { createFileRoute } from '@tanstack/react-router';
 import {
   ArrowLeft,
   Calendar,
-  ChevronRight,
   Clock,
   Copy,
   Edit,
@@ -12,7 +11,6 @@ import {
   Trash2,
   Users,
 } from 'lucide-react';
-import { useState } from 'react';
 import { Badge } from '../../../../components/ui/badge';
 import { Button } from '../../../../components/ui/button';
 import {
@@ -178,8 +176,6 @@ const mockTemplate: TemplateDetail = {
 };
 
 function TemplateDetailPage() {
-  const [showScheduleModal, setShowScheduleModal] = useState(false);
-
   const template = mockTemplate;
   const totalDuration = template.drills.reduce(
     (sum, drill) => sum + drill.duration,

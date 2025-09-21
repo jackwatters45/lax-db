@@ -269,14 +269,14 @@ function PracticeSchedule() {
 
       {/* Calendar Grid */}
       <div className="mb-6 grid grid-cols-7 gap-4">
-        {weekDays.map((day, index) => {
+        {weekDays.map((day) => {
           const practices = getPracticesForDate(day);
           const isToday = day.toDateString() === today.toDateString();
           const isPast = day < today && !isToday;
 
           return (
             <Card
-              key={index}
+              key={day.getTime()}
               className={`min-h-[200px] ${isToday ? 'ring-2 ring-primary' : ''}`}
             >
               <CardHeader className="pb-3">

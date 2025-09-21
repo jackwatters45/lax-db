@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import {
   Calendar,
   Clock,
@@ -11,22 +11,16 @@ import {
   Users,
 } from 'lucide-react';
 import { useState } from 'react';
-import { Badge } from '../../../../components/ui/badge';
-import { Button } from '../../../../components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '../../../../components/ui/card';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '../../../../components/ui/dropdown-menu';
-import { Input } from '../../../../components/ui/input';
+} from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 
 export const Route = createFileRoute('/_dashboard/practice/templates/')({
   component: PracticeTemplatesPage,
