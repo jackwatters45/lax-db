@@ -177,15 +177,17 @@ const mockPlayData = {
 };
 
 // Server function for getting play details
-const getPlayDetails = createServerFn().handler(async (playId: string) => {
-  // TODO: Replace with actual API call
-  // const { PlaybookAPI } = await import('@lax-db/core/playbook/index');
-  // const request = getWebRequest();
-  // return await PlaybookAPI.getPlayDetails(teamId, playId, request.headers);
+const getPlayDetails = createServerFn({ method: 'GET' })
+  .validator((data: { playId: string }) => data)
+  .handler(async ({ data }) => {
+    // TODO: Replace with actual API call
+    // const { PlaybookAPI } = await import('@lax-db/core/playbook/index');
+    // const request = getWebRequest();
+    // return await PlaybookAPI.getPlayDetails(teamId, data.playId, request.headers);
 
-  console.log('Getting play details for:', playId);
-  return mockPlayData;
-});
+    console.log('Getting play details for:', data.playId);
+    return mockPlayData;
+  });
 
 // Server function for permissions
 const getPlayPermissions = createServerFn().handler(async () => {
@@ -201,7 +203,7 @@ export const Route = createFileRoute('/_dashboard/playbook/plays/$playId')({
   component: PlayDetails,
   loader: async ({ params }) => {
     const [data, permissions] = await Promise.all([
-      getPlayDetails(params.playId),
+      getPlayDetails({ data: { playId: params.playId } }),
       getPlayPermissions(),
     ]);
 
@@ -279,7 +281,15 @@ function PlayDetails() {
       <div className="mb-8 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Button variant="outline" size="sm" asChild>
-            <Link to="/playbook/plays">
+            <Link
+              to="/playbook/plays"
+              search={{
+                search: '',
+                category: 'All',
+                difficulty: 'All',
+                favorites: false,
+              }}
+            >
               <ArrowLeft className="h-4 w-4" />
             </Link>
           </Button>

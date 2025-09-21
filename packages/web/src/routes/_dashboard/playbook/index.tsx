@@ -333,7 +333,17 @@ function PlaybookDashboard() {
               <div className="flex items-center justify-between">
                 <CardTitle>Recently Used Plays</CardTitle>
                 <Button variant="ghost" size="sm" asChild>
-                  <Link to="/playbook/plays">View All</Link>
+                  <Link
+                    to="/playbook/plays"
+                    search={{
+                      search: '',
+                      category: 'All',
+                      difficulty: 'All',
+                      favorites: false,
+                    }}
+                  >
+                    View All
+                  </Link>
                 </Button>
               </div>
             </CardHeader>
@@ -386,7 +396,12 @@ function PlaybookDashboard() {
                         {play.difficultyLevel}
                       </Badge>
                       <Button variant="ghost" size="sm" asChild>
-                        <Link to={`/playbook/plays/${play.id}`}>View</Link>
+                        <Link
+                          to={'/playbook/plays/$playId'}
+                          params={{ playId: play.id }}
+                        >
+                          View
+                        </Link>
                       </Button>
                     </div>
                   </div>
@@ -465,9 +480,9 @@ function PlaybookDashboard() {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {data.playCategories.map((category, index) => (
+                {data.playCategories.map((category) => (
                   <div
-                    key={index}
+                    key={category.name}
                     className="flex items-center justify-between"
                   >
                     <div className="flex items-center gap-3">
@@ -551,8 +566,8 @@ function PlaybookDashboard() {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {data.upcomingEvents.map((event, index) => (
-                  <div key={index} className="rounded border p-3">
+                {data.upcomingEvents.map((event) => (
+                  <div key={event.title} className="rounded border p-3">
                     <div className="mb-2 flex items-center gap-2">
                       <Calendar className="h-4 w-4 text-muted-foreground" />
                       <span className="font-medium text-sm">{event.title}</span>
@@ -561,8 +576,8 @@ function PlaybookDashboard() {
                       {formatDate(event.date)}
                     </div>
                     <div className="space-y-1">
-                      {event.plays.slice(0, 2).map((play, playIndex) => (
-                        <div key={playIndex} className="text-xs">
+                      {event.plays.slice(0, 2).map((play) => (
+                        <div key={play} className="text-xs">
                           • {play}
                         </div>
                       ))}
@@ -602,7 +617,15 @@ function PlaybookDashboard() {
                 className="w-full justify-start"
                 asChild
               >
-                <Link to="/playbook/plays?filter=favorites">
+                <Link
+                  to="/playbook/plays"
+                  search={{
+                    search: '',
+                    category: 'All',
+                    difficulty: 'All',
+                    favorites: true,
+                  }}
+                >
                   <Star className="mr-2 h-4 w-4" />
                   View Favorite Plays
                 </Link>
