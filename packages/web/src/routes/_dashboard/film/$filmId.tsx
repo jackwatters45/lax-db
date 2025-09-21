@@ -1,37 +1,55 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { createFileRoute } from '@tanstack/react-router';
-import { Badge } from '../../../components/ui/badge';
-import { Button } from '../../../components/ui/button';
+import {
+  ArrowLeft,
+  Bookmark,
+  Clock,
+  Download,
+  Edit,
+  Maximize,
+  MessageSquare,
+  Pause,
+  Play,
+  Plus,
+  Settings,
+  Share,
+  SkipBack,
+  SkipForward,
+  Tag,
+  Target,
+  Trash2,
+  Users,
+  Volume2,
+  VolumeX,
+} from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '../../../components/ui/card';
-import { Input } from '../../../components/ui/input';
+} from '@/components/ui/card';
 import {
-  ArrowLeft,
-  Play,
-  Pause,
-  SkipBack,
-  SkipForward,
-  Volume2,
-  VolumeX,
-  Maximize,
-  Settings,
-  Plus,
-  Tag,
-  Clock,
-  Users,
-  Target,
-  MessageSquare,
-  Bookmark,
-  Download,
-  Share,
-  Edit,
-  Trash2,
-} from 'lucide-react';
-import { useState, useRef, useEffect } from 'react';
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 export const Route = createFileRoute('/_dashboard/film/$filmId')({
   component: FilmViewerPage,
@@ -172,6 +190,25 @@ const mockFilm: FilmData = {
   ],
 };
 
+// Event form schema
+const eventFormSchema = z.object({
+  type: z.enum([
+    'goal',
+    'assist',
+    'save',
+    'penalty',
+    'substitution',
+    'timeout',
+    'highlight',
+    'note',
+  ]),
+  player: z.string().optional(),
+  description: z.string().min(1, 'Description is required'),
+  tags: z.string().optional(),
+});
+
+type EventFormValues = z.infer<typeof eventFormSchema>;
+
 function FilmViewerPage() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -179,12 +216,17 @@ function FilmViewerPage() {
   const [isMuted, setIsMuted] = useState(false);
   const [playbackRate, setPlaybackRate] = useState(1);
   const [showEventForm, setShowEventForm] = useState(false);
-  const [selectedEventType, setSelectedEventType] =
-    useState<FilmEvent['type']>('note');
-  const [eventDescription, setEventDescription] = useState('');
-  const [eventPlayer, setEventPlayer] = useState('');
-  const [eventTags, setEventTags] = useState('');
   const [hoveredEvent, setHoveredEvent] = useState<string | null>(null);
+
+  const eventForm = useForm<EventFormValues>({
+    resolver: zodResolver(eventFormSchema),
+    defaultValues: {
+      type: 'note',
+      player: '',
+      description: '',
+      tags: '',
+    },
+  });
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
@@ -246,30 +288,28 @@ function FilmViewerPage() {
     }
   };
 
-  const addEvent = () => {
-    if (!eventDescription.trim()) return;
-
+  const addEvent = (values: EventFormValues) => {
     const newEvent: FilmEvent = {
       id: `e${Date.now()}`,
       timestamp: currentTime,
-      type: selectedEventType,
-      player: eventPlayer || undefined,
-      description: eventDescription,
+      type: values.type,
+      player: values.player || undefined,
+      description: values.description,
       quarter: getQuarter(currentTime),
       createdBy: 'Current User',
       createdAt: new Date().toISOString(),
-      tags: eventTags
-        .split(',')
-        .map((tag) => tag.trim())
-        .filter(Boolean),
+      tags: values.tags
+        ? values.tags
+            .split(',')
+            .map((tag) => tag.trim())
+            .filter(Boolean)
+        : [],
     };
 
     console.log('Adding event:', newEvent);
 
     // Reset form
-    setEventDescription('');
-    setEventPlayer('');
-    setEventTags('');
+    eventForm.reset();
     setShowEventForm(false);
   };
 
@@ -339,7 +379,7 @@ function FilmViewerPage() {
           Back to Library
         </Button>
         <div className="flex-1">
-          <h1 className="text-2xl font-bold">{film.title}</h1>
+          <h1 className="font-bold text-2xl">{film.title}</h1>
           <p className="text-muted-foreground">
             {new Date(film.gameDate).toLocaleDateString()} • vs {film.opponent}{' '}
             • {film.gameType}
@@ -358,13 +398,13 @@ function FilmViewerPage() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-4">
-        <div className="lg:col-span-3 space-y-4">
+        <div className="space-y-4 lg:col-span-3">
           <Card>
             <CardContent className="p-0">
-              <div className="relative bg-black aspect-video rounded-t-lg overflow-hidden">
+              <div className="relative aspect-video overflow-hidden rounded-t-lg bg-black">
                 <div className="absolute inset-0 flex items-center justify-center text-white">
                   <div className="text-center">
-                    <Play className="mx-auto h-16 w-16 mb-4" />
+                    <Play className="mx-auto mb-4 h-16 w-16" />
                     <p className="text-lg">Video Player Placeholder</p>
                     <p className="text-sm opacity-75">
                       Click controls below to simulate playback
@@ -373,11 +413,17 @@ function FilmViewerPage() {
                 </div>
 
                 {/* Timeline with events */}
-                <div className="absolute bottom-0 left-0 right-0 p-4">
+                <div className="absolute right-0 bottom-0 left-0 p-4">
                   <div className="relative">
                     <div
                       ref={progressRef}
-                      className="w-full h-2 bg-black/50 rounded cursor-pointer"
+                      className="h-2 w-full cursor-pointer rounded bg-black/50"
+                      role="slider"
+                      tabIndex={0}
+                      aria-label="Video progress"
+                      aria-valuemin={0}
+                      aria-valuemax={film.duration}
+                      aria-valuenow={currentTime}
                       onClick={(e) => {
                         if (progressRef.current) {
                           const rect =
@@ -386,30 +432,46 @@ function FilmViewerPage() {
                           seekTo(percent * film.duration);
                         }
                       }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'ArrowLeft') {
+                          seekTo(Math.max(0, currentTime - 10));
+                        } else if (e.key === 'ArrowRight') {
+                          seekTo(Math.min(film.duration, currentTime + 10));
+                        }
+                      }}
                     >
                       <div
-                        className="h-full bg-red-500 rounded"
+                        className="h-full rounded bg-red-500"
                         style={{ width: `${progressPercentage}%` }}
                       />
 
                       {/* Event markers */}
                       {film.events.map((event) => (
-                        <div
+                        <button
                           key={event.id}
-                          className="absolute top-0 h-full w-1 cursor-pointer transform -translate-x-0.5"
+                          className="-translate-x-0.5 absolute top-0 h-full w-1 transform cursor-pointer"
                           style={{
                             left: `${(event.timestamp / film.duration) * 100}%`,
                           }}
+                          type="button"
+                          tabIndex={0}
+                          aria-label={`Jump to ${event.type} at ${formatTime(event.timestamp)}`}
                           onMouseEnter={() => setHoveredEvent(event.id)}
                           onMouseLeave={() => setHoveredEvent(null)}
                           onClick={() => seekTo(event.timestamp)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              seekTo(event.timestamp);
+                            }
+                          }}
                         >
                           <div
                             className={`h-full w-1 ${getEventTypeColor(event.type).includes('green') ? 'bg-green-400' : getEventTypeColor(event.type).includes('blue') ? 'bg-blue-400' : getEventTypeColor(event.type).includes('red') ? 'bg-red-400' : getEventTypeColor(event.type).includes('orange') ? 'bg-orange-400' : getEventTypeColor(event.type).includes('purple') ? 'bg-purple-400' : getEventTypeColor(event.type).includes('yellow') ? 'bg-yellow-400' : getEventTypeColor(event.type).includes('pink') ? 'bg-pink-400' : 'bg-gray-400'}`}
                           />
 
                           {hoveredEvent === event.id && (
-                            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/90 text-white text-xs p-2 rounded whitespace-nowrap z-10">
+                            <div className="-translate-x-1/2 absolute bottom-4 left-1/2 z-10 transform whitespace-nowrap rounded bg-black/90 p-2 text-white text-xs">
                               <div className="font-medium">
                                 {event.type.charAt(0).toUpperCase() +
                                   event.type.slice(1)}
@@ -418,14 +480,14 @@ function FilmViewerPage() {
                               {event.player && <div>{event.player}</div>}
                             </div>
                           )}
-                        </div>
+                        </button>
                       ))}
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="p-4 bg-black text-white">
+              <div className="bg-black p-4 text-white">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     <Button
@@ -476,7 +538,9 @@ function FilmViewerPage() {
                         max="1"
                         step="0.1"
                         value={isMuted ? 0 : volume}
-                        onChange={(e) => setVolume(parseFloat(e.target.value))}
+                        onChange={(e) =>
+                          setVolume(Number.parseFloat(e.target.value))
+                        }
                         className="w-20"
                       />
                     </div>
@@ -490,9 +554,9 @@ function FilmViewerPage() {
                     <select
                       value={playbackRate}
                       onChange={(e) =>
-                        changePlaybackRate(parseFloat(e.target.value))
+                        changePlaybackRate(Number.parseFloat(e.target.value))
                       }
-                      className="bg-white/20 text-white text-sm rounded px-2 py-1 border-0"
+                      className="rounded border-0 bg-white/20 px-2 py-1 text-sm text-white"
                     >
                       <option value={0.25}>0.25x</option>
                       <option value={0.5}>0.5x</option>
@@ -538,75 +602,110 @@ function FilmViewerPage() {
               </div>
             </CardHeader>
             {showEventForm && (
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-sm font-medium">Event Type</label>
-                    <select
-                      value={selectedEventType}
-                      onChange={(e) =>
-                        setSelectedEventType(
-                          e.target.value as FilmEvent['type'],
-                        )
-                      }
-                      className="w-full mt-1 px-3 py-2 border border-input bg-background rounded-md text-sm"
-                    >
-                      <option value="goal">Goal</option>
-                      <option value="assist">Assist</option>
-                      <option value="save">Save</option>
-                      <option value="penalty">Penalty</option>
-                      <option value="substitution">Substitution</option>
-                      <option value="timeout">Timeout</option>
-                      <option value="highlight">Highlight</option>
-                      <option value="note">Note</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium">
-                      Player (Optional)
-                    </label>
-                    <Input
-                      placeholder="Player name"
-                      value={eventPlayer}
-                      onChange={(e) => setEventPlayer(e.target.value)}
-                      className="mt-1"
+              <CardContent>
+                <Form {...eventForm}>
+                  <form
+                    onSubmit={eventForm.handleSubmit(addEvent)}
+                    className="space-y-4"
+                  >
+                    <div className="grid grid-cols-2 gap-4">
+                      <FormField
+                        control={eventForm.control}
+                        name="type"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Event Type</FormLabel>
+                            <Select
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                            >
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select event type" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="goal">Goal</SelectItem>
+                                <SelectItem value="assist">Assist</SelectItem>
+                                <SelectItem value="save">Save</SelectItem>
+                                <SelectItem value="penalty">Penalty</SelectItem>
+                                <SelectItem value="substitution">
+                                  Substitution
+                                </SelectItem>
+                                <SelectItem value="timeout">Timeout</SelectItem>
+                                <SelectItem value="highlight">
+                                  Highlight
+                                </SelectItem>
+                                <SelectItem value="note">Note</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={eventForm.control}
+                        name="player"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Player (Optional)</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Player name" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <FormField
+                      control={eventForm.control}
+                      name="description"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Description</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="Describe what happened..."
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
-                  </div>
-                </div>
-                <div>
-                  <label className="text-sm font-medium">Description</label>
-                  <Input
-                    placeholder="Describe what happened..."
-                    value={eventDescription}
-                    onChange={(e) => setEventDescription(e.target.value)}
-                    className="mt-1"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium">
-                    Tags (comma-separated)
-                  </label>
-                  <Input
-                    placeholder="fast-break, clutch, highlight-reel"
-                    value={eventTags}
-                    onChange={(e) => setEventTags(e.target.value)}
-                    className="mt-1"
-                  />
-                </div>
-                <div className="flex gap-2">
-                  <Button
-                    onClick={addEvent}
-                    disabled={!eventDescription.trim()}
-                  >
-                    Add Event at {formatTime(currentTime)}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={() => setShowEventForm(false)}
-                  >
-                    Cancel
-                  </Button>
-                </div>
+                    <FormField
+                      control={eventForm.control}
+                      name="tags"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Tags (comma-separated)</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="fast-break, clutch, highlight-reel"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <div className="flex gap-2">
+                      <Button
+                        type="submit"
+                        disabled={eventForm.formState.isSubmitting}
+                      >
+                        Add Event at {formatTime(currentTime)}
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setShowEventForm(false)}
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  </form>
+                </Form>
               </CardContent>
             )}
           </Card>
@@ -623,16 +722,25 @@ function FilmViewerPage() {
                 {film.events.length} events • Click to jump to timestamp
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-3 max-h-96 overflow-y-auto">
+            <CardContent className="max-h-96 space-y-3 overflow-y-auto">
               {film.events
                 .sort((a, b) => a.timestamp - b.timestamp)
                 .map((event) => (
-                  <div
+                  <button
                     key={event.id}
-                    className="p-3 border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors"
+                    className="cursor-pointer rounded-lg border p-3 transition-colors hover:bg-muted/50"
+                    type="button"
+                    tabIndex={0}
+                    aria-label={`Jump to ${event.type}: ${event.description}`}
                     onClick={() => seekTo(event.timestamp)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        seekTo(event.timestamp);
+                      }
+                    }}
                   >
-                    <div className="flex items-start gap-2 mb-2">
+                    <div className="mb-2 flex items-start gap-2">
                       <Badge
                         className={`text-xs ${getEventTypeColor(event.type)}`}
                       >
@@ -649,18 +757,18 @@ function FilmViewerPage() {
                       </Badge>
                     </div>
 
-                    <p className="text-sm font-medium mb-1">
+                    <p className="mb-1 font-medium text-sm">
                       {event.description}
                     </p>
 
                     {event.player && (
-                      <p className="text-xs text-muted-foreground mb-1">
+                      <p className="mb-1 text-muted-foreground text-xs">
                         Player: {event.player}
                       </p>
                     )}
 
                     {event.tags.length > 0 && (
-                      <div className="flex flex-wrap gap-1 mb-2">
+                      <div className="mb-2 flex flex-wrap gap-1">
                         {event.tags.map((tag) => (
                           <Badge
                             key={tag}
@@ -673,7 +781,7 @@ function FilmViewerPage() {
                       </div>
                     )}
 
-                    <div className="flex items-center justify-between text-xs text-muted-foreground">
+                    <div className="flex items-center justify-between text-muted-foreground text-xs">
                       <span>by {event.createdBy}</span>
                       <div className="flex gap-1">
                         <Button
@@ -692,12 +800,12 @@ function FilmViewerPage() {
                         </Button>
                       </div>
                     </div>
-                  </div>
+                  </button>
                 ))}
 
               {film.events.length === 0 && (
-                <div className="text-center py-8 text-muted-foreground">
-                  <MessageSquare className="mx-auto h-8 w-8 mb-2" />
+                <div className="py-8 text-center text-muted-foreground">
+                  <MessageSquare className="mx-auto mb-2 h-8 w-8" />
                   <p className="text-sm">No events yet</p>
                   <p className="text-xs">
                     Add events to mark important moments
@@ -736,7 +844,7 @@ function FilmViewerPage() {
                   Uploaded by:
                 </span>
                 <div className="font-medium">{film.uploadedBy}</div>
-                <div className="text-xs text-muted-foreground">
+                <div className="text-muted-foreground text-xs">
                   {new Date(film.uploadDate).toLocaleDateString()}
                 </div>
               </div>
@@ -744,7 +852,7 @@ function FilmViewerPage() {
               {film.tags.length > 0 && (
                 <div>
                   <span className="text-muted-foreground text-sm">Tags:</span>
-                  <div className="flex flex-wrap gap-1 mt-1">
+                  <div className="mt-1 flex flex-wrap gap-1">
                     {film.tags.map((tag) => (
                       <Badge key={tag} variant="secondary" className="text-xs">
                         {tag}
@@ -758,7 +866,7 @@ function FilmViewerPage() {
                 <span className="text-muted-foreground text-sm">
                   Description:
                 </span>
-                <p className="text-sm mt-1">{film.description}</p>
+                <p className="mt-1 text-sm">{film.description}</p>
               </div>
             </CardContent>
           </Card>

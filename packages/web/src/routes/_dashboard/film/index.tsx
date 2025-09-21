@@ -1,4 +1,17 @@
 import { createFileRoute } from '@tanstack/react-router';
+import {
+  Calendar,
+  Download,
+  Eye,
+  FileVideo,
+  MoreHorizontal,
+  Play,
+  PlayCircle,
+  Search,
+  Upload,
+  Users,
+} from 'lucide-react';
+import { useState } from 'react';
 import { Badge } from '../../../components/ui/badge';
 import { Button } from '../../../components/ui/button';
 import {
@@ -9,21 +22,6 @@ import {
   CardTitle,
 } from '../../../components/ui/card';
 import { Input } from '../../../components/ui/input';
-import {
-  Upload,
-  Play,
-  Search,
-  Filter,
-  Calendar,
-  Clock,
-  Users,
-  Eye,
-  Download,
-  MoreHorizontal,
-  PlayCircle,
-  FileVideo,
-} from 'lucide-react';
-import { useState } from 'react';
 
 export const Route = createFileRoute('/_dashboard/film/')({
   component: FilmLibraryPage,
