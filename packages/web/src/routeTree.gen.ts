@@ -26,6 +26,10 @@ import { Route as DashboardGamesIndexRouteImport } from './routes/_dashboard/gam
 import { Route as DashboardFilmIndexRouteImport } from './routes/_dashboard/film/index'
 import { Route as DashboardTeamsCreateRouteImport } from './routes/_dashboard/teams/create'
 import { Route as DashboardTeamsTeamIdRouteImport } from './routes/_dashboard/teams/$teamId'
+import { Route as DashboardPlaybookPracticeRouteImport } from './routes/_dashboard/playbook/practice'
+import { Route as DashboardPlaybookCategoriesRouteImport } from './routes/_dashboard/playbook/categories'
+import { Route as DashboardPlaybookAssignmentsRouteImport } from './routes/_dashboard/playbook/assignments'
+import { Route as DashboardPlaybookAnalyticsRouteImport } from './routes/_dashboard/playbook/analytics'
 import { Route as DashboardOrganizationsJoinRouteImport } from './routes/_dashboard/organizations/join'
 import { Route as DashboardOrganizationsCreateRouteImport } from './routes/_dashboard/organizations/create'
 import { Route as DashboardGamesCreateRouteImport } from './routes/_dashboard/games/create'
@@ -133,6 +137,30 @@ const DashboardTeamsTeamIdRoute = DashboardTeamsTeamIdRouteImport.update({
   path: '/teams/$teamId',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardPlaybookPracticeRoute =
+  DashboardPlaybookPracticeRouteImport.update({
+    id: '/playbook/practice',
+    path: '/playbook/practice',
+    getParentRoute: () => DashboardRoute,
+  } as any)
+const DashboardPlaybookCategoriesRoute =
+  DashboardPlaybookCategoriesRouteImport.update({
+    id: '/playbook/categories',
+    path: '/playbook/categories',
+    getParentRoute: () => DashboardRoute,
+  } as any)
+const DashboardPlaybookAssignmentsRoute =
+  DashboardPlaybookAssignmentsRouteImport.update({
+    id: '/playbook/assignments',
+    path: '/playbook/assignments',
+    getParentRoute: () => DashboardRoute,
+  } as any)
+const DashboardPlaybookAnalyticsRoute =
+  DashboardPlaybookAnalyticsRouteImport.update({
+    id: '/playbook/analytics',
+    path: '/playbook/analytics',
+    getParentRoute: () => DashboardRoute,
+  } as any)
 const DashboardOrganizationsJoinRoute =
   DashboardOrganizationsJoinRouteImport.update({
     id: '/organizations/join',
@@ -321,6 +349,10 @@ export interface FileRoutesByFullPath {
   '/games/create': typeof DashboardGamesCreateRoute
   '/organizations/create': typeof DashboardOrganizationsCreateRoute
   '/organizations/join': typeof DashboardOrganizationsJoinRoute
+  '/playbook/analytics': typeof DashboardPlaybookAnalyticsRoute
+  '/playbook/assignments': typeof DashboardPlaybookAssignmentsRoute
+  '/playbook/categories': typeof DashboardPlaybookCategoriesRoute
+  '/playbook/practice': typeof DashboardPlaybookPracticeRoute
   '/teams/$teamId': typeof DashboardTeamsTeamIdRoute
   '/teams/create': typeof DashboardTeamsCreateRoute
   '/film': typeof DashboardFilmIndexRoute
@@ -366,6 +398,10 @@ export interface FileRoutesByTo {
   '/games/create': typeof DashboardGamesCreateRoute
   '/organizations/create': typeof DashboardOrganizationsCreateRoute
   '/organizations/join': typeof DashboardOrganizationsJoinRoute
+  '/playbook/analytics': typeof DashboardPlaybookAnalyticsRoute
+  '/playbook/assignments': typeof DashboardPlaybookAssignmentsRoute
+  '/playbook/categories': typeof DashboardPlaybookCategoriesRoute
+  '/playbook/practice': typeof DashboardPlaybookPracticeRoute
   '/teams/$teamId': typeof DashboardTeamsTeamIdRoute
   '/teams/create': typeof DashboardTeamsCreateRoute
   '/film': typeof DashboardFilmIndexRoute
@@ -413,6 +449,10 @@ export interface FileRoutesById {
   '/_dashboard/games/create': typeof DashboardGamesCreateRoute
   '/_dashboard/organizations/create': typeof DashboardOrganizationsCreateRoute
   '/_dashboard/organizations/join': typeof DashboardOrganizationsJoinRoute
+  '/_dashboard/playbook/analytics': typeof DashboardPlaybookAnalyticsRoute
+  '/_dashboard/playbook/assignments': typeof DashboardPlaybookAssignmentsRoute
+  '/_dashboard/playbook/categories': typeof DashboardPlaybookCategoriesRoute
+  '/_dashboard/playbook/practice': typeof DashboardPlaybookPracticeRoute
   '/_dashboard/teams/$teamId': typeof DashboardTeamsTeamIdRoute
   '/_dashboard/teams/create': typeof DashboardTeamsCreateRoute
   '/_dashboard/film/': typeof DashboardFilmIndexRoute
@@ -460,6 +500,10 @@ export interface FileRouteTypes {
     | '/games/create'
     | '/organizations/create'
     | '/organizations/join'
+    | '/playbook/analytics'
+    | '/playbook/assignments'
+    | '/playbook/categories'
+    | '/playbook/practice'
     | '/teams/$teamId'
     | '/teams/create'
     | '/film'
@@ -505,6 +549,10 @@ export interface FileRouteTypes {
     | '/games/create'
     | '/organizations/create'
     | '/organizations/join'
+    | '/playbook/analytics'
+    | '/playbook/assignments'
+    | '/playbook/categories'
+    | '/playbook/practice'
     | '/teams/$teamId'
     | '/teams/create'
     | '/film'
@@ -551,6 +599,10 @@ export interface FileRouteTypes {
     | '/_dashboard/games/create'
     | '/_dashboard/organizations/create'
     | '/_dashboard/organizations/join'
+    | '/_dashboard/playbook/analytics'
+    | '/_dashboard/playbook/assignments'
+    | '/_dashboard/playbook/categories'
+    | '/_dashboard/playbook/practice'
     | '/_dashboard/teams/$teamId'
     | '/_dashboard/teams/create'
     | '/_dashboard/film/'
@@ -718,6 +770,34 @@ declare module '@tanstack/react-router' {
       path: '/teams/$teamId'
       fullPath: '/teams/$teamId'
       preLoaderRoute: typeof DashboardTeamsTeamIdRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/_dashboard/playbook/practice': {
+      id: '/_dashboard/playbook/practice'
+      path: '/playbook/practice'
+      fullPath: '/playbook/practice'
+      preLoaderRoute: typeof DashboardPlaybookPracticeRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/_dashboard/playbook/categories': {
+      id: '/_dashboard/playbook/categories'
+      path: '/playbook/categories'
+      fullPath: '/playbook/categories'
+      preLoaderRoute: typeof DashboardPlaybookCategoriesRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/_dashboard/playbook/assignments': {
+      id: '/_dashboard/playbook/assignments'
+      path: '/playbook/assignments'
+      fullPath: '/playbook/assignments'
+      preLoaderRoute: typeof DashboardPlaybookAssignmentsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/_dashboard/playbook/analytics': {
+      id: '/_dashboard/playbook/analytics'
+      path: '/playbook/analytics'
+      fullPath: '/playbook/analytics'
+      preLoaderRoute: typeof DashboardPlaybookAnalyticsRouteImport
       parentRoute: typeof DashboardRoute
     }
     '/_dashboard/organizations/join': {
@@ -957,6 +1037,10 @@ interface DashboardRouteChildren {
   DashboardGamesCreateRoute: typeof DashboardGamesCreateRoute
   DashboardOrganizationsCreateRoute: typeof DashboardOrganizationsCreateRoute
   DashboardOrganizationsJoinRoute: typeof DashboardOrganizationsJoinRoute
+  DashboardPlaybookAnalyticsRoute: typeof DashboardPlaybookAnalyticsRoute
+  DashboardPlaybookAssignmentsRoute: typeof DashboardPlaybookAssignmentsRoute
+  DashboardPlaybookCategoriesRoute: typeof DashboardPlaybookCategoriesRoute
+  DashboardPlaybookPracticeRoute: typeof DashboardPlaybookPracticeRoute
   DashboardTeamsTeamIdRoute: typeof DashboardTeamsTeamIdRoute
   DashboardTeamsCreateRoute: typeof DashboardTeamsCreateRoute
   DashboardFilmIndexRoute: typeof DashboardFilmIndexRoute
@@ -999,6 +1083,10 @@ const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardGamesCreateRoute: DashboardGamesCreateRoute,
   DashboardOrganizationsCreateRoute: DashboardOrganizationsCreateRoute,
   DashboardOrganizationsJoinRoute: DashboardOrganizationsJoinRoute,
+  DashboardPlaybookAnalyticsRoute: DashboardPlaybookAnalyticsRoute,
+  DashboardPlaybookAssignmentsRoute: DashboardPlaybookAssignmentsRoute,
+  DashboardPlaybookCategoriesRoute: DashboardPlaybookCategoriesRoute,
+  DashboardPlaybookPracticeRoute: DashboardPlaybookPracticeRoute,
   DashboardTeamsTeamIdRoute: DashboardTeamsTeamIdRoute,
   DashboardTeamsCreateRoute: DashboardTeamsCreateRoute,
   DashboardFilmIndexRoute: DashboardFilmIndexRoute,

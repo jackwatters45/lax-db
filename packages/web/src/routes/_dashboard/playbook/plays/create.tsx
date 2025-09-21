@@ -81,15 +81,17 @@ const mockFormData = {
 };
 
 // Server function for creating play
-const createPlay = createServerFn().handler(async (playData: PlayFormData) => {
-  // TODO: Replace with actual API call
-  // const { PlaybookAPI } = await import('@lax-db/core/playbook/index');
-  // const request = getWebRequest();
-  // return await PlaybookAPI.createPlay(teamId, playData, request.headers);
+const createPlay = createServerFn({ method: 'POST' })
+  .validator((data: PlayFormData) => data)
+  .handler(async ({ data }) => {
+    // TODO: Replace with actual API call
+    // const { PlaybookAPI } = await import('@lax-db/core/playbook/index');
+    // const request = getWebRequest();
+    // return await PlaybookAPI.createPlay(teamId, data, request.headers);
 
-  console.log('Creating play:', playData);
-  return { success: true, playId: 'new-play-id' };
-});
+    console.log('Creating play:', data);
+    return { success: true, playId: 'new-play-id' };
+  });
 
 // Server function for permissions
 const getCreatePermissions = createServerFn().handler(async () => {
@@ -252,9 +254,17 @@ function CreatePlay() {
 
   const handleSubmit = async () => {
     try {
-      const result = await createPlay(playData);
+      const result = await createPlay({ data: playData });
       if (result.success) {
-        router.navigate({ to: '/playbook/plays' });
+        router.navigate({
+          to: '/playbook/plays',
+          search: {
+            search: '',
+            category: 'All',
+            difficulty: 'All',
+            favorites: false,
+          },
+        });
       }
     } catch (error) {
       console.error('Error creating play:', error);
@@ -411,7 +421,7 @@ function CreatePlay() {
                     value={newTag}
                     onChange={(e) => setNewTag(e.target.value)}
                     placeholder="Add a tag"
-                    onKeyPress={(e) =>
+                    onKeyDown={(e) =>
                       e.key === 'Enter' && (e.preventDefault(), addTag())
                     }
                   />
@@ -524,8 +534,8 @@ function CreatePlay() {
                       <div>
                         <strong className="text-xs">Key Points:</strong>
                         <ul className="ml-4 list-disc text-muted-foreground text-xs">
-                          {step.keyPoints.map((point, i) => (
-                            <li key={i}>{point}</li>
+                          {step.keyPoints.map((point) => (
+                            <li key={point}>{point}</li>
                           ))}
                         </ul>
                       </div>
@@ -639,7 +649,7 @@ function CreatePlay() {
                           value={newKeyPoint}
                           onChange={(e) => setNewKeyPoint(e.target.value)}
                           placeholder="Add a key point"
-                          onKeyPress={(e) =>
+                          onKeyDown={(e) =>
                             e.key === 'Enter' &&
                             (e.preventDefault(), addKeyPoint())
                           }
@@ -785,7 +795,15 @@ function CreatePlay() {
         </div>
 
         <Button variant="outline" asChild>
-          <Link to="/playbook/plays">
+          <Link
+            to="/playbook/plays"
+            search={{
+              search: '',
+              category: 'All',
+              difficulty: 'All',
+              favorites: false,
+            }}
+          >
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Plays
           </Link>
