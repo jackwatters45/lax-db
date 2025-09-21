@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState } from 'react';
+import { useRouter } from '@tanstack/react-router';
+import { useEffect, useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Badge } from '@/components/ui/badge';
@@ -27,9 +28,14 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<'div'>) {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
   const [error, setError] = useState('');
-  const lastMethod = authClient.getLastUsedLoginMethod();
+  const [lastMethod, setLastMethod] = useState<string | null>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    setLastMethod(authClient.getLastUsedLoginMethod());
+  }, []);
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -40,28 +46,28 @@ export function LoginForm({
   });
 
   const onSubmit = async (data: LoginFormValues) => {
-    setIsLoading(true);
     setError('');
 
-    try {
-      const result = await authClient.signIn.email({
-        email: data.email,
-        password: data.password,
-      });
+    startTransition(async () => {
+      try {
+        const result = await authClient.signIn.email({
+          email: data.email,
+          password: data.password,
+        });
 
-      if (result.error) {
-        setError(result.error.message || 'Login failed');
-      } else {
-        // Login successful - redirect
-        window.location.href = '/teams';
+        if (result.error) {
+          setError(result.error.message || 'Login failed');
+        } else {
+          router.navigate({ to: '/teams' });
+        }
+      } catch (error) {
+        setError(
+          error instanceof Error
+            ? error.message
+            : 'An unexpected error occurred',
+        );
       }
-    } catch (error) {
-      setError(
-        error instanceof Error ? error.message : 'An unexpected error occurred',
-      );
-    } finally {
-      setIsLoading(false);
-    }
+    });
   };
 
   const handleGoogleSignIn = async () => {
@@ -132,18 +138,21 @@ export function LoginForm({
 
           <Button
             type="submit"
-            className="w-full"
-            disabled={isLoading}
-            variant={lastMethod === 'email' ? 'default' : 'outline'}
+            className="relative w-full"
+            disabled={isPending}
+            variant="outline"
           >
-            <span className="flex items-center justify-center gap-2">
-              {isLoading ? 'Signing in...' : 'Sign in with Email'}
-              {lastMethod === 'email' && (
-                <Badge variant="secondary" className="ml-2">
-                  Last used
-                </Badge>
-              )}
+            <span className="flex items-center justify-start gap-2">
+              {isPending ? 'Signing in...' : 'Sign in with Email'}
             </span>
+            {lastMethod === 'email' && (
+              <Badge
+                variant="secondary"
+                className="-right-8 -translate-y-1/2 absolute top-1/2 shadow-md"
+              >
+                Last used
+              </Badge>
+            )}
           </Button>
         </form>
       </Form>
@@ -156,11 +165,11 @@ export function LoginForm({
 
       <Button
         type="button"
-        variant={lastMethod === 'google' ? 'default' : 'outline'}
-        className="w-full"
+        variant="outline"
+        className="relative w-full"
         onClick={handleGoogleSignIn}
       >
-        <div className="flex items-center justify-center gap-2">
+        <div className="flex items-center justify-start gap-2">
           <svg className="h-4 w-4" viewBox="0 0 24 24">
             <title>Google</title>
             <path
@@ -181,12 +190,15 @@ export function LoginForm({
             />
           </svg>
           <span>Continue with Google</span>
-          {lastMethod === 'google' && (
-            <Badge variant="secondary" className="ml-2">
-              Last used
-            </Badge>
-          )}
         </div>
+        {lastMethod === 'google' && (
+          <Badge
+            variant="secondary"
+            className="-right-8 -translate-y-1/2 absolute top-1/2 shadow-md"
+          >
+            Last used
+          </Badge>
+        )}
       </Button>
 
       <div className="text-center text-sm">
