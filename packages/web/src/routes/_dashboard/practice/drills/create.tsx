@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useRouter } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
-import { ArrowLeft, Check, Dumbbell, Plus, Save, X } from 'lucide-react';
+import { ArrowLeft, Save, X } from 'lucide-react';
 import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -80,17 +80,17 @@ const mockFormData = {
 };
 
 // Server function for creating drill
-const createDrill = createServerFn().handler(
-  async (drillData: DrillFormData) => {
+const createDrill = createServerFn({ method: 'POST' })
+  .validator((data: DrillFormData) => data)
+  .handler(async ({ data }) => {
     // TODO: Replace with actual API call
     // const { DrillAPI } = await import('@lax-db/core/practice/drills');
     // const request = getWebRequest();
-    // return await DrillAPI.createDrill(teamId, drillData, request.headers);
+    // return await DrillAPI.createDrill(teamId, data, request.headers);
 
-    console.log('Creating drill:', drillData);
+    console.log('Creating drill:', data);
     return { success: true, drillId: 'new-drill-id' };
-  },
-);
+  });
 
 // Server function for permissions
 const getCreatePermissions = createServerFn().handler(async () => {
@@ -109,7 +109,7 @@ export const Route = createFileRoute('/_dashboard/practice/drills/create')({
 });
 
 function CreateDrill() {
-  const { permissions, formData } = Route.useLoaderData();
+  const { formData } = Route.useLoaderData();
   const router = useRouter();
 
   const [drillData, setDrillData] = useState<DrillFormData>({
@@ -133,7 +133,10 @@ function CreateDrill() {
   const [newTag, setNewTag] = useState('');
   const [newVariation, setNewVariation] = useState('');
 
-  const handleBasicChange = (field: keyof DrillFormData, value: any) => {
+  const handleBasicChange = (
+    field: keyof DrillFormData,
+    value: string | string[] | number | null,
+  ) => {
     setDrillData((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -210,9 +213,17 @@ function CreateDrill() {
 
   const handleSubmit = async () => {
     try {
-      const result = await createDrill(drillData);
+      const result = await createDrill({ data: drillData });
       if (result.success) {
-        router.navigate({ to: '/practice/drills' });
+        router.navigate({
+          to: '/practice/drills',
+          search: {
+            search: '',
+            category: 'All',
+            difficulty: 'All',
+            favorites: false,
+          },
+        });
       }
     } catch (error) {
       console.error('Error creating drill:', error);
@@ -239,7 +250,15 @@ function CreateDrill() {
         </div>
 
         <Button variant="outline" asChild>
-          <Link to="/practice/drills">
+          <Link
+            to="/practice/drills"
+            search={{
+              search: '',
+              category: 'All',
+              difficulty: 'All',
+              favorites: false,
+            }}
+          >
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Drills
           </Link>
@@ -395,9 +414,12 @@ function CreateDrill() {
                 value={newEquipment}
                 onChange={(e) => setNewEquipment(e.target.value)}
                 placeholder="Add equipment item"
-                onKeyPress={(e) =>
-                  e.key === 'Enter' && (e.preventDefault(), addEquipment())
-                }
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    addEquipment();
+                  }
+                }}
               />
               <Button type="button" onClick={addEquipment} size="sm">
                 Add
@@ -464,9 +486,12 @@ function CreateDrill() {
                 value={newSkill}
                 onChange={(e) => setNewSkill(e.target.value)}
                 placeholder="Add skill focus"
-                onKeyPress={(e) =>
-                  e.key === 'Enter' && (e.preventDefault(), addSkill())
-                }
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    addSkill();
+                  }
+                }}
               />
               <Button type="button" onClick={addSkill} size="sm">
                 Add
@@ -533,9 +558,12 @@ function CreateDrill() {
                 value={newTag}
                 onChange={(e) => setNewTag(e.target.value)}
                 placeholder="Add tag"
-                onKeyPress={(e) =>
-                  e.key === 'Enter' && (e.preventDefault(), addTag())
-                }
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    addTag();
+                  }
+                }}
               />
               <Button type="button" onClick={addTag} size="sm">
                 Add
@@ -603,9 +631,12 @@ function CreateDrill() {
                     value={newVariation}
                     onChange={(e) => setNewVariation(e.target.value)}
                     placeholder="Add a drill variation"
-                    onKeyPress={(e) =>
-                      e.key === 'Enter' && (e.preventDefault(), addVariation())
-                    }
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        addVariation();
+                      }
+                    }}
                   />
                   <Button type="button" onClick={addVariation} size="sm">
                     Add
@@ -615,7 +646,7 @@ function CreateDrill() {
                   <div className="space-y-1">
                     {drillData.variations.map((variation, index) => (
                       <div
-                        key={index}
+                        key={variation}
                         className="flex items-center justify-between rounded border p-2"
                       >
                         <span className="text-sm">{variation}</span>
@@ -653,7 +684,17 @@ function CreateDrill() {
         {/* Actions */}
         <div className="flex items-center justify-between">
           <Button variant="outline" asChild>
-            <Link to="/practice/drills">Cancel</Link>
+            <Link
+              to="/practice/drills"
+              search={{
+                search: '',
+                category: 'All',
+                difficulty: 'All',
+                favorites: false,
+              }}
+            >
+              Cancel
+            </Link>
           </Button>
 
           <Button onClick={handleSubmit} disabled={!canSubmit()}>

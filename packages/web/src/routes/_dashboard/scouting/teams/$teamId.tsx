@@ -239,7 +239,7 @@ function OpposingTeamDetailsPage() {
             </Badge>
             {permissions.canEdit && (
               <Button variant="outline" size="sm" asChild>
-                <Link to={`/scouting/teams/${team.id}/edit`}>
+                <Link to="/scouting/teams/create">
                   <Edit className="mr-2 h-4 w-4" />
                   Edit Team
                 </Link>
@@ -357,7 +357,7 @@ function OpposingTeamDetailsPage() {
                 <CardTitle>Recent Scouting Reports</CardTitle>
                 {permissions.canCreateReports && (
                   <Button variant="outline" size="sm" asChild>
-                    <Link to={`/scouting/reports/create?teamId=${team.id}`}>
+                    <Link to="/scouting/teams/create">
                       <Plus className="mr-2 h-4 w-4" />
                       New Report
                     </Link>
@@ -392,9 +392,7 @@ function OpposingTeamDetailsPage() {
                           </div>
                         </div>
                         <Button variant="ghost" size="sm" asChild>
-                          <Link to={`/scouting/reports/${report.id}`}>
-                            View
-                          </Link>
+                          <Link to="/scouting/teams">View</Link>
                         </Button>
                       </div>
                     </div>
@@ -411,7 +409,7 @@ function OpposingTeamDetailsPage() {
                       className="mt-2"
                       asChild
                     >
-                      <Link to={`/scouting/reports/create?teamId=${team.id}`}>
+                      <Link to="/scouting/teams/create">
                         Create First Report
                       </Link>
                     </Button>
@@ -512,7 +510,7 @@ function OpposingTeamDetailsPage() {
                   className="w-full justify-start"
                   asChild
                 >
-                  <Link to={`/scouting/reports/create?teamId=${team.id}`}>
+                  <Link to="/scouting/teams/create">
                     <FileText className="mr-2 h-4 w-4" />
                     Create Scouting Report
                   </Link>
@@ -525,7 +523,7 @@ function OpposingTeamDetailsPage() {
                   className="w-full justify-start"
                   asChild
                 >
-                  <Link to={`/scouting/teams/${team.id}/players`}>
+                  <Link to="/scouting/teams">
                     <Users className="mr-2 h-4 w-4" />
                     Manage Players
                   </Link>
@@ -537,7 +535,7 @@ function OpposingTeamDetailsPage() {
                 className="w-full justify-start"
                 asChild
               >
-                <Link to={`/scouting/teams/${team.id}/patterns`}>
+                <Link to="/scouting/teams">
                   <Target className="mr-2 h-4 w-4" />
                   View Patterns
                 </Link>

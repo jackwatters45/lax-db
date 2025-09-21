@@ -473,12 +473,14 @@ function TeamCard({
         {/* Actions */}
         <div className="flex gap-2 pt-2">
           <Button variant="outline" size="sm" className="flex-1" asChild>
-            <Link to={`/scouting/teams/${team.id}`}>View Details</Link>
+            <Link to="/scouting/teams/$teamId" params={{ teamId: team.id }}>
+              View Details
+            </Link>
           </Button>
 
           {permissions.canCreateReports && (
             <Button variant="outline" size="sm" asChild>
-              <Link to={`/scouting/reports/create?teamId=${team.id}`}>
+              <Link to="/scouting/teams/create">
                 <FileText className="mr-1 h-3 w-3" />
                 Scout
               </Link>

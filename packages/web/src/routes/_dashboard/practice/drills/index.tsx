@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import {
-  Clock,
   Dumbbell,
   Filter,
   Plus,
@@ -9,7 +8,6 @@ import {
   Star,
   Target,
   Timer,
-  Users,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';

@@ -2,17 +2,12 @@ import { createFileRoute, Link } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import {
   Calendar,
-  Clock,
   Dumbbell,
-  Filter,
   Layers,
   Plus,
   Star,
-  Target,
   Timer,
   TrendingUp,
-  Users,
-  Zap,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -294,7 +289,17 @@ function PracticeDashboard() {
               <div className="flex items-center justify-between">
                 <CardTitle>Recently Used Drills</CardTitle>
                 <Button variant="ghost" size="sm" asChild>
-                  <Link to="/practice/drills">View All</Link>
+                  <Link
+                    to="/practice/drills"
+                    search={{
+                      search: '',
+                      category: 'All',
+                      difficulty: 'All',
+                      favorites: false,
+                    }}
+                  >
+                    View All
+                  </Link>
                 </Button>
               </div>
             </CardHeader>
@@ -479,9 +484,9 @@ function PracticeDashboard() {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {data.drillCategories.map((category, index) => (
+                {data.drillCategories.map((category) => (
                   <div
-                    key={index}
+                    key={category.name}
                     className="flex items-center justify-between"
                   >
                     <div className="flex items-center gap-3">
@@ -532,7 +537,15 @@ function PracticeDashboard() {
                 className="w-full justify-start"
                 asChild
               >
-                <Link to="/practice/drills">
+                <Link
+                  to="/practice/drills"
+                  search={{
+                    search: '',
+                    category: 'All',
+                    difficulty: 'All',
+                    favorites: false,
+                  }}
+                >
                   <Dumbbell className="mr-2 h-4 w-4" />
                   Browse Drill Bank
                 </Link>
