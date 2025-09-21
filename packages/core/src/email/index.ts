@@ -165,8 +165,7 @@ Submitted: ${new Date().toISOString()}
           region: process.env.AWS_REGION || 'us-east-1',
         });
 
-        const defaultFrom =
-          process.env.DEFAULT_FROM_EMAIL || 'noreply@example.com';
+        const defaultFrom = Resource.Email.sender;
 
         const command = new SendEmailCommand({
           FromEmailAddress: defaultFrom,
