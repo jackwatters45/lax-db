@@ -2,7 +2,6 @@ import { useLocation } from '@tanstack/react-router';
 import { Navbar } from '@/components/nav/navbar';
 
 const projectNavItems = [
-  { label: 'Plan', href: '/plan' },
   { label: 'Teams', href: '/teams' },
   { label: 'Games', href: '/games' },
   { label: 'Players', href: '/players' },

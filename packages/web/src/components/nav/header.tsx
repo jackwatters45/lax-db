@@ -77,6 +77,11 @@ export function DashboardHeader() {
           </Breadcrumb>
         </div>
         <div className="flex items-center gap-2">
+          <Link to="/plan">
+            <Button variant="outline" size={'sm'}>
+              Plan
+            </Button>
+          </Link>
           <SearchCommand />
           <Button variant="outline" size={'sm'} asChild>
             <Link to="/feedback">Feedback</Link>
