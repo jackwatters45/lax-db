@@ -1,6 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
-import { getWebRequest } from '@tanstack/react-start/server';
 import { Calendar, MapPin, Plus, Trophy, Users } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -308,18 +307,37 @@ function GameCard({
         {/* Actions */}
         <div className="flex gap-2 pt-2">
           <Button variant="outline" size="sm" className="flex-1" asChild>
-            <Link to={`/games/${game.id}`}>View Details</Link>
+            <Link
+              to={'/games/$gameId'}
+              params={{
+                gameId: game.id,
+              }}
+            >
+              View Details
+            </Link>
           </Button>
 
           {permissions.canEditGames && game.status !== 'completed' && (
             <Button variant="outline" size="sm" asChild>
-              <Link to={`/games/${game.id}/edit`}>Edit</Link>
+              <Link
+                to={'/games/$gameId/edit'}
+                params={{
+                  gameId: game.id,
+                }}
+              >
+                Edit
+              </Link>
             </Button>
           )}
 
           {permissions.canViewStats && game.status === 'completed' && (
             <Button variant="outline" size="sm" asChild>
-              <Link to={`/games/${game.id}/stats`}>
+              <Link
+                to={'/games/$gameId/stats'}
+                params={{
+                  gameId: game.id,
+                }}
+              >
                 <Users className="mr-1 h-3 w-3" />
                 Stats
               </Link>

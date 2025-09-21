@@ -1,11 +1,30 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { createFileRoute, Link, useRouter } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { ArrowLeft, Calendar, MapPin } from 'lucide-react';
-import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
+import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 // Mock server function for creating games
 const createGame = createServerFn({ method: 'POST' })
@@ -29,12 +48,30 @@ const createGame = createServerFn({ method: 'POST' })
     };
   });
 
-type CreateGameInput = {
-  opponentName: string;
-  gameDate: string;
-  venue: string;
-  isHomeGame: boolean;
-  gameType: 'regular' | 'playoff' | 'tournament' | 'friendly' | 'practice';
+// Form schema
+const createGameSchema = z.object({
+  opponentName: z.string().min(1, 'Opponent name is required'),
+  gameDate: z.string().min(1, 'Date and time is required'),
+  venue: z.string().min(1, 'Venue is required'),
+  isHomeGame: z.boolean(),
+  gameType: z.enum([
+    'regular',
+    'playoff',
+    'tournament',
+    'friendly',
+    'practice',
+  ]),
+});
+
+type CreateGameInput = z.infer<typeof createGameSchema>;
+
+// Helper function to format datetime for input
+const formatDateTimeForInput = () => {
+  // Set default to next Saturday at 2 PM
+  const nextSaturday = new Date();
+  nextSaturday.setDate(nextSaturday.getDate() + (6 - nextSaturday.getDay()));
+  nextSaturday.setHours(14, 0, 0, 0);
+  return nextSaturday.toISOString().slice(0, 16);
 };
 
 export const Route = createFileRoute('/_dashboard/games/create')({
@@ -43,12 +80,16 @@ export const Route = createFileRoute('/_dashboard/games/create')({
 
 function CreateGamePage() {
   const router = useRouter();
-  const [formData, setFormData] = useState<CreateGameInput>({
-    opponentName: '',
-    gameDate: '',
-    venue: '',
-    isHomeGame: true,
-    gameType: 'regular',
+
+  const form = useForm<CreateGameInput>({
+    resolver: zodResolver(createGameSchema),
+    defaultValues: {
+      opponentName: '',
+      gameDate: formatDateTimeForInput(),
+      venue: '',
+      isHomeGame: true,
+      gameType: 'regular',
+    },
   });
 
   const createGameMutation = useMutation({
@@ -67,34 +108,8 @@ function CreateGamePage() {
     },
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (
-      !formData.opponentName.trim() ||
-      !formData.gameDate ||
-      !formData.venue.trim()
-    ) {
-      toast.error('Please fill in all required fields.');
-      return;
-    }
-
-    createGameMutation.mutate(formData);
-  };
-
-  const handleInputChange = (
-    field: keyof CreateGameInput,
-    value: string | boolean,
-  ) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const formatDateTimeForInput = () => {
-    // Set default to next Saturday at 2 PM
-    const nextSaturday = new Date();
-    nextSaturday.setDate(nextSaturday.getDate() + (6 - nextSaturday.getDay()));
-    nextSaturday.setHours(14, 0, 0, 0);
-    return nextSaturday.toISOString().slice(0, 16);
+  const onSubmit = async (values: CreateGameInput) => {
+    createGameMutation.mutate(values);
   };
 
   return (
@@ -118,141 +133,142 @@ function CreateGamePage() {
           <CardTitle>Game Details</CardTitle>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Opponent Name */}
-            <div>
-              <label
-                htmlFor="opponentName"
-                className="mb-2 block font-medium text-sm"
-              >
-                Opponent Team *
-              </label>
-              <input
-                id="opponentName"
-                type="text"
-                value={formData.opponentName}
-                onChange={(e) =>
-                  handleInputChange('opponentName', e.target.value)
-                }
-                placeholder="e.g., Riverside Hawks, Central Valley Eagles"
-                className="w-full rounded-md border border-input px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
-                required
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <FormField
+                control={form.control}
+                name="opponentName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Opponent Team *</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="e.g., Riverside Hawks, Central Valley Eagles"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
 
-            {/* Game Date and Time */}
-            <div>
-              <label
-                htmlFor="gameDate"
-                className="mb-2 block font-medium text-sm"
-              >
-                <Calendar className="mr-1 inline h-4 w-4" />
-                Date & Time *
-              </label>
-              <input
-                id="gameDate"
-                type="datetime-local"
-                value={formData.gameDate || formatDateTimeForInput()}
-                onChange={(e) => handleInputChange('gameDate', e.target.value)}
-                className="w-full rounded-md border border-input px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
-                required
+              <FormField
+                control={form.control}
+                name="gameDate"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      <Calendar className="mr-1 inline h-4 w-4" />
+                      Date & Time *
+                    </FormLabel>
+                    <FormControl>
+                      <Input type="datetime-local" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
 
-            {/* Venue */}
-            <div>
-              <label htmlFor="venue" className="mb-2 block font-medium text-sm">
-                <MapPin className="mr-1 inline h-4 w-4" />
-                Venue *
-              </label>
-              <input
-                id="venue"
-                type="text"
-                value={formData.venue}
-                onChange={(e) => handleInputChange('venue', e.target.value)}
-                placeholder="e.g., Memorial Stadium, Lions Field"
-                className="w-full rounded-md border border-input px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
-                required
+              <FormField
+                control={form.control}
+                name="venue"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      <MapPin className="mr-1 inline h-4 w-4" />
+                      Venue *
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="e.g., Memorial Stadium, Lions Field"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
 
-            {/* Home/Away */}
-            <div>
-              <label className="mb-3 block font-medium text-sm">
-                Game Location
-              </label>
-              <div className="grid grid-cols-2 gap-4">
-                <label className="flex cursor-pointer items-center space-x-2">
-                  <input
-                    type="radio"
-                    name="isHomeGame"
-                    checked={formData.isHomeGame === true}
-                    onChange={() => handleInputChange('isHomeGame', true)}
-                    className="text-primary focus:ring-primary"
-                  />
-                  <span>Home Game</span>
-                </label>
-                <label className="flex cursor-pointer items-center space-x-2">
-                  <input
-                    type="radio"
-                    name="isHomeGame"
-                    checked={formData.isHomeGame === false}
-                    onChange={() => handleInputChange('isHomeGame', false)}
-                    className="text-primary focus:ring-primary"
-                  />
-                  <span>Away Game</span>
-                </label>
+              <FormField
+                control={form.control}
+                name="isHomeGame"
+                render={({ field }) => (
+                  <FormItem className="space-y-3">
+                    <FormLabel>Game Location</FormLabel>
+                    <FormControl>
+                      <RadioGroup
+                        onValueChange={(value) =>
+                          field.onChange(value === 'true')
+                        }
+                        value={field.value ? 'true' : 'false'}
+                        className="grid grid-cols-2 gap-4"
+                      >
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="true" id="home" />
+                          <label htmlFor="home">Home Game</label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="false" id="away" />
+                          <label htmlFor="away">Away Game</label>
+                        </div>
+                      </RadioGroup>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="gameType"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Game Type</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select game type" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="regular">Regular Season</SelectItem>
+                        <SelectItem value="playoff">Playoff</SelectItem>
+                        <SelectItem value="tournament">Tournament</SelectItem>
+                        <SelectItem value="friendly">Friendly</SelectItem>
+                        <SelectItem value="practice">Practice</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="flex gap-4 pt-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => router.navigate({ to: '/games' })}
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={
+                    form.formState.isSubmitting || createGameMutation.isPending
+                  }
+                  className="flex-1"
+                >
+                  {createGameMutation.isPending
+                    ? 'Scheduling...'
+                    : 'Schedule Game'}
+                </Button>
               </div>
-            </div>
-
-            {/* Game Type */}
-            <div>
-              <label
-                htmlFor="gameType"
-                className="mb-2 block font-medium text-sm"
-              >
-                Game Type
-              </label>
-              <select
-                id="gameType"
-                value={formData.gameType}
-                onChange={(e) =>
-                  handleInputChange(
-                    'gameType',
-                    e.target.value as CreateGameInput['gameType'],
-                  )
-                }
-                className="w-full rounded-md border border-input px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
-              >
-                <option value="regular">Regular Season</option>
-                <option value="playoff">Playoff</option>
-                <option value="tournament">Tournament</option>
-                <option value="friendly">Friendly</option>
-                <option value="practice">Practice</option>
-              </select>
-            </div>
-
-            {/* Submit Buttons */}
-            <div className="flex gap-4 pt-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => router.navigate({ to: '/games' })}
-                className="flex-1"
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                disabled={createGameMutation.isPending}
-                className="flex-1"
-              >
-                {createGameMutation.isPending
-                  ? 'Scheduling...'
-                  : 'Schedule Game'}
-              </Button>
-            </div>
-          </form>
+            </form>
+          </Form>
         </CardContent>
       </Card>
     </div>
