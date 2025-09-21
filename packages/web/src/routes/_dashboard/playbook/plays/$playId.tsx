@@ -4,7 +4,6 @@ import {
   ArrowLeft,
   BookOpen,
   Calendar,
-  Clock,
   Edit,
   MoreHorizontal,
   Play,
@@ -223,15 +222,6 @@ function PlayDetails() {
     }).format(date);
   };
 
-  const formatDateWithTime = (date: Date) => {
-    return new Intl.DateTimeFormat('en-US', {
-      month: 'short',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit',
-    }).format(date);
-  };
-
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
       case 'beginner':
@@ -439,8 +429,8 @@ function PlayDetails() {
                           <div>
                             <strong className="text-sm">Key Points:</strong>
                             <ul className="mt-1 ml-4 list-disc text-muted-foreground text-sm">
-                              {step.keyPoints.map((point, i) => (
-                                <li key={i}>{point}</li>
+                              {step.keyPoints.map((point) => (
+                                <li key={point}>{point}</li>
                               ))}
                             </ul>
                           </div>
@@ -465,9 +455,9 @@ function PlayDetails() {
                   <div>
                     <h4 className="mb-3 font-medium">Recent Games</h4>
                     <div className="space-y-2">
-                      {stats.lastFiveGames.map((game, index) => (
+                      {stats.lastFiveGames.map((game) => (
                         <div
-                          key={index}
+                          key={`${game.gameDate}-${game.opponent}`}
                           className="flex items-center justify-between rounded border p-3"
                         >
                           <div className="flex items-center gap-3">
@@ -504,9 +494,9 @@ function PlayDetails() {
                       Recent Practice Sessions
                     </h4>
                     <div className="space-y-2">
-                      {stats.practiceData.map((session, index) => (
+                      {stats.practiceData.map((session) => (
                         <div
-                          key={index}
+                          key={session.date.getTime()}
                           className="flex items-center justify-between rounded border p-3"
                         >
                           <div>
