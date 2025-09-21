@@ -4,6 +4,12 @@ import { Navbar } from '@/components/nav/navbar';
 const projectNavItems = [
   { label: 'Plan', href: '/plan' },
   { label: 'Teams', href: '/teams' },
+  { label: 'Games', href: '/games' },
+  { label: 'Players', href: '/players' },
+  { label: 'Playbook', href: '/playbook' },
+  { label: 'Practice', href: '/practice' },
+  { label: 'Film', href: '/film' },
+  { label: 'Scouting', href: '/scouting' },
 ];
 
 export function ProjectNavbar() {
