@@ -78,8 +78,8 @@ export function DashboardHeader() {
         </div>
         <div className="flex items-center gap-2">
           <SearchCommand />
-          <Button variant="outline" size={'sm'}>
-            Feedback
+          <Button variant="outline" size={'sm'} asChild>
+            <Link to="/feedback">Feedback</Link>
           </Button>
           <NavUser />
         </div>

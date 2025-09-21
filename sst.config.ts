@@ -29,6 +29,7 @@ export default $config({
       storage: infra.bucket.name,
       vpc: infra.vpc.id,
       web: infra.web.url,
+      email: infra.email.sender,
     };
   },
 });
