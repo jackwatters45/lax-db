@@ -13,7 +13,12 @@ const mockGameDetails = {
   venue: 'Memorial Stadium',
   isHomeGame: true,
   gameType: 'regular' as const,
-  status: 'scheduled' as const,
+  status: 'scheduled' as
+    | 'scheduled'
+    | 'in_progress'
+    | 'completed'
+    | 'cancelled'
+    | 'postponed',
   homeScore: 0,
   awayScore: 0,
   weatherConditions: '',
@@ -72,7 +77,7 @@ const getGamePermissions = createServerFn().handler(async () => {
   };
 });
 
-export const Route = createFileRoute('/_dashboard/games/$gameId')({
+export const Route = createFileRoute('/_dashboard/games/$gameId/')({
   component: GameDetailsPage,
   loader: async ({ params }) => {
     const [game, permissions] = await Promise.all([
@@ -156,7 +161,7 @@ function GameDetailsPage() {
             </Badge>
             {permissions.canEdit && game.status !== 'completed' && (
               <Button variant="outline" size="sm" asChild>
-                <Link to={`/games/${game.id}/edit`}>
+                <Link to="/games/$gameId/edit" params={{ gameId: game.id }}>
                   <Edit className="mr-2 h-4 w-4" />
                   Edit Game
                 </Link>
@@ -168,7 +173,7 @@ function GameDetailsPage() {
 
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Game Information */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="space-y-6 lg:col-span-2">
           {/* Basic Game Info */}
           <Card>
             <CardHeader>
@@ -219,7 +224,10 @@ function GameDetailsPage() {
                 <CardTitle>Game Roster</CardTitle>
                 {permissions.canManageRoster && (
                   <Button variant="outline" size="sm" asChild>
-                    <Link to={`/games/${game.id}/roster`}>
+                    <Link
+                      to="/games/$gameId/roster"
+                      params={{ gameId: game.id }}
+                    >
                       <Users className="mr-2 h-4 w-4" />
                       Manage Roster
                     </Link>
@@ -236,7 +244,7 @@ function GameDetailsPage() {
                       className="flex items-center justify-between rounded border p-3"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground text-sm font-bold">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary font-bold text-primary-foreground text-sm">
                           {player.jerseyNumber}
                         </div>
                         <div>
@@ -263,7 +271,12 @@ function GameDetailsPage() {
                       className="mt-2"
                       asChild
                     >
-                      <Link to={`/games/${game.id}/roster`}>Add Players</Link>
+                      <Link
+                        to="/games/$gameId/roster"
+                        params={{ gameId: game.id }}
+                      >
+                        Add Players
+                      </Link>
                     </Button>
                   )}
                 </div>
@@ -285,7 +298,7 @@ function GameDetailsPage() {
                   className="w-full justify-start"
                   asChild
                 >
-                  <Link to={`/games/${game.id}/roster`}>
+                  <Link to="/games/$gameId/roster" params={{ gameId: game.id }}>
                     <Users className="mr-2 h-4 w-4" />
                     Manage Roster
                   </Link>
@@ -298,7 +311,7 @@ function GameDetailsPage() {
                   className="w-full justify-start"
                   asChild
                 >
-                  <Link to={`/games/${game.id}/stats`}>
+                  <Link to="/games/$gameId/stats" params={{ gameId: game.id }}>
                     <Trophy className="mr-2 h-4 w-4" />
                     {game.status === 'completed' ? 'View Stats' : 'Enter Stats'}
                   </Link>
@@ -311,7 +324,7 @@ function GameDetailsPage() {
                   className="w-full justify-start"
                   asChild
                 >
-                  <Link to={`/games/${game.id}/edit`}>
+                  <Link to="/games/$gameId/edit" params={{ gameId: game.id }}>
                     <Edit className="mr-2 h-4 w-4" />
                     Edit Game
                   </Link>

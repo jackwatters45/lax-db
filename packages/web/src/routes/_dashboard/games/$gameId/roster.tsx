@@ -1,12 +1,12 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { createFileRoute, Link, useRouter } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { ArrowLeft, Plus, Save, Trash2, Users } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
 
 // Mock data
 const mockTeamPlayers = [
@@ -50,13 +50,6 @@ const updateGameRoster = createServerFn({ method: 'POST' })
     return { success: true };
   });
 
-type Player = {
-  id: string;
-  name: string;
-  position: string;
-  jerseyNumber: number;
-};
-
 type RosterPlayer = {
   playerId: string;
   isStarter: boolean;
@@ -97,7 +90,7 @@ function RosterManagementPage() {
     return roster.some((r) => r.playerId === playerId);
   };
 
-  const getPlayerRosterInfo = (playerId: string) => {
+  const _getPlayerRosterInfo = (playerId: string) => {
     return roster.find((r) => r.playerId === playerId);
   };
 
@@ -136,14 +129,14 @@ function RosterManagementPage() {
       const player = players.find((p) => p.id === r.playerId);
       return player ? { ...player, ...r } : null;
     })
-    .filter(Boolean);
+    .filter((player): player is NonNullable<typeof player> => player !== null);
 
   const availablePlayers = players.filter((p) => !isPlayerInRoster(p.id));
 
   return (
     <div className="container mx-auto py-8">
       <div className="mb-8">
-        <Link to={`/games/${gameId}`}>
+        <Link to="/games/$gameId" params={{ gameId }}>
           <Button variant="ghost" className="mb-4">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Game
@@ -186,7 +179,7 @@ function RosterManagementPage() {
                     className="flex items-center justify-between rounded border p-3"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground font-bold">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary font-bold text-primary-foreground">
                         {player.jerseyNumber}
                       </div>
                       <div>
@@ -199,32 +192,34 @@ function RosterManagementPage() {
 
                     <div className="flex items-center gap-2">
                       <div className="flex flex-col gap-1">
-                        <label className="flex items-center gap-1 text-xs">
-                          <input
-                            type="checkbox"
+                        <div className="flex items-center gap-1 text-xs">
+                          <Checkbox
+                            id={`starter-${player.id}`}
                             checked={player.isStarter}
-                            onChange={(e) =>
+                            onCheckedChange={(checked) =>
                               updatePlayerRosterInfo(player.id, {
-                                isStarter: e.target.checked,
+                                isStarter: checked === true,
                               })
                             }
-                            className="rounded"
                           />
-                          Starter
-                        </label>
-                        <label className="flex items-center gap-1 text-xs">
-                          <input
-                            type="checkbox"
+                          <label htmlFor={`starter-${player.id}`}>
+                            Starter
+                          </label>
+                        </div>
+                        <div className="flex items-center gap-1 text-xs">
+                          <Checkbox
+                            id={`captain-${player.id}`}
                             checked={player.isCaptain}
-                            onChange={(e) =>
+                            onCheckedChange={(checked) =>
                               updatePlayerRosterInfo(player.id, {
-                                isCaptain: e.target.checked,
+                                isCaptain: checked === true,
                               })
                             }
-                            className="rounded"
                           />
-                          Captain
-                        </label>
+                          <label htmlFor={`captain-${player.id}`}>
+                            Captain
+                          </label>
+                        </div>
                       </div>
 
                       <Button
@@ -265,7 +260,7 @@ function RosterManagementPage() {
                     className="flex items-center justify-between rounded border p-3"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-sm font-bold">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted font-bold text-sm">
                         {player.jerseyNumber}
                       </div>
                       <div>
