@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { RATING_ENUM, TOPIC_ENUM } from '@lax-db/core/feedback/types';
 import { useMutation } from '@tanstack/react-query';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, Router, useRouter } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -61,12 +61,15 @@ export const Route = createFileRoute('/_dashboard/feedback')({
 });
 
 function FeedbackPage() {
+  const router = useRouter();
+
   const submitFeedbackMutation = useMutation({
     mutationKey: ['submitFeedback'],
     mutationFn: (data: FeedbackFormValues) => submitFeedback({ data }),
     onSuccess: () => {
       toast.success('Thank you for your feedback! We appreciate your input.');
-      form.reset();
+      // TODO: eventually just go back to previous page
+      router.navigate({ href: '/teams' });
     },
     onError: (error) => {
       console.error('Feedback submission error:', error);
