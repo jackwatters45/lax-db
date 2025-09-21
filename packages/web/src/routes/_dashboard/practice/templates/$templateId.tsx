@@ -1,4 +1,18 @@
 import { createFileRoute } from '@tanstack/react-router';
+import {
+  ArrowLeft,
+  Calendar,
+  ChevronRight,
+  Clock,
+  Copy,
+  Edit,
+  Play,
+  Star,
+  Target,
+  Trash2,
+  Users,
+} from 'lucide-react';
+import { useState } from 'react';
 import { Badge } from '../../../../components/ui/badge';
 import { Button } from '../../../../components/ui/button';
 import {
@@ -8,20 +22,6 @@ import {
   CardHeader,
   CardTitle,
 } from '../../../../components/ui/card';
-import {
-  ArrowLeft,
-  Clock,
-  Users,
-  Target,
-  Star,
-  Calendar,
-  Play,
-  Edit,
-  Copy,
-  Trash2,
-  ChevronRight,
-} from 'lucide-react';
-import { useState } from 'react';
 
 export const Route = createFileRoute(
   '/_dashboard/practice/templates/$templateId',

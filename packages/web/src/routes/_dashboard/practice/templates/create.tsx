@@ -1,4 +1,18 @@
 import { createFileRoute } from '@tanstack/react-router';
+import {
+  ArrowLeft,
+  Check,
+  ChevronDown,
+  ChevronUp,
+  Clock,
+  Plus,
+  Search,
+  Target,
+  Users,
+  X,
+} from 'lucide-react';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { Badge } from '../../../../components/ui/badge';
 import { Button } from '../../../../components/ui/button';
 import {
@@ -8,7 +22,6 @@ import {
   CardHeader,
   CardTitle,
 } from '../../../../components/ui/card';
-import { Input } from '../../../../components/ui/input';
 import {
   Form,
   FormControl,
@@ -17,20 +30,7 @@ import {
   FormLabel,
   FormMessage,
 } from '../../../../components/ui/form';
-import {
-  ArrowLeft,
-  Plus,
-  Search,
-  Clock,
-  Target,
-  Users,
-  X,
-  Check,
-  ChevronDown,
-  ChevronUp,
-} from 'lucide-react';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Input } from '../../../../components/ui/input';
 
 interface TemplateFormData {
   name: string;
