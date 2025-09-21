@@ -110,7 +110,7 @@ export const Route = createFileRoute('/_dashboard/playbook/plays/create')({
 });
 
 function CreatePlay() {
-  const { permissions, formData } = Route.useLoaderData();
+  const { formData } = Route.useLoaderData();
   const router = useRouter();
 
   const [currentStep, setCurrentStep] = useState(1);
@@ -139,7 +139,10 @@ function CreatePlay() {
 
   const totalSteps = 3; // Basic Info, Steps, Review
 
-  const handleBasicInfoChange = (field: keyof PlayFormData, value: any) => {
+  const handleBasicInfoChange = (
+    field: keyof PlayFormData,
+    value: string | number | string[],
+  ) => {
     setPlayData((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -421,9 +424,12 @@ function CreatePlay() {
                     value={newTag}
                     onChange={(e) => setNewTag(e.target.value)}
                     placeholder="Add a tag"
-                    onKeyDown={(e) =>
-                      e.key === 'Enter' && (e.preventDefault(), addTag())
-                    }
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        addTag();
+                      }
+                    }}
                   />
                   <Button type="button" onClick={addTag} size="sm">
                     Add
@@ -649,10 +655,12 @@ function CreatePlay() {
                           value={newKeyPoint}
                           onChange={(e) => setNewKeyPoint(e.target.value)}
                           placeholder="Add a key point"
-                          onKeyDown={(e) =>
-                            e.key === 'Enter' &&
-                            (e.preventDefault(), addKeyPoint())
-                          }
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              e.preventDefault();
+                              addKeyPoint();
+                            }
+                          }}
                         />
                         <Button type="button" onClick={addKeyPoint} size="sm">
                           Add
@@ -662,7 +670,7 @@ function CreatePlay() {
                         <div className="space-y-1">
                           {newStep.keyPoints.map((point, index) => (
                             <div
-                              key={index}
+                              key={point}
                               className="flex items-center justify-between rounded border p-2"
                             >
                               <span className="text-sm">{point}</span>
