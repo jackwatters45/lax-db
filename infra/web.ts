@@ -1,5 +1,6 @@
 import { database } from './database';
 import { domain } from './dns';
+import { email, noReplyEmail, supportEmail } from './email';
 import { redis } from './redis';
 import { allSecrets } from './secret';
 import { bucket } from './storage';
@@ -13,5 +14,9 @@ export const web = new sst.aws.TanStackStart('Web', {
     redirects: [`www.${domain}`],
     dns: sst.cloudflare.dns(),
   },
-  link: [bucket, database, redis, ...allSecrets],
+  link: [bucket, database, email, redis, ...allSecrets],
+  environment: {
+    SENDER: noReplyEmail,
+    SUPPORT_EMAIL: supportEmail,
+  },
 });

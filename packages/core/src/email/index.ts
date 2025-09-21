@@ -156,21 +156,18 @@ ${validated.feedback}
 Submitted: ${new Date().toISOString()}
       `.trim();
 
-        const adminEmails = process.env.ADMIN_EMAILS?.split(',') || [
-          'admin@example.com',
-        ];
-
         // Use direct SES implementation to avoid circular dependency
         const sesClient = new SESv2Client({
-          region: process.env.AWS_REGION || 'us-east-1',
+          region: process.env.AWS_REGION || 'us-west-2',
         });
 
-        const defaultFrom = Resource.Email.sender;
+        const FromEmailAddress = process.env.SENDER || 'noreply@laxdb.io';
+        const toEmailAddress = process.env.SUPPORT_EMAIL || 'support@laxdb.io';
 
         const command = new SendEmailCommand({
-          FromEmailAddress: defaultFrom,
+          FromEmailAddress: FromEmailAddress,
           Destination: {
-            ToAddresses: adminEmails,
+            ToAddresses: [toEmailAddress],
           },
           Content: {
             Simple: {
