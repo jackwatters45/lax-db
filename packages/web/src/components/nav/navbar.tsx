@@ -5,7 +5,6 @@ import { cn } from '@/lib/utils';
 interface NavItem {
   label: string;
   href: string;
-  isActive?: boolean;
 }
 
 interface NavbarProps {
@@ -18,13 +17,6 @@ export function Navbar({ items, className }: NavbarProps) {
   const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0 });
   const navRef = useRef<HTMLDivElement>(null);
   const linkRefs = useRef<(HTMLAnchorElement | null)[]>([]);
-
-  useEffect(() => {
-    const activeItemIndex = items.findIndex((item) => item.isActive);
-    if (activeItemIndex !== -1) {
-      setActiveIndex(activeItemIndex);
-    }
-  }, [items]);
 
   useEffect(() => {
     const updateIndicator = () => {
@@ -62,11 +54,9 @@ export function Navbar({ items, className }: NavbarProps) {
             linkRefs.current[index] = el;
           }}
           className={cn(
-            'relative inline-block select-none px-3 py-4 font-normal text-sm leading-[0.875rem] no-underline transition-colors duration-200 ease-out',
-            item.isActive
-              ? 'text-gray-950'
-              : 'text-gray-800 hover:text-gray-9500',
+            'relative inline-block select-none px-3 py-4 font-normal text-gray-800 text-sm leading-[0.875rem] no-underline transition-colors duration-200 ease-out hover:text-gray-950',
           )}
+          activeProps={{ className: 'text-gray-950' }}
           style={{ outlineOffset: '-6px' }}
           onClick={() => setActiveIndex(index)}
         >
