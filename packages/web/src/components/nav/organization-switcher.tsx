@@ -103,7 +103,7 @@ export function OrganizationSwitcher({ className }: OrganizationSwitcherProps) {
             </span>
           </div>
           <div className="grid flex-1 text-left text-sm leading-tight">
-            <span className="truncate font-semibold">
+            <span className="truncate font-medium">
               {currentActiveOrg?.name || 'No Organization'}
             </span>
           </div>
@@ -130,7 +130,7 @@ export function OrganizationSwitcher({ className }: OrganizationSwitcherProps) {
             >
               <div className="flex items-center gap-2">
                 <div className="flex size-6 items-center justify-center rounded-sm border bg-background">
-                  <span className="font-semibold text-xs">
+                  <span className="font-medium text-xs">
                     {org.name.charAt(0).toUpperCase()}
                   </span>
                 </div>
