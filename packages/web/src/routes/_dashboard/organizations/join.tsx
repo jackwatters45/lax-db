@@ -11,11 +11,11 @@ import { z } from 'zod';
 const acceptInvitation = createServerFn({ method: 'POST' })
   .validator((data: { invitationId: string }) => data)
   .handler(async ({ data }) => {
-    const { TeamsAPI } = await import('@lax-db/core/teams/index');
+    const { OrganizationAPI } = await import('@lax-db/core/organization/index');
     const { getWebRequest } = await import('@tanstack/react-start/server');
 
     const request = getWebRequest();
-    return await TeamsAPI.acceptInvitation(data, request.headers);
+    return await OrganizationAPI.acceptInvitation(data, request.headers);
   });
 
 import { Button } from '@/components/ui/button';

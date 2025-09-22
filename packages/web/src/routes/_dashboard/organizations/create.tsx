@@ -24,10 +24,10 @@ import { Input } from '@/components/ui/input';
 const createOrganization = createServerFn({ method: 'POST' })
   .validator((data: { name: string; slug: string }) => data)
   .handler(async ({ data }) => {
-    const { TeamsAPI } = await import('@lax-db/core/teams/index');
+    const { OrganizationAPI } = await import('@lax-db/core/organization/index');
 
     const request = getWebRequest();
-    return await TeamsAPI.createOrganization(data, request.headers);
+    return await OrganizationAPI.createOrganization(data, request.headers);
   });
 
 const formSchema = z.object({

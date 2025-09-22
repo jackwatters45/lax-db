@@ -1,8 +1,8 @@
+import type { Team } from '@lax-db/core/teams/index';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, Link, useRouter } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { getWebRequest } from '@tanstack/react-start/server';
-import type { Team } from 'better-auth/plugins';
 import { ArrowRight, Plus, Trash2, Users } from 'lucide-react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
@@ -11,10 +11,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 // Server function for getting user organization context
 const getUserOrganizationContext = createServerFn().handler(async () => {
-  const { TeamsAPI } = await import('@lax-db/core/teams/index');
+  const { OrganizationAPI } = await import('@lax-db/core/organization/index');
 
   const request = getWebRequest();
-  return await TeamsAPI.getUserOrganizationContext(request.headers);
+  return await OrganizationAPI.getUserOrganizationContext(request.headers);
 });
 
 // Server function for getting team members
@@ -44,6 +44,8 @@ export const Route = createFileRoute('/_dashboard/teams/')({
 
 function TeamsOverviewPage() {
   const { activeOrganization, teams, canManageTeams } = Route.useLoaderData();
+
+  console.log({ activeOrganization, teams, canManageTeams });
 
   if (!activeOrganization) {
     return <NoOrganizationPrompt />;
