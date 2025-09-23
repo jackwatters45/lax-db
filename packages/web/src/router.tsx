@@ -2,7 +2,8 @@ import { createRouter as createTanstackRouter } from '@tanstack/react-router';
 import { setupRouterSsrQueryIntegration } from '@tanstack/react-router-ssr-query';
 import { DefaultCatchBoundary } from './components/default-catch-boundary';
 import { NotFound } from './components/not-found';
-import * as TanstackQuery from './lib/tanstack-query/root-provider';
+import * as TanstackQuery from './lib/root-provider';
+import { getContext } from './lib/root-provider';
 import { routeTree } from './routeTree.gen';
 
 // NOTE: Most of the integration code found here is experimental and will
@@ -11,17 +12,17 @@ import { routeTree } from './routeTree.gen';
 
 // Create a new router instance
 export const createRouter = () => {
-  const rqContext = TanstackQuery.getContext();
+  const ctx = getContext();
 
   const router = createTanstackRouter({
     routeTree,
-    context: { ...rqContext },
+    context: { ...ctx },
     defaultPreload: 'intent',
     defaultErrorComponent: DefaultCatchBoundary,
     defaultNotFoundComponent: () => <NotFound />,
     Wrap: (props: { children: React.ReactNode }) => {
       return (
-        <TanstackQuery.Provider {...rqContext}>
+        <TanstackQuery.Provider {...ctx}>
           {props.children}
         </TanstackQuery.Provider>
       );
@@ -30,7 +31,7 @@ export const createRouter = () => {
 
   setupRouterSsrQueryIntegration({
     router,
-    queryClient: rqContext.queryClient,
+    queryClient: ctx.queryClient,
   });
 
   return router;

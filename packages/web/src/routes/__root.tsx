@@ -17,7 +17,7 @@ import { DefaultCatchBoundary } from '@/components/default-catch-boundary';
 import { NotFound } from '@/components/not-found';
 import { Toaster } from '@/components/ui/sonner';
 import { seo } from '@/lib/seo';
-import TanStackQueryDevtools from '@/lib/tanstack-query/devtools';
+import TanStackQueryDevtools from '@/lib/tanstack-query-devtools';
 import globalsCss from '@/styles/globals.css?url';
 
 export const Route = createRootRouteWithContext<{

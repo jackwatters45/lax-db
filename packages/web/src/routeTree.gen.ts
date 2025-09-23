@@ -8,513 +8,523 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { createServerRootRoute } from '@tanstack/react-start/server'
+import { createServerRootRoute } from '@tanstack/react-start/server';
 
-import { Route as rootRouteImport } from './routes/__root'
-import { Route as RegisterRouteImport } from './routes/register'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as DashboardRouteImport } from './routes/_dashboard'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as DashboardPlanRouteImport } from './routes/_dashboard/plan'
-import { Route as DashboardFeedbackRouteImport } from './routes/_dashboard/feedback'
-import { Route as DashboardTeamsIndexRouteImport } from './routes/_dashboard/teams/index'
-import { Route as DashboardScoutingIndexRouteImport } from './routes/_dashboard/scouting/index'
-import { Route as DashboardPracticeIndexRouteImport } from './routes/_dashboard/practice/index'
-import { Route as DashboardPlayersIndexRouteImport } from './routes/_dashboard/players/index'
-import { Route as DashboardPlaybookIndexRouteImport } from './routes/_dashboard/playbook/index'
-import { Route as DashboardGamesIndexRouteImport } from './routes/_dashboard/games/index'
-import { Route as DashboardFilmIndexRouteImport } from './routes/_dashboard/film/index'
-import { Route as DashboardTeamsCreateRouteImport } from './routes/_dashboard/teams/create'
-import { Route as DashboardTeamsTeamIdRouteImport } from './routes/_dashboard/teams/$teamId'
-import { Route as DashboardPlaybookPracticeRouteImport } from './routes/_dashboard/playbook/practice'
-import { Route as DashboardPlaybookCategoriesRouteImport } from './routes/_dashboard/playbook/categories'
-import { Route as DashboardPlaybookAssignmentsRouteImport } from './routes/_dashboard/playbook/assignments'
-import { Route as DashboardPlaybookAnalyticsRouteImport } from './routes/_dashboard/playbook/analytics'
-import { Route as DashboardOrganizationsJoinRouteImport } from './routes/_dashboard/organizations/join'
-import { Route as DashboardOrganizationsCreateRouteImport } from './routes/_dashboard/organizations/create'
-import { Route as DashboardGamesCreateRouteImport } from './routes/_dashboard/games/create'
-import { Route as DashboardFilmUploadRouteImport } from './routes/_dashboard/film/upload'
-import { Route as DashboardFilmFilmIdRouteImport } from './routes/_dashboard/film/$filmId'
-import { Route as DashboardScoutingTeamsIndexRouteImport } from './routes/_dashboard/scouting/teams/index'
-import { Route as DashboardPracticeTemplatesIndexRouteImport } from './routes/_dashboard/practice/templates/index'
-import { Route as DashboardPracticeScheduleIndexRouteImport } from './routes/_dashboard/practice/schedule/index'
-import { Route as DashboardPracticeDrillsIndexRouteImport } from './routes/_dashboard/practice/drills/index'
-import { Route as DashboardPlayersPlayerIdIndexRouteImport } from './routes/_dashboard/players/$playerId/index'
-import { Route as DashboardPlaybookPlaysIndexRouteImport } from './routes/_dashboard/playbook/plays/index'
-import { Route as DashboardGamesGameIdIndexRouteImport } from './routes/_dashboard/games/$gameId/index'
-import { Route as DashboardScoutingTeamsCreateRouteImport } from './routes/_dashboard/scouting/teams/create'
-import { Route as DashboardScoutingTeamsTeamIdRouteImport } from './routes/_dashboard/scouting/teams/$teamId'
-import { Route as DashboardPracticeTemplatesCreateRouteImport } from './routes/_dashboard/practice/templates/create'
-import { Route as DashboardPracticeTemplatesTemplateIdRouteImport } from './routes/_dashboard/practice/templates/$templateId'
-import { Route as DashboardPracticeSessionsSessionIdRouteImport } from './routes/_dashboard/practice/sessions/$sessionId'
-import { Route as DashboardPracticeDrillsCreateRouteImport } from './routes/_dashboard/practice/drills/create'
-import { Route as DashboardPlayersResourcesCreateRouteImport } from './routes/_dashboard/players/resources.create'
-import { Route as DashboardPlayersNotesCreateRouteImport } from './routes/_dashboard/players/notes.create'
-import { Route as DashboardPlayersGoalsCreateRouteImport } from './routes/_dashboard/players/goals.create'
-import { Route as DashboardPlayersAssessmentsCreateRouteImport } from './routes/_dashboard/players/assessments.create'
-import { Route as DashboardPlayersPlayerIdStatsRouteImport } from './routes/_dashboard/players/$playerId/stats'
-import { Route as DashboardPlayersPlayerIdResourcesRouteImport } from './routes/_dashboard/players/$playerId/resources'
-import { Route as DashboardPlayersPlayerIdNotesRouteImport } from './routes/_dashboard/players/$playerId/notes'
-import { Route as DashboardPlayersPlayerIdEditRouteImport } from './routes/_dashboard/players/$playerId/edit'
-import { Route as DashboardPlaybookPlaysCreateRouteImport } from './routes/_dashboard/playbook/plays/create'
-import { Route as DashboardPlaybookPlaysPlayIdRouteImport } from './routes/_dashboard/playbook/plays/$playId'
-import { Route as DashboardGamesGameIdStatsRouteImport } from './routes/_dashboard/games/$gameId/stats'
-import { Route as DashboardGamesGameIdRosterRouteImport } from './routes/_dashboard/games/$gameId/roster'
-import { Route as DashboardGamesGameIdEditRouteImport } from './routes/_dashboard/games/$gameId/edit'
-import { ServerRoute as ApiAuthSplatServerRouteImport } from './routes/api/auth/$'
+import { Route as rootRouteImport } from './routes/__root';
+import { Route as DashboardRouteImport } from './routes/_dashboard';
+import { Route as DashboardFeedbackRouteImport } from './routes/_dashboard/feedback';
+import { Route as DashboardFilmFilmIdRouteImport } from './routes/_dashboard/film/$filmId';
+import { Route as DashboardFilmIndexRouteImport } from './routes/_dashboard/film/index';
+import { Route as DashboardFilmUploadRouteImport } from './routes/_dashboard/film/upload';
+import { Route as DashboardGamesGameIdEditRouteImport } from './routes/_dashboard/games/$gameId/edit';
+import { Route as DashboardGamesGameIdIndexRouteImport } from './routes/_dashboard/games/$gameId/index';
+import { Route as DashboardGamesGameIdRosterRouteImport } from './routes/_dashboard/games/$gameId/roster';
+import { Route as DashboardGamesGameIdStatsRouteImport } from './routes/_dashboard/games/$gameId/stats';
+import { Route as DashboardGamesCreateRouteImport } from './routes/_dashboard/games/create';
+import { Route as DashboardGamesIndexRouteImport } from './routes/_dashboard/games/index';
+import { Route as DashboardOrganizationsCreateRouteImport } from './routes/_dashboard/organizations/create';
+import { Route as DashboardOrganizationsJoinRouteImport } from './routes/_dashboard/organizations/join';
+import { Route as DashboardPlanRouteImport } from './routes/_dashboard/plan';
+import { Route as DashboardPlaybookAnalyticsRouteImport } from './routes/_dashboard/playbook/analytics';
+import { Route as DashboardPlaybookAssignmentsRouteImport } from './routes/_dashboard/playbook/assignments';
+import { Route as DashboardPlaybookCategoriesRouteImport } from './routes/_dashboard/playbook/categories';
+import { Route as DashboardPlaybookIndexRouteImport } from './routes/_dashboard/playbook/index';
+import { Route as DashboardPlaybookPlaysPlayIdRouteImport } from './routes/_dashboard/playbook/plays/$playId';
+import { Route as DashboardPlaybookPlaysCreateRouteImport } from './routes/_dashboard/playbook/plays/create';
+import { Route as DashboardPlaybookPlaysIndexRouteImport } from './routes/_dashboard/playbook/plays/index';
+import { Route as DashboardPlaybookPracticeRouteImport } from './routes/_dashboard/playbook/practice';
+import { Route as DashboardPlayersPlayerIdEditRouteImport } from './routes/_dashboard/players/$playerId/edit';
+import { Route as DashboardPlayersPlayerIdIndexRouteImport } from './routes/_dashboard/players/$playerId/index';
+import { Route as DashboardPlayersPlayerIdNotesRouteImport } from './routes/_dashboard/players/$playerId/notes';
+import { Route as DashboardPlayersPlayerIdResourcesRouteImport } from './routes/_dashboard/players/$playerId/resources';
+import { Route as DashboardPlayersPlayerIdStatsRouteImport } from './routes/_dashboard/players/$playerId/stats';
+import { Route as DashboardPlayersAssessmentsCreateRouteImport } from './routes/_dashboard/players/assessments.create';
+import { Route as DashboardPlayersGoalsCreateRouteImport } from './routes/_dashboard/players/goals.create';
+import { Route as DashboardPlayersIndexRouteImport } from './routes/_dashboard/players/index';
+import { Route as DashboardPlayersNotesCreateRouteImport } from './routes/_dashboard/players/notes.create';
+import { Route as DashboardPlayersResourcesCreateRouteImport } from './routes/_dashboard/players/resources.create';
+import { Route as DashboardPracticeDrillsCreateRouteImport } from './routes/_dashboard/practice/drills/create';
+import { Route as DashboardPracticeDrillsIndexRouteImport } from './routes/_dashboard/practice/drills/index';
+import { Route as DashboardPracticeIndexRouteImport } from './routes/_dashboard/practice/index';
+import { Route as DashboardPracticeScheduleIndexRouteImport } from './routes/_dashboard/practice/schedule/index';
+import { Route as DashboardPracticeSessionsSessionIdRouteImport } from './routes/_dashboard/practice/sessions/$sessionId';
+import { Route as DashboardPracticeTemplatesTemplateIdRouteImport } from './routes/_dashboard/practice/templates/$templateId';
+import { Route as DashboardPracticeTemplatesCreateRouteImport } from './routes/_dashboard/practice/templates/create';
+import { Route as DashboardPracticeTemplatesIndexRouteImport } from './routes/_dashboard/practice/templates/index';
+import { Route as DashboardScoutingIndexRouteImport } from './routes/_dashboard/scouting/index';
+import { Route as DashboardScoutingTeamsTeamIdRouteImport } from './routes/_dashboard/scouting/teams/$teamId';
+import { Route as DashboardScoutingTeamsCreateRouteImport } from './routes/_dashboard/scouting/teams/create';
+import { Route as DashboardScoutingTeamsIndexRouteImport } from './routes/_dashboard/scouting/teams/index';
+import { Route as DashboardSettingsRouteImport } from './routes/_dashboard/settings';
+import { Route as DashboardTeamsTeamIdRouteImport } from './routes/_dashboard/teams/$teamId';
+import { Route as DashboardTeamsCreateRouteImport } from './routes/_dashboard/teams/create';
+import { Route as DashboardTeamsIndexRouteImport } from './routes/_dashboard/teams/index';
+import { ServerRoute as ApiAuthSplatServerRouteImport } from './routes/api/auth/$';
+import { Route as IndexRouteImport } from './routes/index';
+import { Route as LoginRouteImport } from './routes/login';
+import { Route as RegisterRouteImport } from './routes/register';
 
-const rootServerRouteImport = createServerRootRoute()
+const rootServerRouteImport = createServerRootRoute();
 
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const DashboardRoute = DashboardRouteImport.update({
   id: '/_dashboard',
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
+const DashboardSettingsRoute = DashboardSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => DashboardRoute,
+} as any);
 const DashboardPlanRoute = DashboardPlanRouteImport.update({
   id: '/plan',
   path: '/plan',
   getParentRoute: () => DashboardRoute,
-} as any)
+} as any);
 const DashboardFeedbackRoute = DashboardFeedbackRouteImport.update({
   id: '/feedback',
   path: '/feedback',
   getParentRoute: () => DashboardRoute,
-} as any)
+} as any);
 const DashboardTeamsIndexRoute = DashboardTeamsIndexRouteImport.update({
   id: '/teams/',
   path: '/teams/',
   getParentRoute: () => DashboardRoute,
-} as any)
+} as any);
 const DashboardScoutingIndexRoute = DashboardScoutingIndexRouteImport.update({
   id: '/scouting/',
   path: '/scouting/',
   getParentRoute: () => DashboardRoute,
-} as any)
+} as any);
 const DashboardPracticeIndexRoute = DashboardPracticeIndexRouteImport.update({
   id: '/practice/',
   path: '/practice/',
   getParentRoute: () => DashboardRoute,
-} as any)
+} as any);
 const DashboardPlayersIndexRoute = DashboardPlayersIndexRouteImport.update({
   id: '/players/',
   path: '/players/',
   getParentRoute: () => DashboardRoute,
-} as any)
+} as any);
 const DashboardPlaybookIndexRoute = DashboardPlaybookIndexRouteImport.update({
   id: '/playbook/',
   path: '/playbook/',
   getParentRoute: () => DashboardRoute,
-} as any)
+} as any);
 const DashboardGamesIndexRoute = DashboardGamesIndexRouteImport.update({
   id: '/games/',
   path: '/games/',
   getParentRoute: () => DashboardRoute,
-} as any)
+} as any);
 const DashboardFilmIndexRoute = DashboardFilmIndexRouteImport.update({
   id: '/film/',
   path: '/film/',
   getParentRoute: () => DashboardRoute,
-} as any)
+} as any);
 const DashboardTeamsCreateRoute = DashboardTeamsCreateRouteImport.update({
   id: '/teams/create',
   path: '/teams/create',
   getParentRoute: () => DashboardRoute,
-} as any)
+} as any);
 const DashboardTeamsTeamIdRoute = DashboardTeamsTeamIdRouteImport.update({
   id: '/teams/$teamId',
   path: '/teams/$teamId',
   getParentRoute: () => DashboardRoute,
-} as any)
+} as any);
 const DashboardPlaybookPracticeRoute =
   DashboardPlaybookPracticeRouteImport.update({
     id: '/playbook/practice',
     path: '/playbook/practice',
     getParentRoute: () => DashboardRoute,
-  } as any)
+  } as any);
 const DashboardPlaybookCategoriesRoute =
   DashboardPlaybookCategoriesRouteImport.update({
     id: '/playbook/categories',
     path: '/playbook/categories',
     getParentRoute: () => DashboardRoute,
-  } as any)
+  } as any);
 const DashboardPlaybookAssignmentsRoute =
   DashboardPlaybookAssignmentsRouteImport.update({
     id: '/playbook/assignments',
     path: '/playbook/assignments',
     getParentRoute: () => DashboardRoute,
-  } as any)
+  } as any);
 const DashboardPlaybookAnalyticsRoute =
   DashboardPlaybookAnalyticsRouteImport.update({
     id: '/playbook/analytics',
     path: '/playbook/analytics',
     getParentRoute: () => DashboardRoute,
-  } as any)
+  } as any);
 const DashboardOrganizationsJoinRoute =
   DashboardOrganizationsJoinRouteImport.update({
     id: '/organizations/join',
     path: '/organizations/join',
     getParentRoute: () => DashboardRoute,
-  } as any)
+  } as any);
 const DashboardOrganizationsCreateRoute =
   DashboardOrganizationsCreateRouteImport.update({
     id: '/organizations/create',
     path: '/organizations/create',
     getParentRoute: () => DashboardRoute,
-  } as any)
+  } as any);
 const DashboardGamesCreateRoute = DashboardGamesCreateRouteImport.update({
   id: '/games/create',
   path: '/games/create',
   getParentRoute: () => DashboardRoute,
-} as any)
+} as any);
 const DashboardFilmUploadRoute = DashboardFilmUploadRouteImport.update({
   id: '/film/upload',
   path: '/film/upload',
   getParentRoute: () => DashboardRoute,
-} as any)
+} as any);
 const DashboardFilmFilmIdRoute = DashboardFilmFilmIdRouteImport.update({
   id: '/film/$filmId',
   path: '/film/$filmId',
   getParentRoute: () => DashboardRoute,
-} as any)
+} as any);
 const DashboardScoutingTeamsIndexRoute =
   DashboardScoutingTeamsIndexRouteImport.update({
     id: '/scouting/teams/',
     path: '/scouting/teams/',
     getParentRoute: () => DashboardRoute,
-  } as any)
+  } as any);
 const DashboardPracticeTemplatesIndexRoute =
   DashboardPracticeTemplatesIndexRouteImport.update({
     id: '/practice/templates/',
     path: '/practice/templates/',
     getParentRoute: () => DashboardRoute,
-  } as any)
+  } as any);
 const DashboardPracticeScheduleIndexRoute =
   DashboardPracticeScheduleIndexRouteImport.update({
     id: '/practice/schedule/',
     path: '/practice/schedule/',
     getParentRoute: () => DashboardRoute,
-  } as any)
+  } as any);
 const DashboardPracticeDrillsIndexRoute =
   DashboardPracticeDrillsIndexRouteImport.update({
     id: '/practice/drills/',
     path: '/practice/drills/',
     getParentRoute: () => DashboardRoute,
-  } as any)
+  } as any);
 const DashboardPlayersPlayerIdIndexRoute =
   DashboardPlayersPlayerIdIndexRouteImport.update({
     id: '/players/$playerId/',
     path: '/players/$playerId/',
     getParentRoute: () => DashboardRoute,
-  } as any)
+  } as any);
 const DashboardPlaybookPlaysIndexRoute =
   DashboardPlaybookPlaysIndexRouteImport.update({
     id: '/playbook/plays/',
     path: '/playbook/plays/',
     getParentRoute: () => DashboardRoute,
-  } as any)
+  } as any);
 const DashboardGamesGameIdIndexRoute =
   DashboardGamesGameIdIndexRouteImport.update({
     id: '/games/$gameId/',
     path: '/games/$gameId/',
     getParentRoute: () => DashboardRoute,
-  } as any)
+  } as any);
 const DashboardScoutingTeamsCreateRoute =
   DashboardScoutingTeamsCreateRouteImport.update({
     id: '/scouting/teams/create',
     path: '/scouting/teams/create',
     getParentRoute: () => DashboardRoute,
-  } as any)
+  } as any);
 const DashboardScoutingTeamsTeamIdRoute =
   DashboardScoutingTeamsTeamIdRouteImport.update({
     id: '/scouting/teams/$teamId',
     path: '/scouting/teams/$teamId',
     getParentRoute: () => DashboardRoute,
-  } as any)
+  } as any);
 const DashboardPracticeTemplatesCreateRoute =
   DashboardPracticeTemplatesCreateRouteImport.update({
     id: '/practice/templates/create',
     path: '/practice/templates/create',
     getParentRoute: () => DashboardRoute,
-  } as any)
+  } as any);
 const DashboardPracticeTemplatesTemplateIdRoute =
   DashboardPracticeTemplatesTemplateIdRouteImport.update({
     id: '/practice/templates/$templateId',
     path: '/practice/templates/$templateId',
     getParentRoute: () => DashboardRoute,
-  } as any)
+  } as any);
 const DashboardPracticeSessionsSessionIdRoute =
   DashboardPracticeSessionsSessionIdRouteImport.update({
     id: '/practice/sessions/$sessionId',
     path: '/practice/sessions/$sessionId',
     getParentRoute: () => DashboardRoute,
-  } as any)
+  } as any);
 const DashboardPracticeDrillsCreateRoute =
   DashboardPracticeDrillsCreateRouteImport.update({
     id: '/practice/drills/create',
     path: '/practice/drills/create',
     getParentRoute: () => DashboardRoute,
-  } as any)
+  } as any);
 const DashboardPlayersResourcesCreateRoute =
   DashboardPlayersResourcesCreateRouteImport.update({
     id: '/players/resources/create',
     path: '/players/resources/create',
     getParentRoute: () => DashboardRoute,
-  } as any)
+  } as any);
 const DashboardPlayersNotesCreateRoute =
   DashboardPlayersNotesCreateRouteImport.update({
     id: '/players/notes/create',
     path: '/players/notes/create',
     getParentRoute: () => DashboardRoute,
-  } as any)
+  } as any);
 const DashboardPlayersGoalsCreateRoute =
   DashboardPlayersGoalsCreateRouteImport.update({
     id: '/players/goals/create',
     path: '/players/goals/create',
     getParentRoute: () => DashboardRoute,
-  } as any)
+  } as any);
 const DashboardPlayersAssessmentsCreateRoute =
   DashboardPlayersAssessmentsCreateRouteImport.update({
     id: '/players/assessments/create',
     path: '/players/assessments/create',
     getParentRoute: () => DashboardRoute,
-  } as any)
+  } as any);
 const DashboardPlayersPlayerIdStatsRoute =
   DashboardPlayersPlayerIdStatsRouteImport.update({
     id: '/players/$playerId/stats',
     path: '/players/$playerId/stats',
     getParentRoute: () => DashboardRoute,
-  } as any)
+  } as any);
 const DashboardPlayersPlayerIdResourcesRoute =
   DashboardPlayersPlayerIdResourcesRouteImport.update({
     id: '/players/$playerId/resources',
     path: '/players/$playerId/resources',
     getParentRoute: () => DashboardRoute,
-  } as any)
+  } as any);
 const DashboardPlayersPlayerIdNotesRoute =
   DashboardPlayersPlayerIdNotesRouteImport.update({
     id: '/players/$playerId/notes',
     path: '/players/$playerId/notes',
     getParentRoute: () => DashboardRoute,
-  } as any)
+  } as any);
 const DashboardPlayersPlayerIdEditRoute =
   DashboardPlayersPlayerIdEditRouteImport.update({
     id: '/players/$playerId/edit',
     path: '/players/$playerId/edit',
     getParentRoute: () => DashboardRoute,
-  } as any)
+  } as any);
 const DashboardPlaybookPlaysCreateRoute =
   DashboardPlaybookPlaysCreateRouteImport.update({
     id: '/playbook/plays/create',
     path: '/playbook/plays/create',
     getParentRoute: () => DashboardRoute,
-  } as any)
+  } as any);
 const DashboardPlaybookPlaysPlayIdRoute =
   DashboardPlaybookPlaysPlayIdRouteImport.update({
     id: '/playbook/plays/$playId',
     path: '/playbook/plays/$playId',
     getParentRoute: () => DashboardRoute,
-  } as any)
+  } as any);
 const DashboardGamesGameIdStatsRoute =
   DashboardGamesGameIdStatsRouteImport.update({
     id: '/games/$gameId/stats',
     path: '/games/$gameId/stats',
     getParentRoute: () => DashboardRoute,
-  } as any)
+  } as any);
 const DashboardGamesGameIdRosterRoute =
   DashboardGamesGameIdRosterRouteImport.update({
     id: '/games/$gameId/roster',
     path: '/games/$gameId/roster',
     getParentRoute: () => DashboardRoute,
-  } as any)
+  } as any);
 const DashboardGamesGameIdEditRoute =
   DashboardGamesGameIdEditRouteImport.update({
     id: '/games/$gameId/edit',
     path: '/games/$gameId/edit',
     getParentRoute: () => DashboardRoute,
-  } as any)
+  } as any);
 const ApiAuthSplatServerRoute = ApiAuthSplatServerRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
   getParentRoute: () => rootServerRouteImport,
-} as any)
+} as any);
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/login': typeof LoginRoute
-  '/register': typeof RegisterRoute
-  '/feedback': typeof DashboardFeedbackRoute
-  '/plan': typeof DashboardPlanRoute
-  '/film/$filmId': typeof DashboardFilmFilmIdRoute
-  '/film/upload': typeof DashboardFilmUploadRoute
-  '/games/create': typeof DashboardGamesCreateRoute
-  '/organizations/create': typeof DashboardOrganizationsCreateRoute
-  '/organizations/join': typeof DashboardOrganizationsJoinRoute
-  '/playbook/analytics': typeof DashboardPlaybookAnalyticsRoute
-  '/playbook/assignments': typeof DashboardPlaybookAssignmentsRoute
-  '/playbook/categories': typeof DashboardPlaybookCategoriesRoute
-  '/playbook/practice': typeof DashboardPlaybookPracticeRoute
-  '/teams/$teamId': typeof DashboardTeamsTeamIdRoute
-  '/teams/create': typeof DashboardTeamsCreateRoute
-  '/film': typeof DashboardFilmIndexRoute
-  '/games': typeof DashboardGamesIndexRoute
-  '/playbook': typeof DashboardPlaybookIndexRoute
-  '/players': typeof DashboardPlayersIndexRoute
-  '/practice': typeof DashboardPracticeIndexRoute
-  '/scouting': typeof DashboardScoutingIndexRoute
-  '/teams': typeof DashboardTeamsIndexRoute
-  '/games/$gameId/edit': typeof DashboardGamesGameIdEditRoute
-  '/games/$gameId/roster': typeof DashboardGamesGameIdRosterRoute
-  '/games/$gameId/stats': typeof DashboardGamesGameIdStatsRoute
-  '/playbook/plays/$playId': typeof DashboardPlaybookPlaysPlayIdRoute
-  '/playbook/plays/create': typeof DashboardPlaybookPlaysCreateRoute
-  '/players/$playerId/edit': typeof DashboardPlayersPlayerIdEditRoute
-  '/players/$playerId/notes': typeof DashboardPlayersPlayerIdNotesRoute
-  '/players/$playerId/resources': typeof DashboardPlayersPlayerIdResourcesRoute
-  '/players/$playerId/stats': typeof DashboardPlayersPlayerIdStatsRoute
-  '/players/assessments/create': typeof DashboardPlayersAssessmentsCreateRoute
-  '/players/goals/create': typeof DashboardPlayersGoalsCreateRoute
-  '/players/notes/create': typeof DashboardPlayersNotesCreateRoute
-  '/players/resources/create': typeof DashboardPlayersResourcesCreateRoute
-  '/practice/drills/create': typeof DashboardPracticeDrillsCreateRoute
-  '/practice/sessions/$sessionId': typeof DashboardPracticeSessionsSessionIdRoute
-  '/practice/templates/$templateId': typeof DashboardPracticeTemplatesTemplateIdRoute
-  '/practice/templates/create': typeof DashboardPracticeTemplatesCreateRoute
-  '/scouting/teams/$teamId': typeof DashboardScoutingTeamsTeamIdRoute
-  '/scouting/teams/create': typeof DashboardScoutingTeamsCreateRoute
-  '/games/$gameId': typeof DashboardGamesGameIdIndexRoute
-  '/playbook/plays': typeof DashboardPlaybookPlaysIndexRoute
-  '/players/$playerId': typeof DashboardPlayersPlayerIdIndexRoute
-  '/practice/drills': typeof DashboardPracticeDrillsIndexRoute
-  '/practice/schedule': typeof DashboardPracticeScheduleIndexRoute
-  '/practice/templates': typeof DashboardPracticeTemplatesIndexRoute
-  '/scouting/teams': typeof DashboardScoutingTeamsIndexRoute
+  '/': typeof IndexRoute;
+  '/login': typeof LoginRoute;
+  '/register': typeof RegisterRoute;
+  '/feedback': typeof DashboardFeedbackRoute;
+  '/plan': typeof DashboardPlanRoute;
+  '/settings': typeof DashboardSettingsRoute;
+  '/film/$filmId': typeof DashboardFilmFilmIdRoute;
+  '/film/upload': typeof DashboardFilmUploadRoute;
+  '/games/create': typeof DashboardGamesCreateRoute;
+  '/organizations/create': typeof DashboardOrganizationsCreateRoute;
+  '/organizations/join': typeof DashboardOrganizationsJoinRoute;
+  '/playbook/analytics': typeof DashboardPlaybookAnalyticsRoute;
+  '/playbook/assignments': typeof DashboardPlaybookAssignmentsRoute;
+  '/playbook/categories': typeof DashboardPlaybookCategoriesRoute;
+  '/playbook/practice': typeof DashboardPlaybookPracticeRoute;
+  '/teams/$teamId': typeof DashboardTeamsTeamIdRoute;
+  '/teams/create': typeof DashboardTeamsCreateRoute;
+  '/film': typeof DashboardFilmIndexRoute;
+  '/games': typeof DashboardGamesIndexRoute;
+  '/playbook': typeof DashboardPlaybookIndexRoute;
+  '/players': typeof DashboardPlayersIndexRoute;
+  '/practice': typeof DashboardPracticeIndexRoute;
+  '/scouting': typeof DashboardScoutingIndexRoute;
+  '/teams': typeof DashboardTeamsIndexRoute;
+  '/games/$gameId/edit': typeof DashboardGamesGameIdEditRoute;
+  '/games/$gameId/roster': typeof DashboardGamesGameIdRosterRoute;
+  '/games/$gameId/stats': typeof DashboardGamesGameIdStatsRoute;
+  '/playbook/plays/$playId': typeof DashboardPlaybookPlaysPlayIdRoute;
+  '/playbook/plays/create': typeof DashboardPlaybookPlaysCreateRoute;
+  '/players/$playerId/edit': typeof DashboardPlayersPlayerIdEditRoute;
+  '/players/$playerId/notes': typeof DashboardPlayersPlayerIdNotesRoute;
+  '/players/$playerId/resources': typeof DashboardPlayersPlayerIdResourcesRoute;
+  '/players/$playerId/stats': typeof DashboardPlayersPlayerIdStatsRoute;
+  '/players/assessments/create': typeof DashboardPlayersAssessmentsCreateRoute;
+  '/players/goals/create': typeof DashboardPlayersGoalsCreateRoute;
+  '/players/notes/create': typeof DashboardPlayersNotesCreateRoute;
+  '/players/resources/create': typeof DashboardPlayersResourcesCreateRoute;
+  '/practice/drills/create': typeof DashboardPracticeDrillsCreateRoute;
+  '/practice/sessions/$sessionId': typeof DashboardPracticeSessionsSessionIdRoute;
+  '/practice/templates/$templateId': typeof DashboardPracticeTemplatesTemplateIdRoute;
+  '/practice/templates/create': typeof DashboardPracticeTemplatesCreateRoute;
+  '/scouting/teams/$teamId': typeof DashboardScoutingTeamsTeamIdRoute;
+  '/scouting/teams/create': typeof DashboardScoutingTeamsCreateRoute;
+  '/games/$gameId': typeof DashboardGamesGameIdIndexRoute;
+  '/playbook/plays': typeof DashboardPlaybookPlaysIndexRoute;
+  '/players/$playerId': typeof DashboardPlayersPlayerIdIndexRoute;
+  '/practice/drills': typeof DashboardPracticeDrillsIndexRoute;
+  '/practice/schedule': typeof DashboardPracticeScheduleIndexRoute;
+  '/practice/templates': typeof DashboardPracticeTemplatesIndexRoute;
+  '/scouting/teams': typeof DashboardScoutingTeamsIndexRoute;
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/login': typeof LoginRoute
-  '/register': typeof RegisterRoute
-  '/feedback': typeof DashboardFeedbackRoute
-  '/plan': typeof DashboardPlanRoute
-  '/film/$filmId': typeof DashboardFilmFilmIdRoute
-  '/film/upload': typeof DashboardFilmUploadRoute
-  '/games/create': typeof DashboardGamesCreateRoute
-  '/organizations/create': typeof DashboardOrganizationsCreateRoute
-  '/organizations/join': typeof DashboardOrganizationsJoinRoute
-  '/playbook/analytics': typeof DashboardPlaybookAnalyticsRoute
-  '/playbook/assignments': typeof DashboardPlaybookAssignmentsRoute
-  '/playbook/categories': typeof DashboardPlaybookCategoriesRoute
-  '/playbook/practice': typeof DashboardPlaybookPracticeRoute
-  '/teams/$teamId': typeof DashboardTeamsTeamIdRoute
-  '/teams/create': typeof DashboardTeamsCreateRoute
-  '/film': typeof DashboardFilmIndexRoute
-  '/games': typeof DashboardGamesIndexRoute
-  '/playbook': typeof DashboardPlaybookIndexRoute
-  '/players': typeof DashboardPlayersIndexRoute
-  '/practice': typeof DashboardPracticeIndexRoute
-  '/scouting': typeof DashboardScoutingIndexRoute
-  '/teams': typeof DashboardTeamsIndexRoute
-  '/games/$gameId/edit': typeof DashboardGamesGameIdEditRoute
-  '/games/$gameId/roster': typeof DashboardGamesGameIdRosterRoute
-  '/games/$gameId/stats': typeof DashboardGamesGameIdStatsRoute
-  '/playbook/plays/$playId': typeof DashboardPlaybookPlaysPlayIdRoute
-  '/playbook/plays/create': typeof DashboardPlaybookPlaysCreateRoute
-  '/players/$playerId/edit': typeof DashboardPlayersPlayerIdEditRoute
-  '/players/$playerId/notes': typeof DashboardPlayersPlayerIdNotesRoute
-  '/players/$playerId/resources': typeof DashboardPlayersPlayerIdResourcesRoute
-  '/players/$playerId/stats': typeof DashboardPlayersPlayerIdStatsRoute
-  '/players/assessments/create': typeof DashboardPlayersAssessmentsCreateRoute
-  '/players/goals/create': typeof DashboardPlayersGoalsCreateRoute
-  '/players/notes/create': typeof DashboardPlayersNotesCreateRoute
-  '/players/resources/create': typeof DashboardPlayersResourcesCreateRoute
-  '/practice/drills/create': typeof DashboardPracticeDrillsCreateRoute
-  '/practice/sessions/$sessionId': typeof DashboardPracticeSessionsSessionIdRoute
-  '/practice/templates/$templateId': typeof DashboardPracticeTemplatesTemplateIdRoute
-  '/practice/templates/create': typeof DashboardPracticeTemplatesCreateRoute
-  '/scouting/teams/$teamId': typeof DashboardScoutingTeamsTeamIdRoute
-  '/scouting/teams/create': typeof DashboardScoutingTeamsCreateRoute
-  '/games/$gameId': typeof DashboardGamesGameIdIndexRoute
-  '/playbook/plays': typeof DashboardPlaybookPlaysIndexRoute
-  '/players/$playerId': typeof DashboardPlayersPlayerIdIndexRoute
-  '/practice/drills': typeof DashboardPracticeDrillsIndexRoute
-  '/practice/schedule': typeof DashboardPracticeScheduleIndexRoute
-  '/practice/templates': typeof DashboardPracticeTemplatesIndexRoute
-  '/scouting/teams': typeof DashboardScoutingTeamsIndexRoute
+  '/': typeof IndexRoute;
+  '/login': typeof LoginRoute;
+  '/register': typeof RegisterRoute;
+  '/feedback': typeof DashboardFeedbackRoute;
+  '/plan': typeof DashboardPlanRoute;
+  '/settings': typeof DashboardSettingsRoute;
+  '/film/$filmId': typeof DashboardFilmFilmIdRoute;
+  '/film/upload': typeof DashboardFilmUploadRoute;
+  '/games/create': typeof DashboardGamesCreateRoute;
+  '/organizations/create': typeof DashboardOrganizationsCreateRoute;
+  '/organizations/join': typeof DashboardOrganizationsJoinRoute;
+  '/playbook/analytics': typeof DashboardPlaybookAnalyticsRoute;
+  '/playbook/assignments': typeof DashboardPlaybookAssignmentsRoute;
+  '/playbook/categories': typeof DashboardPlaybookCategoriesRoute;
+  '/playbook/practice': typeof DashboardPlaybookPracticeRoute;
+  '/teams/$teamId': typeof DashboardTeamsTeamIdRoute;
+  '/teams/create': typeof DashboardTeamsCreateRoute;
+  '/film': typeof DashboardFilmIndexRoute;
+  '/games': typeof DashboardGamesIndexRoute;
+  '/playbook': typeof DashboardPlaybookIndexRoute;
+  '/players': typeof DashboardPlayersIndexRoute;
+  '/practice': typeof DashboardPracticeIndexRoute;
+  '/scouting': typeof DashboardScoutingIndexRoute;
+  '/teams': typeof DashboardTeamsIndexRoute;
+  '/games/$gameId/edit': typeof DashboardGamesGameIdEditRoute;
+  '/games/$gameId/roster': typeof DashboardGamesGameIdRosterRoute;
+  '/games/$gameId/stats': typeof DashboardGamesGameIdStatsRoute;
+  '/playbook/plays/$playId': typeof DashboardPlaybookPlaysPlayIdRoute;
+  '/playbook/plays/create': typeof DashboardPlaybookPlaysCreateRoute;
+  '/players/$playerId/edit': typeof DashboardPlayersPlayerIdEditRoute;
+  '/players/$playerId/notes': typeof DashboardPlayersPlayerIdNotesRoute;
+  '/players/$playerId/resources': typeof DashboardPlayersPlayerIdResourcesRoute;
+  '/players/$playerId/stats': typeof DashboardPlayersPlayerIdStatsRoute;
+  '/players/assessments/create': typeof DashboardPlayersAssessmentsCreateRoute;
+  '/players/goals/create': typeof DashboardPlayersGoalsCreateRoute;
+  '/players/notes/create': typeof DashboardPlayersNotesCreateRoute;
+  '/players/resources/create': typeof DashboardPlayersResourcesCreateRoute;
+  '/practice/drills/create': typeof DashboardPracticeDrillsCreateRoute;
+  '/practice/sessions/$sessionId': typeof DashboardPracticeSessionsSessionIdRoute;
+  '/practice/templates/$templateId': typeof DashboardPracticeTemplatesTemplateIdRoute;
+  '/practice/templates/create': typeof DashboardPracticeTemplatesCreateRoute;
+  '/scouting/teams/$teamId': typeof DashboardScoutingTeamsTeamIdRoute;
+  '/scouting/teams/create': typeof DashboardScoutingTeamsCreateRoute;
+  '/games/$gameId': typeof DashboardGamesGameIdIndexRoute;
+  '/playbook/plays': typeof DashboardPlaybookPlaysIndexRoute;
+  '/players/$playerId': typeof DashboardPlayersPlayerIdIndexRoute;
+  '/practice/drills': typeof DashboardPracticeDrillsIndexRoute;
+  '/practice/schedule': typeof DashboardPracticeScheduleIndexRoute;
+  '/practice/templates': typeof DashboardPracticeTemplatesIndexRoute;
+  '/scouting/teams': typeof DashboardScoutingTeamsIndexRoute;
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/_dashboard': typeof DashboardRouteWithChildren
-  '/login': typeof LoginRoute
-  '/register': typeof RegisterRoute
-  '/_dashboard/feedback': typeof DashboardFeedbackRoute
-  '/_dashboard/plan': typeof DashboardPlanRoute
-  '/_dashboard/film/$filmId': typeof DashboardFilmFilmIdRoute
-  '/_dashboard/film/upload': typeof DashboardFilmUploadRoute
-  '/_dashboard/games/create': typeof DashboardGamesCreateRoute
-  '/_dashboard/organizations/create': typeof DashboardOrganizationsCreateRoute
-  '/_dashboard/organizations/join': typeof DashboardOrganizationsJoinRoute
-  '/_dashboard/playbook/analytics': typeof DashboardPlaybookAnalyticsRoute
-  '/_dashboard/playbook/assignments': typeof DashboardPlaybookAssignmentsRoute
-  '/_dashboard/playbook/categories': typeof DashboardPlaybookCategoriesRoute
-  '/_dashboard/playbook/practice': typeof DashboardPlaybookPracticeRoute
-  '/_dashboard/teams/$teamId': typeof DashboardTeamsTeamIdRoute
-  '/_dashboard/teams/create': typeof DashboardTeamsCreateRoute
-  '/_dashboard/film/': typeof DashboardFilmIndexRoute
-  '/_dashboard/games/': typeof DashboardGamesIndexRoute
-  '/_dashboard/playbook/': typeof DashboardPlaybookIndexRoute
-  '/_dashboard/players/': typeof DashboardPlayersIndexRoute
-  '/_dashboard/practice/': typeof DashboardPracticeIndexRoute
-  '/_dashboard/scouting/': typeof DashboardScoutingIndexRoute
-  '/_dashboard/teams/': typeof DashboardTeamsIndexRoute
-  '/_dashboard/games/$gameId/edit': typeof DashboardGamesGameIdEditRoute
-  '/_dashboard/games/$gameId/roster': typeof DashboardGamesGameIdRosterRoute
-  '/_dashboard/games/$gameId/stats': typeof DashboardGamesGameIdStatsRoute
-  '/_dashboard/playbook/plays/$playId': typeof DashboardPlaybookPlaysPlayIdRoute
-  '/_dashboard/playbook/plays/create': typeof DashboardPlaybookPlaysCreateRoute
-  '/_dashboard/players/$playerId/edit': typeof DashboardPlayersPlayerIdEditRoute
-  '/_dashboard/players/$playerId/notes': typeof DashboardPlayersPlayerIdNotesRoute
-  '/_dashboard/players/$playerId/resources': typeof DashboardPlayersPlayerIdResourcesRoute
-  '/_dashboard/players/$playerId/stats': typeof DashboardPlayersPlayerIdStatsRoute
-  '/_dashboard/players/assessments/create': typeof DashboardPlayersAssessmentsCreateRoute
-  '/_dashboard/players/goals/create': typeof DashboardPlayersGoalsCreateRoute
-  '/_dashboard/players/notes/create': typeof DashboardPlayersNotesCreateRoute
-  '/_dashboard/players/resources/create': typeof DashboardPlayersResourcesCreateRoute
-  '/_dashboard/practice/drills/create': typeof DashboardPracticeDrillsCreateRoute
-  '/_dashboard/practice/sessions/$sessionId': typeof DashboardPracticeSessionsSessionIdRoute
-  '/_dashboard/practice/templates/$templateId': typeof DashboardPracticeTemplatesTemplateIdRoute
-  '/_dashboard/practice/templates/create': typeof DashboardPracticeTemplatesCreateRoute
-  '/_dashboard/scouting/teams/$teamId': typeof DashboardScoutingTeamsTeamIdRoute
-  '/_dashboard/scouting/teams/create': typeof DashboardScoutingTeamsCreateRoute
-  '/_dashboard/games/$gameId/': typeof DashboardGamesGameIdIndexRoute
-  '/_dashboard/playbook/plays/': typeof DashboardPlaybookPlaysIndexRoute
-  '/_dashboard/players/$playerId/': typeof DashboardPlayersPlayerIdIndexRoute
-  '/_dashboard/practice/drills/': typeof DashboardPracticeDrillsIndexRoute
-  '/_dashboard/practice/schedule/': typeof DashboardPracticeScheduleIndexRoute
-  '/_dashboard/practice/templates/': typeof DashboardPracticeTemplatesIndexRoute
-  '/_dashboard/scouting/teams/': typeof DashboardScoutingTeamsIndexRoute
+  __root__: typeof rootRouteImport;
+  '/': typeof IndexRoute;
+  '/_dashboard': typeof DashboardRouteWithChildren;
+  '/login': typeof LoginRoute;
+  '/register': typeof RegisterRoute;
+  '/_dashboard/feedback': typeof DashboardFeedbackRoute;
+  '/_dashboard/plan': typeof DashboardPlanRoute;
+  '/_dashboard/settings': typeof DashboardSettingsRoute;
+  '/_dashboard/film/$filmId': typeof DashboardFilmFilmIdRoute;
+  '/_dashboard/film/upload': typeof DashboardFilmUploadRoute;
+  '/_dashboard/games/create': typeof DashboardGamesCreateRoute;
+  '/_dashboard/organizations/create': typeof DashboardOrganizationsCreateRoute;
+  '/_dashboard/organizations/join': typeof DashboardOrganizationsJoinRoute;
+  '/_dashboard/playbook/analytics': typeof DashboardPlaybookAnalyticsRoute;
+  '/_dashboard/playbook/assignments': typeof DashboardPlaybookAssignmentsRoute;
+  '/_dashboard/playbook/categories': typeof DashboardPlaybookCategoriesRoute;
+  '/_dashboard/playbook/practice': typeof DashboardPlaybookPracticeRoute;
+  '/_dashboard/teams/$teamId': typeof DashboardTeamsTeamIdRoute;
+  '/_dashboard/teams/create': typeof DashboardTeamsCreateRoute;
+  '/_dashboard/film/': typeof DashboardFilmIndexRoute;
+  '/_dashboard/games/': typeof DashboardGamesIndexRoute;
+  '/_dashboard/playbook/': typeof DashboardPlaybookIndexRoute;
+  '/_dashboard/players/': typeof DashboardPlayersIndexRoute;
+  '/_dashboard/practice/': typeof DashboardPracticeIndexRoute;
+  '/_dashboard/scouting/': typeof DashboardScoutingIndexRoute;
+  '/_dashboard/teams/': typeof DashboardTeamsIndexRoute;
+  '/_dashboard/games/$gameId/edit': typeof DashboardGamesGameIdEditRoute;
+  '/_dashboard/games/$gameId/roster': typeof DashboardGamesGameIdRosterRoute;
+  '/_dashboard/games/$gameId/stats': typeof DashboardGamesGameIdStatsRoute;
+  '/_dashboard/playbook/plays/$playId': typeof DashboardPlaybookPlaysPlayIdRoute;
+  '/_dashboard/playbook/plays/create': typeof DashboardPlaybookPlaysCreateRoute;
+  '/_dashboard/players/$playerId/edit': typeof DashboardPlayersPlayerIdEditRoute;
+  '/_dashboard/players/$playerId/notes': typeof DashboardPlayersPlayerIdNotesRoute;
+  '/_dashboard/players/$playerId/resources': typeof DashboardPlayersPlayerIdResourcesRoute;
+  '/_dashboard/players/$playerId/stats': typeof DashboardPlayersPlayerIdStatsRoute;
+  '/_dashboard/players/assessments/create': typeof DashboardPlayersAssessmentsCreateRoute;
+  '/_dashboard/players/goals/create': typeof DashboardPlayersGoalsCreateRoute;
+  '/_dashboard/players/notes/create': typeof DashboardPlayersNotesCreateRoute;
+  '/_dashboard/players/resources/create': typeof DashboardPlayersResourcesCreateRoute;
+  '/_dashboard/practice/drills/create': typeof DashboardPracticeDrillsCreateRoute;
+  '/_dashboard/practice/sessions/$sessionId': typeof DashboardPracticeSessionsSessionIdRoute;
+  '/_dashboard/practice/templates/$templateId': typeof DashboardPracticeTemplatesTemplateIdRoute;
+  '/_dashboard/practice/templates/create': typeof DashboardPracticeTemplatesCreateRoute;
+  '/_dashboard/scouting/teams/$teamId': typeof DashboardScoutingTeamsTeamIdRoute;
+  '/_dashboard/scouting/teams/create': typeof DashboardScoutingTeamsCreateRoute;
+  '/_dashboard/games/$gameId/': typeof DashboardGamesGameIdIndexRoute;
+  '/_dashboard/playbook/plays/': typeof DashboardPlaybookPlaysIndexRoute;
+  '/_dashboard/players/$playerId/': typeof DashboardPlayersPlayerIdIndexRoute;
+  '/_dashboard/practice/drills/': typeof DashboardPracticeDrillsIndexRoute;
+  '/_dashboard/practice/schedule/': typeof DashboardPracticeScheduleIndexRoute;
+  '/_dashboard/practice/templates/': typeof DashboardPracticeTemplatesIndexRoute;
+  '/_dashboard/scouting/teams/': typeof DashboardScoutingTeamsIndexRoute;
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
+  fileRoutesByFullPath: FileRoutesByFullPath;
   fullPaths:
     | '/'
     | '/login'
     | '/register'
     | '/feedback'
     | '/plan'
+    | '/settings'
     | '/film/$filmId'
     | '/film/upload'
     | '/games/create'
@@ -558,14 +568,15 @@ export interface FileRouteTypes {
     | '/practice/drills'
     | '/practice/schedule'
     | '/practice/templates'
-    | '/scouting/teams'
-  fileRoutesByTo: FileRoutesByTo
+    | '/scouting/teams';
+  fileRoutesByTo: FileRoutesByTo;
   to:
     | '/'
     | '/login'
     | '/register'
     | '/feedback'
     | '/plan'
+    | '/settings'
     | '/film/$filmId'
     | '/film/upload'
     | '/games/create'
@@ -609,7 +620,7 @@ export interface FileRouteTypes {
     | '/practice/drills'
     | '/practice/schedule'
     | '/practice/templates'
-    | '/scouting/teams'
+    | '/scouting/teams';
   id:
     | '__root__'
     | '/'
@@ -618,6 +629,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/_dashboard/feedback'
     | '/_dashboard/plan'
+    | '/_dashboard/settings'
     | '/_dashboard/film/$filmId'
     | '/_dashboard/film/upload'
     | '/_dashboard/games/create'
@@ -661,455 +673,464 @@ export interface FileRouteTypes {
     | '/_dashboard/practice/drills/'
     | '/_dashboard/practice/schedule/'
     | '/_dashboard/practice/templates/'
-    | '/_dashboard/scouting/teams/'
-  fileRoutesById: FileRoutesById
+    | '/_dashboard/scouting/teams/';
+  fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  DashboardRoute: typeof DashboardRouteWithChildren
-  LoginRoute: typeof LoginRoute
-  RegisterRoute: typeof RegisterRoute
+  IndexRoute: typeof IndexRoute;
+  DashboardRoute: typeof DashboardRouteWithChildren;
+  LoginRoute: typeof LoginRoute;
+  RegisterRoute: typeof RegisterRoute;
 }
 export interface FileServerRoutesByFullPath {
-  '/api/auth/$': typeof ApiAuthSplatServerRoute
+  '/api/auth/$': typeof ApiAuthSplatServerRoute;
 }
 export interface FileServerRoutesByTo {
-  '/api/auth/$': typeof ApiAuthSplatServerRoute
+  '/api/auth/$': typeof ApiAuthSplatServerRoute;
 }
 export interface FileServerRoutesById {
-  __root__: typeof rootServerRouteImport
-  '/api/auth/$': typeof ApiAuthSplatServerRoute
+  __root__: typeof rootServerRouteImport;
+  '/api/auth/$': typeof ApiAuthSplatServerRoute;
 }
 export interface FileServerRouteTypes {
-  fileServerRoutesByFullPath: FileServerRoutesByFullPath
-  fullPaths: '/api/auth/$'
-  fileServerRoutesByTo: FileServerRoutesByTo
-  to: '/api/auth/$'
-  id: '__root__' | '/api/auth/$'
-  fileServerRoutesById: FileServerRoutesById
+  fileServerRoutesByFullPath: FileServerRoutesByFullPath;
+  fullPaths: '/api/auth/$';
+  fileServerRoutesByTo: FileServerRoutesByTo;
+  to: '/api/auth/$';
+  id: '__root__' | '/api/auth/$';
+  fileServerRoutesById: FileServerRoutesById;
 }
 export interface RootServerRouteChildren {
-  ApiAuthSplatServerRoute: typeof ApiAuthSplatServerRoute
+  ApiAuthSplatServerRoute: typeof ApiAuthSplatServerRoute;
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/register': {
-      id: '/register'
-      path: '/register'
-      fullPath: '/register'
-      preLoaderRoute: typeof RegisterRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/register';
+      path: '/register';
+      fullPath: '/register';
+      preLoaderRoute: typeof RegisterRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/login';
+      path: '/login';
+      fullPath: '/login';
+      preLoaderRoute: typeof LoginRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/_dashboard': {
-      id: '/_dashboard'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof DashboardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/_dashboard';
+      path: '';
+      fullPath: '';
+      preLoaderRoute: typeof DashboardRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/';
+      path: '/';
+      fullPath: '/';
+      preLoaderRoute: typeof IndexRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    '/_dashboard/settings': {
+      id: '/_dashboard/settings';
+      path: '/settings';
+      fullPath: '/settings';
+      preLoaderRoute: typeof DashboardSettingsRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
     '/_dashboard/plan': {
-      id: '/_dashboard/plan'
-      path: '/plan'
-      fullPath: '/plan'
-      preLoaderRoute: typeof DashboardPlanRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/plan';
+      path: '/plan';
+      fullPath: '/plan';
+      preLoaderRoute: typeof DashboardPlanRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
     '/_dashboard/feedback': {
-      id: '/_dashboard/feedback'
-      path: '/feedback'
-      fullPath: '/feedback'
-      preLoaderRoute: typeof DashboardFeedbackRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/feedback';
+      path: '/feedback';
+      fullPath: '/feedback';
+      preLoaderRoute: typeof DashboardFeedbackRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
     '/_dashboard/teams/': {
-      id: '/_dashboard/teams/'
-      path: '/teams'
-      fullPath: '/teams'
-      preLoaderRoute: typeof DashboardTeamsIndexRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/teams/';
+      path: '/teams';
+      fullPath: '/teams';
+      preLoaderRoute: typeof DashboardTeamsIndexRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
     '/_dashboard/scouting/': {
-      id: '/_dashboard/scouting/'
-      path: '/scouting'
-      fullPath: '/scouting'
-      preLoaderRoute: typeof DashboardScoutingIndexRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/scouting/';
+      path: '/scouting';
+      fullPath: '/scouting';
+      preLoaderRoute: typeof DashboardScoutingIndexRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
     '/_dashboard/practice/': {
-      id: '/_dashboard/practice/'
-      path: '/practice'
-      fullPath: '/practice'
-      preLoaderRoute: typeof DashboardPracticeIndexRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/practice/';
+      path: '/practice';
+      fullPath: '/practice';
+      preLoaderRoute: typeof DashboardPracticeIndexRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
     '/_dashboard/players/': {
-      id: '/_dashboard/players/'
-      path: '/players'
-      fullPath: '/players'
-      preLoaderRoute: typeof DashboardPlayersIndexRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/players/';
+      path: '/players';
+      fullPath: '/players';
+      preLoaderRoute: typeof DashboardPlayersIndexRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
     '/_dashboard/playbook/': {
-      id: '/_dashboard/playbook/'
-      path: '/playbook'
-      fullPath: '/playbook'
-      preLoaderRoute: typeof DashboardPlaybookIndexRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/playbook/';
+      path: '/playbook';
+      fullPath: '/playbook';
+      preLoaderRoute: typeof DashboardPlaybookIndexRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
     '/_dashboard/games/': {
-      id: '/_dashboard/games/'
-      path: '/games'
-      fullPath: '/games'
-      preLoaderRoute: typeof DashboardGamesIndexRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/games/';
+      path: '/games';
+      fullPath: '/games';
+      preLoaderRoute: typeof DashboardGamesIndexRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
     '/_dashboard/film/': {
-      id: '/_dashboard/film/'
-      path: '/film'
-      fullPath: '/film'
-      preLoaderRoute: typeof DashboardFilmIndexRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/film/';
+      path: '/film';
+      fullPath: '/film';
+      preLoaderRoute: typeof DashboardFilmIndexRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
     '/_dashboard/teams/create': {
-      id: '/_dashboard/teams/create'
-      path: '/teams/create'
-      fullPath: '/teams/create'
-      preLoaderRoute: typeof DashboardTeamsCreateRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/teams/create';
+      path: '/teams/create';
+      fullPath: '/teams/create';
+      preLoaderRoute: typeof DashboardTeamsCreateRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
     '/_dashboard/teams/$teamId': {
-      id: '/_dashboard/teams/$teamId'
-      path: '/teams/$teamId'
-      fullPath: '/teams/$teamId'
-      preLoaderRoute: typeof DashboardTeamsTeamIdRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/teams/$teamId';
+      path: '/teams/$teamId';
+      fullPath: '/teams/$teamId';
+      preLoaderRoute: typeof DashboardTeamsTeamIdRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
     '/_dashboard/playbook/practice': {
-      id: '/_dashboard/playbook/practice'
-      path: '/playbook/practice'
-      fullPath: '/playbook/practice'
-      preLoaderRoute: typeof DashboardPlaybookPracticeRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/playbook/practice';
+      path: '/playbook/practice';
+      fullPath: '/playbook/practice';
+      preLoaderRoute: typeof DashboardPlaybookPracticeRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
     '/_dashboard/playbook/categories': {
-      id: '/_dashboard/playbook/categories'
-      path: '/playbook/categories'
-      fullPath: '/playbook/categories'
-      preLoaderRoute: typeof DashboardPlaybookCategoriesRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/playbook/categories';
+      path: '/playbook/categories';
+      fullPath: '/playbook/categories';
+      preLoaderRoute: typeof DashboardPlaybookCategoriesRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
     '/_dashboard/playbook/assignments': {
-      id: '/_dashboard/playbook/assignments'
-      path: '/playbook/assignments'
-      fullPath: '/playbook/assignments'
-      preLoaderRoute: typeof DashboardPlaybookAssignmentsRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/playbook/assignments';
+      path: '/playbook/assignments';
+      fullPath: '/playbook/assignments';
+      preLoaderRoute: typeof DashboardPlaybookAssignmentsRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
     '/_dashboard/playbook/analytics': {
-      id: '/_dashboard/playbook/analytics'
-      path: '/playbook/analytics'
-      fullPath: '/playbook/analytics'
-      preLoaderRoute: typeof DashboardPlaybookAnalyticsRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/playbook/analytics';
+      path: '/playbook/analytics';
+      fullPath: '/playbook/analytics';
+      preLoaderRoute: typeof DashboardPlaybookAnalyticsRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
     '/_dashboard/organizations/join': {
-      id: '/_dashboard/organizations/join'
-      path: '/organizations/join'
-      fullPath: '/organizations/join'
-      preLoaderRoute: typeof DashboardOrganizationsJoinRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/organizations/join';
+      path: '/organizations/join';
+      fullPath: '/organizations/join';
+      preLoaderRoute: typeof DashboardOrganizationsJoinRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
     '/_dashboard/organizations/create': {
-      id: '/_dashboard/organizations/create'
-      path: '/organizations/create'
-      fullPath: '/organizations/create'
-      preLoaderRoute: typeof DashboardOrganizationsCreateRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/organizations/create';
+      path: '/organizations/create';
+      fullPath: '/organizations/create';
+      preLoaderRoute: typeof DashboardOrganizationsCreateRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
     '/_dashboard/games/create': {
-      id: '/_dashboard/games/create'
-      path: '/games/create'
-      fullPath: '/games/create'
-      preLoaderRoute: typeof DashboardGamesCreateRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/games/create';
+      path: '/games/create';
+      fullPath: '/games/create';
+      preLoaderRoute: typeof DashboardGamesCreateRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
     '/_dashboard/film/upload': {
-      id: '/_dashboard/film/upload'
-      path: '/film/upload'
-      fullPath: '/film/upload'
-      preLoaderRoute: typeof DashboardFilmUploadRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/film/upload';
+      path: '/film/upload';
+      fullPath: '/film/upload';
+      preLoaderRoute: typeof DashboardFilmUploadRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
     '/_dashboard/film/$filmId': {
-      id: '/_dashboard/film/$filmId'
-      path: '/film/$filmId'
-      fullPath: '/film/$filmId'
-      preLoaderRoute: typeof DashboardFilmFilmIdRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/film/$filmId';
+      path: '/film/$filmId';
+      fullPath: '/film/$filmId';
+      preLoaderRoute: typeof DashboardFilmFilmIdRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
     '/_dashboard/scouting/teams/': {
-      id: '/_dashboard/scouting/teams/'
-      path: '/scouting/teams'
-      fullPath: '/scouting/teams'
-      preLoaderRoute: typeof DashboardScoutingTeamsIndexRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/scouting/teams/';
+      path: '/scouting/teams';
+      fullPath: '/scouting/teams';
+      preLoaderRoute: typeof DashboardScoutingTeamsIndexRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
     '/_dashboard/practice/templates/': {
-      id: '/_dashboard/practice/templates/'
-      path: '/practice/templates'
-      fullPath: '/practice/templates'
-      preLoaderRoute: typeof DashboardPracticeTemplatesIndexRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/practice/templates/';
+      path: '/practice/templates';
+      fullPath: '/practice/templates';
+      preLoaderRoute: typeof DashboardPracticeTemplatesIndexRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
     '/_dashboard/practice/schedule/': {
-      id: '/_dashboard/practice/schedule/'
-      path: '/practice/schedule'
-      fullPath: '/practice/schedule'
-      preLoaderRoute: typeof DashboardPracticeScheduleIndexRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/practice/schedule/';
+      path: '/practice/schedule';
+      fullPath: '/practice/schedule';
+      preLoaderRoute: typeof DashboardPracticeScheduleIndexRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
     '/_dashboard/practice/drills/': {
-      id: '/_dashboard/practice/drills/'
-      path: '/practice/drills'
-      fullPath: '/practice/drills'
-      preLoaderRoute: typeof DashboardPracticeDrillsIndexRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/practice/drills/';
+      path: '/practice/drills';
+      fullPath: '/practice/drills';
+      preLoaderRoute: typeof DashboardPracticeDrillsIndexRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
     '/_dashboard/players/$playerId/': {
-      id: '/_dashboard/players/$playerId/'
-      path: '/players/$playerId'
-      fullPath: '/players/$playerId'
-      preLoaderRoute: typeof DashboardPlayersPlayerIdIndexRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/players/$playerId/';
+      path: '/players/$playerId';
+      fullPath: '/players/$playerId';
+      preLoaderRoute: typeof DashboardPlayersPlayerIdIndexRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
     '/_dashboard/playbook/plays/': {
-      id: '/_dashboard/playbook/plays/'
-      path: '/playbook/plays'
-      fullPath: '/playbook/plays'
-      preLoaderRoute: typeof DashboardPlaybookPlaysIndexRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/playbook/plays/';
+      path: '/playbook/plays';
+      fullPath: '/playbook/plays';
+      preLoaderRoute: typeof DashboardPlaybookPlaysIndexRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
     '/_dashboard/games/$gameId/': {
-      id: '/_dashboard/games/$gameId/'
-      path: '/games/$gameId'
-      fullPath: '/games/$gameId'
-      preLoaderRoute: typeof DashboardGamesGameIdIndexRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/games/$gameId/';
+      path: '/games/$gameId';
+      fullPath: '/games/$gameId';
+      preLoaderRoute: typeof DashboardGamesGameIdIndexRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
     '/_dashboard/scouting/teams/create': {
-      id: '/_dashboard/scouting/teams/create'
-      path: '/scouting/teams/create'
-      fullPath: '/scouting/teams/create'
-      preLoaderRoute: typeof DashboardScoutingTeamsCreateRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/scouting/teams/create';
+      path: '/scouting/teams/create';
+      fullPath: '/scouting/teams/create';
+      preLoaderRoute: typeof DashboardScoutingTeamsCreateRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
     '/_dashboard/scouting/teams/$teamId': {
-      id: '/_dashboard/scouting/teams/$teamId'
-      path: '/scouting/teams/$teamId'
-      fullPath: '/scouting/teams/$teamId'
-      preLoaderRoute: typeof DashboardScoutingTeamsTeamIdRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/scouting/teams/$teamId';
+      path: '/scouting/teams/$teamId';
+      fullPath: '/scouting/teams/$teamId';
+      preLoaderRoute: typeof DashboardScoutingTeamsTeamIdRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
     '/_dashboard/practice/templates/create': {
-      id: '/_dashboard/practice/templates/create'
-      path: '/practice/templates/create'
-      fullPath: '/practice/templates/create'
-      preLoaderRoute: typeof DashboardPracticeTemplatesCreateRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/practice/templates/create';
+      path: '/practice/templates/create';
+      fullPath: '/practice/templates/create';
+      preLoaderRoute: typeof DashboardPracticeTemplatesCreateRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
     '/_dashboard/practice/templates/$templateId': {
-      id: '/_dashboard/practice/templates/$templateId'
-      path: '/practice/templates/$templateId'
-      fullPath: '/practice/templates/$templateId'
-      preLoaderRoute: typeof DashboardPracticeTemplatesTemplateIdRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/practice/templates/$templateId';
+      path: '/practice/templates/$templateId';
+      fullPath: '/practice/templates/$templateId';
+      preLoaderRoute: typeof DashboardPracticeTemplatesTemplateIdRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
     '/_dashboard/practice/sessions/$sessionId': {
-      id: '/_dashboard/practice/sessions/$sessionId'
-      path: '/practice/sessions/$sessionId'
-      fullPath: '/practice/sessions/$sessionId'
-      preLoaderRoute: typeof DashboardPracticeSessionsSessionIdRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/practice/sessions/$sessionId';
+      path: '/practice/sessions/$sessionId';
+      fullPath: '/practice/sessions/$sessionId';
+      preLoaderRoute: typeof DashboardPracticeSessionsSessionIdRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
     '/_dashboard/practice/drills/create': {
-      id: '/_dashboard/practice/drills/create'
-      path: '/practice/drills/create'
-      fullPath: '/practice/drills/create'
-      preLoaderRoute: typeof DashboardPracticeDrillsCreateRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/practice/drills/create';
+      path: '/practice/drills/create';
+      fullPath: '/practice/drills/create';
+      preLoaderRoute: typeof DashboardPracticeDrillsCreateRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
     '/_dashboard/players/resources/create': {
-      id: '/_dashboard/players/resources/create'
-      path: '/players/resources/create'
-      fullPath: '/players/resources/create'
-      preLoaderRoute: typeof DashboardPlayersResourcesCreateRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/players/resources/create';
+      path: '/players/resources/create';
+      fullPath: '/players/resources/create';
+      preLoaderRoute: typeof DashboardPlayersResourcesCreateRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
     '/_dashboard/players/notes/create': {
-      id: '/_dashboard/players/notes/create'
-      path: '/players/notes/create'
-      fullPath: '/players/notes/create'
-      preLoaderRoute: typeof DashboardPlayersNotesCreateRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/players/notes/create';
+      path: '/players/notes/create';
+      fullPath: '/players/notes/create';
+      preLoaderRoute: typeof DashboardPlayersNotesCreateRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
     '/_dashboard/players/goals/create': {
-      id: '/_dashboard/players/goals/create'
-      path: '/players/goals/create'
-      fullPath: '/players/goals/create'
-      preLoaderRoute: typeof DashboardPlayersGoalsCreateRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/players/goals/create';
+      path: '/players/goals/create';
+      fullPath: '/players/goals/create';
+      preLoaderRoute: typeof DashboardPlayersGoalsCreateRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
     '/_dashboard/players/assessments/create': {
-      id: '/_dashboard/players/assessments/create'
-      path: '/players/assessments/create'
-      fullPath: '/players/assessments/create'
-      preLoaderRoute: typeof DashboardPlayersAssessmentsCreateRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/players/assessments/create';
+      path: '/players/assessments/create';
+      fullPath: '/players/assessments/create';
+      preLoaderRoute: typeof DashboardPlayersAssessmentsCreateRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
     '/_dashboard/players/$playerId/stats': {
-      id: '/_dashboard/players/$playerId/stats'
-      path: '/players/$playerId/stats'
-      fullPath: '/players/$playerId/stats'
-      preLoaderRoute: typeof DashboardPlayersPlayerIdStatsRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/players/$playerId/stats';
+      path: '/players/$playerId/stats';
+      fullPath: '/players/$playerId/stats';
+      preLoaderRoute: typeof DashboardPlayersPlayerIdStatsRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
     '/_dashboard/players/$playerId/resources': {
-      id: '/_dashboard/players/$playerId/resources'
-      path: '/players/$playerId/resources'
-      fullPath: '/players/$playerId/resources'
-      preLoaderRoute: typeof DashboardPlayersPlayerIdResourcesRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/players/$playerId/resources';
+      path: '/players/$playerId/resources';
+      fullPath: '/players/$playerId/resources';
+      preLoaderRoute: typeof DashboardPlayersPlayerIdResourcesRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
     '/_dashboard/players/$playerId/notes': {
-      id: '/_dashboard/players/$playerId/notes'
-      path: '/players/$playerId/notes'
-      fullPath: '/players/$playerId/notes'
-      preLoaderRoute: typeof DashboardPlayersPlayerIdNotesRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/players/$playerId/notes';
+      path: '/players/$playerId/notes';
+      fullPath: '/players/$playerId/notes';
+      preLoaderRoute: typeof DashboardPlayersPlayerIdNotesRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
     '/_dashboard/players/$playerId/edit': {
-      id: '/_dashboard/players/$playerId/edit'
-      path: '/players/$playerId/edit'
-      fullPath: '/players/$playerId/edit'
-      preLoaderRoute: typeof DashboardPlayersPlayerIdEditRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/players/$playerId/edit';
+      path: '/players/$playerId/edit';
+      fullPath: '/players/$playerId/edit';
+      preLoaderRoute: typeof DashboardPlayersPlayerIdEditRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
     '/_dashboard/playbook/plays/create': {
-      id: '/_dashboard/playbook/plays/create'
-      path: '/playbook/plays/create'
-      fullPath: '/playbook/plays/create'
-      preLoaderRoute: typeof DashboardPlaybookPlaysCreateRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/playbook/plays/create';
+      path: '/playbook/plays/create';
+      fullPath: '/playbook/plays/create';
+      preLoaderRoute: typeof DashboardPlaybookPlaysCreateRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
     '/_dashboard/playbook/plays/$playId': {
-      id: '/_dashboard/playbook/plays/$playId'
-      path: '/playbook/plays/$playId'
-      fullPath: '/playbook/plays/$playId'
-      preLoaderRoute: typeof DashboardPlaybookPlaysPlayIdRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/playbook/plays/$playId';
+      path: '/playbook/plays/$playId';
+      fullPath: '/playbook/plays/$playId';
+      preLoaderRoute: typeof DashboardPlaybookPlaysPlayIdRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
     '/_dashboard/games/$gameId/stats': {
-      id: '/_dashboard/games/$gameId/stats'
-      path: '/games/$gameId/stats'
-      fullPath: '/games/$gameId/stats'
-      preLoaderRoute: typeof DashboardGamesGameIdStatsRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/games/$gameId/stats';
+      path: '/games/$gameId/stats';
+      fullPath: '/games/$gameId/stats';
+      preLoaderRoute: typeof DashboardGamesGameIdStatsRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
     '/_dashboard/games/$gameId/roster': {
-      id: '/_dashboard/games/$gameId/roster'
-      path: '/games/$gameId/roster'
-      fullPath: '/games/$gameId/roster'
-      preLoaderRoute: typeof DashboardGamesGameIdRosterRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/games/$gameId/roster';
+      path: '/games/$gameId/roster';
+      fullPath: '/games/$gameId/roster';
+      preLoaderRoute: typeof DashboardGamesGameIdRosterRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
     '/_dashboard/games/$gameId/edit': {
-      id: '/_dashboard/games/$gameId/edit'
-      path: '/games/$gameId/edit'
-      fullPath: '/games/$gameId/edit'
-      preLoaderRoute: typeof DashboardGamesGameIdEditRouteImport
-      parentRoute: typeof DashboardRoute
-    }
+      id: '/_dashboard/games/$gameId/edit';
+      path: '/games/$gameId/edit';
+      fullPath: '/games/$gameId/edit';
+      preLoaderRoute: typeof DashboardGamesGameIdEditRouteImport;
+      parentRoute: typeof DashboardRoute;
+    };
   }
 }
 declare module '@tanstack/react-start/server' {
   interface ServerFileRoutesByPath {
     '/api/auth/$': {
-      id: '/api/auth/$'
-      path: '/api/auth/$'
-      fullPath: '/api/auth/$'
-      preLoaderRoute: typeof ApiAuthSplatServerRouteImport
-      parentRoute: typeof rootServerRouteImport
-    }
+      id: '/api/auth/$';
+      path: '/api/auth/$';
+      fullPath: '/api/auth/$';
+      preLoaderRoute: typeof ApiAuthSplatServerRouteImport;
+      parentRoute: typeof rootServerRouteImport;
+    };
   }
 }
 
 interface DashboardRouteChildren {
-  DashboardFeedbackRoute: typeof DashboardFeedbackRoute
-  DashboardPlanRoute: typeof DashboardPlanRoute
-  DashboardFilmFilmIdRoute: typeof DashboardFilmFilmIdRoute
-  DashboardFilmUploadRoute: typeof DashboardFilmUploadRoute
-  DashboardGamesCreateRoute: typeof DashboardGamesCreateRoute
-  DashboardOrganizationsCreateRoute: typeof DashboardOrganizationsCreateRoute
-  DashboardOrganizationsJoinRoute: typeof DashboardOrganizationsJoinRoute
-  DashboardPlaybookAnalyticsRoute: typeof DashboardPlaybookAnalyticsRoute
-  DashboardPlaybookAssignmentsRoute: typeof DashboardPlaybookAssignmentsRoute
-  DashboardPlaybookCategoriesRoute: typeof DashboardPlaybookCategoriesRoute
-  DashboardPlaybookPracticeRoute: typeof DashboardPlaybookPracticeRoute
-  DashboardTeamsTeamIdRoute: typeof DashboardTeamsTeamIdRoute
-  DashboardTeamsCreateRoute: typeof DashboardTeamsCreateRoute
-  DashboardFilmIndexRoute: typeof DashboardFilmIndexRoute
-  DashboardGamesIndexRoute: typeof DashboardGamesIndexRoute
-  DashboardPlaybookIndexRoute: typeof DashboardPlaybookIndexRoute
-  DashboardPlayersIndexRoute: typeof DashboardPlayersIndexRoute
-  DashboardPracticeIndexRoute: typeof DashboardPracticeIndexRoute
-  DashboardScoutingIndexRoute: typeof DashboardScoutingIndexRoute
-  DashboardTeamsIndexRoute: typeof DashboardTeamsIndexRoute
-  DashboardGamesGameIdEditRoute: typeof DashboardGamesGameIdEditRoute
-  DashboardGamesGameIdRosterRoute: typeof DashboardGamesGameIdRosterRoute
-  DashboardGamesGameIdStatsRoute: typeof DashboardGamesGameIdStatsRoute
-  DashboardPlaybookPlaysPlayIdRoute: typeof DashboardPlaybookPlaysPlayIdRoute
-  DashboardPlaybookPlaysCreateRoute: typeof DashboardPlaybookPlaysCreateRoute
-  DashboardPlayersPlayerIdEditRoute: typeof DashboardPlayersPlayerIdEditRoute
-  DashboardPlayersPlayerIdNotesRoute: typeof DashboardPlayersPlayerIdNotesRoute
-  DashboardPlayersPlayerIdResourcesRoute: typeof DashboardPlayersPlayerIdResourcesRoute
-  DashboardPlayersPlayerIdStatsRoute: typeof DashboardPlayersPlayerIdStatsRoute
-  DashboardPlayersAssessmentsCreateRoute: typeof DashboardPlayersAssessmentsCreateRoute
-  DashboardPlayersGoalsCreateRoute: typeof DashboardPlayersGoalsCreateRoute
-  DashboardPlayersNotesCreateRoute: typeof DashboardPlayersNotesCreateRoute
-  DashboardPlayersResourcesCreateRoute: typeof DashboardPlayersResourcesCreateRoute
-  DashboardPracticeDrillsCreateRoute: typeof DashboardPracticeDrillsCreateRoute
-  DashboardPracticeSessionsSessionIdRoute: typeof DashboardPracticeSessionsSessionIdRoute
-  DashboardPracticeTemplatesTemplateIdRoute: typeof DashboardPracticeTemplatesTemplateIdRoute
-  DashboardPracticeTemplatesCreateRoute: typeof DashboardPracticeTemplatesCreateRoute
-  DashboardScoutingTeamsTeamIdRoute: typeof DashboardScoutingTeamsTeamIdRoute
-  DashboardScoutingTeamsCreateRoute: typeof DashboardScoutingTeamsCreateRoute
-  DashboardGamesGameIdIndexRoute: typeof DashboardGamesGameIdIndexRoute
-  DashboardPlaybookPlaysIndexRoute: typeof DashboardPlaybookPlaysIndexRoute
-  DashboardPlayersPlayerIdIndexRoute: typeof DashboardPlayersPlayerIdIndexRoute
-  DashboardPracticeDrillsIndexRoute: typeof DashboardPracticeDrillsIndexRoute
-  DashboardPracticeScheduleIndexRoute: typeof DashboardPracticeScheduleIndexRoute
-  DashboardPracticeTemplatesIndexRoute: typeof DashboardPracticeTemplatesIndexRoute
-  DashboardScoutingTeamsIndexRoute: typeof DashboardScoutingTeamsIndexRoute
+  DashboardFeedbackRoute: typeof DashboardFeedbackRoute;
+  DashboardPlanRoute: typeof DashboardPlanRoute;
+  DashboardSettingsRoute: typeof DashboardSettingsRoute;
+  DashboardFilmFilmIdRoute: typeof DashboardFilmFilmIdRoute;
+  DashboardFilmUploadRoute: typeof DashboardFilmUploadRoute;
+  DashboardGamesCreateRoute: typeof DashboardGamesCreateRoute;
+  DashboardOrganizationsCreateRoute: typeof DashboardOrganizationsCreateRoute;
+  DashboardOrganizationsJoinRoute: typeof DashboardOrganizationsJoinRoute;
+  DashboardPlaybookAnalyticsRoute: typeof DashboardPlaybookAnalyticsRoute;
+  DashboardPlaybookAssignmentsRoute: typeof DashboardPlaybookAssignmentsRoute;
+  DashboardPlaybookCategoriesRoute: typeof DashboardPlaybookCategoriesRoute;
+  DashboardPlaybookPracticeRoute: typeof DashboardPlaybookPracticeRoute;
+  DashboardTeamsTeamIdRoute: typeof DashboardTeamsTeamIdRoute;
+  DashboardTeamsCreateRoute: typeof DashboardTeamsCreateRoute;
+  DashboardFilmIndexRoute: typeof DashboardFilmIndexRoute;
+  DashboardGamesIndexRoute: typeof DashboardGamesIndexRoute;
+  DashboardPlaybookIndexRoute: typeof DashboardPlaybookIndexRoute;
+  DashboardPlayersIndexRoute: typeof DashboardPlayersIndexRoute;
+  DashboardPracticeIndexRoute: typeof DashboardPracticeIndexRoute;
+  DashboardScoutingIndexRoute: typeof DashboardScoutingIndexRoute;
+  DashboardTeamsIndexRoute: typeof DashboardTeamsIndexRoute;
+  DashboardGamesGameIdEditRoute: typeof DashboardGamesGameIdEditRoute;
+  DashboardGamesGameIdRosterRoute: typeof DashboardGamesGameIdRosterRoute;
+  DashboardGamesGameIdStatsRoute: typeof DashboardGamesGameIdStatsRoute;
+  DashboardPlaybookPlaysPlayIdRoute: typeof DashboardPlaybookPlaysPlayIdRoute;
+  DashboardPlaybookPlaysCreateRoute: typeof DashboardPlaybookPlaysCreateRoute;
+  DashboardPlayersPlayerIdEditRoute: typeof DashboardPlayersPlayerIdEditRoute;
+  DashboardPlayersPlayerIdNotesRoute: typeof DashboardPlayersPlayerIdNotesRoute;
+  DashboardPlayersPlayerIdResourcesRoute: typeof DashboardPlayersPlayerIdResourcesRoute;
+  DashboardPlayersPlayerIdStatsRoute: typeof DashboardPlayersPlayerIdStatsRoute;
+  DashboardPlayersAssessmentsCreateRoute: typeof DashboardPlayersAssessmentsCreateRoute;
+  DashboardPlayersGoalsCreateRoute: typeof DashboardPlayersGoalsCreateRoute;
+  DashboardPlayersNotesCreateRoute: typeof DashboardPlayersNotesCreateRoute;
+  DashboardPlayersResourcesCreateRoute: typeof DashboardPlayersResourcesCreateRoute;
+  DashboardPracticeDrillsCreateRoute: typeof DashboardPracticeDrillsCreateRoute;
+  DashboardPracticeSessionsSessionIdRoute: typeof DashboardPracticeSessionsSessionIdRoute;
+  DashboardPracticeTemplatesTemplateIdRoute: typeof DashboardPracticeTemplatesTemplateIdRoute;
+  DashboardPracticeTemplatesCreateRoute: typeof DashboardPracticeTemplatesCreateRoute;
+  DashboardScoutingTeamsTeamIdRoute: typeof DashboardScoutingTeamsTeamIdRoute;
+  DashboardScoutingTeamsCreateRoute: typeof DashboardScoutingTeamsCreateRoute;
+  DashboardGamesGameIdIndexRoute: typeof DashboardGamesGameIdIndexRoute;
+  DashboardPlaybookPlaysIndexRoute: typeof DashboardPlaybookPlaysIndexRoute;
+  DashboardPlayersPlayerIdIndexRoute: typeof DashboardPlayersPlayerIdIndexRoute;
+  DashboardPracticeDrillsIndexRoute: typeof DashboardPracticeDrillsIndexRoute;
+  DashboardPracticeScheduleIndexRoute: typeof DashboardPracticeScheduleIndexRoute;
+  DashboardPracticeTemplatesIndexRoute: typeof DashboardPracticeTemplatesIndexRoute;
+  DashboardScoutingTeamsIndexRoute: typeof DashboardScoutingTeamsIndexRoute;
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardFeedbackRoute: DashboardFeedbackRoute,
   DashboardPlanRoute: DashboardPlanRoute,
+  DashboardSettingsRoute: DashboardSettingsRoute,
   DashboardFilmFilmIdRoute: DashboardFilmFilmIdRoute,
   DashboardFilmUploadRoute: DashboardFilmUploadRoute,
   DashboardGamesCreateRoute: DashboardGamesCreateRoute,
@@ -1158,24 +1179,24 @@ const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardPracticeScheduleIndexRoute: DashboardPracticeScheduleIndexRoute,
   DashboardPracticeTemplatesIndexRoute: DashboardPracticeTemplatesIndexRoute,
   DashboardScoutingTeamsIndexRoute: DashboardScoutingTeamsIndexRoute,
-}
+};
 
 const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
   DashboardRouteChildren,
-)
+);
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRoute: DashboardRouteWithChildren,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
-}
+};
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+  ._addFileTypes<FileRouteTypes>();
 const rootServerRouteChildren: RootServerRouteChildren = {
   ApiAuthSplatServerRoute: ApiAuthSplatServerRoute,
-}
+};
 export const serverRouteTree = rootServerRouteImport
   ._addFileChildren(rootServerRouteChildren)
-  ._addFileTypes<FileServerRouteTypes>()
+  ._addFileTypes<FileServerRouteTypes>();
