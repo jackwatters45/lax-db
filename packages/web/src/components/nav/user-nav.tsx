@@ -72,10 +72,7 @@ export function NavUser() {
             authClient.signOut({
               fetchOptions: {
                 onSuccess: () => {
-                  window.location.href = '/';
-                },
-                onError: () => {
-                  window.location.href = '/';
+                  window.location.href = '/login';
                 },
               },
             });
