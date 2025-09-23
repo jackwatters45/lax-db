@@ -68,13 +68,19 @@ function CreateOrganizationPage() {
   const createOrgMutation = useMutation({
     mutationKey: ['createOrganization'],
     mutationFn: (data: FormData) => createOrganization({ data }),
-    onSuccess: (_, variables) => {
+    onSuccess: async (_, variables) => {
       toast.success(`Organization "${variables.name}" created successfully!`);
+      await router.invalidate();
       router.navigate({ to: '/teams' });
     },
-    onError: (error) => {
-      toast.error('Failed to create organization. Please try again.');
-      console.error('Create organization error:', error);
+    onError: (error, variables) => {
+      if (error.message === 'Slug is not available') {
+        toast.error(
+          `Slug "${variables.slug}" is not available. Please try a different slug.`,
+        );
+      } else {
+        toast.error('Failed to create organization. Please try again.');
+      }
     },
   });
 

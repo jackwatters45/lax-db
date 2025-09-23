@@ -1,27 +1,38 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
+import { createServerFn } from '@tanstack/react-start';
+import { getWebRequest } from '@tanstack/react-start/server';
 import { ArrowLeft, Mail, Plus, Settings, UserMinus } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { authClient } from '@/lib/auth/auth-client';
+import { authClient } from '@/lib/auth-client';
+import { protectedMiddleware } from '@/lib/middleware';
 
-export const Route = createFileRoute('/_dashboard/teams/$teamId')({
-  component: TeamManagementPage,
-  loader: async ({ params }) => {
+// Server function to get team data
+const getTeamData = createServerFn({ method: 'GET' })
+  .middleware([protectedMiddleware])
+  .validator((data: { teamId: string }) => data)
+  .handler(async ({ data }) => {
+    const { auth } = await import('@lax-db/core/auth');
+    const { headers } = getWebRequest();
+
     try {
-      const { teamId } = params;
+      const { teamId } = data;
 
       // Get team members and active member role
       const [membersResult, activeMemberResult] = await Promise.all([
-        authClient.organization.listTeamMembers({
+        auth.api.listTeamMembers({
           query: { teamId },
+          headers,
         }),
-        authClient.organization.getActiveMember(),
+        auth.api.getActiveMember({
+          headers,
+        }),
       ]);
 
-      const members = membersResult.data || [];
-      const activeMember = activeMemberResult.data || null;
+      const members = membersResult || [];
+      const activeMember = activeMemberResult || null;
       const canManageTeam =
         activeMember?.role === 'coach' || activeMember?.role === 'headCoach';
 
@@ -34,12 +45,18 @@ export const Route = createFileRoute('/_dashboard/teams/$teamId')({
     } catch (error) {
       console.error('Error loading team data:', error);
       return {
-        teamId: params.teamId,
+        teamId: data.teamId,
         members: [],
         activeMember: null,
         canManageTeam: false,
       };
     }
+  });
+
+export const Route = createFileRoute('/_dashboard/teams/$teamId')({
+  component: TeamManagementPage,
+  loader: async ({ params }) => {
+    return await getTeamData({ data: { teamId: params.teamId } });
   },
 });
 

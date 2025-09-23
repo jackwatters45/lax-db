@@ -1,38 +1,41 @@
-import type { Team } from '@lax-db/core/teams/index';
-import { useQuery } from '@tanstack/react-query';
+import type { Team, TeamMember } from '@lax-db/core/organization/index';
 import { createFileRoute, Link, useRouter } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
-import { getWebRequest } from '@tanstack/react-start/server';
 import { ArrowRight, Plus, Trash2, Users } from 'lucide-react';
 import { toast } from 'sonner';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { protectedMiddleware } from '@/lib/middleware';
 
 // Server function for getting user organization context
-const getUserOrganizationContext = createServerFn().handler(async () => {
-  const { OrganizationAPI } = await import('@lax-db/core/organization/index');
+const getUserOrganizationContext = createServerFn()
+  .middleware([protectedMiddleware])
+  .handler(async ({ context }) => {
+    const { OrganizationAPI } = await import('@lax-db/core/organization/index');
 
-  const request = getWebRequest();
-  return await OrganizationAPI.getUserOrganizationContext(request.headers);
-});
-
-// Server function for getting team members
-const getTeamMembers = createServerFn({ method: 'GET' })
-  .validator((data: { teamId: string }) => data)
-  .handler(async ({ data }) => {
-    const { TeamsAPI } = await import('@lax-db/core/teams/index');
-
-    return await TeamsAPI.getTeamMembers(data, getWebRequest().headers);
+    return await OrganizationAPI.getUserOrganizationContext(context.headers);
   });
 
 // Server function for deleting teams
 const deleteTeam = createServerFn({ method: 'POST' })
+  .middleware([protectedMiddleware])
   .validator((data: { teamId: string }) => data)
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
     const { TeamsAPI } = await import('@lax-db/core/teams/index');
 
-    return await TeamsAPI.deleteTeam(data, getWebRequest().headers);
+    return await TeamsAPI.deleteTeam(data, context.headers);
   });
 
 export const Route = createFileRoute('/_dashboard/teams/')({
@@ -45,10 +48,9 @@ export const Route = createFileRoute('/_dashboard/teams/')({
 function TeamsOverviewPage() {
   const { activeOrganization, teams, canManageTeams } = Route.useLoaderData();
 
-  console.log({ activeOrganization, teams, canManageTeams });
-
+  // activeOrganization is guaranteed to exist due to beforeLoad check
   if (!activeOrganization) {
-    return <NoOrganizationPrompt />;
+    throw new Error('Organization should exist - this is a bug');
   }
 
   return (
@@ -106,27 +108,13 @@ function TeamOverviewCard({
   team,
   canManage,
 }: {
-  team: Team;
+  team: Team & { members: TeamMember[] };
   canManage: boolean;
 }) {
   const router = useRouter();
-  const { data: members = [], isLoading } = useQuery({
-    queryKey: ['teamMembers', team.id],
-    queryFn: () => getTeamMembers({ data: { teamId: team.id } }),
-    staleTime: 1000 * 60 * 5, // 5 minutes
-  });
-
-  const memberCount = members.length;
+  const memberCount = team.members.length;
 
   const handleDeleteTeam = async () => {
-    if (
-      !confirm(
-        `Are you sure you want to delete ${team.name}? This cannot be undone.`,
-      )
-    ) {
-      return;
-    }
-
     try {
       await deleteTeam({
         data: { teamId: team.id },
@@ -146,14 +134,35 @@ function TeamOverviewCard({
           <CardTitle className="text-lg">{team.name}</CardTitle>
           {canManage && (
             <div className="flex gap-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-destructive hover:text-destructive"
-                onClick={handleDeleteTeam}
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-destructive hover:text-destructive"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Delete Team</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Are you sure you want to delete "{team.name}"? This action
+                      cannot be undone.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={handleDeleteTeam}
+                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                    >
+                      Delete Team
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </div>
           )}
         </div>
@@ -164,7 +173,7 @@ function TeamOverviewCard({
           <div className="flex items-center gap-2">
             <Users className="h-4 w-4 text-muted-foreground" />
             <span className="text-muted-foreground text-sm">
-              {isLoading ? 'Loading...' : `${memberCount} members`}
+              {memberCount} members
             </span>
           </div>
 
@@ -172,36 +181,14 @@ function TeamOverviewCard({
         </div>
 
         <div className="space-y-2">
-          <Button variant="outline" className="w-full" size="sm">
-            Manage Team
-            <ArrowRight className="ml-2 h-4 w-4" />
-          </Button>
+          <Link to="/teams/$teamId" params={{ teamId: team.id }}>
+            <Button variant="outline" className="w-full" size="sm">
+              Manage Team
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </Link>
         </div>
       </CardContent>
     </Card>
-  );
-}
-
-function NoOrganizationPrompt() {
-  return (
-    <div className="container mx-auto py-8 text-center">
-      <div className="mx-auto max-w-md">
-        <Users className="mx-auto mb-6 h-16 w-16 text-muted-foreground" />
-        <h1 className="mb-4 font-bold text-2xl">Welcome to LaxDB</h1>
-        <p className="mb-8 text-muted-foreground">
-          You need to create or join an athletic club to get started with team
-          management.
-        </p>
-
-        <div className="space-y-4">
-          <Button asChild className="w-full">
-            <Link to="/organizations/create">Create New Athletic Club</Link>
-          </Button>
-          <Button variant="outline" className="w-full" asChild>
-            <Link to="/organizations/join">Join Existing Club</Link>
-          </Button>
-        </div>
-      </div>
-    </div>
   );
 }

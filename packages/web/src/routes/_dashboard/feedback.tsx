@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { RATING_ENUM, TOPIC_ENUM } from '@lax-db/core/feedback/types';
 import { useMutation } from '@tanstack/react-query';
-import { createFileRoute, Router, useRouter } from '@tanstack/react-router';
+import { createFileRoute, useRouter } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -25,6 +25,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { authMiddleware } from '@/lib/middleware';
 
 const feedbackSchema = z.object({
   topic: z.enum(TOPIC_ENUM),
@@ -36,16 +37,10 @@ type FeedbackFormValues = z.infer<typeof feedbackSchema>;
 
 // Server function for submitting feedback
 const submitFeedback = createServerFn({ method: 'POST' })
+  .middleware([authMiddleware])
   .validator((data: FeedbackFormValues) => data)
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context: { session } }) => {
     const { FeedbackAPI } = await import('@lax-db/core/feedback/index');
-    const { getWebRequest } = await import('@tanstack/react-start/server');
-    const { auth } = await import('@lax-db/core/auth');
-
-    const request = getWebRequest();
-
-    // Get user session for user context
-    const session = await auth.api.getSession({ headers: request.headers });
 
     const feedbackData = {
       ...data,
@@ -91,7 +86,7 @@ function FeedbackPage() {
   };
 
   return (
-    <div className="container max-w-2xl mx-auto py-8">
+    <div className="container mx-auto max-w-2xl py-8">
       <Card>
         <CardHeader>
           <CardTitle>Send Feedback</CardTitle>

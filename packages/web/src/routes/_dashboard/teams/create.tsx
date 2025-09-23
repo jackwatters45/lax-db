@@ -1,46 +1,48 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { createFileRoute, Link, useRouter } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { ArrowLeft } from 'lucide-react';
-import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
+import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { protectedMiddleware } from '@/lib/middleware';
 
 // Server function for creating teams
 const createTeam = createServerFn({ method: 'POST' })
-  .validator((data: { name: string }) => data)
-  .handler(async ({ data }) => {
+  .validator((data: { name: string; description?: string }) => data)
+  .middleware([protectedMiddleware])
+  .handler(async ({ data, context }) => {
     const { TeamsAPI } = await import('@lax-db/core/teams/index');
-    const { getWebRequest, getCookie } = await import(
-      '@tanstack/react-start/server'
-    );
-    const { auth } = await import('@lax-db/core/auth');
 
-    const request = getWebRequest();
-
-    // Get the active organization from cookie and ensure it's set in Better Auth
-    const activeOrgId = getCookie('active-organization-id');
-    console.log('Active organization ID from cookie:', activeOrgId);
-
-    if (activeOrgId) {
-      // Make sure Better Auth knows about the active organization
-      try {
-        await auth.api.setActiveOrganization({
-          headers: request.headers,
-          body: { organizationId: activeOrgId },
-        });
-        console.log('Successfully set active organization:', activeOrgId);
-      } catch (error) {
-        console.error(
-          'Failed to set active organization before creating team:',
-          error,
-        );
-      }
-    }
-
-    return await TeamsAPI.createTeam(data, request.headers);
+    return await TeamsAPI.createTeam(data, context.headers);
   });
+
+const formSchema = z.object({
+  name: z
+    .string()
+    .min(1, 'Team name is required')
+    .min(2, 'Team name must be at least 2 characters')
+    .max(100, 'Team name must be less than 100 characters'),
+  description: z
+    .string()
+    .max(500, 'Description must be less than 500 characters')
+    .optional(),
+});
+
+type FormData = z.infer<typeof formSchema>;
 
 export const Route = createFileRoute('/_dashboard/teams/create')({
   component: CreateTeamPage,
@@ -48,14 +50,21 @@ export const Route = createFileRoute('/_dashboard/teams/create')({
 
 function CreateTeamPage() {
   const router = useRouter();
-  const [teamName, setTeamName] = useState('');
-  const [description, setDescription] = useState('');
+
+  const form = useForm<FormData>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: '',
+      description: '',
+    },
+  });
+
   // Use React Query mutation for team creation
   const createTeamMutation = useMutation({
     mutationKey: ['createTeam'],
-    mutationFn: (data: { name: string }) => createTeam({ data }),
-    onSuccess: () => {
-      toast.success(`Team "${teamName.trim()}" created successfully!`);
+    mutationFn: (data: FormData) => createTeam({ data }),
+    onSuccess: (_, variables) => {
+      toast.success(`Team "${variables.name}" created successfully!`);
       // Invalidate router cache to ensure fresh data and navigate back
       router.invalidate();
       router.navigate({ to: '/teams' });
@@ -66,17 +75,8 @@ function CreateTeamPage() {
     },
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!teamName.trim()) return;
-
-    createTeamMutation.mutate({
-      name: teamName.trim(),
-    });
-  };
-
-  const handleBack = () => {
-    router.navigate({ to: '/teams' });
+  const onSubmit = (data: FormData) => {
+    createTeamMutation.mutate(data);
   };
 
   return (
@@ -100,60 +100,62 @@ function CreateTeamPage() {
           <CardTitle>Team Details</CardTitle>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label
-                htmlFor="teamName"
-                className="mb-2 block font-medium text-sm"
-              >
-                Team Name *
-              </label>
-              <input
-                id="teamName"
-                type="text"
-                value={teamName}
-                onChange={(e) => setTeamName(e.target.value)}
-                placeholder="e.g., U18s, Senior Men's A, Women's Team"
-                className="w-full rounded-md border border-input px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
-                required
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Team Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="e.g., U18s, Senior Men's A, Women's Team"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
 
-            <div>
-              <label
-                htmlFor="description"
-                className="mb-2 block font-medium text-sm"
-              >
-                Description (Optional)
-              </label>
-              <textarea
-                id="description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Brief description of the team..."
-                rows={3}
-                className="w-full rounded-md border border-input px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description (Optional)</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Brief description of the team..."
+                        rows={3}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
 
-            <div className="flex gap-4 pt-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handleBack}
-                className="flex-1"
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                disabled={createTeamMutation.isPending || !teamName.trim()}
-                className="flex-1"
-              >
-                {createTeamMutation.isPending ? 'Creating...' : 'Create Team'}
-              </Button>
-            </div>
-          </form>
+              <div className="flex gap-4 pt-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="flex-1"
+                  asChild
+                >
+                  <Link to="/teams">Cancel</Link>
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={createTeamMutation.isPending}
+                  className="flex-1"
+                >
+                  {createTeamMutation.isPending ? 'Creating...' : 'Create Team'}
+                </Button>
+              </div>
+            </form>
+          </Form>
         </CardContent>
       </Card>
     </div>
