@@ -20,7 +20,14 @@ import {
   parent,
   player,
 } from './auth/permissions';
+import { OrganizationAPI } from './organization';
+import {
+  invitationTable,
+  memberTable,
+  organizationTable,
+} from './organization/organization.sql';
 import { RedisLive, RedisService } from './redis';
+import { teamMemberTable, teamTable } from './teams/team.sql';
 import { userTable } from './user/user.sql';
 
 const _polarClient = new Polar({
@@ -44,11 +51,11 @@ export const auth = betterAuth({
       session: authSchema.sessionTable,
       account: authSchema.accountTable,
       verification: authSchema.verificationTable,
-      organization: authSchema.organizationTable,
-      member: authSchema.memberTable,
-      invitation: authSchema.invitationTable,
-      team: authSchema.teamTable,
-      teamMember: authSchema.teamMemberTable,
+      organization: organizationTable,
+      member: memberTable,
+      invitation: invitationTable,
+      team: teamTable,
+      teamMember: teamMemberTable,
       // subscription: authSchema.subscriptionTable,
     },
   }),
@@ -104,6 +111,23 @@ export const auth = betterAuth({
       await Runtime.runPromise(runtime)(Effect.provide(effect, RedisLive));
     },
   },
+  databaseHooks: {
+    session: {
+      create: {
+        before: async (session) => {
+          const organization = await OrganizationAPI.getActiveOrganization(
+            session.userId,
+          );
+          return {
+            data: {
+              ...session,
+              activeOrganizationId: organization.id,
+            },
+          };
+        },
+      },
+    },
+  },
   plugins: [
     // polar({
     //   client: polarClient,
@@ -145,9 +169,7 @@ export const auth = betterAuth({
         player,
         parent,
       },
-      teams: {
-        enabled: true,
-      },
+      teams: { enabled: true },
       creatorRole: 'headCoach', // Club creator becomes head coach
       allowUserToCreateOrganization: true, // Allow creating new clubs
       sendInvitationEmail: async (data) => {

@@ -1,4 +1,4 @@
-import type { Organization } from '@lax-db/core/teams/index';
+import type { Organization } from '@lax-db/core/organization/index';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link, useRouteContext } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
