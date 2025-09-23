@@ -1583,7 +1583,7 @@ interface RemountDepsOptions<
 - The return value needs to be JSON serializable.
 - By default, a route component will not be remounted if it stays active after a navigation
 
-Example:  
+Example:
 If you want to configure to remount all route components upon `params` change, use:
 
 ```tsx
@@ -9249,7 +9249,7 @@ Now that you've learned how to read your route's search params, you'll be happy 
 
 The best way to update search params is to use the `search` prop on the `<Link />` component.
 
-If the search for the current page shall be updated and the `from` prop is specified, the `to` prop can be omitted.  
+If the search for the current page shall be updated and the `from` prop is specified, the `to` prop can be omitted.
 Here's an example:
 
 ```tsx
@@ -9271,7 +9271,7 @@ const ProductList = () => {
 
 If you want to update the search params in a generic component that is rendered on multiple routes, specifying `from` can be challenging.
 
-In this scenario you can set `to="."` which will give you access to loosely typed search params.  
+In this scenario you can set `to="."` which will give you access to loosely typed search params.
 Here is an example that illustrates this:
 
 ```tsx
@@ -12299,7 +12299,7 @@ export const routes = rootRoute('root.tsx', [
 ## Virtual Routes inside of TanStack Router File Based routing
 
 The previous section showed you how you can use TanStack Router's File Based routing convention inside of a virtual route configuration.
-However, the opposite is possible as well.  
+However, the opposite is possible as well.
 You can configure the main part of your app's route tree using TanStack Router's File Based routing convention and opt into virtual route configuration for specific subtrees.
 
 Consider the following file structure:
@@ -12343,8 +12343,8 @@ The helper function `defineVirtualSubtreeConfig` is closely modeled after vite's
 
 ## Inception
 
-You can mix and match TanStack Router's File Based routing convention and virtual route configuration however you like.  
-Let's go deeper!  
+You can mix and match TanStack Router's File Based routing convention and virtual route configuration however you like.
+Let's go deeper!
 Check out the following example that starts off using File Based routing convention, switches over to virtual route configuration for `/posts`, switches back to File Based routing convention for `/posts/lets-go` only to switch over to virtual route configuration again for `/posts/lets-go/deeper`.
 
 ```

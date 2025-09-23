@@ -1,8 +1,6 @@
-import type { Organization } from '@lax-db/core/organization/index';
 import { useMutation } from '@tanstack/react-query';
 import { Link, useRouteContext } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
-import { getWebRequest } from '@tanstack/react-start/server';
 import { ChevronsUpDown, Plus } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -14,18 +12,18 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { protectedMiddleware } from '@/lib/middleware';
 
 // Server function to switch active organization
 const switchActiveOrganization = createServerFn({ method: 'POST' })
+  .middleware([protectedMiddleware])
   .validator((data: { organizationId: string }) => data)
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
     const { auth } = await import('@lax-db/core/auth');
-
-    const { headers } = getWebRequest();
 
     // Set the active organization in Better Auth
     await auth.api.setActiveOrganization({
-      headers,
+      headers: context.headers,
       body: {
         organizationId: data.organizationId,
       },
@@ -37,7 +35,7 @@ const switchActiveOrganization = createServerFn({ method: 'POST' })
 export function OrganizationSwitcher() {
   // Get organizations and active org from route context (no loading state!)
   const { organizations, activeOrganization } = useRouteContext({
-    from: '/_dashboard',
+    from: '/_protected/$organizationSlug',
   });
 
   // Mutation to switch organization with optimistic updates
@@ -81,7 +79,7 @@ export function OrganizationSwitcher() {
         <DropdownMenuLabel className="text-muted-foreground text-xs">
           Switch Organization
         </DropdownMenuLabel>
-        {organizations.map((org: Organization) => {
+        {organizations.map((org) => {
           const isActive = activeOrganization?.id === org.id;
 
           return (

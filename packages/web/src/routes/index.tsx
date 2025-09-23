@@ -11,11 +11,7 @@ export const Route = createFileRoute('/')({
   beforeLoad: async () => {
     const user = await getUser();
 
-    if (!user) {
-      redirect({ to: '/login' });
-    }
-
-    redirect({ to: '/teams' });
+    if (!user) redirect({ to: '/login' });
   },
 });
 

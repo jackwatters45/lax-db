@@ -1,3 +1,4 @@
+import type { Team, TeamMember } from 'better-auth/plugins';
 import { Console, Context, Effect, Layer, Runtime, Schema } from 'effect';
 import type { ParseError } from 'effect/ParseResult';
 import { auth } from '../auth';
@@ -263,7 +264,3 @@ export const TeamsAPI = {
     );
   },
 };
-
-// Types - inferred from Better Auth
-export type Team = typeof auth.$Infer.Team;
-export type TeamMember = typeof auth.$Infer.TeamMember;

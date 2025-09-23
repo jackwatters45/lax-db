@@ -13,7 +13,7 @@ import { authClient } from '@/lib/auth-client';
 import { Button } from '../ui/button';
 
 export function NavUser() {
-  const { user } = useRouteContext({ from: '/_dashboard' });
+  const { user } = useRouteContext({ from: '/_protected' });
 
   if (!user)
     return (
