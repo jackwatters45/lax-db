@@ -1,8 +1,10 @@
+import { auth } from '@lax-db/core/auth';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 export function getContext() {
   const queryClient = new QueryClient();
   return {
+    auth,
     queryClient,
   };
 }

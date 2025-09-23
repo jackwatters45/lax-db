@@ -1,6 +1,7 @@
 # Game Management System - Comprehensive Plan
 
 ## Overview
+
 A complete game management system for lacrosse teams that tracks games, player participation, statistics, rosters, and lineups. This system will integrate with the existing team and organization structure.
 
 ## Database Schema Design
@@ -8,6 +9,7 @@ A complete game management system for lacrosse teams that tracks games, player p
 ### Core Tables
 
 #### 1. Games Table
+
 ```sql
 CREATE TABLE games (
   id UUID PRIMARY KEY,
@@ -18,21 +20,21 @@ CREATE TABLE games (
   is_home_game BOOLEAN DEFAULT false,
   game_type TEXT NOT NULL, -- 'regular', 'playoff', 'tournament', 'friendly', 'practice'
   status TEXT NOT NULL DEFAULT 'scheduled', -- 'scheduled', 'in_progress', 'completed', 'cancelled', 'postponed'
-  
+
   -- Score tracking
   home_score INTEGER DEFAULT 0,
   away_score INTEGER DEFAULT 0,
-  
+
   -- Game periods/quarters
   periods_played INTEGER DEFAULT 0,
   period_length INTEGER DEFAULT 15, -- minutes per period
-  
+
   -- Additional metadata
   weather_conditions TEXT,
   field_conditions TEXT,
   referee_notes TEXT,
   coach_notes TEXT,
-  
+
   -- Timestamps
   created_at TIMESTAMP(3) NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMP(3),
@@ -41,6 +43,7 @@ CREATE TABLE games (
 ```
 
 #### 2. Game Rosters Table
+
 ```sql
 CREATE TABLE game_rosters (
   id UUID PRIMARY KEY,
@@ -51,54 +54,56 @@ CREATE TABLE game_rosters (
   is_starter BOOLEAN DEFAULT false,
   is_captain BOOLEAN DEFAULT false,
   attendance_status TEXT DEFAULT 'confirmed', -- 'confirmed', 'absent', 'late', 'injured'
-  
+
   created_at TIMESTAMP(3) NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMP(3)
 );
 ```
 
 #### 3. Player Game Stats Table
+
 ```sql
 CREATE TABLE player_game_stats (
   id UUID PRIMARY KEY,
   game_id UUID NOT NULL REFERENCES games(id) ON DELETE CASCADE,
   user_id TEXT NOT NULL REFERENCES user(id) ON DELETE CASCADE,
-  
+
   -- Offensive stats
   goals INTEGER DEFAULT 0,
   assists INTEGER DEFAULT 0,
   shots INTEGER DEFAULT 0,
   shots_on_goal INTEGER DEFAULT 0,
-  
+
   -- Defensive stats (for all players)
   ground_balls INTEGER DEFAULT 0,
   turnovers INTEGER DEFAULT 0,
   caused_turnovers INTEGER DEFAULT 0,
-  
+
   -- Goalie-specific stats
   saves INTEGER DEFAULT 0,
   goals_allowed INTEGER DEFAULT 0,
   save_percentage DECIMAL(5,3),
-  
+
   -- Face-off stats
   face_offs_won INTEGER DEFAULT 0,
   face_offs_taken INTEGER DEFAULT 0,
   face_off_percentage DECIMAL(5,3),
-  
+
   -- Penalties
   penalties INTEGER DEFAULT 0,
   penalty_minutes INTEGER DEFAULT 0,
-  
+
   -- Playing time
   minutes_played INTEGER DEFAULT 0,
   periods_played INTEGER DEFAULT 0,
-  
+
   created_at TIMESTAMP(3) NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMP(3)
 );
 ```
 
 #### 4. Game Events Table (for detailed tracking)
+
 ```sql
 CREATE TABLE game_events (
   id UUID PRIMARY KEY,
@@ -106,34 +111,36 @@ CREATE TABLE game_events (
   event_type TEXT NOT NULL, -- 'goal', 'assist', 'penalty', 'substitution', 'timeout', 'period_end'
   period INTEGER NOT NULL,
   time_in_period INTEGER NOT NULL, -- seconds
-  
+
   -- Player involved
   primary_player_id TEXT REFERENCES user(id),
   secondary_player_id TEXT REFERENCES user(id), -- for assists, etc.
-  
+
   -- Event details
   description TEXT,
   location_x DECIMAL(5,2), -- field position if relevant
   location_y DECIMAL(5,2),
-  
+
   created_at TIMESTAMP(3) NOT NULL DEFAULT NOW()
 );
 ```
 
 #### 5. Game Lineups Table (for tracking who plays when)
+
 ```sql
 CREATE TABLE game_lineups (
   id UUID PRIMARY KEY,
   game_id UUID NOT NULL REFERENCES games(id) ON DELETE CASCADE,
   period INTEGER NOT NULL,
   lineup_name TEXT, -- 'First Line', 'Second Line', 'Power Play', 'Penalty Kill'
-  
+
   created_at TIMESTAMP(3) NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMP(3)
 );
 ```
 
 #### 6. Lineup Players Table
+
 ```sql
 CREATE TABLE lineup_players (
   id UUID PRIMARY KEY,
@@ -141,7 +148,7 @@ CREATE TABLE lineup_players (
   user_id TEXT NOT NULL REFERENCES user(id) ON DELETE CASCADE,
   position TEXT NOT NULL,
   jersey_number INTEGER,
-  
+
   created_at TIMESTAMP(3) NOT NULL DEFAULT NOW()
 );
 ```
@@ -151,6 +158,7 @@ CREATE TABLE lineup_players (
 ### 1. Games Service (`packages/core/src/games/index.ts`)
 
 #### Input Schemas
+
 ```typescript
 export const CreateGameInput = Schema.Struct({
   teamId: Schema.String,
@@ -158,7 +166,13 @@ export const CreateGameInput = Schema.Struct({
   gameDate: Schema.Date,
   venue: Schema.String.pipe(Schema.optional),
   isHomeGame: Schema.Boolean.pipe(Schema.optional),
-  gameType: Schema.Literal('regular', 'playoff', 'tournament', 'friendly', 'practice'),
+  gameType: Schema.Literal(
+    "regular",
+    "playoff",
+    "tournament",
+    "friendly",
+    "practice"
+  ),
 });
 
 export const UpdateGameInput = Schema.Struct({
@@ -167,8 +181,20 @@ export const UpdateGameInput = Schema.Struct({
   gameDate: Schema.Date.pipe(Schema.optional),
   venue: Schema.String.pipe(Schema.optional),
   isHomeGame: Schema.Boolean.pipe(Schema.optional),
-  gameType: Schema.Literal('regular', 'playoff', 'tournament', 'friendly', 'practice').pipe(Schema.optional),
-  status: Schema.Literal('scheduled', 'in_progress', 'completed', 'cancelled', 'postponed').pipe(Schema.optional),
+  gameType: Schema.Literal(
+    "regular",
+    "playoff",
+    "tournament",
+    "friendly",
+    "practice"
+  ).pipe(Schema.optional),
+  status: Schema.Literal(
+    "scheduled",
+    "in_progress",
+    "completed",
+    "cancelled",
+    "postponed"
+  ).pipe(Schema.optional),
   homeScore: Schema.Number.pipe(Schema.optional),
   awayScore: Schema.Number.pipe(Schema.optional),
   coachNotes: Schema.String.pipe(Schema.optional),
@@ -204,30 +230,73 @@ export const PlayerStatsInput = Schema.Struct({
 ```
 
 #### Service Methods
+
 ```typescript
-export class GamesService extends Context.Tag('GamesService')<
+export class GamesService extends Context.Tag("GamesService")<
   GamesService,
   {
     // Game CRUD operations
-    readonly createGame: (input: CreateGameInput, headers: Headers) => Effect.Effect<Game, ParseError | GamesError>;
-    readonly updateGame: (input: UpdateGameInput, headers: Headers) => Effect.Effect<Game, ParseError | GamesError>;
-    readonly deleteGame: (gameId: string, headers: Headers) => Effect.Effect<void, ParseError | GamesError>;
-    readonly getGame: (gameId: string, headers: Headers) => Effect.Effect<Game, ParseError | GamesError>;
-    readonly getTeamGames: (teamId: string, headers: Headers) => Effect.Effect<Game[], ParseError | GamesError>;
-    
+    readonly createGame: (
+      input: CreateGameInput,
+      headers: Headers
+    ) => Effect.Effect<Game, ParseError | GamesError>;
+    readonly updateGame: (
+      input: UpdateGameInput,
+      headers: Headers
+    ) => Effect.Effect<Game, ParseError | GamesError>;
+    readonly deleteGame: (
+      gameId: string,
+      headers: Headers
+    ) => Effect.Effect<void, ParseError | GamesError>;
+    readonly getGame: (
+      gameId: string,
+      headers: Headers
+    ) => Effect.Effect<Game, ParseError | GamesError>;
+    readonly getTeamGames: (
+      teamId: string,
+      headers: Headers
+    ) => Effect.Effect<Game[], ParseError | GamesError>;
+
     // Roster management
-    readonly addPlayerToRoster: (input: GameRosterInput, headers: Headers) => Effect.Effect<void, ParseError | GamesError>;
-    readonly removePlayerFromRoster: (gameId: string, playerId: string, headers: Headers) => Effect.Effect<void, ParseError | GamesError>;
-    readonly getGameRoster: (gameId: string, headers: Headers) => Effect.Effect<GameRosterPlayer[], ParseError | GamesError>;
-    
+    readonly addPlayerToRoster: (
+      input: GameRosterInput,
+      headers: Headers
+    ) => Effect.Effect<void, ParseError | GamesError>;
+    readonly removePlayerFromRoster: (
+      gameId: string,
+      playerId: string,
+      headers: Headers
+    ) => Effect.Effect<void, ParseError | GamesError>;
+    readonly getGameRoster: (
+      gameId: string,
+      headers: Headers
+    ) => Effect.Effect<GameRosterPlayer[], ParseError | GamesError>;
+
     // Stats management
-    readonly updatePlayerStats: (input: PlayerStatsInput, headers: Headers) => Effect.Effect<void, ParseError | GamesError>;
-    readonly getPlayerGameStats: (gameId: string, playerId: string, headers: Headers) => Effect.Effect<PlayerGameStats, ParseError | GamesError>;
-    readonly getGameStats: (gameId: string, headers: Headers) => Effect.Effect<GameStats, ParseError | GamesError>;
-    
+    readonly updatePlayerStats: (
+      input: PlayerStatsInput,
+      headers: Headers
+    ) => Effect.Effect<void, ParseError | GamesError>;
+    readonly getPlayerGameStats: (
+      gameId: string,
+      playerId: string,
+      headers: Headers
+    ) => Effect.Effect<PlayerGameStats, ParseError | GamesError>;
+    readonly getGameStats: (
+      gameId: string,
+      headers: Headers
+    ) => Effect.Effect<GameStats, ParseError | GamesError>;
+
     // Season/aggregate stats
-    readonly getPlayerSeasonStats: (playerId: string, teamId: string, headers: Headers) => Effect.Effect<PlayerSeasonStats, ParseError | GamesError>;
-    readonly getTeamSeasonStats: (teamId: string, headers: Headers) => Effect.Effect<TeamSeasonStats, ParseError | GamesError>;
+    readonly getPlayerSeasonStats: (
+      playerId: string,
+      teamId: string,
+      headers: Headers
+    ) => Effect.Effect<PlayerSeasonStats, ParseError | GamesError>;
+    readonly getTeamSeasonStats: (
+      teamId: string,
+      headers: Headers
+    ) => Effect.Effect<TeamSeasonStats, ParseError | GamesError>;
   }
 >() {}
 ```
@@ -235,6 +304,7 @@ export class GamesService extends Context.Tag('GamesService')<
 ## UI Architecture
 
 ### 1. Route Structure
+
 ```
 /games                           - Games list view
 /games/create                    - Create new game
@@ -247,32 +317,37 @@ export class GamesService extends Context.Tag('GamesService')<
 
 ### 2. Component Structure
 
-#### Games List (`/src/routes/_dashboard/games/index.tsx`)
+#### Games List (`/src/routes/$organizationSlug/games/index.tsx`)
+
 - Table/card view of all team games
 - Filter by status, game type, date range
 - Quick actions: edit, view details, add roster
 - Permission-based actions (coaches can edit, players view only)
 
-#### Game Creation (`/src/routes/_dashboard/games/create.tsx`)
+#### Game Creation (`/src/routes/$organizationSlug/games/create.tsx`)
+
 - Form with game details
 - Date/time picker
 - Opponent selection/input
 - Venue management
 - Game type selection
 
-#### Game Details (`/src/routes/_dashboard/games/$gameId.tsx`)
+#### Game Details (`/src/routes/$organizationSlug/games/$gameId.tsx`)
+
 - Game information display
 - Score tracking
 - Basic stats overview
 - Links to roster, detailed stats, lineup management
 
-#### Roster Management (`/src/routes/_dashboard/games/$gameId/roster.tsx`)
+#### Roster Management (`/src/routes/$organizationSlug/games/$gameId/roster.tsx`)
+
 - Add/remove players from game roster
 - Set positions and jersey numbers
 - Mark starters and captains
 - Attendance tracking
 
-#### Stats Management (`/src/routes/_dashboard/games/$gameId/stats.tsx`)
+#### Stats Management (`/src/routes/$organizationSlug/games/$gameId/stats.tsx`)
+
 - Input player statistics
 - Real-time stat calculation
 - Stat validation and error handling
@@ -281,36 +356,57 @@ export class GamesService extends Context.Tag('GamesService')<
 ### 3. Component Library
 
 #### Core Components
+
 ```typescript
 // Game card component
-export function GameCard({ game, canEdit }: { game: Game; canEdit: boolean })
+export function GameCard({ game, canEdit }: { game: Game; canEdit: boolean });
 
 // Stats input component
-export function StatsInputForm({ gameId, playerId }: { gameId: string; playerId: string })
+export function StatsInputForm({
+  gameId,
+  playerId,
+}: {
+  gameId: string;
+  playerId: string;
+});
 
 // Roster management component
-export function RosterManager({ gameId }: { gameId: string })
+export function RosterManager({ gameId }: { gameId: string });
 
 // Game status badge
-export function GameStatusBadge({ status }: { status: GameStatus })
+export function GameStatusBadge({ status }: { status: GameStatus });
 
 // Score display component
-export function ScoreDisplay({ homeScore, awayScore, isHomeGame }: ScoreDisplayProps)
+export function ScoreDisplay({
+  homeScore,
+  awayScore,
+  isHomeGame,
+}: ScoreDisplayProps);
 ```
 
 ## Permission System
 
 ### Role-Based Access Control
+
 ```typescript
 // Permission checks in service layer
-const checkGamePermission = (userRole: string, action: 'read' | 'write' | 'manage') => {
+const checkGamePermission = (
+  userRole: string,
+  action: "read" | "write" | "manage"
+) => {
   switch (action) {
-    case 'read':
-      return ['player', 'parent', 'assistantCoach', 'coach', 'headCoach'].includes(userRole);
-    case 'write':
-      return ['assistantCoach', 'coach', 'headCoach'].includes(userRole);
-    case 'manage':
-      return ['coach', 'headCoach'].includes(userRole);
+    case "read":
+      return [
+        "player",
+        "parent",
+        "assistantCoach",
+        "coach",
+        "headCoach",
+      ].includes(userRole);
+    case "write":
+      return ["assistantCoach", "coach", "headCoach"].includes(userRole);
+    case "manage":
+      return ["coach", "headCoach"].includes(userRole);
     default:
       return false;
   }
@@ -318,24 +414,30 @@ const checkGamePermission = (userRole: string, action: 'read' | 'write' | 'manag
 ```
 
 ### UI Permission Gates
+
 ```typescript
 // Permission-based rendering
-{canManageGames && (
-  <Button asChild>
-    <Link to="/games/create">Create Game</Link>
-  </Button>
-)}
+{
+  canManageGames && (
+    <Button asChild>
+      <Link to="/games/create">Create Game</Link>
+    </Button>
+  );
+}
 
-{canEditGame && (
-  <Button asChild>
-    <Link to={`/games/${game.id}/edit`}>Edit Game</Link>
-  </Button>
-)}
+{
+  canEditGame && (
+    <Button asChild>
+      <Link to={`/games/${game.id}/edit`}>Edit Game</Link>
+    </Button>
+  );
+}
 ```
 
 ## Data Flow
 
 ### 1. Game Creation Flow
+
 1. Coach navigates to `/games/create`
 2. Fills out game creation form
 3. Server function validates input and creates game
@@ -343,6 +445,7 @@ const checkGamePermission = (userRole: string, action: 'read' | 'write' | 'manag
 5. Redirect to game details page
 
 ### 2. Stats Entry Flow
+
 1. Coach navigates to `/games/{gameId}/stats`
 2. Selects player and enters stats
 3. Real-time validation and calculation
@@ -350,6 +453,7 @@ const checkGamePermission = (userRole: string, action: 'read' | 'write' | 'manag
 5. UI updates with new totals
 
 ### 3. Roster Management Flow
+
 1. Coach navigates to `/games/{gameId}/roster`
 2. Views current team members
 3. Adds players to game roster with positions
@@ -360,6 +464,7 @@ const checkGamePermission = (userRole: string, action: 'read' | 'write' | 'manag
 ## Future Enhancements
 
 ### Phase 2 Features
+
 - [ ] Calendar view for games
 - [ ] Game reminders and notifications
 - [ ] Photo/video attachments to games
@@ -368,6 +473,7 @@ const checkGamePermission = (userRole: string, action: 'read' | 'write' | 'manag
 - [ ] Season standings and rankings
 
 ### Phase 3 Features
+
 - [ ] Live game tracking with mobile app
 - [ ] Parent notifications and updates
 - [ ] Integration with league management systems
@@ -378,6 +484,7 @@ const checkGamePermission = (userRole: string, action: 'read' | 'write' | 'manag
 ## Implementation Priority
 
 ### High Priority (Phase 1)
+
 1. ✅ Database schema design
 2. 🔄 Games Effect service
 3. 🔄 Games list UI
@@ -386,12 +493,14 @@ const checkGamePermission = (userRole: string, action: 'read' | 'write' | 'manag
 6. 🔄 Basic roster management
 
 ### Medium Priority (Phase 1.5)
+
 7. Stats input system
 8. Permission system implementation
 9. Roster lineup management
 10. Score tracking and game status updates
 
 ### Lower Priority (Phase 2)
+
 11. Advanced statistics
 12. Season aggregate views
 13. Export and reporting features
@@ -400,16 +509,19 @@ const checkGamePermission = (userRole: string, action: 'read' | 'write' | 'manag
 ## Technical Considerations
 
 ### Performance
+
 - Paginated game lists for teams with many games
 - Efficient stat calculations using database aggregations
 - Caching strategy for frequently accessed game data
 
 ### Data Integrity
+
 - Validation of stat inputs (shots on goal ≤ total shots)
 - Referential integrity between games, rosters, and stats
 - Soft deletion for historical data preservation
 
 ### User Experience
+
 - Optimistic updates for stat entry
 - Auto-save functionality for long forms
 - Mobile-responsive design for sideline use

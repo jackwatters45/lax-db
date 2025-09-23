@@ -339,17 +339,9 @@ export const OrganizationAPI = {
   },
 };
 
-// Re-export types from Better Auth
-export type {
-  Member as OrganizationMember,
-  Organization,
-  Team,
-  TeamMember,
-} from 'better-auth/plugins/organization';
-
 // Dashboard-specific type
 export interface DashboardData {
-  activeOrganization: Organization | null;
+  activeOrganization: Organization;
   teams: (Team & { members: TeamMember[] })[];
   activeMember: Member | null;
   canManageTeams: boolean;

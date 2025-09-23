@@ -1,5 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from '@tanstack/react-router';
+import { auth } from '@lax-db/core/auth';
+import { redirect } from '@tanstack/react-router';
+import { createServerFn } from '@tanstack/react-start';
+import { getWebRequest } from '@tanstack/react-start/server';
 import { useEffect, useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -17,6 +20,39 @@ import { Input } from '@/components/ui/input';
 import { authClient } from '@/lib/auth-client';
 import { cn } from '@/lib/utils';
 
+export const redirectToOrg = createServerFn().handler(async () => {
+  const { headers } = getWebRequest();
+
+  try {
+    const session = await auth.api.getSession({ headers });
+    if (!session?.user) {
+      throw redirect({
+        to: '/login',
+      });
+    }
+
+    // Get user's organizations using better-auth API
+    const activeOrg = await auth.api.getFullOrganization({ headers });
+    if (!activeOrg) {
+      throw redirect({
+        to: '/organizations/create',
+      });
+    }
+
+    throw redirect({
+      to: '/$organizationSlug',
+      params: {
+        organizationSlug: activeOrg.slug,
+      },
+    });
+  } catch (error) {
+    console.error('Error in redirect-to-org:', error);
+    throw redirect({
+      to: '/login',
+    });
+  }
+});
+
 const loginSchema = z.object({
   email: z.email('Please enter a valid email address'),
   password: z.string().min(1, 'Password is required'),
@@ -31,7 +67,6 @@ export function LoginForm({
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState('');
   const [lastMethod, setLastMethod] = useState<string | null>(null);
-  const router = useRouter();
 
   useEffect(() => {
     setLastMethod(authClient.getLastUsedLoginMethod());
@@ -58,7 +93,8 @@ export function LoginForm({
         if (result.error) {
           setError(result.error.message || 'Login failed');
         } else {
-          router.navigate({ to: '/teams' });
+          // Call server function to redirect to organization
+          await redirectToOrg();
         }
       } catch (error) {
         setError(
@@ -72,10 +108,17 @@ export function LoginForm({
 
   const handleGoogleSignIn = async () => {
     try {
-      await authClient.signIn.social({
+      const result = await authClient.signIn.social({
         provider: 'google',
-        callbackURL: '/teams',
+        callbackURL: `${window.location.origin}/api/redirect-to-org`,
       });
+
+      if (result.error) {
+        setError(result.error.message || 'Google sign in failed');
+      } else {
+        // Navigate to API endpoint that will handle organization redirect
+        await redirectToOrg();
+      }
     } catch (error) {
       setError(
         error instanceof Error ? error.message : 'Google sign in failed',

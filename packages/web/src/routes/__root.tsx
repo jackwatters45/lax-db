@@ -1,5 +1,6 @@
 /// <reference types="vite/client" />
 
+import type { auth } from '@lax-db/core/auth';
 import { TanStackDevtools } from '@tanstack/react-devtools';
 import type { QueryClient } from '@tanstack/react-query';
 import {
@@ -22,6 +23,7 @@ import globalsCss from '@/styles/globals.css?url';
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
+  auth: typeof auth;
 }>()({
   head: () => ({
     meta: [
