@@ -51,9 +51,7 @@ const getTeamData = createServerFn({ method: 'GET' })
     }
   });
 
-export const Route = createFileRoute(
-  '/_protected/$organizationSlug/teams/$teamId',
-)({
+export const Route = createFileRoute('/_protected/$organizationSlug/$teamId/')({
   component: TeamManagementPage,
   loader: async ({ params }) => {
     return await getTeamData({ data: { teamId: params.teamId } });
