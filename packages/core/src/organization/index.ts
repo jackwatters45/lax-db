@@ -1,10 +1,16 @@
-import { eq } from 'drizzle-orm';
-import { Console, Context, Effect, Layer, Runtime, Schema } from 'effect';
+import type {
+  Member,
+  Organization,
+  Team,
+  TeamMember,
+} from 'better-auth/plugins/organization';
+import { desc, eq } from 'drizzle-orm';
+import { Context, Effect, Layer, Runtime, Schema } from 'effect';
 import type { ParseError } from 'effect/ParseResult';
 import { auth } from '../auth';
 import { sessionTable } from '../auth/auth.sql';
-import { DatabaseLive, DatabaseService } from '../drizzle';
-import { memberTable, organizationTable } from './organization.sql';
+import { type DatabaseError, DatabaseLive, DatabaseService } from '../drizzle';
+import { memberTable } from './organization.sql';
 
 // Input schemas
 export const CreateOrganizationInput = Schema.Struct({
@@ -36,7 +42,7 @@ export class OrganizationService extends Context.Tag('OrganizationService')<
     readonly createOrganization: (
       input: CreateOrganizationInput,
       headers: Headers,
-    ) => Effect.Effect<Organization, ParseError | OrganizationError>;
+    ) => Effect.Effect<void, ParseError | OrganizationError>;
     readonly acceptInvitation: (
       input: AcceptInvitationInput,
       headers: Headers,
@@ -44,9 +50,9 @@ export class OrganizationService extends Context.Tag('OrganizationService')<
     readonly getUserOrganizationContext: (
       headers: Headers,
     ) => Effect.Effect<DashboardData, OrganizationError>;
-    readonly getActiveOrganization: (
+    readonly getActiveOrganizationId: (
       userId: string,
-    ) => Effect.Effect<Organization, OrganizationError>;
+    ) => Effect.Effect<string | null, OrganizationError | DatabaseError>;
   }
 >() {}
 
@@ -61,6 +67,19 @@ export const OrganizationServiceLive = Layer.effect(
         Effect.gen(function* () {
           const validated = yield* Schema.decode(CreateOrganizationInput)(
             input,
+          );
+
+          yield* Effect.tryPromise(() =>
+            auth.api.checkOrganizationSlug({
+              body: {
+                slug: validated.slug,
+              },
+            }),
+          ).pipe(
+            Effect.mapError((cause) => {
+              console.error('Check organization slug error details:', cause);
+              return new OrganizationError(cause, 'Slug is not available');
+            }),
           );
 
           const result = yield* Effect.tryPromise(() =>
@@ -105,8 +124,6 @@ export const OrganizationServiceLive = Layer.effect(
               Effect.orElse(() => Effect.succeed(null)), // Continue even if this fails
             );
           }
-
-          return result as Organization;
         }),
 
       acceptInvitation: (input, headers) =>
@@ -128,7 +145,6 @@ export const OrganizationServiceLive = Layer.effect(
           );
         }),
 
-      // TODO: fix
       getUserOrganizationContext: (headers) =>
         Effect.gen(function* () {
           const session = yield* Effect.tryPromise(() =>
@@ -140,134 +156,123 @@ export const OrganizationServiceLive = Layer.effect(
           );
 
           if (!session?.user) {
-            yield* Console.warn('No session found. Returning default context');
-            return yield* Effect.succeed({
-              activeOrganization: null,
-              teams: [],
-              activeMember: null,
-              canManageTeams: false,
-            });
+            throw new OrganizationError(
+              'No user session',
+              'User not authenticated',
+            );
           }
 
-          const activeOrganization = yield* Effect.tryPromise(() =>
-            auth.api.getFullOrganization({ headers }),
-          ).pipe(
-            Effect.mapError(
-              (cause) =>
-                new OrganizationError(cause, 'Failed to get organizations'),
-            ),
+          const [activeOrganization, teams] = yield* Effect.all(
+            [
+              Effect.tryPromise(() =>
+                auth.api.getFullOrganization({ headers }),
+              ).pipe(
+                Effect.mapError(
+                  (cause) =>
+                    new OrganizationError(
+                      cause,
+                      'Failed to get active organization',
+                    ),
+                ),
+              ),
+              Effect.tryPromise(() =>
+                auth.api.listOrganizationTeams({ headers }),
+              ).pipe(
+                Effect.mapError(
+                  (cause) =>
+                    new OrganizationError(cause, 'Failed to get teams'),
+                ),
+              ),
+            ],
+            { concurrency: 'unbounded' },
           );
 
-          yield* Console.log({ activeOrganization });
-
           if (!activeOrganization) {
-            return yield* Effect.succeed({
-              activeOrganization: null,
-              teams: [],
-              activeMember: null,
-              canManageTeams: false,
-            });
+            throw new OrganizationError(
+              'No active organization',
+              'User has no active organization',
+            );
           }
+
+          // Get members for all teams concurrently
+          const teamsWithMembers = yield* Effect.all(
+            teams.map((team) =>
+              Effect.tryPromise(() =>
+                auth.api.listTeamMembers({
+                  headers,
+                  query: {
+                    teamId: team.id,
+                  },
+                }),
+              ).pipe(
+                Effect.mapError((cause) => {
+                  // If the user is not a member of the team, return empty array
+                  // This can happen right after creating a team
+                  const errorMessage = cause?.toString() || '';
+                  if (errorMessage.includes('not a member of the team')) {
+                    console.warn(`User not a member of team ${team.id} yet`);
+                    return null; // Will be handled by orElse below
+                  }
+                  return new OrganizationError(
+                    cause,
+                    'Failed to get team members',
+                  );
+                }),
+                Effect.orElse(() => Effect.succeed([])), // Return empty array on error
+                Effect.map((members) => ({ ...team, members })),
+              ),
+            ),
+            { concurrency: 'unbounded' },
+          );
 
           // Better Auth doesn't expose listTeams or getActiveMember APIs yet
           // So we'll implement basic functionality for now and enhance later
-          // TODO: what is the point
-          const activeMember: OrganizationMember | null = null;
+          const activeMember: Member | null = null;
 
-          const teams = yield* Effect.tryPromise(() =>
-            auth.api.listOrganizationTeams({ headers }),
-          ).pipe(
-            Effect.mapError(
-              (cause) =>
-                new OrganizationError(cause, 'Failed to get organizations'),
-            ),
-          );
-
-          yield* Console.log({ teams });
           // Assume users who have an organization can manage teams for now
           // This will be refined when Better Auth exposes more granular member APIs
           const canManageTeams = true;
 
-          return yield* Effect.succeed({
+          return {
             activeOrganization,
-            teams: teams || [],
+            teams: teamsWithMembers,
             activeMember,
             canManageTeams,
-          });
+          } satisfies DashboardData;
         }),
 
-      // TODO: fix this bs
-      getActiveOrganization: (userId: string) =>
+      getActiveOrganizationId: (userId: string) =>
         Effect.gen(function* () {
-          return yield* dbService
-            .transaction(async (tx) => {
-              // First, try to get the active organization from session
-              const session = await tx
-                .select({
-                  activeOrganizationId: sessionTable.activeOrganizationId,
-                })
-                .from(sessionTable)
-                .where(eq(sessionTable.userId, userId))
-                .limit(1);
+          return yield* dbService.transaction(async (tx) => {
+            // First, try to get the active organization from session
+            const session = await tx
+              .select({
+                activeOrganizationId: sessionTable.activeOrganizationId,
+              })
+              .from(sessionTable)
+              .where(eq(sessionTable.userId, userId))
+              .limit(1)
+              .then((result) => result.at(0));
 
-              if (session[0]?.activeOrganizationId) {
-                const [org] = await tx
-                  .select()
-                  .from(organizationTable)
-                  .where(
-                    eq(organizationTable.id, session[0].activeOrganizationId),
-                  )
-                  .limit(1);
+            if (session?.activeOrganizationId) {
+              return session?.activeOrganizationId;
+            }
 
-                if (org) return org as Organization;
-              }
+            // No active org found, get user's first organization
+            const membership = await tx
+              .select({ organizationId: memberTable.organizationId })
+              .from(memberTable)
+              .where(eq(memberTable.userId, userId))
+              .orderBy(desc(memberTable.createdAt))
+              .limit(1)
+              .then((result) => result.at(0));
 
-              // No active org found, get user's first organization
-              const [membership] = await tx
-                .select({ organizationId: memberTable.organizationId })
-                .from(memberTable)
-                .where(eq(memberTable.userId, userId))
-                .limit(1);
+            if (!membership) {
+              return null;
+            }
 
-              if (!membership) {
-                throw new OrganizationError(
-                  'No organizations found',
-                  'No organizations found',
-                );
-              }
-
-              const [org] = await tx
-                .select()
-                .from(organizationTable)
-                .where(eq(organizationTable.id, membership.organizationId))
-                .limit(1);
-
-              if (!org) {
-                throw new OrganizationError(
-                  'Organization not found',
-                  'Organization not found',
-                );
-              }
-
-              // Set as active organization
-              await tx
-                .update(sessionTable)
-                .set({ activeOrganizationId: org.id, updatedAt: new Date() })
-                .where(eq(sessionTable.userId, userId));
-
-              return org as Organization;
-            })
-            .pipe(
-              Effect.mapError((error) => {
-                if (error instanceof OrganizationError) {
-                  return error;
-                }
-                return new OrganizationError(
-                  error,
-                  'Database operation failed',
-                );
-              }),
-            );
+            return membership.organizationId;
+          });
         }),
     };
   }),
@@ -278,10 +283,7 @@ const runtime = Runtime.defaultRuntime;
 
 // Simple async API - no Effect boilerplate needed
 export const OrganizationAPI = {
-  async createOrganization(
-    input: CreateOrganizationInput,
-    headers: Headers,
-  ): Promise<Organization> {
+  async createOrganization(input: CreateOrganizationInput, headers: Headers) {
     const effect = Effect.gen(function* () {
       const service = yield* OrganizationService;
       return yield* service.createOrganization(input, headers);
@@ -291,10 +293,7 @@ export const OrganizationAPI = {
     );
   },
 
-  async acceptInvitation(
-    input: AcceptInvitationInput,
-    headers: Headers,
-  ): Promise<void> {
+  async acceptInvitation(input: AcceptInvitationInput, headers: Headers) {
     const effect = Effect.gen(function* () {
       const service = yield* OrganizationService;
       return yield* service.acceptInvitation(input, headers);
@@ -314,46 +313,44 @@ export const OrganizationAPI = {
     );
   },
 
-  async getActiveOrganization(userId: string): Promise<Organization> {
+  async getActiveOrganizationId(userId: string): Promise<string | null> {
     const effect = Effect.gen(function* () {
       const service = yield* OrganizationService;
-      return yield* service.getActiveOrganization(userId);
+      return yield* service.getActiveOrganizationId(userId);
     });
     return await Runtime.runPromise(runtime)(
       Effect.provide(effect, OrganizationServiceLive),
     );
   },
+
+  async hasActiveOrganization(userId: string): Promise<boolean> {
+    try {
+      await this.getActiveOrganizationId(userId);
+      return true;
+    } catch (error) {
+      if (
+        error instanceof OrganizationError &&
+        error.message.includes('No organizations found')
+      ) {
+        return false;
+      }
+      throw error; // Re-throw other errors
+    }
+  },
 };
 
-// Types - we'll define these properly later to avoid circular imports
-export interface Organization {
-  id: string;
-  name: string;
-  slug: string;
-  createdAt: Date;
-  logo?: string | null;
-  metadata?: object | string;
-}
+// Re-export types from Better Auth
+export type {
+  Member as OrganizationMember,
+  Organization,
+  Team,
+  TeamMember,
+} from 'better-auth/plugins/organization';
 
-export interface OrganizationMember {
-  id: string;
-  organizationId: string;
-  userId: string;
-  role: string;
-  createdAt: Date;
-}
-
-export interface Team {
-  id: string;
-  name: string;
-  organizationId: string;
-  createdAt: Date;
-  updatedAt?: Date;
-}
-
+// Dashboard-specific type
 export interface DashboardData {
   activeOrganization: Organization | null;
-  teams: Team[];
-  activeMember: OrganizationMember | null;
+  teams: (Team & { members: TeamMember[] })[];
+  activeMember: Member | null;
   canManageTeams: boolean;
 }

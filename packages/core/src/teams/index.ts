@@ -1,10 +1,11 @@
-import { Context, Effect, Layer, Runtime, Schema } from 'effect';
+import { Console, Context, Effect, Layer, Runtime, Schema } from 'effect';
 import type { ParseError } from 'effect/ParseResult';
 import { auth } from '../auth';
 
 // Input schemas - simplified since auth.api handles session automatically
 export const CreateTeamInput = Schema.Struct({
   name: Schema.String,
+  description: Schema.optional(Schema.String),
 });
 type CreateTeamInput = typeof CreateTeamInput.Type;
 
@@ -21,7 +22,7 @@ type GetTeamMembersInput = typeof GetTeamMembersInput.Type;
 export const InvitePlayerInput = Schema.Struct({
   email: Schema.String,
   role: Schema.Literal('player'),
-  teamId: Schema.String.pipe(Schema.optional),
+  teamId: Schema.optional(Schema.String),
 });
 type InvitePlayerInput = typeof InvitePlayerInput.Type;
 
@@ -73,7 +74,6 @@ export const TeamsServiceLive = Layer.succeed(TeamsService, {
     Effect.gen(function* () {
       const validated = yield* Schema.decode(CreateTeamInput)(input);
 
-      // First get the user session to get organization context
       const session = yield* Effect.tryPromise(() =>
         auth.api.getSession({ headers }),
       ).pipe(
@@ -88,44 +88,20 @@ export const TeamsServiceLive = Layer.succeed(TeamsService, {
         );
       }
 
-      // Get user's organizations to find active organization
-      const organizations = yield* Effect.tryPromise(() =>
-        auth.api.listOrganizations({ headers }),
+      const activeOrganization = yield* Effect.tryPromise(() =>
+        auth.api.getFullOrganization({ headers }),
       ).pipe(
         Effect.mapError(
-          (cause) => new TeamsError(cause, 'Failed to get organizations'),
+          (cause) => new TeamsError(cause, 'Active organization not found'),
         ),
       );
 
-      if (!organizations || organizations.length === 0) {
-        return yield* Effect.fail(
-          new TeamsError(null, 'No organization found for user'),
-        );
-      }
-
-      const activeOrganization = organizations[0];
       if (!activeOrganization) {
         return yield* Effect.fail(
-          new TeamsError(null, 'Active organization not found'),
+          new TeamsError(null, 'No active organization found for user'),
         );
       }
 
-      // Ensure the user's organization is active (safety measure for multi-org users)
-      yield* Effect.tryPromise(() =>
-        auth.api.setActiveOrganization({
-          headers,
-          body: {
-            organizationId: activeOrganization.id,
-          },
-        }),
-      ).pipe(
-        Effect.mapError((cause) => {
-          console.error('Failed to set active organization:', cause);
-          return new TeamsError(cause, 'Failed to set active organization');
-        }),
-      );
-
-      // Now create the team with Better Auth API
       const result = yield* Effect.tryPromise(() => {
         return auth.api.createTeam({
           headers,
@@ -140,7 +116,7 @@ export const TeamsServiceLive = Layer.succeed(TeamsService, {
         }),
       );
 
-      return result as Team;
+      return result;
     }),
 
   deleteTeam: (input, headers) =>
@@ -173,10 +149,20 @@ export const TeamsServiceLive = Layer.succeed(TeamsService, {
           },
         }),
       ).pipe(
-        Effect.mapError(
-          (cause) => new TeamsError(cause, 'Failed to get team members'),
-        ),
+        Effect.mapError((cause) => {
+          // If the user is not a member of the team, return empty array
+          // This can happen right after creating a team
+          const errorMessage = cause?.toString() || '';
+          if (errorMessage.includes('not a member of the team')) {
+            console.warn(`User not a member of team ${validated.teamId} yet`);
+            return null; // Will be handled by orElse below
+          }
+          return new TeamsError(cause, 'Failed to get team members');
+        }),
+        Effect.orElse(() => Effect.succeed([])), // Return empty array on error
       );
+
+      yield* Console.log({ result });
 
       return (result || []) as TeamMember[];
     }),
