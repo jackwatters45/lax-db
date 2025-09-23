@@ -2,9 +2,10 @@ import { createFileRoute, redirect } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { protectedMiddleware } from '@/lib/middleware';
 
-const getDashboardData = createServerFn({ method: 'GET' })
+const getTeamDashboardData = createServerFn({ method: 'GET' })
   .middleware([protectedMiddleware])
-  .handler(async ({ context }) => {
+  .validator((data: { teamId: string }) => data)
+  .handler(async ({ data, context }) => {
     const { auth } = await import('@lax-db/core/auth');
 
     try {
@@ -12,31 +13,44 @@ const getDashboardData = createServerFn({ method: 'GET' })
         return {
           organizations: [],
           activeOrganization: null,
+          teams: [],
+          activeTeam: null,
         };
       }
 
       const headers = context.headers;
-      const [organizations, activeOrganization] = await Promise.all([
+      const [organizations, activeOrganization, teams] = await Promise.all([
         auth.api.listOrganizations({ headers }),
         auth.api.getFullOrganization({ headers }),
+        auth.api.listOrganizationTeams({ headers }),
       ]);
+
+      // Find the active team from the teamId parameter
+      const activeTeam =
+        teams?.find((team: any) => team.id === data.teamId) || null;
 
       return {
         organizations,
         activeOrganization,
+        teams: teams || [],
+        activeTeam,
       };
     } catch (error) {
-      console.error('Dashboard data error:', error);
+      console.error('Team dashboard data error:', error);
       return {
         organizations: [],
         activeOrganization: null,
+        teams: [],
+        activeTeam: null,
       };
     }
   });
 
 export const Route = createFileRoute('/_protected/$organizationSlug/$teamId')({
-  beforeLoad: async ({ location }) => {
-    const data = await getDashboardData();
+  beforeLoad: async ({ location, params }) => {
+    const data = await getTeamDashboardData({
+      data: { teamId: params.teamId },
+    });
 
     const activeOrganization = data.activeOrganization;
     if (!activeOrganization) {
@@ -51,9 +65,13 @@ export const Route = createFileRoute('/_protected/$organizationSlug/$teamId')({
     return {
       organizations: data.organizations,
       activeOrganization: activeOrganization,
+      teams: data.teams,
+      activeTeam: data.activeTeam,
     };
   },
-  loader: async () => {
-    return await getDashboardData();
+  loader: async ({ params }) => {
+    return await getTeamDashboardData({
+      data: { teamId: params.teamId },
+    });
   },
 });

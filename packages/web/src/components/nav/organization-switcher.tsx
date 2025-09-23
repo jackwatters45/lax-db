@@ -52,7 +52,7 @@ export function OrganizationSwitcher() {
 
       const newOrg = organizations.find((org) => org.id === organizationId);
       if (newOrg) {
-        router.navigate({ to: `/_protected/${newOrg.slug}` });
+        router.navigate({ to: `/${newOrg.slug}` });
       } else {
         window.location.reload();
       }

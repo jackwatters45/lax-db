@@ -194,7 +194,7 @@ function TeamOverviewCard({
 
         <div className="space-y-2">
           <Link
-            to="/$organizationSlug/teams/$teamId"
+            to="/$organizationSlug/$teamId"
             params={{
               organizationSlug,
               teamId: team.id,
