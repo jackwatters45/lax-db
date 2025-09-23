@@ -9,6 +9,7 @@ const projectNavItems = [
   { label: 'Practice', href: '/practice' },
   { label: 'Film', href: '/film' },
   { label: 'Scouting', href: '/scouting' },
+  { label: 'Settings', href: '/settings' },
 ];
 
 export function ProjectNavbar() {

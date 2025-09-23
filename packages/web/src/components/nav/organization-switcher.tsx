@@ -1,11 +1,11 @@
 import type { Organization } from '@lax-db/core/organization/index';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { Link, useRouteContext } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
-import { getWebRequest, setHeader } from '@tanstack/react-start/server';
+import { getWebRequest } from '@tanstack/react-start/server';
 import { ChevronsUpDown, Plus } from 'lucide-react';
-import { useState } from 'react';
 import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,7 +14,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Button } from '../ui/button';
 
 // Server function to switch active organization
 const switchActiveOrganization = createServerFn({ method: 'POST' })
@@ -32,79 +31,42 @@ const switchActiveOrganization = createServerFn({ method: 'POST' })
       },
     });
 
-    // Set cookie to remember the active organization
-    setHeader(
-      'Set-Cookie',
-      `active-organization-id=${data.organizationId}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${60 * 60 * 24 * 30}`, // 30 days
-    );
-
     return { success: true };
   });
 
-interface OrganizationSwitcherProps {
-  className?: string;
-}
-
-export function OrganizationSwitcher({ className }: OrganizationSwitcherProps) {
-  const queryClient = useQueryClient();
-
+export function OrganizationSwitcher() {
   // Get organizations and active org from route context (no loading state!)
-  const { organizations = [], activeOrganization } = useRouteContext({
+  const { organizations, activeOrganization } = useRouteContext({
     from: '/_dashboard',
   });
-
-  // Local state to track optimistic updates
-  const [optimisticActiveOrg, setOptimisticActiveOrg] =
-    useState<Organization | null>(activeOrganization);
 
   // Mutation to switch organization with optimistic updates
   const switchOrgMutation = useMutation({
     mutationFn: (organizationId: string) =>
       switchActiveOrganization({ data: { organizationId } }),
-    onMutate: async (organizationId) => {
-      // Optimistically update local state immediately
-      const newOrg = organizations.find(
-        (org: Organization) => org.id === organizationId,
-      );
-      if (newOrg) {
-        setOptimisticActiveOrg(newOrg);
-      }
-      return { previousOrg: optimisticActiveOrg };
-    },
-    onError: (error, _variables, context) => {
-      // Revert the optimistic update on error
-      if (context?.previousOrg) {
-        setOptimisticActiveOrg(context.previousOrg);
-      }
+    onError: (error) => {
       toast.error('Failed to switch organization');
       console.error('Switch organization error:', error);
     },
-    onSuccess: () => {
-      // Invalidate related data and reload for server-side updates
-      queryClient.invalidateQueries({ queryKey: ['teamMembers'] });
+    onSuccess: (_data, _variables, _result, context) => {
+      context.client.invalidateQueries({ queryKey: ['teamMembers'] });
       toast.success('Organization switched successfully');
       window.location.reload();
     },
   });
-
-  // Use optimistic state if available, otherwise use route context
-  const currentActiveOrg = optimisticActiveOrg || activeOrganization;
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
           variant={'ghost'}
-          className={`px-2 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground ${className}`}
+          className={
+            'px-2 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
+          }
         >
-          <div className="flex aspect-square size-8 items-center justify-center rounded-lg border border-border bg-primary-foreground text-primary">
-            <span className="font-bold text-xs">
-              {currentActiveOrg?.name?.charAt(0)?.toUpperCase() || 'L'}
-            </span>
-          </div>
           <div className="grid flex-1 text-left text-sm leading-tight">
             <span className="truncate font-medium">
-              {currentActiveOrg?.name || 'No Organization'}
+              {activeOrganization?.name || 'No Organization'}
             </span>
           </div>
           <ChevronsUpDown className="ml-auto" />
@@ -120,7 +82,7 @@ export function OrganizationSwitcher({ className }: OrganizationSwitcherProps) {
           Switch Organization
         </DropdownMenuLabel>
         {organizations.map((org: Organization) => {
-          const isActive = currentActiveOrg?.id === org.id;
+          const isActive = activeOrganization?.id === org.id;
 
           return (
             <DropdownMenuItem
