@@ -7,9 +7,9 @@
   },
   "dependencies": {
     "@lax-db/core": "*",
-    "sst": "*"
+    "sst": "^3.17.14"
   },
   "devDependencies": {
-    "@types/aws-lambda": "^8.10.149"
+    "@types/aws-lambda": "^8.10.152"
   }
 }
