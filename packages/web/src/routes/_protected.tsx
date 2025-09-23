@@ -1,13 +1,17 @@
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
-import { getWebRequest } from '@tanstack/react-start/server';
+import { createServerFn } from '@tanstack/react-start';
 import { DashboardHeader } from '@/components/nav/header';
+import { protectedMiddleware } from '@/lib/middleware';
+
+const getSession = createServerFn({ method: 'GET' })
+  .middleware([protectedMiddleware])
+  .handler(async ({ context }) => context.session.user);
 
 export const Route = createFileRoute('/_protected')({
-  beforeLoad: async ({ location, context }) => {
-    const { headers } = getWebRequest();
-    const session = await context.auth.api.getSession({ headers });
+  beforeLoad: async ({ location }) => {
+    const user = await getSession();
 
-    if (!session) {
+    if (!user) {
       throw redirect({
         to: '/login',
         search: {
@@ -17,8 +21,7 @@ export const Route = createFileRoute('/_protected')({
     }
 
     return {
-      user: session.user,
-      ...context,
+      user,
     };
   },
   component: ProtectedLayout,

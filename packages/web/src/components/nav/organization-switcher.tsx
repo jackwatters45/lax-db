@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { Link, useRouteContext } from '@tanstack/react-router';
+import { Link, useRouteContext, useRouter } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { ChevronsUpDown, Plus } from 'lucide-react';
 import { toast } from 'sonner';
@@ -33,12 +33,12 @@ const switchActiveOrganization = createServerFn({ method: 'POST' })
   });
 
 export function OrganizationSwitcher() {
-  // Get organizations and active org from route context (no loading state!)
+  const router = useRouter();
   const { organizations, activeOrganization } = useRouteContext({
     from: '/_protected/$organizationSlug',
   });
 
-  // Mutation to switch organization with optimistic updates
+  // Mutation to switch organization
   const switchOrgMutation = useMutation({
     mutationFn: (organizationId: string) =>
       switchActiveOrganization({ data: { organizationId } }),
@@ -46,10 +46,16 @@ export function OrganizationSwitcher() {
       toast.error('Failed to switch organization');
       console.error('Switch organization error:', error);
     },
-    onSuccess: (_data, _variables, _result, context) => {
+    onSuccess: (_data, organizationId, _result, context) => {
       context.client.invalidateQueries({ queryKey: ['teamMembers'] });
       toast.success('Organization switched successfully');
-      window.location.reload();
+
+      const newOrg = organizations.find((org) => org.id === organizationId);
+      if (newOrg) {
+        router.navigate({ to: `/_protected/${newOrg.slug}` });
+      } else {
+        window.location.reload();
+      }
     },
   });
 

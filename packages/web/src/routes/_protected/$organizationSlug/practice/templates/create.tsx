@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { createFileRoute, Link, useRouter } from '@tanstack/react-router';
+import { createServerFn } from '@tanstack/react-start';
 import {
   ArrowLeft,
   Check,
@@ -79,11 +80,13 @@ type TemplateSubmitData = TemplateFormData & {
   selectedDrills: SelectedDrill[];
 };
 
-const createTemplate = async (templateData: TemplateSubmitData) => {
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  console.log('Creating template:', templateData);
-  return { success: true, templateId: 'new-template-id' };
-};
+const createTemplate = createServerFn({ method: 'POST' })
+  .validator((data: TemplateSubmitData) => data)
+  .handler(async ({ data }) => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    console.log('Creating template:', data);
+    return { success: true, templateId: 'new-template-id' };
+  });
 
 export const Route = createFileRoute(
   '/_protected/$organizationSlug/practice/templates/create',
@@ -338,7 +341,7 @@ function CreateTemplatePage() {
     };
 
     try {
-      const result = await createTemplate(templateData);
+      const result = await createTemplate({ data: templateData });
       if (result.success) {
         router.navigate({
           to: '/$organizationSlug/practice/templates',
