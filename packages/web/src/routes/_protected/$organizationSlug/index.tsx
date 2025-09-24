@@ -8,6 +8,7 @@ import { createServerFn } from '@tanstack/react-start';
 import type { Team, TeamMember } from 'better-auth/plugins';
 import { ArrowRight, Plus, Trash2, Users } from 'lucide-react';
 import { toast } from 'sonner';
+import DashboardHeader from '@/components/dashboard-header';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -58,45 +59,19 @@ function TeamsOverviewPage() {
   });
 
   return (
-    <div className="container mx-auto py-8">
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="font-bold text-3xl">Teams</h1>
-          <p className="text-muted-foreground">
-            Manage teams for {activeOrganization.name}
-          </p>
-        </div>
+    <>
+      <DashboardHeader
+        breadcrumbItems={[{ label: 'Teams', href: `/${organizationSlug}` }]}
+      />
+      <div className="container mx-auto py-8">
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h1 className="font-bold text-3xl">Teams</h1>
+            <p className="text-muted-foreground">
+              Manage teams for {activeOrganization.name}
+            </p>
+          </div>
 
-        {canManageTeams && (
-          <Button asChild>
-            <Link
-              to="/organizations/create/$organizationSlug"
-              params={{ organizationSlug }}
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              Create Team
-            </Link>
-          </Button>
-        )}
-      </div>
-
-      {teams && teams.length > 0 ? (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {teams.map((team) => (
-            <TeamOverviewCard
-              key={team.id}
-              team={team}
-              canManage={canManageTeams}
-            />
-          ))}
-        </div>
-      ) : (
-        <div className="py-12 text-center">
-          <Users className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
-          <h2 className="mb-2 font-semibold text-xl">No teams yet</h2>
-          <p className="mb-6 text-muted-foreground">
-            Get started by creating your first team
-          </p>
           {canManageTeams && (
             <Button asChild>
               <Link
@@ -104,13 +79,44 @@ function TeamsOverviewPage() {
                 params={{ organizationSlug }}
               >
                 <Plus className="mr-2 h-4 w-4" />
-                Create Your First Team
+                Create Team
               </Link>
             </Button>
           )}
         </div>
-      )}
-    </div>
+
+        {teams && teams.length > 0 ? (
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {teams.map((team) => (
+              <TeamOverviewCard
+                key={team.id}
+                team={team}
+                canManage={canManageTeams}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="py-12 text-center">
+            <Users className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
+            <h2 className="mb-2 font-semibold text-xl">No teams yet</h2>
+            <p className="mb-6 text-muted-foreground">
+              Get started by creating your first team
+            </p>
+            {canManageTeams && (
+              <Button asChild>
+                <Link
+                  to="/organizations/create/$organizationSlug"
+                  params={{ organizationSlug }}
+                >
+                  <Plus className="mr-2 h-4 w-4" />
+                  Create Your First Team
+                </Link>
+              </Button>
+            )}
+          </div>
+        )}
+      </div>
+    </>
   );
 }
 
