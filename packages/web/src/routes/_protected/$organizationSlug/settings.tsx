@@ -22,11 +22,11 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { protectedMiddleware } from '@/lib/middleware';
+import { authMiddleware } from '@/lib/middleware';
 
 // Server function to delete organization and set new active org
 const deleteOrganization = createServerFn({ method: 'POST' })
-  .middleware([protectedMiddleware])
+  .middleware([authMiddleware])
   .validator((data: { organizationId: string }) => data)
   .handler(async ({ data, context }) => {
     const { auth } = await import('@lax-db/core/auth');
@@ -79,7 +79,7 @@ const deleteOrganization = createServerFn({ method: 'POST' })
 
 // Server function to get dashboard data including organization count
 const getDashboardData = createServerFn()
-  .middleware([protectedMiddleware])
+  .middleware([authMiddleware])
   .handler(async ({ context }) => {
     const { auth } = await import('@lax-db/core/auth');
 
