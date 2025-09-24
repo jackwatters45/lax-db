@@ -18,12 +18,12 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { protectedMiddleware } from '@/lib/middleware';
+import { authMiddleware } from '@/lib/middleware';
 
 // Server function for creating teams
 const createTeam = createServerFn({ method: 'POST' })
   .validator((data: { name: string; description?: string }) => data)
-  .middleware([protectedMiddleware])
+  .middleware([authMiddleware])
   .handler(async ({ data, context }) => {
     const { TeamsAPI } = await import('@lax-db/core/teams/index');
 

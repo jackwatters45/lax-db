@@ -1,12 +1,10 @@
-import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
-import { AppSidebar } from '@/components/sidebar/app-sidebar';
-import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
-import { protectedMiddleware } from '@/lib/middleware';
+import { authMiddleware } from '@/lib/middleware';
 
 const getSession = createServerFn({ method: 'GET' })
-  .middleware([protectedMiddleware])
-  .handler(async ({ context }) => context.session.user);
+  .middleware([authMiddleware])
+  .handler(async ({ context }) => context.session?.user);
 
 export const Route = createFileRoute('/_protected')({
   beforeLoad: async ({ location }) => {
@@ -16,7 +14,7 @@ export const Route = createFileRoute('/_protected')({
       throw redirect({
         to: '/login',
         search: {
-          redirect: location.pathname || '/teams',
+          redirect: location.pathname,
         },
       });
     }
@@ -25,21 +23,4 @@ export const Route = createFileRoute('/_protected')({
       user,
     };
   },
-  component: ProtectedLayout,
 });
-
-function ProtectedLayout() {
-  return (
-    <>
-      {/*<DashboardHeader />*/}
-      <SidebarProvider>
-        <AppSidebar />
-        <main className="w-full">
-          <SidebarInset className="max-h-screen overflow-x-auto">
-            <Outlet />
-          </SidebarInset>
-        </main>
-      </SidebarProvider>
-    </>
-  );
-}

@@ -8,7 +8,7 @@ import { createServerFn } from '@tanstack/react-start';
 import type { Team, TeamMember } from 'better-auth/plugins';
 import { ArrowRight, Plus, Trash2, Users } from 'lucide-react';
 import { toast } from 'sonner';
-import DashboardHeader from '@/components/sidebar/dashboard-header';
+import { DashboardHeader } from '@/components/sidebar/dashboard-header';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,13 +21,14 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
+import { BreadcrumbLink } from '@/components/ui/breadcrumb';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { protectedMiddleware } from '@/lib/middleware';
+import { authMiddleware } from '@/lib/middleware';
 
 // Server function for getting user organization context
 const getUserOrganizationContext = createServerFn()
-  .middleware([protectedMiddleware])
+  .middleware([authMiddleware])
   .handler(async ({ context }) => {
     const { OrganizationAPI } = await import('@lax-db/core/organization/index');
 
@@ -36,7 +37,7 @@ const getUserOrganizationContext = createServerFn()
 
 // Server function for deleting teams
 const deleteTeam = createServerFn({ method: 'POST' })
-  .middleware([protectedMiddleware])
+  .middleware([authMiddleware])
   .validator((data: { teamId: string }) => data)
   .handler(async ({ data, context }) => {
     const { TeamsAPI } = await import('@lax-db/core/teams/index');
@@ -60,9 +61,13 @@ function TeamsOverviewPage() {
 
   return (
     <>
-      <DashboardHeader
-        breadcrumbItems={[{ label: 'Teams', href: `/${organizationSlug}` }]}
-      />
+      <DashboardHeader>
+        <BreadcrumbLink title="Teams" asChild>
+          <Link to="/$organizationSlug" params={{ organizationSlug }}>
+            Teams
+          </Link>
+        </BreadcrumbLink>
+      </DashboardHeader>
       <div className="container mx-auto py-8">
         <div className="mb-8 flex items-center justify-between">
           <div>

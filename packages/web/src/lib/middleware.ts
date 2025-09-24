@@ -16,23 +16,3 @@ export const authMiddleware = createMiddleware({
     },
   });
 });
-
-export const protectedMiddleware = createMiddleware({
-  type: 'function',
-}).server(async ({ next }) => {
-  const { auth } = await import('@lax-db/core/auth');
-  const { headers } = getWebRequest();
-
-  const session = await auth.api.getSession({ headers });
-
-  if (!session) {
-    throw new Error('Unauthorized');
-  }
-
-  return next({
-    context: {
-      session,
-      headers,
-    },
-  });
-});

@@ -1,46 +1,47 @@
-import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
-import DashboardHeader from '@/components/sidebar/dashboard-header';
-import { protectedMiddleware } from '@/lib/middleware';
+import { authMiddleware } from '@/lib/middleware';
 
 const getTeamDashboardData = createServerFn({ method: 'GET' })
-  .middleware([protectedMiddleware])
-  .validator((data: { teamId: string }) => data)
+  .middleware([authMiddleware])
+  .validator((data: { activeOrganizationId: string; teamId: string }) => data)
   .handler(async ({ data, context }) => {
     const { auth } = await import('@lax-db/core/auth');
 
     try {
       if (!context.session?.user) {
         return {
-          organizations: [],
-          activeOrganization: null,
           teams: [],
           activeTeam: null,
         };
       }
 
       const headers = context.headers;
-      const [organizations, activeOrganization, teams] = await Promise.all([
-        auth.api.listOrganizations({ headers }),
-        auth.api.getFullOrganization({ headers }),
-        auth.api.listOrganizationTeams({ headers }),
+      const [teams] = await Promise.all([
+        auth.api.listOrganizationTeams({
+          query: {
+            organizationId: data.activeOrganizationId,
+          },
+          headers,
+        }),
       ]);
 
       // Find the active team from the teamId parameter
-      const activeTeam =
-        teams?.find((team: any) => team.id === data.teamId) || null;
+      const activeTeam = teams?.find((team) => team.id === data.teamId) || null;
+      if (!activeTeam) {
+        throw redirect({
+          to: '/$organizationSlug',
+          params: { organizationSlug: data.activeOrganizationId },
+        });
+      }
 
       return {
-        organizations,
-        activeOrganization,
-        teams: teams || [],
+        teams,
         activeTeam,
       };
     } catch (error) {
       console.error('Team dashboard data error:', error);
       return {
-        organizations: [],
-        activeOrganization: null,
         teams: [],
         activeTeam: null,
       };
@@ -48,47 +49,35 @@ const getTeamDashboardData = createServerFn({ method: 'GET' })
   });
 
 export const Route = createFileRoute('/_protected/$organizationSlug/$teamId')({
-  beforeLoad: async ({ location, params }) => {
+  beforeLoad: async ({ params, context }) => {
     const data = await getTeamDashboardData({
-      data: { teamId: params.teamId },
+      data: {
+        activeOrganizationId: context.activeOrganization.id,
+        teamId: params.teamId,
+      },
     });
 
-    const activeOrganization = data.activeOrganization;
-    if (!activeOrganization) {
+    const activeTeam = data.activeTeam;
+    if (!activeTeam) {
       throw redirect({
-        to: '/organizations/create',
-        search: {
-          redirect: location.pathname || '/teams',
-        },
+        to: '/$organizationSlug',
+        params: { organizationSlug: context.activeOrganization.id },
       });
     }
 
     return {
-      organizations: data.organizations,
-      activeOrganization: activeOrganization,
+      organizations: context.organizations,
+      activeOrganization: context.activeOrganization,
       teams: data.teams,
-      activeTeam: data.activeTeam,
+      activeTeam,
     };
   },
-  loader: async ({ params }) => {
+  loader: async ({ params, context }) => {
     return await getTeamDashboardData({
-      data: { teamId: params.teamId },
+      data: {
+        activeOrganizationId: context.activeOrganization.id,
+        teamId: params.teamId,
+      },
     });
   },
-  component: TeamDashboard,
 });
-
-function TeamDashboard() {
-  const { organizationSlug } = Route.useParams();
-
-  return (
-    <>
-      <DashboardHeader
-        breadcrumbItems={[{ label: 'Teams', href: `/${organizationSlug}` }]}
-      />
-      <Outlet />
-    </>
-  );
-}
-
-export default TeamDashboard;

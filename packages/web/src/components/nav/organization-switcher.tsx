@@ -11,13 +11,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { protectedMiddleware } from '@/lib/middleware';
+import { authMiddleware } from '@/lib/middleware';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '../ui/sidebar';
 
 // Server function to switch active organization
 const switchActiveOrganization = createServerFn({ method: 'POST' })
-  .middleware([protectedMiddleware])
+  .middleware([authMiddleware])
   .validator((data: { organizationId: string }) => data)
   .handler(async ({ data, context }) => {
     const { auth } = await import('@lax-db/core/auth');

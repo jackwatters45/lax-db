@@ -23,10 +23,10 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { protectedMiddleware } from '@/lib/middleware';
+import { authMiddleware } from '@/lib/middleware';
 
 const createOrganization = createServerFn({ method: 'POST' })
-  .middleware([protectedMiddleware])
+  .middleware([authMiddleware])
   .validator((data: { name: string; slug: string }) => data)
   .handler(async ({ data, context }) => {
     const { OrganizationAPI } = await import('@lax-db/core/organization/index');

@@ -60,10 +60,11 @@ const loginSchema = z.object({
 
 type LoginFormValues = z.infer<typeof loginSchema>;
 
-export function LoginForm({
-  className,
-  ...props
-}: React.ComponentPropsWithoutRef<'div'>) {
+type LoginFormProps = {
+  redirect?: string;
+} & React.ComponentPropsWithoutRef<'div'>;
+
+export function LoginForm({ redirect, className, ...props }: LoginFormProps) {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState('');
   const [lastMethod, setLastMethod] = useState<string | null>(null);
