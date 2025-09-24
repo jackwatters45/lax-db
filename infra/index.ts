@@ -1,4 +1,3 @@
-export * from './api';
 export * from './database';
 export * from './dns';
 export * from './email';
