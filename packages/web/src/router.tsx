@@ -2,8 +2,8 @@ import { createRouter as createTanstackRouter } from '@tanstack/react-router';
 import { setupRouterSsrQueryIntegration } from '@tanstack/react-router-ssr-query';
 import { DefaultCatchBoundary } from './components/default-catch-boundary';
 import { NotFound } from './components/not-found';
-import * as TanstackQuery from './lib/root-provider';
-import { getContext } from './lib/root-provider';
+import * as TanstackQuery from './lib/router-provider';
+import { getContext } from './lib/router-provider';
 import { routeTree } from './routeTree.gen';
 
 // NOTE: Most of the integration code found here is experimental and will

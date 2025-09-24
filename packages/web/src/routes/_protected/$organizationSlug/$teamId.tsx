@@ -1,5 +1,6 @@
-import { createFileRoute, redirect } from '@tanstack/react-router';
+import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
+import DashboardHeader from '@/components/sidebar/dashboard-header';
 import { protectedMiddleware } from '@/lib/middleware';
 
 const getTeamDashboardData = createServerFn({ method: 'GET' })
@@ -74,4 +75,20 @@ export const Route = createFileRoute('/_protected/$organizationSlug/$teamId')({
       data: { teamId: params.teamId },
     });
   },
+  component: TeamDashboard,
 });
+
+function TeamDashboard() {
+  const { organizationSlug } = Route.useParams();
+
+  return (
+    <>
+      <DashboardHeader
+        breadcrumbItems={[{ label: 'Teams', href: `/${organizationSlug}` }]}
+      />
+      <Outlet />
+    </>
+  );
+}
+
+export default TeamDashboard;

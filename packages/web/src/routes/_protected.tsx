@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
-import { AppSidebar } from '@/components/app-sidebar';
+import { AppSidebar } from '@/components/sidebar/app-sidebar';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { protectedMiddleware } from '@/lib/middleware';
 
@@ -34,8 +34,8 @@ function ProtectedLayout() {
       {/*<DashboardHeader />*/}
       <SidebarProvider>
         <AppSidebar />
-        <main>
-          <SidebarInset>
+        <main className="w-full">
+          <SidebarInset className="max-h-screen overflow-x-auto">
             <Outlet />
           </SidebarInset>
         </main>

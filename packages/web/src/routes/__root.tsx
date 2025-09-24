@@ -16,6 +16,7 @@ import {
 import type * as React from 'react';
 import { DefaultCatchBoundary } from '@/components/default-catch-boundary';
 import { NotFound } from '@/components/not-found';
+import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from '@/components/ui/sonner';
 import { seo } from '@/lib/seo';
 import globalsCss from '@/styles/globals.css?url';
@@ -76,7 +77,10 @@ export const Route = createRootRouteWithContext<{
 function RootComponent() {
   return (
     <RootDocument>
-      <Outlet />
+      <ThemeProvider defaultTheme="system" storageKey="laxdb-ui-theme">
+        <Outlet />
+        <Toaster />
+      </ThemeProvider>
     </RootDocument>
   );
 }
@@ -87,9 +91,8 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <head>
         <HeadContent />
       </head>
-      <body>
+      <body className="antialiased">
         {children}
-        <Toaster />
         <TanStackRouterDevtools position="bottom-right" />
         <TanStackDevtools
           config={{

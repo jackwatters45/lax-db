@@ -8,7 +8,7 @@ import { createServerFn } from '@tanstack/react-start';
 import type { Team, TeamMember } from 'better-auth/plugins';
 import { ArrowRight, Plus, Trash2, Users } from 'lucide-react';
 import { toast } from 'sonner';
-import DashboardHeader from '@/components/dashboard-header';
+import DashboardHeader from '@/components/sidebar/dashboard-header';
 import {
   AlertDialog,
   AlertDialogAction,
