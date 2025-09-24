@@ -22,11 +22,11 @@ import {
   CommandShortcut,
 } from '@/components/ui/command';
 import { Separator } from '@/components/ui/separator';
+import { NavUserUnprotected } from './nav-user';
 import { OrganizationSwitcher } from './organization-switcher';
 import { ProjectNavbar } from './project-navbar';
-import { NavUser } from './user-nav';
 
-export function DashboardHeader() {
+export function UnprotectedHeader() {
   const breadcrumbItems: {
     label: string;
     href: string | null;
@@ -86,7 +86,7 @@ export function DashboardHeader() {
           <Button variant="outline" size={'sm'} asChild>
             <Link to="/feedback">Feedback</Link>
           </Button>
-          <NavUser />
+          <NavUserUnprotected />
         </div>
       </div>
       <ProjectNavbar />
