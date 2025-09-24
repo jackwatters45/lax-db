@@ -1,6 +1,7 @@
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
-import { DashboardHeader } from '@/components/nav/header';
+import { AppSidebar } from '@/components/app-sidebar';
+import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { protectedMiddleware } from '@/lib/middleware';
 
 const getSession = createServerFn({ method: 'GET' })
@@ -30,8 +31,15 @@ export const Route = createFileRoute('/_protected')({
 function ProtectedLayout() {
   return (
     <>
-      <DashboardHeader />
-      <Outlet />
+      {/*<DashboardHeader />*/}
+      <SidebarProvider>
+        <AppSidebar />
+        <main>
+          <SidebarInset>
+            <Outlet />
+          </SidebarInset>
+        </main>
+      </SidebarProvider>
     </>
   );
 }
