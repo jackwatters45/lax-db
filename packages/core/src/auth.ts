@@ -1,5 +1,5 @@
 import { db } from '@lax-db/core/drizzle/index';
-import { Polar } from '@polar-sh/sdk';
+// import { Polar } from '@polar-sh/sdk';
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import {
@@ -30,13 +30,13 @@ import { RedisLive, RedisService } from './redis';
 import { teamMemberTable, teamTable } from './teams/team.sql';
 import { userTable } from './user/user.sql';
 
-const _polarClient = new Polar({
-  accessToken: process.env.POLAR_ACCESS_TOKEN,
-  // Use 'sandbox' if you're using the Polar Sandbox environment
-  // Remember that access tokens, products, etc. are completely separated between environments.
-  // Access tokens obtained in Production are for instance not usable in the Sandbox environment.
-  server: 'sandbox',
-});
+// const _polarClient = new Polar({
+//   accessToken: process.env.POLAR_ACCESS_TOKEN,
+//   // Use 'sandbox' if you're using the Polar Sandbox environment
+//   // Remember that access tokens, products, etc. are completely separated between environments.
+//   // Access tokens obtained in Production are for instance not usable in the Sandbox environment.
+//   server: 'sandbox',
+// });
 
 // Create a runtime with Redis layer
 const runtime = Runtime.defaultRuntime;
