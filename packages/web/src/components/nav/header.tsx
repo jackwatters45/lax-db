@@ -22,7 +22,7 @@ import {
   CommandShortcut,
 } from '@/components/ui/command';
 import { Separator } from '@/components/ui/separator';
-import { NavUserUnprotected } from './nav-user';
+import { NavUserHeader } from './nav-user';
 import { OrganizationSwitcher } from './organization-switcher';
 import { ProjectNavbar } from './project-navbar';
 
@@ -86,7 +86,7 @@ export function UnprotectedHeader() {
           <Button variant="outline" size={'sm'} asChild>
             <Link to="/feedback">Feedback</Link>
           </Button>
-          <NavUserUnprotected />
+          <NavUserHeader />
         </div>
       </div>
       <ProjectNavbar />
@@ -94,7 +94,7 @@ export function UnprotectedHeader() {
   );
 }
 
-function SearchCommand() {
+export function SearchCommand() {
   const [open, setOpen] = React.useState(false);
   useHotkeys('meta+k', () => setOpen(true));
 
