@@ -1,6 +1,7 @@
 'use client';
 
 import { Slot } from '@radix-ui/react-slot';
+import { setCookie } from '@tanstack/react-start/server';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { PanelLeft } from 'lucide-react';
 import * as React from 'react';
@@ -88,8 +89,10 @@ const SidebarProvider = React.forwardRef<
           _setOpen(openState);
         }
 
-        // This sets the cookie to keep the sidebar state.
-        document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`;
+        setCookie(SIDEBAR_COOKIE_NAME, String(openState), {
+          path: '/',
+          maxAge: SIDEBAR_COOKIE_MAX_AGE,
+        });
       },
       [setOpenProp, open],
     );
