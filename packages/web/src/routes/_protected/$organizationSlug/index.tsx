@@ -62,7 +62,7 @@ function TeamsOverviewPage() {
   return (
     <>
       <DashboardHeader>
-        <BreadcrumbItem className={'min-w-0 flex-1'}>
+        <BreadcrumbItem>
           <BreadcrumbLink title="Teams" asChild>
             <Link to="/$organizationSlug" params={{ organizationSlug }}>
               Teams

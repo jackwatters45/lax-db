@@ -97,7 +97,7 @@ function CreateTeamPage() {
   return (
     <>
       <DashboardHeader>
-        <BreadcrumbItem className={'min-w-0 flex-1'}>
+        <BreadcrumbItem>
           <BreadcrumbLink title="Teams" asChild>
             <Link to="/$organizationSlug" params={{ organizationSlug }}>
               Teams
@@ -105,7 +105,7 @@ function CreateTeamPage() {
           </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
-        <BreadcrumbItem className={'min-w-0 flex-1'}>
+        <BreadcrumbItem>
           <BreadcrumbLink title="Create" asChild>
             <Link
               to="/$organizationSlug/teams/create"
