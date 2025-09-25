@@ -18,15 +18,14 @@ const getDashboardData = createServerFn({ method: 'GET' })
         };
       }
 
-      console.log({ data });
       const headers = context.headers;
       const [organizations, activeOrganization] = await Promise.all([
         auth.api.listOrganizations({ headers }),
         auth.api.getFullOrganization({
           headers,
-          // query: {
-          // organizationSlug: data.organizationSlug,
-          // },
+          query: {
+            organizationSlug: data.organizationSlug,
+          },
         }),
       ]);
 
@@ -47,7 +46,6 @@ const getDashboardData = createServerFn({ method: 'GET' })
 
 export const Route = createFileRoute('/_protected/$organizationSlug')({
   beforeLoad: async ({ location, params }) => {
-    console.log({ params });
     const data = await getDashboardData({
       data: { organizationSlug: params.organizationSlug },
     });
@@ -68,8 +66,6 @@ export const Route = createFileRoute('/_protected/$organizationSlug')({
     };
   },
   loader: async ({ params }) => {
-    console.log({ meep: params.organizationSlug });
-
     return await getDashboardData({
       data: { organizationSlug: params.organizationSlug },
     });
