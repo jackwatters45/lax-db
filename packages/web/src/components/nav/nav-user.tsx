@@ -23,9 +23,6 @@ import { Button } from '../ui/button';
 export function NavUserSidebar() {
   const { user } = useRouteContext({ from: '/_protected' });
 
-  const { isMobile } = useSidebar();
-  const { theme, setTheme } = useTheme();
-
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -48,57 +45,14 @@ export function NavUserSidebar() {
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
-          <DropdownMenuContent
-            className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-            side={isMobile ? 'bottom' : 'right'}
-            align="end"
-            sideOffset={4}
-          >
-            <DropdownMenuLabel className="p-0 font-normal">
-              <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.image ?? undefined} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
-                </Avatar>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{user.name}</span>
-                  <span className="truncate text-xs">{user.email}</span>
-                </div>
-              </div>
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem
-                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              >
-                <SunMoon />
-                Toggle theme
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={async () => {
-                authClient.signOut({
-                  fetchOptions: {
-                    onSuccess: () => {
-                      window.location.href = '/login';
-                    },
-                  },
-                });
-              }}
-            >
-              <LogOut />
-              Log out
-            </DropdownMenuItem>
-          </DropdownMenuContent>
+          <NavUserContent />
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
   );
 }
 
-// TODO: update this one to be for not logged in version
-export function NavUserUnprotected() {
+export function NavUserHeader() {
   const { user } = useRouteContext({ from: '/_protected' });
 
   if (!user)
@@ -132,42 +86,60 @@ export function NavUserUnprotected() {
           </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
-      <DropdownMenuContent
-        className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-        align="end"
-        sideOffset={4}
-      >
-        <DropdownMenuLabel className="p-0 font-normal">
-          <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-            <Avatar className="h-8 w-8 rounded-lg">
-              <AvatarImage
-                src={user.image ?? undefined}
-                alt={user.name ?? 'user profile'}
-              />
-              <AvatarFallback className="rounded-lg">CN</AvatarFallback>
-            </Avatar>
-            <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-semibold">{user.name}</span>
-              <span className="truncate text-xs">{user.email}</span>
-            </div>
-          </div>
-        </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem
-          onClick={async () => {
-            authClient.signOut({
-              fetchOptions: {
-                onSuccess: () => {
-                  window.location.href = '/login';
-                },
-              },
-            });
-          }}
-        >
-          <LogOut />
-          Log out
-        </DropdownMenuItem>
-      </DropdownMenuContent>
+      <NavUserContent />
     </DropdownMenu>
+  );
+}
+
+function NavUserContent() {
+  const { isMobile } = useSidebar();
+  const { theme, setTheme } = useTheme();
+
+  const { user } = useRouteContext({ from: '/_protected' });
+
+  return (
+    <DropdownMenuContent
+      className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+      side={isMobile ? 'bottom' : 'right'}
+      align="end"
+      sideOffset={4}
+    >
+      <DropdownMenuLabel className="p-0 font-normal">
+        <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+          <Avatar className="h-8 w-8 rounded-lg">
+            <AvatarImage src={user.image ?? undefined} alt={user.name} />
+            <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+          </Avatar>
+          <div className="grid flex-1 text-left text-sm leading-tight">
+            <span className="truncate font-semibold">{user.name}</span>
+            <span className="truncate text-xs">{user.email}</span>
+          </div>
+        </div>
+      </DropdownMenuLabel>
+      <DropdownMenuSeparator />
+      <DropdownMenuGroup>
+        <DropdownMenuItem
+          onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+        >
+          <SunMoon />
+          Toggle theme
+        </DropdownMenuItem>
+      </DropdownMenuGroup>
+      <DropdownMenuSeparator />
+      <DropdownMenuItem
+        onClick={async () => {
+          authClient.signOut({
+            fetchOptions: {
+              onSuccess: () => {
+                window.location.href = '/login';
+              },
+            },
+          });
+        }}
+      >
+        <LogOut />
+        Log out
+      </DropdownMenuItem>
+    </DropdownMenuContent>
   );
 }
