@@ -6,6 +6,12 @@ import { ArrowLeft } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
+import { DashboardHeader } from '@/components/sidebar/dashboard-header';
+import {
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -89,91 +95,118 @@ function CreateTeamPage() {
   };
 
   return (
-    <div className="container mx-auto max-w-2xl py-8">
-      <div className="mb-8">
-        <Link
-          to="/$organizationSlug"
-          params={{
-            organizationSlug,
-          }}
-        >
-          <Button variant="ghost" className="mb-4">
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Teams
-          </Button>
-        </Link>
+    <>
+      <DashboardHeader>
+        <BreadcrumbItem className={'min-w-0 flex-1'}>
+          <BreadcrumbLink title="Teams" asChild>
+            <Link to="/$organizationSlug" params={{ organizationSlug }}>
+              Teams
+            </Link>
+          </BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator />
+        <BreadcrumbItem className={'min-w-0 flex-1'}>
+          <BreadcrumbLink title="Create" asChild>
+            <Link
+              to="/$organizationSlug/teams/create"
+              params={{ organizationSlug }}
+            >
+              Create
+            </Link>
+          </BreadcrumbLink>
+        </BreadcrumbItem>
+      </DashboardHeader>
+      <div className="container mx-auto max-w-2xl py-8">
+        <div className="mb-8">
+          <Link
+            to="/$organizationSlug"
+            params={{
+              organizationSlug,
+            }}
+          >
+            <Button variant="ghost" className="mb-4">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to Teams
+            </Button>
+          </Link>
 
-        <h1 className="font-bold text-3xl">Create New Team</h1>
-        <p className="text-muted-foreground">
-          Add a new team to your organization
-        </p>
+          <h1 className="font-bold text-3xl">Create New Team</h1>
+          <p className="text-muted-foreground">
+            Add a new team to your organization
+          </p>
+        </div>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Team Details</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-6"
+              >
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Team Name</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="e.g., U18s, Senior Men's A, Women's Team"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Description (Optional)</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Brief description of the team..."
+                          rows={3}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <div className="flex gap-4 pt-4">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="flex-1"
+                    asChild
+                  >
+                    <Link to="/$organizationSlug" params={{ organizationSlug }}>
+                      Cancel
+                    </Link>
+                  </Button>
+                  <Button
+                    type="submit"
+                    disabled={createTeamMutation.isPending}
+                    className="flex-1"
+                  >
+                    {createTeamMutation.isPending
+                      ? 'Creating...'
+                      : 'Create Team'}
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </CardContent>
+        </Card>
       </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Team Details</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Team Name</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="e.g., U18s, Senior Men's A, Women's Team"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Description (Optional)</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Brief description of the team..."
-                        rows={3}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <div className="flex gap-4 pt-4">
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="flex-1"
-                  asChild
-                >
-                  <Link to="/$organizationSlug" params={{ organizationSlug }}>
-                    Cancel
-                  </Link>
-                </Button>
-                <Button
-                  type="submit"
-                  disabled={createTeamMutation.isPending}
-                  className="flex-1"
-                >
-                  {createTeamMutation.isPending ? 'Creating...' : 'Create Team'}
-                </Button>
-              </div>
-            </form>
-          </Form>
-        </CardContent>
-      </Card>
-    </div>
+    </>
   );
 }

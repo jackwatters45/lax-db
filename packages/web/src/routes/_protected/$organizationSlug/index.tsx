@@ -21,7 +21,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
-import { BreadcrumbLink } from '@/components/ui/breadcrumb';
+import { BreadcrumbItem, BreadcrumbLink } from '@/components/ui/breadcrumb';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { authMiddleware } from '@/lib/middleware';
@@ -62,11 +62,13 @@ function TeamsOverviewPage() {
   return (
     <>
       <DashboardHeader>
-        <BreadcrumbLink title="Teams" asChild>
-          <Link to="/$organizationSlug" params={{ organizationSlug }}>
-            Teams
-          </Link>
-        </BreadcrumbLink>
+        <BreadcrumbItem className={'min-w-0 flex-1'}>
+          <BreadcrumbLink title="Teams" asChild>
+            <Link to="/$organizationSlug" params={{ organizationSlug }}>
+              Teams
+            </Link>
+          </BreadcrumbLink>
+        </BreadcrumbItem>
       </DashboardHeader>
       <div className="container mx-auto py-8">
         <div className="mb-8 flex items-center justify-between">
@@ -80,7 +82,7 @@ function TeamsOverviewPage() {
           {canManageTeams && (
             <Button asChild>
               <Link
-                to="/organizations/create/$organizationSlug"
+                to="/$organizationSlug/teams/create"
                 params={{ organizationSlug }}
               >
                 <Plus className="mr-2 h-4 w-4" />

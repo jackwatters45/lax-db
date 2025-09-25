@@ -43,11 +43,7 @@ export function DashboardHeader({ children }: { children: React.ReactNode }) {
         </TooltipProvider>
         <Separator orientation="vertical" className="mr-2 h-4" />
         <Breadcrumb className="min-w-0 flex-1">
-          <BreadcrumbList className="flex-nowrap">
-            <BreadcrumbItem className={'min-w-0 flex-1'}>
-              {children}
-            </BreadcrumbItem>
-          </BreadcrumbList>
+          <BreadcrumbList className="flex-nowrap">{children}</BreadcrumbList>
         </Breadcrumb>
       </div>
     </header>

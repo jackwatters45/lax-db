@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { DashboardHeader } from '@/components/sidebar/dashboard-header';
 import { Badge } from '@/components/ui/badge';
 import {
+  BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
@@ -104,20 +105,24 @@ function TeamManagementPage() {
   return (
     <>
       <DashboardHeader>
-        <BreadcrumbLink className="max-w-full truncate" title="Teams" asChild>
-          <Link to="/$organizationSlug" params={{ organizationSlug }}>
-            Teams
-          </Link>
-        </BreadcrumbLink>
+        <BreadcrumbItem className={'min-w-0 flex-1'}>
+          <BreadcrumbLink className="max-w-full truncate" title="Teams" asChild>
+            <Link to="/$organizationSlug" params={{ organizationSlug }}>
+              Teams
+            </Link>
+          </BreadcrumbLink>
+        </BreadcrumbItem>
         <BreadcrumbSeparator />
-        <BreadcrumbLink title="Teams" asChild>
-          <Link
-            to="/$organizationSlug/$teamId"
-            params={{ organizationSlug, teamId }}
-          >
-            {activeTeam.name}
-          </Link>
-        </BreadcrumbLink>
+        <BreadcrumbItem className={'min-w-0 flex-1'}>
+          <BreadcrumbLink title="Teams" asChild>
+            <Link
+              to="/$organizationSlug/$teamId"
+              params={{ organizationSlug, teamId }}
+            >
+              {activeTeam.name}
+            </Link>
+          </BreadcrumbLink>
+        </BreadcrumbItem>
       </DashboardHeader>
 
       <div className="container mx-auto py-8">
