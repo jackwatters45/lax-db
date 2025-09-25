@@ -105,7 +105,7 @@ function TeamManagementPage() {
   return (
     <>
       <DashboardHeader>
-        <BreadcrumbItem className={'min-w-0 flex-1'}>
+        <BreadcrumbItem>
           <BreadcrumbLink className="max-w-full truncate" title="Teams" asChild>
             <Link to="/$organizationSlug" params={{ organizationSlug }}>
               Teams
@@ -113,7 +113,7 @@ function TeamManagementPage() {
           </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
-        <BreadcrumbItem className={'min-w-0 flex-1'}>
+        <BreadcrumbItem>
           <BreadcrumbLink title="Teams" asChild>
             <Link
               to="/$organizationSlug/$teamId"
