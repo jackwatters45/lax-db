@@ -4,7 +4,6 @@ import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { PanelLeft } from 'lucide-react';
 import * as React from 'react';
-
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
@@ -26,36 +25,10 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 
 const SIDEBAR_COOKIE_NAME = 'sidebar_state';
-const _SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
+const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
 const SIDEBAR_WIDTH = '16rem';
 const SIDEBAR_WIDTH_MOBILE = '18rem';
 const SIDEBAR_WIDTH_ICON = '3rem';
-
-// Helper function to persist sidebar state
-function _setSidebarState(value: string) {
-  if (typeof window !== 'undefined') {
-    try {
-      localStorage.setItem(SIDEBAR_COOKIE_NAME, value);
-    } catch {
-      // Fallback to sessionStorage if localStorage is not available
-      sessionStorage.setItem(SIDEBAR_COOKIE_NAME, value);
-    }
-  }
-}
-
-function _getSidebarState(): string | null {
-  if (typeof window !== 'undefined') {
-    try {
-      return (
-        localStorage.getItem(SIDEBAR_COOKIE_NAME) ||
-        sessionStorage.getItem(SIDEBAR_COOKIE_NAME)
-      );
-    } catch {
-      return null;
-    }
-  }
-  return null;
-}
 const SIDEBAR_KEYBOARD_SHORTCUT = 'b';
 
 type SidebarContextProps = {
@@ -116,7 +89,8 @@ const SidebarProvider = React.forwardRef<
         }
 
         // This sets the cookie to keep the sidebar state.
-        new CookieStore().set(SIDEBAR_COOKIE_NAME, openState.toString());
+        // biome-ignore lint/suspicious/noDocumentCookie: <from shadcn>
+        document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`;
       },
       [setOpenProp, open],
     );
