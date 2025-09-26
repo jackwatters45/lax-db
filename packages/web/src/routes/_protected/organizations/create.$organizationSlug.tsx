@@ -1,4 +1,4 @@
-import { zodResolver } from '@hookform/resolvers/zod';
+import { effectTsResolver } from '@hookform/resolvers/effect-ts';
 import { useMutation } from '@tanstack/react-query';
 import {
   createFileRoute,
@@ -7,10 +7,10 @@ import {
   useRouter,
 } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
+import { Schema } from 'effect';
 import { ArrowLeft } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -34,23 +34,31 @@ const createOrganization = createServerFn({ method: 'POST' })
     return await OrganizationAPI.createOrganization(data, context.headers);
   });
 
-const formSchema = z.object({
-  name: z
-    .string()
-    .min(1, 'Club name is required')
-    .min(3, 'Club name must be at least 3 characters')
-    .max(100, 'Club name must be less than 100 characters'),
-  slug: z
-    .string()
-    .min(1, 'Club slug is required')
-    .min(3, 'Club slug must be at least 3 characters')
-    .max(50, 'Club slug must be less than 50 characters')
-    .regex(
-      /^[a-z0-9-]+$/,
-      'Club slug can only contain lowercase letters, numbers, and hyphens',
-    ),
+const formSchema = Schema.Struct({
+  name: Schema.String.pipe(
+    Schema.minLength(1, { message: () => 'Club name is required' }),
+    Schema.minLength(3, {
+      message: () => 'Club name must be at least 3 characters',
+    }),
+    Schema.maxLength(100, {
+      message: () => 'Club name must be less than 100 characters',
+    }),
+  ),
+  slug: Schema.String.pipe(
+    Schema.minLength(1, { message: () => 'Club slug is required' }),
+    Schema.minLength(3, {
+      message: () => 'Club slug must be at least 3 characters',
+    }),
+    Schema.maxLength(50, {
+      message: () => 'Club slug must be less than 50 characters',
+    }),
+    Schema.filter((slug) => /^[a-z0-9-]+$/.test(slug), {
+      message: () =>
+        'Club slug can only contain lowercase letters, numbers, and hyphens',
+    }),
+  ),
 });
-type FormData = z.infer<typeof formSchema>;
+type FormData = typeof formSchema.Type;
 
 const generateSlug = (name: string) => {
   return name
@@ -77,7 +85,7 @@ function CreateOrganizationPage() {
   const hasExistingOrganizations = !!organizations.length;
 
   const form = useForm<FormData>({
-    resolver: zodResolver(formSchema),
+    resolver: effectTsResolver(formSchema),
     defaultValues: {
       name: '',
       slug: '',

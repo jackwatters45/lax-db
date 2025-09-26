@@ -1,9 +1,9 @@
-import { zodResolver } from '@hookform/resolvers/zod';
+import { effectTsResolver } from '@hookform/resolvers/effect-ts';
 import { createFileRoute, Link, useRouter } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
+import { Schema } from 'effect';
 import { ArrowLeft, Calendar, Target } from 'lucide-react';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -20,20 +20,26 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 
 // Form schema
-const goalFormSchema = z.object({
-  title: z
-    .string()
-    .min(1, 'Title is required')
-    .max(100, 'Title must be less than 100 characters'),
-  description: z.string().optional(),
-  category: z.enum(['skill', 'academic', 'team', 'personal']),
-  currentValue: z.string().optional(),
-  targetValue: z.string().min(1, 'Target value is required'),
-  dueDate: z.string().min(1, 'Due date is required'),
-  priority: z.enum(['low', 'medium', 'high']),
+const goalFormSchema = Schema.Struct({
+  title: Schema.String.pipe(
+    Schema.minLength(1, { message: () => 'Title is required' }),
+    Schema.maxLength(100, {
+      message: () => 'Title must be less than 100 characters',
+    }),
+  ),
+  description: Schema.optional(Schema.String),
+  category: Schema.Literal('skill', 'academic', 'team', 'personal'),
+  currentValue: Schema.optional(Schema.String),
+  targetValue: Schema.String.pipe(
+    Schema.minLength(1, { message: () => 'Target value is required' }),
+  ),
+  dueDate: Schema.String.pipe(
+    Schema.minLength(1, { message: () => 'Due date is required' }),
+  ),
+  priority: Schema.Literal('low', 'medium', 'high'),
 });
 
-type GoalFormValues = z.infer<typeof goalFormSchema>;
+type GoalFormValues = typeof goalFormSchema.Type;
 
 // Server function to create a goal
 const createPlayerGoal = createServerFn({ method: 'POST' })
@@ -97,7 +103,7 @@ function CreateGoalPage() {
   const router = useRouter();
 
   const form = useForm<GoalFormValues>({
-    resolver: zodResolver(goalFormSchema),
+    resolver: effectTsResolver(goalFormSchema),
     defaultValues: {
       title: '',
       description: '',

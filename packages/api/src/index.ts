@@ -3,7 +3,6 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { HTTPException } from 'hono/http-exception';
 import { logger } from 'hono/logger';
-import { ZodError } from 'zod';
 
 export const app = new Hono<{
   Variables: {
@@ -53,18 +52,18 @@ export const app = new Hono<{
       );
     }
     console.error(error);
-    if (error instanceof ZodError) {
-      const e = (error as ZodError).issues[0]; // no idea why not working with type assertion
-      if (e) {
-        return c.json(
-          {
-            code: e?.code,
-            message: e?.message,
-          },
-          400,
-        );
-      }
-    }
+    // if (error instanceof ZodError) {
+    //   const e = (error as ZodError).issues[0]; // no idea why not working with type assertion
+    //   if (e) {
+    //     return c.json(
+    //       {
+    //         code: e?.code,
+    //         message: e?.message,
+    //       },
+    //       400,
+    //     );
+    //   }
+    // }
     return c.json(
       {
         code: 'internal',

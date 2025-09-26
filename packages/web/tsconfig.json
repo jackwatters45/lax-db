@@ -17,6 +17,8 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "noEmit": true
+    "noEmit": true,
+    "noUncheckedIndexedAccess": true,
+    "plugins": [{ "name": "@effect/language-service" }]
   }
 }

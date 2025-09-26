@@ -1,11 +1,11 @@
-import { zodResolver } from '@hookform/resolvers/zod';
+import { effectTsResolver } from '@hookform/resolvers/effect-ts';
 import { auth } from '@lax-db/core/auth';
 import { redirect } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { getWebRequest } from '@tanstack/react-start/server';
+import { Schema } from 'effect';
 import { useEffect, useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -46,19 +46,25 @@ export const redirectToOrg = createServerFn().handler(async () => {
       },
     });
   } catch (error) {
-    console.error('Error in redirect-to-org:', error);
+    console.error('login-form: Error in redirect-to-org:', error);
     throw redirect({
       to: '/login',
     });
   }
 });
 
-const loginSchema = z.object({
-  email: z.email('Please enter a valid email address'),
-  password: z.string().min(1, 'Password is required'),
+const loginSchema = Schema.Struct({
+  email: Schema.String.pipe(
+    Schema.filter((email) => /\S+@\S+\.\S+/.test(email), {
+      message: () => 'Please enter a valid email address',
+    }),
+  ),
+  password: Schema.String.pipe(
+    Schema.minLength(1, { message: () => 'Password is required' }),
+  ),
 });
 
-type LoginFormValues = z.infer<typeof loginSchema>;
+type LoginFormValues = typeof loginSchema.Type;
 
 type LoginFormProps = {
   redirect?: string;
@@ -74,7 +80,7 @@ export function LoginForm({ redirect, className, ...props }: LoginFormProps) {
   }, []);
 
   const form = useForm<LoginFormValues>({
-    resolver: zodResolver(loginSchema),
+    resolver: effectTsResolver(loginSchema),
     defaultValues: {
       email: '',
       password: '',

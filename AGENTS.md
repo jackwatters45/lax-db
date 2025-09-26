@@ -21,7 +21,7 @@
 
 ## Architecture Patterns
 
-- **Core**: Effect library for functional programming, Zod schemas, error
+- **Core**: Effect library for functional programming, Effect schemas, error
   handling via `VisibleError` class
 - **Frontend**: TanStack Start/Router, React 19, Tailwind CSS
 - **Functions**: AWS Lambda with SST, Bun test runner

@@ -1,11 +1,11 @@
-import { zodResolver } from '@hookform/resolvers/zod';
+import { effectTsResolver } from '@hookform/resolvers/effect-ts';
 import { RATING_ENUM, TOPIC_ENUM } from '@lax-db/core/feedback/types';
 import { useMutation } from '@tanstack/react-query';
 import { createFileRoute, useRouter } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
+import { Schema } from 'effect';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -27,13 +27,17 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { authMiddleware } from '@/lib/middleware';
 
-const feedbackSchema = z.object({
-  topic: z.enum(TOPIC_ENUM),
-  rating: z.enum(RATING_ENUM),
-  feedback: z.string().min(10, 'Feedback must be at least 10 characters long'),
+const feedbackSchema = Schema.Struct({
+  topic: Schema.Literal(...TOPIC_ENUM),
+  rating: Schema.Literal(...RATING_ENUM),
+  feedback: Schema.String.pipe(
+    Schema.minLength(10, {
+      message: () => 'Feedback must be at least 10 characters long',
+    }),
+  ),
 });
 
-type FeedbackFormValues = z.infer<typeof feedbackSchema>;
+type FeedbackFormValues = typeof feedbackSchema.Type;
 
 // Server function for submitting feedback
 const submitFeedback = createServerFn({ method: 'POST' })
@@ -75,7 +79,7 @@ function FeedbackPage() {
   });
 
   const form = useForm<FeedbackFormValues>({
-    resolver: zodResolver(feedbackSchema),
+    resolver: effectTsResolver(feedbackSchema),
     defaultValues: {
       feedback: '',
     },

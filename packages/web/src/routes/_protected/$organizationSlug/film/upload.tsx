@@ -1,5 +1,6 @@
-import { zodResolver } from '@hookform/resolvers/zod';
+import { effectTsResolver } from '@hookform/resolvers/effect-ts';
 import { createFileRoute } from '@tanstack/react-router';
+import { Schema } from 'effect';
 import {
   ArrowLeft,
   Check,
@@ -12,7 +13,6 @@ import {
 } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -55,22 +55,28 @@ interface UploadedFile {
 }
 
 // Form schema - simplified to avoid complex typing issues
-const filmMetadataSchema = z.object({
-  title: z.string().min(1, 'Title is required'),
-  gameDate: z.string().min(1, 'Game date is required'),
-  opponent: z.string().min(1, 'Opponent is required'),
-  gameType: z.string(),
-  venue: z.string().optional(),
-  description: z.string().optional(),
-  isHomeGame: z.boolean(),
-  quarter1Start: z.string().optional(),
-  quarter2Start: z.string().optional(),
-  quarter3Start: z.string().optional(),
-  quarter4Start: z.string().optional(),
-  isPrivate: z.boolean(),
+const filmMetadataSchema = Schema.Struct({
+  title: Schema.String.pipe(
+    Schema.minLength(1, { message: () => 'Title is required' }),
+  ),
+  gameDate: Schema.String.pipe(
+    Schema.minLength(1, { message: () => 'Game date is required' }),
+  ),
+  opponent: Schema.String.pipe(
+    Schema.minLength(1, { message: () => 'Opponent is required' }),
+  ),
+  gameType: Schema.String,
+  venue: Schema.optional(Schema.String),
+  description: Schema.optional(Schema.String),
+  isHomeGame: Schema.Boolean,
+  quarter1Start: Schema.optional(Schema.String),
+  quarter2Start: Schema.optional(Schema.String),
+  quarter3Start: Schema.optional(Schema.String),
+  quarter4Start: Schema.optional(Schema.String),
+  isPrivate: Schema.Boolean,
 });
 
-type FilmMetadataValues = z.infer<typeof filmMetadataSchema>;
+type FilmMetadataValues = typeof filmMetadataSchema.Type;
 type UploadStep = 'upload' | 'metadata' | 'processing';
 
 const gameTypes = [
@@ -90,7 +96,7 @@ function FilmUploadPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<FilmMetadataValues>({
-    resolver: zodResolver(filmMetadataSchema),
+    resolver: effectTsResolver(filmMetadataSchema),
     defaultValues: {
       title: '',
       gameDate: '',
