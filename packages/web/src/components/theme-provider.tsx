@@ -232,6 +232,14 @@ export function ThemeProvider({
 export const useTheme = () => {
   const context = useContext(ThemeProviderContext);
   if (context === undefined) {
+    if (typeof window === 'undefined') {
+      return {
+        theme: 'system' as Theme,
+        setTheme: () => {},
+        resolvedTheme: 'light' as Theme,
+        systemTheme: 'light' as 'light' | 'dark',
+      };
+    }
     throw new Error('useTheme must be used within a ThemeProvider');
   }
   return context;
