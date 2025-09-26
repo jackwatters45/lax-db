@@ -1,6 +1,7 @@
-import { zodResolver } from '@hookform/resolvers/zod';
+import { effectTsResolver } from '@hookform/resolvers/effect-ts';
 import { createFileRoute, Link, useRouter } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
+import { Schema } from 'effect';
 import {
   ArrowLeft,
   Check,
@@ -15,7 +16,6 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -43,17 +43,33 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 
-const templateFormSchema = z.object({
-  name: z.string().min(1, 'Template name is required'),
-  description: z.string().min(1, 'Description is required'),
-  category: z.string().min(1, 'Category is required'),
-  difficulty: z.string().min(1, 'Difficulty level is required'),
-  duration: z.number().min(1, 'Duration must be at least 1 minute'),
-  focus: z.array(z.string()).min(1, 'At least one focus area is required'),
-  notes: z.string().optional(),
+const templateFormSchema = Schema.Struct({
+  name: Schema.String.pipe(
+    Schema.minLength(1, { message: () => 'Template name is required' }),
+  ),
+  description: Schema.String.pipe(
+    Schema.minLength(1, { message: () => 'Description is required' }),
+  ),
+  category: Schema.String.pipe(
+    Schema.minLength(1, { message: () => 'Category is required' }),
+  ),
+  difficulty: Schema.String.pipe(
+    Schema.minLength(1, { message: () => 'Difficulty level is required' }),
+  ),
+  duration: Schema.Number.pipe(
+    Schema.greaterThanOrEqualTo(1, {
+      message: () => 'Duration must be at least 1 minute',
+    }),
+  ),
+  focus: Schema.Array(Schema.String).pipe(
+    Schema.minItems(1, {
+      message: () => 'At least one focus area is required',
+    }),
+  ),
+  notes: Schema.optional(Schema.String),
 });
 
-type TemplateFormData = z.infer<typeof templateFormSchema>;
+type TemplateFormData = typeof templateFormSchema.Type;
 
 interface SelectedDrill {
   id: string;
@@ -245,7 +261,7 @@ function CreateTemplatePage() {
   const [showDrillSelector, setShowDrillSelector] = useState(false);
 
   const form = useForm<TemplateFormData>({
-    resolver: zodResolver(templateFormSchema),
+    resolver: effectTsResolver(templateFormSchema),
     defaultValues: {
       name: '',
       description: '',
@@ -297,9 +313,9 @@ function CreateTemplatePage() {
       direction === 'up' ? currentIndex - 1 : currentIndex + 1;
 
     if (targetIndex >= 0 && targetIndex < newDrills.length) {
-      [newDrills[currentIndex], newDrills[targetIndex]] = [
-        newDrills[targetIndex],
-        newDrills[currentIndex],
+      [newDrills[currentIndex]!, newDrills[targetIndex]!] = [
+        newDrills[targetIndex]!,
+        newDrills[currentIndex]!,
       ];
       setSelectedDrills(newDrills);
     }

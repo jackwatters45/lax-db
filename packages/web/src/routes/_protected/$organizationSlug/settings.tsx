@@ -1,10 +1,10 @@
-import { zodResolver } from '@hookform/resolvers/zod';
+import { effectTsResolver } from '@hookform/resolvers/effect-ts';
 import { createFileRoute } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
+import { Schema } from 'effect';
 import { AlertTriangle, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -57,9 +57,9 @@ const deleteOrganization = createServerFn({ method: 'POST' })
       );
 
       // Set the first remaining organization as active
-      if (remainingOrgs.length > 0) {
+      if (remainingOrgs && remainingOrgs.length > 0) {
         await auth.api.setActiveOrganization({
-          body: { organizationId: remainingOrgs[0].id },
+          body: { organizationId: remainingOrgs[0]?.id },
           headers,
         });
       }
@@ -112,11 +112,15 @@ export const Route = createFileRoute('/_protected/$organizationSlug/settings')({
 });
 
 // Form schema for confirmation
-const confirmDeleteSchema = z.object({
-  confirmText: z.string().min(1, 'Please enter the organization name'),
+const confirmDeleteSchema = Schema.Struct({
+  confirmText: Schema.String.pipe(
+    Schema.minLength(1, {
+      message: () => 'Please enter the organization name',
+    }),
+  ),
 });
 
-type ConfirmDeleteForm = z.infer<typeof confirmDeleteSchema>;
+type ConfirmDeleteForm = typeof confirmDeleteSchema.Type;
 
 function SettingsPage() {
   const { organization, canDeleteOrganization, organizationCount } =
@@ -280,13 +284,11 @@ function ConfirmDeleteDialog({
   onConfirm: (values: ConfirmDeleteForm) => Promise<void>;
 }) {
   const form = useForm<ConfirmDeleteForm>({
-    resolver: zodResolver(
-      confirmDeleteSchema.refine(
-        (data) => data.confirmText === organization.name,
-        {
-          message: `Please type "${organization.name}" exactly`,
-          path: ['confirmText'],
-        },
+    resolver: effectTsResolver(
+      confirmDeleteSchema.pipe(
+        Schema.filter((data) => data.confirmText === organization.name, {
+          message: () => `Please type "${organization.name}" exactly`,
+        }),
       ),
     ),
     defaultValues: {

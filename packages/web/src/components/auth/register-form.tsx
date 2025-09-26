@@ -1,7 +1,7 @@
-import { zodResolver } from '@hookform/resolvers/zod';
+import { effectTsResolver } from '@hookform/resolvers/effect-ts';
+import { Schema } from 'effect';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -16,22 +16,31 @@ import { Input } from '@/components/ui/input';
 import { authClient } from '@/lib/auth-client';
 import { cn } from '@/lib/utils';
 
-const registerSchema = z
-  .object({
-    name: z.string().min(1, 'Name is required'),
-    email: z
-      .string()
-      .min(1, 'Email is required')
-      .email('Please enter a valid email address'),
-    password: z.string().min(8, 'Password must be at least 8 characters long'),
-    confirmPassword: z.string().min(1, 'Please confirm your password'),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: 'Passwords do not match',
-    path: ['confirmPassword'],
-  });
+const registerSchema = Schema.Struct({
+  name: Schema.String.pipe(
+    Schema.minLength(1, { message: () => 'Name is required' }),
+  ),
+  email: Schema.String.pipe(
+    Schema.minLength(1, { message: () => 'Email is required' }),
+    Schema.filter((email) => /\S+@\S+\.\S+/.test(email), {
+      message: () => 'Please enter a valid email address',
+    }),
+  ),
+  password: Schema.String.pipe(
+    Schema.minLength(8, {
+      message: () => 'Password must be at least 8 characters long',
+    }),
+  ),
+  confirmPassword: Schema.String.pipe(
+    Schema.minLength(1, { message: () => 'Please confirm your password' }),
+  ),
+}).pipe(
+  Schema.filter((data) => data.password === data.confirmPassword, {
+    message: () => 'Passwords do not match',
+  }),
+);
 
-type RegisterFormValues = z.infer<typeof registerSchema>;
+type RegisterFormValues = typeof registerSchema.Type;
 
 export function RegisterForm({
   className,
@@ -43,7 +52,7 @@ export function RegisterForm({
   const lastMethod = authClient.getLastUsedLoginMethod();
 
   const form = useForm<RegisterFormValues>({
-    resolver: zodResolver(registerSchema),
+    resolver: effectTsResolver(registerSchema),
     defaultValues: {
       name: '',
       email: '',

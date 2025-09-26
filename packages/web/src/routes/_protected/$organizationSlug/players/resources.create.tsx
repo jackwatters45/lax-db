@@ -1,9 +1,9 @@
-import { zodResolver } from '@hookform/resolvers/zod';
+import { effectTsResolver } from '@hookform/resolvers/effect-ts';
 import { createFileRoute, Link, useRouter } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
+import { Schema } from 'effect';
 import { ArrowLeft, BookOpen, Calendar } from 'lucide-react';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -20,21 +20,27 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 
 // Form schema
-const resourceFormSchema = z.object({
-  title: z
-    .string()
-    .min(1, 'Title is required')
-    .max(100, 'Title must be less than 100 characters'),
-  description: z
-    .string()
-    .min(1, 'Description is required')
-    .max(500, 'Description must be less than 500 characters'),
-  type: z.enum(['drill', 'video', 'article', 'program']),
-  dueDate: z.string().min(1, 'Due date is required'),
-  priority: z.enum(['low', 'medium', 'high']),
+const resourceFormSchema = Schema.Struct({
+  title: Schema.String.pipe(
+    Schema.minLength(1, { message: () => 'Title is required' }),
+    Schema.maxLength(100, {
+      message: () => 'Title must be less than 100 characters',
+    }),
+  ),
+  description: Schema.String.pipe(
+    Schema.minLength(1, { message: () => 'Description is required' }),
+    Schema.maxLength(500, {
+      message: () => 'Description must be less than 500 characters',
+    }),
+  ),
+  type: Schema.Literal('drill', 'video', 'article', 'program'),
+  dueDate: Schema.String.pipe(
+    Schema.minLength(1, { message: () => 'Due date is required' }),
+  ),
+  priority: Schema.Literal('low', 'medium', 'high'),
 });
 
-type ResourceFormValues = z.infer<typeof resourceFormSchema>;
+type ResourceFormValues = typeof resourceFormSchema.Type;
 
 // Server function to assign a resource
 const assignPlayerResource = createServerFn({ method: 'POST' })
@@ -93,7 +99,7 @@ function CreateResourcePage() {
   const router = useRouter();
 
   const form = useForm<ResourceFormValues>({
-    resolver: zodResolver(resourceFormSchema),
+    resolver: effectTsResolver(resourceFormSchema),
     defaultValues: {
       title: '',
       description: '',

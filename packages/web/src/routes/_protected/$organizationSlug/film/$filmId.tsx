@@ -1,5 +1,6 @@
-import { zodResolver } from '@hookform/resolvers/zod';
+import { effectTsResolver } from '@hookform/resolvers/effect-ts';
 import { createFileRoute } from '@tanstack/react-router';
+import { Schema } from 'effect';
 import {
   ArrowLeft,
   Bookmark,
@@ -24,7 +25,6 @@ import {
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -193,8 +193,8 @@ const mockFilm: FilmData = {
 };
 
 // Event form schema
-const eventFormSchema = z.object({
-  type: z.enum([
+const eventFormSchema = Schema.Struct({
+  type: Schema.Literal(
     'goal',
     'assist',
     'save',
@@ -203,13 +203,15 @@ const eventFormSchema = z.object({
     'timeout',
     'highlight',
     'note',
-  ]),
-  player: z.string().optional(),
-  description: z.string().min(1, 'Description is required'),
-  tags: z.string().optional(),
+  ),
+  player: Schema.optional(Schema.String),
+  description: Schema.String.pipe(
+    Schema.minLength(1, { message: () => 'Description is required' }),
+  ),
+  tags: Schema.optional(Schema.String),
 });
 
-type EventFormValues = z.infer<typeof eventFormSchema>;
+type EventFormValues = typeof eventFormSchema.Type;
 
 function FilmViewerPage() {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -221,7 +223,7 @@ function FilmViewerPage() {
   const [hoveredEvent, setHoveredEvent] = useState<string | null>(null);
 
   const eventForm = useForm<EventFormValues>({
-    resolver: zodResolver(eventFormSchema),
+    resolver: effectTsResolver(eventFormSchema),
     defaultValues: {
       type: 'note',
       player: '',

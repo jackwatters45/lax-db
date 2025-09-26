@@ -1,10 +1,10 @@
-import { zodResolver } from '@hookform/resolvers/zod';
+import { effectTsResolver } from '@hookform/resolvers/effect-ts';
 import { useMutation } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
+import { Schema } from 'effect';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import { z } from 'zod';
 
 // Server function for accepting invitations
 const acceptInvitation = createServerFn({ method: 'POST' })
@@ -30,14 +30,16 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 
-const formSchema = z.object({
-  invitationId: z
-    .string()
-    .min(1, 'Invitation code is required')
-    .min(10, 'Invitation code must be at least 10 characters'),
+const formSchema = Schema.Struct({
+  invitationId: Schema.String.pipe(
+    Schema.minLength(1, { message: () => 'Invitation code is required' }),
+    Schema.minLength(10, {
+      message: () => 'Invitation code must be at least 10 characters',
+    }),
+  ),
 });
 
-type FormData = z.infer<typeof formSchema>;
+type FormData = typeof formSchema.Type;
 
 export const Route = createFileRoute('/_protected/organizations/join')({
   component: JoinOrganizationPage,
@@ -47,7 +49,7 @@ function JoinOrganizationPage() {
   // const router = useRouter();
 
   const form = useForm<FormData>({
-    resolver: zodResolver(formSchema),
+    resolver: effectTsResolver(formSchema),
     defaultValues: {
       invitationId: '',
     },

@@ -13,7 +13,6 @@
   "dependencies": {
     "@lax-db/core": "workspace:*",
     "@lax-db/functions": "workspace:*",
-    "hono": "4.6.5",
-    "zod": "^4.1.11"
+    "hono": "4.6.5"
   }
 }

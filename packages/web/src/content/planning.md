@@ -1,5 +1,12 @@
 # Lax DB - Project Planning
 
+- Submenu
+- Players
+  - frontend
+  - db
+  - core
+  - add to team
+
 ## Overview
 
 Lax DB aims to better equip lacrosse players with modern tools and features to enhance their game performance and overall experience. The platform will provide a comprehensive suite of tools for players, coaches, and teams to optimize their gameplay, improve communication, and streamline administrative tasks.

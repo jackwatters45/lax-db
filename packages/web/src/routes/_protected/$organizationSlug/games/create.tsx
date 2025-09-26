@@ -1,11 +1,11 @@
-import { zodResolver } from '@hookform/resolvers/zod';
+import { effectTsResolver } from '@hookform/resolvers/effect-ts';
 import { useMutation } from '@tanstack/react-query';
 import { createFileRoute, Link, useRouter } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
+import { Schema } from 'effect';
 import { ArrowLeft, Calendar, MapPin } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -49,21 +49,27 @@ const createGame = createServerFn({ method: 'POST' })
   });
 
 // Form schema
-const createGameSchema = z.object({
-  opponentName: z.string().min(1, 'Opponent name is required'),
-  gameDate: z.string().min(1, 'Date and time is required'),
-  venue: z.string().min(1, 'Venue is required'),
-  isHomeGame: z.boolean(),
-  gameType: z.enum([
+const createGameSchema = Schema.Struct({
+  opponentName: Schema.String.pipe(
+    Schema.minLength(1, { message: () => 'Opponent name is required' }),
+  ),
+  gameDate: Schema.String.pipe(
+    Schema.minLength(1, { message: () => 'Date and time is required' }),
+  ),
+  venue: Schema.String.pipe(
+    Schema.minLength(1, { message: () => 'Venue is required' }),
+  ),
+  isHomeGame: Schema.Boolean,
+  gameType: Schema.Literal(
     'regular',
     'playoff',
     'tournament',
     'friendly',
     'practice',
-  ]),
+  ),
 });
 
-type CreateGameInput = z.infer<typeof createGameSchema>;
+type CreateGameInput = typeof createGameSchema.Type;
 
 // Helper function to format datetime for input
 const formatDateTimeForInput = () => {
@@ -86,7 +92,7 @@ function CreateGamePage() {
   const router = useRouter();
 
   const form = useForm<CreateGameInput>({
-    resolver: zodResolver(createGameSchema),
+    resolver: effectTsResolver(createGameSchema),
     defaultValues: {
       opponentName: '',
       gameDate: formatDateTimeForInput(),

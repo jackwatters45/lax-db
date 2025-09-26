@@ -1,11 +1,11 @@
-import { zodResolver } from '@hookform/resolvers/zod';
+import { effectTsResolver } from '@hookform/resolvers/effect-ts';
 import { useMutation } from '@tanstack/react-query';
 import { createFileRoute, Link, useRouter } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
+import { Schema } from 'effect';
 import { ArrowLeft } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import { z } from 'zod';
 import { DashboardHeader } from '@/components/sidebar/dashboard-header';
 import {
   BreadcrumbItem,
@@ -36,19 +36,26 @@ const createTeam = createServerFn({ method: 'POST' })
     return await TeamsAPI.createTeam(data, context.headers);
   });
 
-const formSchema = z.object({
-  name: z
-    .string()
-    .min(1, 'Team name is required')
-    .min(2, 'Team name must be at least 2 characters')
-    .max(100, 'Team name must be less than 100 characters'),
-  description: z
-    .string()
-    .max(500, 'Description must be less than 500 characters')
-    .optional(),
+const formSchema = Schema.Struct({
+  name: Schema.String.pipe(
+    Schema.minLength(1, { message: () => 'Team name is required' }),
+    Schema.minLength(2, {
+      message: () => 'Team name must be at least 2 characters',
+    }),
+    Schema.maxLength(100, {
+      message: () => 'Team name must be less than 100 characters',
+    }),
+  ),
+  description: Schema.optional(
+    Schema.String.pipe(
+      Schema.maxLength(500, {
+        message: () => 'Description must be less than 500 characters',
+      }),
+    ),
+  ),
 });
 
-type FormData = z.infer<typeof formSchema>;
+type FormData = typeof formSchema.Type;
 
 export const Route = createFileRoute(
   '/_protected/$organizationSlug/teams/create',
@@ -62,7 +69,7 @@ function CreateTeamPage() {
   const router = useRouter();
 
   const form = useForm<FormData>({
-    resolver: zodResolver(formSchema),
+    resolver: effectTsResolver(formSchema),
     defaultValues: {
       name: '',
       description: '',
