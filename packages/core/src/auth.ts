@@ -27,7 +27,7 @@ import {
   organizationTable,
 } from './organization/organization.sql';
 import { RedisLive, RedisService } from './redis';
-import { teamMemberTable, teamTable } from './teams/team.sql';
+import { teamMemberTable, teamTable } from './team/team.sql';
 import { userTable } from './user/user.sql';
 
 // const _polarClient = new Polar({

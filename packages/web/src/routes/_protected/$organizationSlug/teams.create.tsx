@@ -31,7 +31,7 @@ const createTeam = createServerFn({ method: 'POST' })
   .validator((data: { name: string; description?: string }) => data)
   .middleware([authMiddleware])
   .handler(async ({ data, context }) => {
-    const { TeamsAPI } = await import('@lax-db/core/teams/index');
+    const { TeamsAPI } = await import('@lax-db/core/team/index');
 
     return await TeamsAPI.createTeam(data, context.headers);
   });

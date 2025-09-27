@@ -247,7 +247,7 @@ CREATE TABLE leagues (
 
 ## Effect Service Architecture
 
-### 1. Opposing Teams Service (`packages/core/src/opposing-teams/index.ts`)
+### 1. Opposing Teams Service (`packages/core/src/opposing-team/index.ts`)
 
 #### Input Schemas
 
@@ -441,7 +441,7 @@ export class OpposingTeamsService extends Context.Tag("OpposingTeamsService")<
 - Priority alerts (high-priority teams, missing reports)
 - Quick action buttons
 
-#### Opposing Teams List (`/src/routes/$organizationSlug/scouting/teams/index.tsx`)
+#### Opposing Teams List (`/src/routes/$organizationSlug/scouting/team/index.tsx`)
 
 - Grid/table view of all opposing teams
 - Filter by league, division, priority
