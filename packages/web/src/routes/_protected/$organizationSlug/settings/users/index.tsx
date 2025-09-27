@@ -45,11 +45,11 @@ function Users() {
             <div>
               <h3
                 id="existing-users"
-                className="scroll-mt-10 font-semibold text-gray-900 dark:text-gray-50"
+                className="scroll-mt-10 font-semibold text-foreground"
               >
                 Users
               </h3>
-              <p className="text-gray-500 text-sm leading-6">
+              <p className="text-muted-foreground text-sm leading-6">
                 Workspace administrators can add, manage, and remove users.
               </p>
             </div>
@@ -63,7 +63,7 @@ function Users() {
               </Button>
             </ModalAddUser>
           </div>
-          <ul className="mt-6 divide-y divide-gray-200 dark:divide-gray-800">
+          <ul className="mt-6 divide-y divide-border">
             {users.map((user) => (
               <li
                 key={user.name}
@@ -71,16 +71,16 @@ function Users() {
               >
                 <div className="flex items-center gap-x-4 truncate">
                   <span
-                    className="hidden size-9 shrink-0 items-center justify-center rounded-full border border-gray-300 bg-white text-gray-700 text-xs sm:flex dark:border-gray-800 dark:bg-gray-950 dark:text-gray-300"
+                    className="hidden size-9 shrink-0 items-center justify-center rounded-full border border-border bg-background text-muted-foreground text-xs sm:flex"
                     aria-hidden="true"
                   >
                     {user.initials}
                   </span>
                   <div className="truncate">
-                    <p className="truncate font-medium text-gray-900 text-sm dark:text-gray-50">
+                    <p className="truncate font-medium text-foreground text-sm">
                       {user.name}
                     </p>
-                    <p className="truncate text-gray-500 text-xs">
+                    <p className="truncate text-muted-foreground text-xs">
                       {user.email}
                     </p>
                   </div>
@@ -145,10 +145,10 @@ function Users() {
                     <DropdownMenuTrigger asChild>
                       <Button
                         variant="ghost"
-                        className="group size-8 hover:border hover:border-gray-300 hover:bg-gray-50 data-[state=open]:border-gray-300 data-[state=open]:bg-gray-50 data-[state=open]:dark:border-gray-700 data-[state=open]:dark:bg-gray-900 hover:dark:border-gray-700 hover:dark:bg-gray-900"
+                        className="group size-8 hover:border hover:border-border hover:bg-muted data-[state=open]:border-border data-[state=open]:bg-muted"
                       >
                         <RiMore2Fill
-                          className="size-4 shrink-0 text-gray-500 group-hover:text-gray-700 group-hover:dark:text-gray-400"
+                          className="size-4 shrink-0 text-muted-foreground group-hover:text-foreground"
                           aria-hidden="true"
                         />
                       </Button>
@@ -173,11 +173,11 @@ function Users() {
         <section className="mt-12" aria-labelledby="pending-invitations">
           <h2
             id="pending-invitations"
-            className="scroll-mt-10 font-semibold text-gray-900 dark:text-gray-50"
+            className="scroll-mt-10 font-semibold text-foreground"
           >
             Pending invitations
           </h2>
-          <ul className="mt-6 divide-y divide-gray-200 dark:divide-gray-800">
+          <ul className="mt-6 divide-y divide-border">
             {invitedUsers.map((user) => (
               <li
                 key={user.initials}
@@ -185,16 +185,16 @@ function Users() {
               >
                 <div className="flex items-center gap-x-4">
                   <span
-                    className="hidden size-9 shrink-0 items-center justify-center rounded-full border border-gray-300 border-dashed bg-white text-gray-700 text-xs sm:flex dark:border-gray-800 dark:bg-gray-950 dark:text-gray-300"
+                    className="hidden size-9 shrink-0 items-center justify-center rounded-full border border-border border-dashed bg-background text-muted-foreground text-xs sm:flex"
                     aria-hidden="true"
                   >
                     {user.initials}
                   </span>
                   <div>
-                    <p className="font-medium text-gray-900 text-sm dark:text-gray-50">
+                    <p className="font-medium text-foreground text-sm">
                       {user.email}
                     </p>
-                    <p className="text-gray-500 text-xs">
+                    <p className="text-muted-foreground text-xs">
                       Expires in {user.expires} days
                     </p>
                   </div>
@@ -220,10 +220,10 @@ function Users() {
                     <DropdownMenuTrigger asChild>
                       <Button
                         variant="ghost"
-                        className="group size-8 hover:border hover:border-gray-300 hover:bg-gray-50 data-[state=open]:border-gray-300 data-[state=open]:bg-gray-50 data-[state=open]:dark:border-gray-700 data-[state=open]:dark:bg-gray-900 hover:dark:border-gray-700 hover:dark:bg-gray-900"
+                        className="group size-8 hover:border hover:border-border hover:bg-muted data-[state=open]:border-border data-[state=open]:bg-muted"
                       >
                         <RiMore2Fill
-                          className="size-4 shrink-0 text-gray-500 group-hover:text-gray-700 group-hover:dark:text-gray-400"
+                          className="size-4 shrink-0 text-muted-foreground group-hover:text-foreground"
                           aria-hidden="true"
                         />
                       </Button>
