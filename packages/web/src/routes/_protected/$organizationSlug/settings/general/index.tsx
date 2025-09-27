@@ -38,11 +38,11 @@ function General() {
               <div>
                 <h2
                   id="personal-information"
-                  className="scroll-mt-10 font-semibold text-gray-900 dark:text-gray-50"
+                  className="scroll-mt-10 font-semibold text-foreground"
                 >
                   Personal information
                 </h2>
-                <p className="mt-1 text-gray-500 text-sm leading-6">
+                <p className="mt-1 text-muted-foreground text-sm leading-6">
                   Manage your personal information and role.
                 </p>
               </div>
@@ -124,7 +124,7 @@ function General() {
                         ))}
                       </SelectContent>
                     </Select>
-                    <p className="mt-2 text-gray-500 text-xs">
+                    <p className="mt-2 text-muted-foreground text-xs">
                       Roles can only be changed by system admin.
                     </p>
                   </div>
@@ -143,23 +143,23 @@ function General() {
               <div>
                 <h2
                   id="notification-settings"
-                  className="scroll-mt-10 font-semibold text-gray-900 dark:text-gray-50"
+                  className="scroll-mt-10 font-semibold text-foreground"
                 >
                   Notification settings
                 </h2>
-                <p className="mt-1 text-gray-500 text-sm leading-6">
+                <p className="mt-1 text-muted-foreground text-sm leading-6">
                   Configure the types of notifications you want to receive.
                 </p>
               </div>
               <div className="md:col-span-2">
                 <fieldset>
-                  <legend className="font-medium text-gray-900 text-sm dark:text-gray-50">
+                  <legend className="font-medium text-foreground text-sm">
                     Team
                   </legend>
-                  <p className="mt-1 text-gray-500 text-sm leading-6">
+                  <p className="mt-1 text-muted-foreground text-sm leading-6">
                     Configure the types of team alerts you want to receive.
                   </p>
-                  <ul className="mt-4 divide-y divide-gray-200 dark:divide-gray-800">
+                  <ul className="mt-4 divide-y divide-border">
                     <li className="flex items-center gap-x-3 py-3">
                       <Checkbox
                         id="team-requests"
@@ -177,13 +177,13 @@ function General() {
                   </ul>
                 </fieldset>
                 <fieldset className="mt-6">
-                  <legend className="font-medium text-gray-900 text-sm dark:text-gray-50">
+                  <legend className="font-medium text-foreground text-sm">
                     Usage
                   </legend>
-                  <p className="mt-1 text-gray-500 text-sm leading-6">
+                  <p className="mt-1 text-muted-foreground text-sm leading-6">
                     Configure the types of usage alerts you want to receive.
                   </p>
-                  <ul className="mt-4 divide-y divide-gray-200 dark:divide-gray-800">
+                  <ul className="mt-4 divide-y divide-border">
                     <li className="flex items-center gap-x-3 py-3">
                       <Checkbox id="api-requests" name="api-requests" />
                       <Label htmlFor="api-requests">API incidents</Label>
@@ -227,11 +227,11 @@ function General() {
               <div>
                 <h2
                   id="danger-zone"
-                  className="scroll-mt-10 font-semibold text-gray-900 dark:text-gray-50"
+                  className="scroll-mt-10 font-semibold text-foreground"
                 >
                   Danger zone
                 </h2>
-                <p className="mt-1 text-gray-500 text-sm leading-6">
+                <p className="mt-1 text-muted-foreground text-sm leading-6">
                   Manage general workspace. Contact system admin for more
                   information.{' '}
                   <a
@@ -250,10 +250,10 @@ function General() {
                 <Card className="p-4">
                   <div className="flex items-start justify-between gap-10">
                     <div>
-                      <h4 className="font-medium text-gray-900 text-sm dark:text-gray-50">
+                      <h4 className="font-medium text-foreground text-sm">
                         Leave workspace
                       </h4>
-                      <p className="mt-2 text-gray-500 text-sm leading-6">
+                      <p className="mt-2 text-muted-foreground text-sm leading-6">
                         Revoke your access to this team. Other people you have
                         added to the workspace will remain.
                       </p>
@@ -269,10 +269,10 @@ function General() {
                 <Card className="overflow-hidden p-0">
                   <div className="flex items-start justify-between gap-10 p-4">
                     <div>
-                      <h4 className="font-medium text-gray-400 text-sm dark:text-gray-600">
+                      <h4 className="font-medium text-muted-foreground text-sm">
                         Delete workspace
                       </h4>
-                      <p className="mt-2 text-gray-400 text-sm leading-6 dark:text-gray-600">
+                      <p className="mt-2 text-muted-foreground text-sm leading-6">
                         Revoke your access to this team. Other people you have
                         added to the workspace will remain.
                       </p>
@@ -285,8 +285,8 @@ function General() {
                       Delete workspace
                     </Button>
                   </div>
-                  <div className="border-gray-200 border-t bg-gray-50 p-4 dark:border-gray-900 dark:bg-gray-900">
-                    <p className="text-gray-500 text-sm">
+                  <div className="border-border border-t bg-muted p-4">
+                    <p className="text-muted-foreground text-sm">
                       You cannot delete the workspace because you are not the
                       system admin.
                     </p>

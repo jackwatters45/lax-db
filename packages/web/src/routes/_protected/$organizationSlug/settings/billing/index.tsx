@@ -68,11 +68,11 @@ function Billing() {
     <>
       <Header />
       <div className="container space-y-10 py-8">
-        <div className="rounded-lg bg-gray-50 p-6 ring-1 ring-gray-200 ring-inset dark:bg-gray-400/10 dark:ring-gray-800">
-          <h4 className="font-semibold text-gray-900 text-sm dark:text-gray-50">
+        <div className="rounded-lg bg-muted p-6 ring-1 ring-border ring-inset dark:bg-muted/50 dark:ring-border">
+          <h4 className="font-semibold text-foreground text-sm">
             This workspace is currently on free plan
           </h4>
-          <p className="mt-1 max-w-2xl text-gray-500 text-sm leading-6">
+          <p className="mt-1 max-w-2xl text-muted-foreground text-sm leading-6">
             Boost your analytics and unlock advanced features with our premium
             plans.{' '}
             <a
@@ -93,25 +93,25 @@ function Billing() {
               <div>
                 <h2
                   id="billing-overview"
-                  className="scroll-mt-10 font-semibold text-gray-900 dark:text-gray-50"
+                  className="scroll-mt-10 font-semibold text-foreground"
                 >
                   Billing
                 </h2>
-                <p className="mt-1 text-gray-500 text-sm leading-6">
+                <p className="mt-1 text-muted-foreground text-sm leading-6">
                   Overview of current billing cycle based on fixed and on-demand
                   charges.
                 </p>
               </div>
               <div className="md:col-span-2">
-                <ul className="w-full divide-y divide-gray-200 border-gray-200 border-b dark:divide-gray-800 dark:border-gray-800">
+                <ul className="w-full divide-y divide-border border-border border-b">
                   {data.map((item) => (
                     <li key={item.name} className="px-2 py-4 text-sm md:p-4">
                       <div className="w-full">
                         <div className="flex items-center justify-between">
-                          <p className="font-medium text-gray-900 dark:text-gray-50">
+                          <p className="font-medium text-foreground">
                             {item.name}
                           </p>
-                          <p className="font-medium text-gray-700 dark:text-gray-300">
+                          <p className="font-medium text-muted-foreground">
                             {item.value}
                           </p>
                         </div>
@@ -122,7 +122,7 @@ function Billing() {
                               className="mt-2 h-1.5"
                             />
                           )}
-                          <p className="mt-1 flex items-center justify-between text-gray-500 text-xs">
+                          <p className="mt-1 flex items-center justify-between text-muted-foreground text-xs">
                             <span>{item.description}</span>
                             <span>{item.capacity}</span>
                           </p>
@@ -132,7 +132,7 @@ function Billing() {
                   ))}
                 </ul>
                 <div className="px-2 py-4 md:p-4">
-                  <p className="flex items-center justify-between font-medium text-gray-900 text-sm dark:text-gray-50">
+                  <p className="flex items-center justify-between font-medium text-foreground text-sm">
                     <span>Total for May 24</span>
                     <span className="font-semibold">$280</span>
                   </p>
@@ -147,11 +147,11 @@ function Billing() {
                 <div>
                   <h2
                     id="cost-spend-control"
-                    className="scroll-mt-10 font-semibold text-gray-900 dark:text-gray-50"
+                    className="scroll-mt-10 font-semibold text-foreground"
                   >
                     Cost spend control
                   </h2>
-                  <p className="mt-1 text-gray-500 text-sm leading-6">
+                  <p className="mt-1 text-muted-foreground text-sm leading-6">
                     Set hard caps for on-demand charges.
                   </p>
                 </div>
@@ -167,24 +167,24 @@ function Billing() {
                       <div>
                         {isSpendMgmtEnabled ? (
                           <>
-                            <p className="font-medium text-gray-900 text-sm dark:text-gray-50">
+                            <p className="font-medium text-foreground text-sm">
                               &#36;280 / 350 (62.2&#37;)
                             </p>
                             <Label
                               htmlFor="spend-mgmt"
-                              className="text-gray-500 dark:text-gray-500"
+                              className="text-muted-foreground"
                             >
                               Spend management enabled
                             </Label>
                           </>
                         ) : (
                           <>
-                            <p className="font-medium text-gray-900 text-sm dark:text-gray-50">
+                            <p className="font-medium text-foreground text-sm">
                               &#36;0 / 0 (0&#37;)
                             </p>
                             <Label
                               htmlFor="spend-mgmt"
-                              className="text-gray-500 dark:text-gray-500"
+                              className="text-muted-foreground"
                             >
                               Spend management disabled
                             </Label>
@@ -263,29 +263,31 @@ function Billing() {
                 <div>
                   <h2
                     id="add-ons"
-                    className="scroll-mt-10 font-semibold text-gray-900 dark:text-gray-50"
+                    className="scroll-mt-10 font-semibold text-foreground"
                   >
                     Add-Ons
                   </h2>
-                  <p className="mt-1 text-gray-500 text-sm leading-6">
+                  <p className="mt-1 text-muted-foreground text-sm leading-6">
                     Additional services to boost your services.
                   </p>
                 </div>
                 <div className="space-y-6 md:col-span-2">
                   <Card className="overflow-hidden p-0">
                     <div className="px-4 pt-4 pb-6">
-                      <span className="text-gray-500 text-sm">$25/month</span>
-                      <h4 className="mt-4 font-semibold text-gray-900 text-sm dark:text-gray-50">
+                      <span className="text-muted-foreground text-sm">
+                        $25/month
+                      </span>
+                      <h4 className="mt-4 font-semibold text-foreground text-sm">
                         Advanced bot protection
                       </h4>
-                      <p className="mt-2 max-w-xl text-gray-500 text-sm leading-6">
+                      <p className="mt-2 max-w-xl text-muted-foreground text-sm leading-6">
                         Safeguard your assets with our cutting-edge bot
                         protection. Our AI solution identifies and mitigates
                         automated traffic to protect your workspace from bad
                         bots.
                       </p>
                     </div>
-                    <div className="flex items-center justify-between border-gray-200 border-t bg-gray-50 p-4 dark:border-gray-900 dark:bg-gray-900">
+                    <div className="flex items-center justify-between border-border border-t bg-muted p-4">
                       <div className="flex items-center gap-3">
                         <Switch id="bot-protection" name="bot-protection" />
                         <Label htmlFor="bot-protection">Activate</Label>
@@ -304,17 +306,19 @@ function Billing() {
                   </Card>
                   <Card className="overflow-hidden p-0">
                     <div className="px-4 pt-4 pb-6">
-                      <span className="text-gray-500 text-sm">$50/month</span>
-                      <h4 className="mt-4 font-semibold text-gray-900 text-sm dark:text-gray-50">
+                      <span className="text-muted-foreground text-sm">
+                        $50/month
+                      </span>
+                      <h4 className="mt-4 font-semibold text-foreground text-sm">
                         Workspace insights
                       </h4>
-                      <p className="mt-2 max-w-xl text-gray-500 text-sm leading-6">
+                      <p className="mt-2 max-w-xl text-muted-foreground text-sm leading-6">
                         Real-time analysis of your workspace&#39;s usage,
                         enabling you to make well-informed decisions for
                         optimization.
                       </p>
                     </div>
-                    <div className="flex items-center justify-between border-gray-200 border-t bg-gray-50 p-4 dark:border-gray-900 dark:bg-gray-900">
+                    <div className="flex items-center justify-between border-border border-t bg-muted p-4">
                       <div className="flex items-center gap-3">
                         <Switch id="insights" name="insights" />
                         <Label htmlFor="insights">Activate</Label>
