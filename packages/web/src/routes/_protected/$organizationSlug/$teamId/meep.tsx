@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
+import { PageBody } from '@/components/layout/page-content';
 import {
   BreadcrumbItem,
   BreadcrumbLink,
@@ -17,12 +18,12 @@ export const Route = createFileRoute(
 
 function RouteComponent() {
   return (
-    <div className="flex h-full flex-col">
+    <>
       <Header />
-      <div className="flex-1 overflow-auto py-4">
+      <PageBody className="py-4">
         <DataTable data={usage} columns={columns} showAllRows={true} />
-      </div>
-    </div>
+      </PageBody>
+    </>
   );
 }
 

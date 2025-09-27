@@ -2,6 +2,7 @@ import { createFileRoute, Link } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { Mail, Plus, Settings, UserMinus } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { PageBody } from '@/components/layout/page-content';
 import { Badge } from '@/components/ui/badge';
 import {
   BreadcrumbItem,
@@ -105,109 +106,113 @@ function TeamManagementPage() {
   return (
     <>
       <Header />
-      <div className="container mx-auto py-8">
-        {/* Header */}
-        <div className="mb-8 flex items-center gap-4">
-          <div className="flex-1">
-            <h1 className="font-bold text-3xl">{teamName}</h1>
-            <p className="text-muted-foreground">
-              Manage players and team settings
-            </p>
-          </div>
-
-          {canManageTeam && (
-            <div className="flex gap-2">
-              <Button onClick={() => setInvitePlayerOpen(true)}>
-                <Plus className="mr-2 h-4 w-4" />
-                Invite Player
-              </Button>
-              <Button variant="outline">
-                <Settings className="mr-2 h-4 w-4" />
-                Team Settings
-              </Button>
-            </div>
-          )}
-        </div>
-
-        {/* Team Stats */}
-        <div className="mb-8 grid gap-6 md:grid-cols-3">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="font-medium text-sm">
-                Total Players
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="font-bold text-2xl">{members.length}</div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="font-medium text-sm">
-                Active Players
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="font-bold text-2xl">{members.length}</div>
-              <p className="text-muted-foreground text-xs">
-                All players active
+      <PageBody>
+        <div className="container mx-auto py-8">
+          {/* Header */}
+          <div className="mb-8 flex items-center gap-4">
+            <div className="flex-1">
+              <h1 className="font-bold text-3xl">{teamName}</h1>
+              <p className="text-muted-foreground">
+                Manage players and team settings
               </p>
-            </CardContent>
-          </Card>
+            </div>
 
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="font-medium text-sm">Team Status</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Badge variant="secondary">Active</Badge>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Team Roster */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Team Roster</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {members.length > 0 ? (
-              <div className="space-y-4">
-                {members.map((member) => (
-                  <TeamMemberCard
-                    key={member.id}
-                    member={member}
-                    canManage={canManageTeam}
-                    teamId={teamId}
-                  />
-                ))}
-              </div>
-            ) : (
-              <div className="py-8 text-center">
-                <div className="mb-4 text-muted-foreground">
-                  No players in this team yet
-                </div>
-                {canManageTeam && (
-                  <Button onClick={() => setInvitePlayerOpen(true)}>
-                    <Plus className="mr-2 h-4 w-4" />
-                    Invite Your First Player
-                  </Button>
-                )}
+            {canManageTeam && (
+              <div className="flex gap-2">
+                <Button onClick={() => setInvitePlayerOpen(true)}>
+                  <Plus className="mr-2 h-4 w-4" />
+                  Invite Player
+                </Button>
+                <Button variant="outline">
+                  <Settings className="mr-2 h-4 w-4" />
+                  Team Settings
+                </Button>
               </div>
             )}
-          </CardContent>
-        </Card>
+          </div>
 
-        {/* Invite Player Dialog */}
-        {invitePlayerOpen && (
-          <InvitePlayerDialog
-            open={invitePlayerOpen}
-            onClose={() => setInvitePlayerOpen(false)}
-            teamId={teamId}
-          />
-        )}
-      </div>
+          {/* Team Stats */}
+          <div className="mb-8 grid gap-6 md:grid-cols-3">
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="font-medium text-sm">
+                  Total Players
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="font-bold text-2xl">{members.length}</div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="font-medium text-sm">
+                  Active Players
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="font-bold text-2xl">{members.length}</div>
+                <p className="text-muted-foreground text-xs">
+                  All players active
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="font-medium text-sm">
+                  Team Status
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Badge variant="secondary">Active</Badge>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Team Roster */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Team Roster</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {members.length > 0 ? (
+                <div className="space-y-4">
+                  {members.map((member) => (
+                    <TeamMemberCard
+                      key={member.id}
+                      member={member}
+                      canManage={canManageTeam}
+                      teamId={teamId}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="py-8 text-center">
+                  <div className="mb-4 text-muted-foreground">
+                    No players in this team yet
+                  </div>
+                  {canManageTeam && (
+                    <Button onClick={() => setInvitePlayerOpen(true)}>
+                      <Plus className="mr-2 h-4 w-4" />
+                      Invite Your First Player
+                    </Button>
+                  )}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Invite Player Dialog */}
+          {invitePlayerOpen && (
+            <InvitePlayerDialog
+              open={invitePlayerOpen}
+              onClose={() => setInvitePlayerOpen(false)}
+              teamId={teamId}
+            />
+          )}
+        </div>
+      </PageBody>
     </>
   );
 }

@@ -12,6 +12,7 @@ import {
   X,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { PageBody } from '@/components/layout/page-content';
 import {
   BreadcrumbItem,
   BreadcrumbLink,
@@ -256,192 +257,196 @@ function RouteComponent() {
   return (
     <>
       <Header />
-      <div className="container mt-8">
-        <div className="mb-6 flex items-center justify-between">
-          <h2 className="font-semibold text-2xl">Players</h2>
-          <div className="flex items-center gap-4">
-            <div className="text-muted-foreground text-sm">
-              {players.length} players
+      <PageBody>
+        <div className="container mt-8">
+          <div className="mb-6 flex items-center justify-between">
+            <h2 className="font-semibold text-2xl">Players</h2>
+            <div className="flex items-center gap-4">
+              <div className="text-muted-foreground text-sm">
+                {players.length} players
+              </div>
+              <Button onClick={handleAddPlayer}>
+                <Plus className="mr-2 h-4 w-4" />
+                Add Player
+              </Button>
             </div>
-            <Button onClick={handleAddPlayer}>
-              <Plus className="mr-2 h-4 w-4" />
-              Add Player
-            </Button>
           </div>
-        </div>
 
-        <div className="rounded-md border">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-16">#</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Position</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead className="w-32">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {players.length > 0 ? (
-                players.map((player) => (
-                  <TableRow key={player.id}>
-                    <TableCell>
-                      {editingId === player.id ? (
-                        <Input
-                          type="number"
-                          value={editData.jerseyNumber || ''}
-                          onChange={(e) =>
-                            setEditData((prev) => ({
-                              ...prev,
-                              jerseyNumber: Number(e.target.value),
-                            }))
-                          }
-                          className="w-16"
-                          placeholder="#"
-                        />
-                      ) : (
-                        <div className="font-medium">
-                          {player.jerseyNumber || '-'}
-                        </div>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      {editingId === player.id ? (
-                        <PlayerSearchCommand
-                          value={editData.name || ''}
-                          onSelect={(selectedPlayer) => {
-                            setEditData((prev) => ({
-                              ...prev,
-                              name: selectedPlayer.name,
-                              email: selectedPlayer.email,
-                              phone: selectedPlayer.phone,
-                              dateOfBirth: selectedPlayer.dateOfBirth,
-                            }));
-                          }}
-                          onCreateNew={(name) => {
-                            setEditData((prev) => ({
-                              ...prev,
-                              name,
-                            }));
-                          }}
-                        />
-                      ) : (
-                        <div className="font-medium">{player.name}</div>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      {editingId === player.id ? (
-                        <Select
-                          value={editData.position || ''}
-                          onValueChange={(value) =>
-                            setEditData((prev) => ({
-                              ...prev,
-                              position: value,
-                            }))
-                          }
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select position" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="Attack">Attack</SelectItem>
-                            <SelectItem value="Midfield">Midfield</SelectItem>
-                            <SelectItem value="Defense">Defense</SelectItem>
-                            <SelectItem value="Goalie">Goalie</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      ) : (
-                        <div className="text-muted-foreground">
-                          {player.position}
-                        </div>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      {editingId === player.id ? (
-                        <Input
-                          type="email"
-                          value={editData.email || ''}
-                          onChange={(e) =>
-                            setEditData((prev) => ({
-                              ...prev,
-                              email: e.target.value,
-                            }))
-                          }
-                          placeholder="email@example.com"
-                        />
-                      ) : (
-                        <div className="text-muted-foreground">
-                          {player.email || '-'}
-                        </div>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      {editingId === player.id ? (
-                        <div className="flex gap-1">
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={handleSave}
-                            className="h-8 w-8 p-0"
-                          >
-                            <Check className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={handleCancel}
-                            className="h-8 w-8 p-0"
-                          >
-                            <X className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      ) : (
-                        <div className="flex gap-1">
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => handleEdit(player)}
-                            className="h-8 w-8 p-0"
-                            title="Edit player"
-                          >
-                            <Edit2 className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() =>
-                              handleRemoveFromTeam(player.playerId)
+          <div className="rounded-md border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-16">#</TableHead>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Position</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead className="w-32">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {players.length > 0 ? (
+                  players.map((player) => (
+                    <TableRow key={player.id}>
+                      <TableCell>
+                        {editingId === player.id ? (
+                          <Input
+                            type="number"
+                            value={editData.jerseyNumber || ''}
+                            onChange={(e) =>
+                              setEditData((prev) => ({
+                                ...prev,
+                                jerseyNumber: Number(e.target.value),
+                              }))
                             }
-                            className="h-8 w-8 p-0 text-orange-600 hover:text-orange-700"
-                            title="Remove from team"
+                            className="w-16"
+                            placeholder="#"
+                          />
+                        ) : (
+                          <div className="font-medium">
+                            {player.jerseyNumber || '-'}
+                          </div>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {editingId === player.id ? (
+                          <PlayerSearchCommand
+                            value={editData.name || ''}
+                            onSelect={(selectedPlayer) => {
+                              setEditData((prev) => ({
+                                ...prev,
+                                name: selectedPlayer.name,
+                                email: selectedPlayer.email,
+                                phone: selectedPlayer.phone,
+                                dateOfBirth: selectedPlayer.dateOfBirth,
+                              }));
+                            }}
+                            onCreateNew={(name) => {
+                              setEditData((prev) => ({
+                                ...prev,
+                                name,
+                              }));
+                            }}
+                          />
+                        ) : (
+                          <div className="font-medium">{player.name}</div>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {editingId === player.id ? (
+                          <Select
+                            value={editData.position || ''}
+                            onValueChange={(value) =>
+                              setEditData((prev) => ({
+                                ...prev,
+                                position: value,
+                              }))
+                            }
                           >
-                            <UserMinus className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => handleDeletePlayer(player.playerId)}
-                            className="h-8 w-8 p-0 text-red-600 hover:text-red-700"
-                            title="Delete player permanently"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      )}
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select position" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="Attack">Attack</SelectItem>
+                              <SelectItem value="Midfield">Midfield</SelectItem>
+                              <SelectItem value="Defense">Defense</SelectItem>
+                              <SelectItem value="Goalie">Goalie</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        ) : (
+                          <div className="text-muted-foreground">
+                            {player.position}
+                          </div>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {editingId === player.id ? (
+                          <Input
+                            type="email"
+                            value={editData.email || ''}
+                            onChange={(e) =>
+                              setEditData((prev) => ({
+                                ...prev,
+                                email: e.target.value,
+                              }))
+                            }
+                            placeholder="email@example.com"
+                          />
+                        ) : (
+                          <div className="text-muted-foreground">
+                            {player.email || '-'}
+                          </div>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {editingId === player.id ? (
+                          <div className="flex gap-1">
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={handleSave}
+                              className="h-8 w-8 p-0"
+                            >
+                              <Check className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={handleCancel}
+                              className="h-8 w-8 p-0"
+                            >
+                              <X className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        ) : (
+                          <div className="flex gap-1">
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => handleEdit(player)}
+                              className="h-8 w-8 p-0"
+                              title="Edit player"
+                            >
+                              <Edit2 className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() =>
+                                handleRemoveFromTeam(player.playerId)
+                              }
+                              className="h-8 w-8 p-0 text-orange-600 hover:text-orange-700"
+                              title="Remove from team"
+                            >
+                              <UserMinus className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() =>
+                                handleDeletePlayer(player.playerId)
+                              }
+                              className="h-8 w-8 p-0 text-red-600 hover:text-red-700"
+                              title="Delete player permanently"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={5} className="h-24 text-center">
+                      No players found.
                     </TableCell>
                   </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={5} className="h-24 text-center">
-                    No players found.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
+                )}
+              </TableBody>
+            </Table>
+          </div>
         </div>
-      </div>
+      </PageBody>
     </>
   );
 }
