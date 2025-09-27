@@ -17,12 +17,12 @@ export const Route = createFileRoute(
 
 function RouteComponent() {
   return (
-    <>
+    <div className="flex h-full flex-col">
       <Header />
-      <div className="py-4">
-        <DataTable data={usage} columns={columns} />
+      <div className="flex-1 overflow-auto py-4">
+        <DataTable data={usage} columns={columns} showAllRows={true} />
       </div>
-    </>
+    </div>
   );
 }
 
