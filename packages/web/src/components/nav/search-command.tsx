@@ -304,7 +304,7 @@ export function SearchCommand() {
   return (
     <>
       <Button
-        className="h-8 cursor-text justify-between border-input bg-secondary pr-1 pl-2 font-normal text-foreground focus:border-ring focus:ring-0 sm:w-48"
+        className="h-8 w-full cursor-text justify-between border-input bg-secondary pr-1 pl-2 font-normal text-foreground focus:border-ring focus:ring-0 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-2"
         variant="outline"
         onClick={(e) => {
           e.preventDefault();
@@ -313,9 +313,9 @@ export function SearchCommand() {
       >
         <div className="flex items-center gap-2 text-sm">
           <Search className="size-3 transform text-muted-foreground" />
-          <span className="hidden sm:block">Search</span>
+          <span className="group-data-[collapsible=icon]:hidden">Search</span>
         </div>
-        <kbd className="rounded-md border bg-muted px-1 py-0.5 font-semibold text-muted-foreground text-xs">
+        <kbd className="rounded-md border bg-muted px-1 py-0.5 font-semibold text-muted-foreground text-xs group-data-[collapsible=icon]:hidden">
           ⌘K
         </kbd>
       </Button>

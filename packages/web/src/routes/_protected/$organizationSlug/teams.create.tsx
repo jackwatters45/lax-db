@@ -3,7 +3,6 @@ import { useMutation } from '@tanstack/react-query';
 import { createFileRoute, Link, useRouter } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { Schema } from 'effect';
-import { ArrowLeft } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { DashboardHeader } from '@/components/sidebar/dashboard-header';
@@ -125,18 +124,6 @@ function CreateTeamPage() {
       </DashboardHeader>
       <div className="container mx-auto max-w-2xl py-8">
         <div className="mb-8">
-          <Link
-            to="/$organizationSlug"
-            params={{
-              organizationSlug,
-            }}
-          >
-            <Button variant="ghost" className="mb-4">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Teams
-            </Button>
-          </Link>
-
           <h1 className="font-bold text-3xl">Create New Team</h1>
           <p className="text-muted-foreground">
             Add a new team to your organization
