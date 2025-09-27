@@ -446,45 +446,6 @@ function RouteComponent() {
   );
 }
 
-function Header() {
-  const { organizationSlug } = Route.useParams();
-  const { activeTeam } = Route.useRouteContext();
-
-  return (
-    <TeamHeader organizationSlug={organizationSlug} activeTeam={activeTeam}>
-      <BreadcrumbItem>
-        <BreadcrumbLink className="max-w-full truncate" title="Teams" asChild>
-          <Link to="/$organizationSlug" params={{ organizationSlug }}>
-            Teams
-          </Link>
-        </BreadcrumbLink>
-      </BreadcrumbItem>
-      <BreadcrumbSeparator />
-      <BreadcrumbItem>
-        <BreadcrumbLink title={activeTeam.name} asChild>
-          <Link
-            to="/$organizationSlug/$teamId"
-            params={{ organizationSlug, teamId: activeTeam.id }}
-          >
-            {activeTeam.name}
-          </Link>
-        </BreadcrumbLink>
-      </BreadcrumbItem>
-      <BreadcrumbSeparator />
-      <BreadcrumbItem>
-        <BreadcrumbLink title="Players" asChild>
-          <Link
-            to="/$organizationSlug/$teamId/players"
-            params={{ organizationSlug, teamId: activeTeam.id }}
-          >
-            Players
-          </Link>
-        </BreadcrumbLink>
-      </BreadcrumbItem>
-    </TeamHeader>
-  );
-}
-
 function PlayerSearchCommand({
   value,
   onSelect,
@@ -527,8 +488,8 @@ function PlayerSearchCommand({
       <PopoverTrigger asChild>
         <Button
           variant="outline"
-          role="combobox"
           aria-expanded={open}
+          aria-haspopup="listbox"
           className="w-full justify-between"
         >
           {value || 'Search or add player...'}
@@ -599,5 +560,44 @@ function PlayerSearchCommand({
         </Command>
       </PopoverContent>
     </Popover>
+  );
+}
+
+function Header() {
+  const { organizationSlug } = Route.useParams();
+  const { activeTeam } = Route.useRouteContext();
+
+  return (
+    <TeamHeader organizationSlug={organizationSlug} activeTeam={activeTeam}>
+      <BreadcrumbItem>
+        <BreadcrumbLink className="max-w-full truncate" title="Teams" asChild>
+          <Link to="/$organizationSlug" params={{ organizationSlug }}>
+            Teams
+          </Link>
+        </BreadcrumbLink>
+      </BreadcrumbItem>
+      <BreadcrumbSeparator />
+      <BreadcrumbItem>
+        <BreadcrumbLink title={activeTeam.name} asChild>
+          <Link
+            to="/$organizationSlug/$teamId"
+            params={{ organizationSlug, teamId: activeTeam.id }}
+          >
+            {activeTeam.name}
+          </Link>
+        </BreadcrumbLink>
+      </BreadcrumbItem>
+      <BreadcrumbSeparator />
+      <BreadcrumbItem>
+        <BreadcrumbLink title="Players" asChild>
+          <Link
+            to="/$organizationSlug/$teamId/players"
+            params={{ organizationSlug, teamId: activeTeam.id }}
+          >
+            Players
+          </Link>
+        </BreadcrumbLink>
+      </BreadcrumbItem>
+    </TeamHeader>
   );
 }

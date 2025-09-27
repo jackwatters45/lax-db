@@ -105,7 +105,7 @@ const getDashboardData = createServerFn()
   });
 
 export const Route = createFileRoute(
-  '/_protected/$organizationSlug/settings-old',
+  '/_protected/$organizationSlug/settings/settings-old',
 )({
   component: SettingsPage,
   loader: async () => {

@@ -1,5 +1,5 @@
-import { Link, useRouteContext } from '@tanstack/react-router';
-import { ChevronsUpDown, LogIn, LogOut, SunMoon, UserPlus } from 'lucide-react';
+import { useRouteContext } from '@tanstack/react-router';
+import { ChevronsUpDown, LogOut, SunMoon } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
@@ -18,7 +18,6 @@ import {
 } from '@/components/ui/sidebar';
 import { authClient } from '@/lib/auth-client';
 import { useTheme } from '../theme-provider';
-import { Button } from '../ui/button';
 
 export function NavUserSidebar() {
   const { user } = useRouteContext({ from: '/_protected' });
@@ -55,28 +54,10 @@ export function NavUserSidebar() {
 export function NavUserHeader() {
   const { user } = useRouteContext({ from: '/_protected' });
 
-  if (!user)
-    return (
-      <div className="flex items-center gap-2">
-        <Button size={'sm'} variant="outline" asChild>
-          <Link to="/register">
-            <UserPlus />
-            Sign up
-          </Link>
-        </Button>
-        <Button size={'sm'} asChild>
-          <Link to="/login">
-            <LogIn />
-            Log in
-          </Link>
-        </Button>
-      </div>
-    );
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <Avatar className="h-8 w-8 rounded-lg">
+        <Avatar className="h-7 w-7 rounded-lg">
           <AvatarImage
             src={user.image ?? undefined}
             alt={user.name ?? 'user profile'}

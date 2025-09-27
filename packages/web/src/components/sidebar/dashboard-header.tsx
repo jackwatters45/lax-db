@@ -19,7 +19,6 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { NavUserHeader } from '../nav/nav-user';
-import { SearchCommand } from '../nav/search-command';
 
 export function DashboardHeader({ children }: { children: React.ReactNode }) {
   return (
@@ -39,7 +38,6 @@ export function DashboardHeader({ children }: { children: React.ReactNode }) {
         </Breadcrumb>
       </div>
       <div className="flex items-center gap-2">
-        <SearchCommand />
         <Link to="/plan">
           <Button variant="outline" size={'sm'}>
             Plan

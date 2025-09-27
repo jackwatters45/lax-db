@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import {
-  ArrowLeft,
   Calendar,
   Edit,
   FileText,
@@ -221,16 +220,6 @@ function OpposingTeamDetailsPage() {
   return (
     <div className="container mx-auto py-8">
       <div className="mb-8">
-        <Link
-          to="/$organizationSlug/scouting/teams"
-          params={{ organizationSlug }}
-        >
-          <Button variant="ghost" className="mb-4">
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Teams
-          </Button>
-        </Link>
-
         <div className="flex items-start justify-between">
           <div>
             <h1 className="font-bold text-3xl">{team.name}</h1>

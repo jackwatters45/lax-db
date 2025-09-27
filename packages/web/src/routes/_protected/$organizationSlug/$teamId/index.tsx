@@ -1,8 +1,7 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
-import { ArrowLeft, Mail, Plus, Settings, UserMinus } from 'lucide-react';
+import { Mail, Plus, Settings, UserMinus } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { DashboardHeader } from '@/components/sidebar/dashboard-header';
 import { Badge } from '@/components/ui/badge';
 import {
   BreadcrumbItem,
@@ -13,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { authClient } from '@/lib/auth-client';
 import { authMiddleware } from '@/lib/middleware';
+import { TeamHeader } from './-components/team-header';
 
 // Server function to get team data
 const getTeamData = createServerFn({ method: 'GET' })
@@ -104,37 +104,10 @@ function TeamManagementPage() {
 
   return (
     <>
-      <DashboardHeader>
-        <BreadcrumbItem>
-          <BreadcrumbLink className="max-w-full truncate" title="Teams" asChild>
-            <Link to="/$organizationSlug" params={{ organizationSlug }}>
-              Teams
-            </Link>
-          </BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator />
-        <BreadcrumbItem>
-          <BreadcrumbLink title="Teams" asChild>
-            <Link
-              to="/$organizationSlug/$teamId"
-              params={{ organizationSlug, teamId }}
-            >
-              {activeTeam.name}
-            </Link>
-          </BreadcrumbLink>
-        </BreadcrumbItem>
-      </DashboardHeader>
-
+      <Header />
       <div className="container mx-auto py-8">
         {/* Header */}
         <div className="mb-8 flex items-center gap-4">
-          <Link to="/$organizationSlug" params={{ organizationSlug }}>
-            <Button variant="ghost" size="sm">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Teams
-            </Button>
-          </Link>
-
           <div className="flex-1">
             <h1 className="font-bold text-3xl">{teamName}</h1>
             <p className="text-muted-foreground">
@@ -424,5 +397,33 @@ function InvitePlayerDialog({
         </form>
       </div>
     </div>
+  );
+}
+
+function Header() {
+  const { organizationSlug } = Route.useParams();
+  const { activeTeam } = Route.useRouteContext();
+
+  return (
+    <TeamHeader organizationSlug={organizationSlug} activeTeam={activeTeam}>
+      <BreadcrumbItem>
+        <BreadcrumbLink className="max-w-full truncate" title="Teams" asChild>
+          <Link to="/$organizationSlug" params={{ organizationSlug }}>
+            Teams
+          </Link>
+        </BreadcrumbLink>
+      </BreadcrumbItem>
+      <BreadcrumbSeparator />
+      <BreadcrumbItem>
+        <BreadcrumbLink title={activeTeam.name} asChild>
+          <Link
+            to="/$organizationSlug/$teamId"
+            params={{ organizationSlug, teamId: activeTeam.id }}
+          >
+            {activeTeam.name}
+          </Link>
+        </BreadcrumbLink>
+      </BreadcrumbItem>
+    </TeamHeader>
   );
 }

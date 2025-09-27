@@ -9,7 +9,7 @@ type TeamHeaderProps = {
 export function TeamSubNav({ organizationSlug, teamId }: TeamHeaderProps) {
   return (
     <Navbar className="border-b">
-      <NavbarItem>
+      <NavbarItem asChild>
         <Link
           to="/$organizationSlug/$teamId"
           params={{ organizationSlug, teamId }}
@@ -18,12 +18,20 @@ export function TeamSubNav({ organizationSlug, teamId }: TeamHeaderProps) {
           Home
         </Link>
       </NavbarItem>
-      <NavbarItem>
+      <NavbarItem asChild>
         <Link
           to="/$organizationSlug/$teamId/players"
           params={{ organizationSlug, teamId }}
         >
           Players
+        </Link>
+      </NavbarItem>
+      <NavbarItem asChild>
+        <Link
+          to="/$organizationSlug/$teamId/meep"
+          params={{ organizationSlug, teamId }}
+        >
+          Meep
         </Link>
       </NavbarItem>
     </Navbar>
