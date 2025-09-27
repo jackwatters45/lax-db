@@ -40,7 +40,7 @@ const deleteTeam = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
   .validator((data: { teamId: string }) => data)
   .handler(async ({ data, context }) => {
-    const { TeamsAPI } = await import('@lax-db/core/teams/index');
+    const { TeamsAPI } = await import('@lax-db/core/team/index');
 
     return await TeamsAPI.deleteTeam(data, context.headers);
   });
