@@ -25,21 +25,29 @@ import { Filterbar } from './DataTableFilterbar';
 interface DataTableProps<TData> {
   columns: ColumnDef<TData>[];
   data: TData[];
+  showAllRows?: boolean;
 }
 
-export function DataTable<TData>({ columns, data }: DataTableProps<TData>) {
+export function DataTable<TData>({
+  columns,
+  data,
+  showAllRows = false,
+}: DataTableProps<TData>) {
   const [rowSelection, setRowSelection] = React.useState({});
-  const table = useReactTable({
+
+  const tableConfig = {
     data,
     columns,
     state: { rowSelection },
     enableRowSelection: true,
     getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     onRowSelectionChange: setRowSelection,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
-  });
+    ...(showAllRows ? {} : { getPaginationRowModel: getPaginationRowModel() }),
+  };
+
+  const table = useReactTable(tableConfig);
 
   return (
     <div className="space-y-3">

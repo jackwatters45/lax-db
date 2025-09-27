@@ -22,7 +22,7 @@ import { NavUserHeader } from '../nav/nav-user';
 
 export function DashboardHeader({ children }: { children: React.ReactNode }) {
   return (
-    <header className="sticky top-0 right-0 left-0 z-40 flex h-12 shrink-0 items-center justify-between gap-2 border-b bg-background pr-2 pl-4">
+    <header className="flex h-12 shrink-0 items-center justify-between gap-2 border-b bg-background pr-2 pl-4">
       <div className="flex min-w-0 flex-1 items-center gap-2">
         <TooltipProvider>
           <Tooltip>
