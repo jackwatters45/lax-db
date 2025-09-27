@@ -106,7 +106,7 @@ export function MainNav() {
         <SidebarMenuItem>
           <SidebarMenuButton asChild tooltip={'Settings'}>
             <Link
-              to={'/$organizationSlug/settings'}
+              to={'/$organizationSlug/settings/general'}
               params={{ organizationSlug: activeOrganization.slug }}
             >
               <Settings />
