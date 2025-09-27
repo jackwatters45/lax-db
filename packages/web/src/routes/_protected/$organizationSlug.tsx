@@ -79,7 +79,9 @@ function OrganizationLayout() {
       <AppSidebar />
       <main className="w-full">
         <SidebarInset className="flex h-screen flex-col">
-          <Outlet />
+          <div className="flex h-full flex-col">
+            <Outlet />
+          </div>
         </SidebarInset>
       </main>
     </SidebarProvider>

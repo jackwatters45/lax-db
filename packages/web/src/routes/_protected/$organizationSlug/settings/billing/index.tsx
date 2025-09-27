@@ -1,6 +1,7 @@
 import { RiArrowRightUpLine } from '@remixicon/react';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import React from 'react';
+import { PageBody } from '@/components/layout/page-content';
 import {
   BreadcrumbItem,
   BreadcrumbLink,
@@ -67,280 +68,284 @@ function Billing() {
   return (
     <>
       <Header />
-      <div className="container space-y-10 py-8">
-        <div className="rounded-lg bg-muted p-6 ring-1 ring-border ring-inset dark:bg-muted/50 dark:ring-border">
-          <h4 className="font-semibold text-foreground text-sm">
-            This workspace is currently on free plan
-          </h4>
-          <p className="mt-1 max-w-2xl text-muted-foreground text-sm leading-6">
-            Boost your analytics and unlock advanced features with our premium
-            plans.{' '}
-            <a
-              href="#"
-              className="inline-flex items-center gap-1 text-indigo-600 dark:text-indigo-500"
-            >
-              Compare plans
-              <RiArrowRightUpLine
-                className="size-4 shrink-0"
-                aria-hidden="true"
-              />
-            </a>
-          </p>
-        </div>
-        <div className="mt-6 space-y-10">
-          <section aria-labelledby="billing-overview">
-            <div className="grid grid-cols-1 gap-x-14 gap-y-8 md:grid-cols-3">
-              <div>
-                <h2
-                  id="billing-overview"
-                  className="scroll-mt-10 font-semibold text-foreground"
-                >
-                  Billing
-                </h2>
-                <p className="mt-1 text-muted-foreground text-sm leading-6">
-                  Overview of current billing cycle based on fixed and on-demand
-                  charges.
-                </p>
-              </div>
-              <div className="md:col-span-2">
-                <ul className="w-full divide-y divide-border border-border border-b">
-                  {data.map((item) => (
-                    <li key={item.name} className="px-2 py-4 text-sm md:p-4">
-                      <div className="w-full">
-                        <div className="flex items-center justify-between">
-                          <p className="font-medium text-foreground">
-                            {item.name}
-                          </p>
-                          <p className="font-medium text-muted-foreground">
-                            {item.value}
-                          </p>
-                        </div>
-                        <div className="w-full md:w-2/3">
-                          {item.percentageValue && (
-                            <Progress
-                              value={item.percentageValue}
-                              className="mt-2 h-1.5"
-                            />
-                          )}
-                          <p className="mt-1 flex items-center justify-between text-muted-foreground text-xs">
-                            <span>{item.description}</span>
-                            <span>{item.capacity}</span>
-                          </p>
-                        </div>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-                <div className="px-2 py-4 md:p-4">
-                  <p className="flex items-center justify-between font-medium text-foreground text-sm">
-                    <span>Total for May 24</span>
-                    <span className="font-semibold">$280</span>
-                  </p>
-                </div>
-              </div>
-            </div>
-          </section>
-          <Separator />
-          <section aria-labelledby="cost-spend-control">
-            <form>
+      <PageBody>
+        <div className="container space-y-10 py-8">
+          <div className="rounded-lg bg-muted p-6 ring-1 ring-border ring-inset dark:bg-muted/50 dark:ring-border">
+            <h4 className="font-semibold text-foreground text-sm">
+              This workspace is currently on free plan
+            </h4>
+            <p className="mt-1 max-w-2xl text-muted-foreground text-sm leading-6">
+              Boost your analytics and unlock advanced features with our premium
+              plans.{' '}
+              <a
+                href="#"
+                className="inline-flex items-center gap-1 text-indigo-600 dark:text-indigo-500"
+              >
+                Compare plans
+                <RiArrowRightUpLine
+                  className="size-4 shrink-0"
+                  aria-hidden="true"
+                />
+              </a>
+            </p>
+          </div>
+          <div className="mt-6 space-y-10">
+            <section aria-labelledby="billing-overview">
               <div className="grid grid-cols-1 gap-x-14 gap-y-8 md:grid-cols-3">
                 <div>
                   <h2
-                    id="cost-spend-control"
+                    id="billing-overview"
                     className="scroll-mt-10 font-semibold text-foreground"
                   >
-                    Cost spend control
+                    Billing
                   </h2>
                   <p className="mt-1 text-muted-foreground text-sm leading-6">
-                    Set hard caps for on-demand charges.
+                    Overview of current billing cycle based on fixed and
+                    on-demand charges.
                   </p>
                 </div>
                 <div className="md:col-span-2">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4">
-                      <div className="flex h-16 w-16 items-center justify-center">
-                        <Progress
-                          value={isSpendMgmtEnabled ? 62.2 : 0}
-                          className="h-2 w-12 rotate-90"
-                        />
-                      </div>
-                      <div>
-                        {isSpendMgmtEnabled ? (
-                          <>
-                            <p className="font-medium text-foreground text-sm">
-                              &#36;280 / 350 (62.2&#37;)
+                  <ul className="w-full divide-y divide-border border-border border-b">
+                    {data.map((item) => (
+                      <li key={item.name} className="px-2 py-4 text-sm md:p-4">
+                        <div className="w-full">
+                          <div className="flex items-center justify-between">
+                            <p className="font-medium text-foreground">
+                              {item.name}
                             </p>
-                            <Label
-                              htmlFor="spend-mgmt"
-                              className="text-muted-foreground"
-                            >
-                              Spend management enabled
-                            </Label>
-                          </>
-                        ) : (
-                          <>
-                            <p className="font-medium text-foreground text-sm">
-                              &#36;0 / 0 (0&#37;)
+                            <p className="font-medium text-muted-foreground">
+                              {item.value}
                             </p>
-                            <Label
-                              htmlFor="spend-mgmt"
-                              className="text-muted-foreground"
-                            >
-                              Spend management disabled
-                            </Label>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                    <Switch
-                      id="spend-mgmt"
-                      name="spend-mgmt"
-                      checked={isSpendMgmtEnabled}
-                      onCheckedChange={() => {
-                        setIsSpendMgmtEnabled(!isSpendMgmtEnabled);
-                      }}
-                    />
+                          </div>
+                          <div className="w-full md:w-2/3">
+                            {item.percentageValue && (
+                              <Progress
+                                value={item.percentageValue}
+                                className="mt-2 h-1.5"
+                              />
+                            )}
+                            <p className="mt-1 flex items-center justify-between text-muted-foreground text-xs">
+                              <span>{item.description}</span>
+                              <span>{item.capacity}</span>
+                            </p>
+                          </div>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="px-2 py-4 md:p-4">
+                    <p className="flex items-center justify-between font-medium text-foreground text-sm">
+                      <span>Total for May 24</span>
+                      <span className="font-semibold">$280</span>
+                    </p>
                   </div>
-                  <div
-                    className={cn(
-                      'transform-gpu transition-all ease-[cubic-bezier(0.16,1,0.3,1.03)] will-change-transform',
-                      isSpendMgmtEnabled ? 'h-52 md:h-32' : 'h-0',
-                    )}
-                    style={{
-                      transitionDuration: '300ms',
-                      animationFillMode: 'backwards',
-                    }}
-                  >
+                </div>
+              </div>
+            </section>
+            <Separator />
+            <section aria-labelledby="cost-spend-control">
+              <form>
+                <div className="grid grid-cols-1 gap-x-14 gap-y-8 md:grid-cols-3">
+                  <div>
+                    <h2
+                      id="cost-spend-control"
+                      className="scroll-mt-10 font-semibold text-foreground"
+                    >
+                      Cost spend control
+                    </h2>
+                    <p className="mt-1 text-muted-foreground text-sm leading-6">
+                      Set hard caps for on-demand charges.
+                    </p>
+                  </div>
+                  <div className="md:col-span-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-4">
+                        <div className="flex h-16 w-16 items-center justify-center">
+                          <Progress
+                            value={isSpendMgmtEnabled ? 62.2 : 0}
+                            className="h-2 w-12 rotate-90"
+                          />
+                        </div>
+                        <div>
+                          {isSpendMgmtEnabled ? (
+                            <>
+                              <p className="font-medium text-foreground text-sm">
+                                &#36;280 / 350 (62.2&#37;)
+                              </p>
+                              <Label
+                                htmlFor="spend-mgmt"
+                                className="text-muted-foreground"
+                              >
+                                Spend management enabled
+                              </Label>
+                            </>
+                          ) : (
+                            <>
+                              <p className="font-medium text-foreground text-sm">
+                                &#36;0 / 0 (0&#37;)
+                              </p>
+                              <Label
+                                htmlFor="spend-mgmt"
+                                className="text-muted-foreground"
+                              >
+                                Spend management disabled
+                              </Label>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                      <Switch
+                        id="spend-mgmt"
+                        name="spend-mgmt"
+                        checked={isSpendMgmtEnabled}
+                        onCheckedChange={() => {
+                          setIsSpendMgmtEnabled(!isSpendMgmtEnabled);
+                        }}
+                      />
+                    </div>
                     <div
                       className={cn(
-                        'animate-slideDownAndFade transition',
-                        isSpendMgmtEnabled ? '' : 'hidden',
+                        'transform-gpu transition-all ease-[cubic-bezier(0.16,1,0.3,1.03)] will-change-transform',
+                        isSpendMgmtEnabled ? 'h-52 md:h-32' : 'h-0',
                       )}
                       style={{
-                        animationDelay: '100ms',
-                        animationDuration: '300ms',
                         transitionDuration: '300ms',
                         animationFillMode: 'backwards',
                       }}
                     >
-                      <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3">
-                        <div className="md:col-span-1">
-                          <Label className="font-medium">Set amount ($)</Label>
-                          <Input
-                            id="hard-cap"
-                            name="hard-cap"
-                            defaultValue={350}
-                            type="number"
-                            className="mt-2"
-                          />
+                      <div
+                        className={cn(
+                          'animate-slideDownAndFade transition',
+                          isSpendMgmtEnabled ? '' : 'hidden',
+                        )}
+                        style={{
+                          animationDelay: '100ms',
+                          animationDuration: '300ms',
+                          transitionDuration: '300ms',
+                          animationFillMode: 'backwards',
+                        }}
+                      >
+                        <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3">
+                          <div className="md:col-span-1">
+                            <Label className="font-medium">
+                              Set amount ($)
+                            </Label>
+                            <Input
+                              id="hard-cap"
+                              name="hard-cap"
+                              defaultValue={350}
+                              type="number"
+                              className="mt-2"
+                            />
+                          </div>
+                          <div className="md:col-span-2">
+                            <Label className="font-medium">
+                              Provide email for notifications
+                            </Label>
+                            <Input
+                              id="email"
+                              name="email"
+                              placeholder="admin@company.com"
+                              type="email"
+                              className="mt-2"
+                            />
+                          </div>
                         </div>
-                        <div className="md:col-span-2">
-                          <Label className="font-medium">
-                            Provide email for notifications
-                          </Label>
-                          <Input
-                            id="email"
-                            name="email"
-                            placeholder="admin@company.com"
-                            type="email"
-                            className="mt-2"
-                          />
+                        <div className="mt-6 flex justify-end">
+                          <Button type="submit">Update</Button>
                         </div>
-                      </div>
-                      <div className="mt-6 flex justify-end">
-                        <Button type="submit">Update</Button>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </form>
-          </section>
-          <Separator />
-          <section aria-labelledby="add-ons">
-            <form>
-              <div className="grid grid-cols-1 gap-x-14 gap-y-8 md:grid-cols-3">
-                <div>
-                  <h2
-                    id="add-ons"
-                    className="scroll-mt-10 font-semibold text-foreground"
-                  >
-                    Add-Ons
-                  </h2>
-                  <p className="mt-1 text-muted-foreground text-sm leading-6">
-                    Additional services to boost your services.
-                  </p>
-                </div>
-                <div className="space-y-6 md:col-span-2">
-                  <Card className="overflow-hidden p-0">
-                    <div className="px-4 pt-4 pb-6">
-                      <span className="text-muted-foreground text-sm">
-                        $25/month
-                      </span>
-                      <h4 className="mt-4 font-semibold text-foreground text-sm">
-                        Advanced bot protection
-                      </h4>
-                      <p className="mt-2 max-w-xl text-muted-foreground text-sm leading-6">
-                        Safeguard your assets with our cutting-edge bot
-                        protection. Our AI solution identifies and mitigates
-                        automated traffic to protect your workspace from bad
-                        bots.
-                      </p>
-                    </div>
-                    <div className="flex items-center justify-between border-border border-t bg-muted p-4">
-                      <div className="flex items-center gap-3">
-                        <Switch id="bot-protection" name="bot-protection" />
-                        <Label htmlFor="bot-protection">Activate</Label>
+              </form>
+            </section>
+            <Separator />
+            <section aria-labelledby="add-ons">
+              <form>
+                <div className="grid grid-cols-1 gap-x-14 gap-y-8 md:grid-cols-3">
+                  <div>
+                    <h2
+                      id="add-ons"
+                      className="scroll-mt-10 font-semibold text-foreground"
+                    >
+                      Add-Ons
+                    </h2>
+                    <p className="mt-1 text-muted-foreground text-sm leading-6">
+                      Additional services to boost your services.
+                    </p>
+                  </div>
+                  <div className="space-y-6 md:col-span-2">
+                    <Card className="overflow-hidden p-0">
+                      <div className="px-4 pt-4 pb-6">
+                        <span className="text-muted-foreground text-sm">
+                          $25/month
+                        </span>
+                        <h4 className="mt-4 font-semibold text-foreground text-sm">
+                          Advanced bot protection
+                        </h4>
+                        <p className="mt-2 max-w-xl text-muted-foreground text-sm leading-6">
+                          Safeguard your assets with our cutting-edge bot
+                          protection. Our AI solution identifies and mitigates
+                          automated traffic to protect your workspace from bad
+                          bots.
+                        </p>
                       </div>
-                      <a
-                        href="#"
-                        className="inline-flex items-center gap-1 text-indigo-600 text-sm dark:text-indigo-500"
-                      >
-                        Learn more
-                        <RiArrowRightUpLine
-                          className="size-4 shrink-0"
-                          aria-hidden="true"
-                        />
-                      </a>
-                    </div>
-                  </Card>
-                  <Card className="overflow-hidden p-0">
-                    <div className="px-4 pt-4 pb-6">
-                      <span className="text-muted-foreground text-sm">
-                        $50/month
-                      </span>
-                      <h4 className="mt-4 font-semibold text-foreground text-sm">
-                        Workspace insights
-                      </h4>
-                      <p className="mt-2 max-w-xl text-muted-foreground text-sm leading-6">
-                        Real-time analysis of your workspace&#39;s usage,
-                        enabling you to make well-informed decisions for
-                        optimization.
-                      </p>
-                    </div>
-                    <div className="flex items-center justify-between border-border border-t bg-muted p-4">
-                      <div className="flex items-center gap-3">
-                        <Switch id="insights" name="insights" />
-                        <Label htmlFor="insights">Activate</Label>
+                      <div className="flex items-center justify-between border-border border-t bg-muted p-4">
+                        <div className="flex items-center gap-3">
+                          <Switch id="bot-protection" name="bot-protection" />
+                          <Label htmlFor="bot-protection">Activate</Label>
+                        </div>
+                        <a
+                          href="#"
+                          className="inline-flex items-center gap-1 text-indigo-600 text-sm dark:text-indigo-500"
+                        >
+                          Learn more
+                          <RiArrowRightUpLine
+                            className="size-4 shrink-0"
+                            aria-hidden="true"
+                          />
+                        </a>
                       </div>
-                      <a
-                        href="#"
-                        className="inline-flex items-center gap-1 text-indigo-600 text-sm dark:text-indigo-500"
-                      >
-                        Learn more
-                        <RiArrowRightUpLine
-                          className="size-4 shrink-0"
-                          aria-hidden="true"
-                        />
-                      </a>
-                    </div>
-                  </Card>
+                    </Card>
+                    <Card className="overflow-hidden p-0">
+                      <div className="px-4 pt-4 pb-6">
+                        <span className="text-muted-foreground text-sm">
+                          $50/month
+                        </span>
+                        <h4 className="mt-4 font-semibold text-foreground text-sm">
+                          Workspace insights
+                        </h4>
+                        <p className="mt-2 max-w-xl text-muted-foreground text-sm leading-6">
+                          Real-time analysis of your workspace&#39;s usage,
+                          enabling you to make well-informed decisions for
+                          optimization.
+                        </p>
+                      </div>
+                      <div className="flex items-center justify-between border-border border-t bg-muted p-4">
+                        <div className="flex items-center gap-3">
+                          <Switch id="insights" name="insights" />
+                          <Label htmlFor="insights">Activate</Label>
+                        </div>
+                        <a
+                          href="#"
+                          className="inline-flex items-center gap-1 text-indigo-600 text-sm dark:text-indigo-500"
+                        >
+                          Learn more
+                          <RiArrowRightUpLine
+                            className="size-4 shrink-0"
+                            aria-hidden="true"
+                          />
+                        </a>
+                      </div>
+                    </Card>
+                  </div>
                 </div>
-              </div>
-            </form>
-          </section>
+              </form>
+            </section>
+          </div>
         </div>
-      </div>
+      </PageBody>
     </>
   );
 }
