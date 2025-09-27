@@ -6,12 +6,14 @@ import { allSecrets } from './secret';
 import { bucket } from './storage';
 import { vpc } from './vpc';
 
+const webDomain = `app.${domain}`;
+
 export const web = new sst.aws.TanStackStart('Web', {
   path: 'packages/web',
   vpc: vpc,
   domain: {
-    name: domain,
-    redirects: [`www.${domain}`],
+    name: webDomain,
+    redirects: [`www.${webDomain}`],
     dns: sst.cloudflare.dns(),
   },
   link: [bucket, database, email, redis, ...allSecrets],
