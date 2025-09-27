@@ -223,7 +223,7 @@ export function SearchCommand() {
   useHotkeys('meta+shift+comma', () => {
     if (activeOrganization) {
       navigate({
-        to: '/$organizationSlug/settings',
+        to: '/$organizationSlug/settings/general',
         params: { organizationSlug: activeOrganization.slug },
       });
     }
