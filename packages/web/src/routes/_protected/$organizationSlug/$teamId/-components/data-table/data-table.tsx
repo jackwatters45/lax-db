@@ -19,8 +19,8 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { cn } from '@/lib/utils';
-import { DataTableBulkEditor } from './DataTableBulkEditor';
-import { Filterbar } from './DataTableFilterbar';
+import { BulkEditToolbar } from './data-bulk-edit-toolbar-v2';
+import { Filterbar } from './data-table-filterbar';
 
 interface DataTableProps<TData> {
   columns: ColumnDef<TData>[];
@@ -113,7 +113,13 @@ export function DataTable<TData>({
             )}
           </TableBody>
         </Table>
-        <DataTableBulkEditor table={table} rowSelection={rowSelection} />
+        {/*<DataTableBulkEditor table={table} rowSelection={rowSelection} />*/}
+        <BulkEditToolbar
+          table={table}
+          rowSelection={rowSelection}
+          onEdit={() => {}}
+          onDelete={() => {}}
+        />
       </div>
     </div>
   );
