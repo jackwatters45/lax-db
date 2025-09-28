@@ -21,6 +21,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { cn } from '@/lib/utils';
+import { Filterbar } from '@/routes/_protected/$organizationSlug/$teamId/-components/data-table/data-table-filters-examples';
 import {
   BulkEditProvider,
   BulkEditToolbar,
@@ -29,8 +30,8 @@ import {
   BulkEditToolbarEditAction,
   BulkEditToolbarSelection,
   BulkEditToolbarSeparator,
-} from './data-table-bulk-edit-toolbar';
-import { Filterbar } from './data-table-filterbar';
+} from '../../../../../../components/data-table/data-table-bulk-edit-toolbar';
+import { DataTablePagination } from '../../../../../../components/data-table/data-table-pagination';
 
 interface DataTableProps<TData> {
   columns: ColumnDef<TData>[];
@@ -41,20 +42,30 @@ interface DataTableProps<TData> {
 export function DataTable<TData>({
   columns,
   data,
-  showAllRows = false,
+  showAllRows = true,
 }: DataTableProps<TData>) {
   const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
+  const [pagination, setPagination] = React.useState({
+    pageIndex: 0,
+    pageSize: 10,
+  });
 
   const tableConfig = {
     data,
     columns,
-    state: { rowSelection },
+    state: {
+      rowSelection,
+      ...(!showAllRows && { pagination }),
+    },
     enableRowSelection: true,
     getFilteredRowModel: getFilteredRowModel(),
     onRowSelectionChange: setRowSelection,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    ...(showAllRows ? {} : { getPaginationRowModel: getPaginationRowModel() }),
+    ...(!showAllRows && {
+      getPaginationRowModel: getPaginationRowModel(),
+      onPaginationChange: setPagination,
+    }),
   };
 
   const table = useReactTable(tableConfig);
@@ -123,22 +134,7 @@ export function DataTable<TData>({
             )}
           </TableBody>
         </Table>
-        {/*<DataTableBulkEditor table={table} rowSelection={rowSelection} />*/}
-        {/*<BulkEditToolbar
-          table={table}
-          rowSelection={rowSelection}
-          onEdit={() => {}}
-          onDelete={() => {}}
-          actions={[
-            {
-              label: 'Duplicate',
-              icon: Copy,
-              onClick: () => {
-                // Implement duplicate functionality here
-              },
-            },
-          ]}
-        />*/}
+        {!showAllRows && <DataTablePagination table={table} />}
         <Toolbar table={table} rowSelection={rowSelection} />
       </div>
     </div>

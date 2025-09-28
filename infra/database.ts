@@ -5,13 +5,13 @@ export const database = isPermanentStage
   ? new sst.aws.Postgres('Database', {
       vpc,
       proxy: true,
-      version: '17.4',
+      version: '18.0',
     })
   : $dev
     ? new sst.aws.Postgres('Database', {
         vpc,
         proxy: true,
-        version: '17.4',
+        version: '18.0',
         dev: {
           username: 'laxdb',
           password: 'laxdb_password',

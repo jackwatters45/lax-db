@@ -24,7 +24,7 @@ function ViewOptions<TData>({ table }: DataTableViewOptionsProps<TData>) {
             <Button
               variant="outline"
               size="sm"
-              className="ml-auto hidden gap-x-2 px-2 py-1.5 text-sm sm:text-xs lg:flex"
+              className="ml-auto hidden gap-x-2 text-sm sm:text-xs lg:flex"
             >
               <RiEqualizer2Line className="size-4" aria-hidden="true" />
               View

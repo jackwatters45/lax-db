@@ -1,12 +1,12 @@
 import { type ColumnDef, createColumnHelper } from '@tanstack/react-table';
+import { DataTableColumnHeader } from '@/components/data-table/data-table-column-header';
+import type { ConditionFilter } from '@/components/data-table/data-table-filters';
+import { DataTableRowActions } from '@/components/data-table/data-table-row-actions';
 import { Badge, type BadgeProps } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { formatters } from '@/lib/formatters';
 import { statuses } from '../../../settings/-data';
 import type { Usage } from '../../../settings/-schema';
-import { DataTableColumnHeader } from './data-table-column-header';
-import type { ConditionFilter } from './data-table-filter';
-import { DataTableRowActions } from './data-table-row-actions';
 
 const columnHelper = createColumnHelper<Usage>();
 
