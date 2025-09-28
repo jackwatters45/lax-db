@@ -6,8 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Searchbar } from '@/components/ui/searchbar';
 import { formatters } from '@/lib/formatters';
 import { conditions, regions, statuses } from '../../../settings/-data';
-import { DataTableFilter } from './DataTableFilter';
-import { ViewOptions } from './DataTableViewOptions';
+import { DataTableFilter } from './data-table-filter';
+import { ViewOptions } from './data-table-view-options';
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;

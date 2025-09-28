@@ -7,7 +7,7 @@ import {
 } from '@/components/ui/breadcrumb';
 import { usage } from '../settings/-data';
 import { columns } from './-components/data-table/columns';
-import { DataTable } from './-components/data-table/DataTable';
+import { DataTable } from './-components/data-table/data-table';
 import { TeamHeader } from './-components/team-header';
 
 export const Route = createFileRoute(

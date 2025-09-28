@@ -4,9 +4,9 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { formatters } from '@/lib/formatters';
 import { statuses } from '../../../settings/-data';
 import type { Usage } from '../../../settings/-schema';
-import { DataTableColumnHeader } from './DataTableColumnHeader';
-import type { ConditionFilter } from './DataTableFilter';
-import { DataTableRowActions } from './DataTableRowActions';
+import { DataTableColumnHeader } from './data-table-column-header';
+import type { ConditionFilter } from './data-table-filter';
+import { DataTableRowActions } from './data-table-row-actions';
 
 const columnHelper = createColumnHelper<Usage>();
 
