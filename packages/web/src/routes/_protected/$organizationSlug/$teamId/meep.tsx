@@ -21,7 +21,7 @@ function RouteComponent() {
     <>
       <Header />
       <PageBody className="py-4">
-        <DataTable data={usage} columns={columns} showAllRows={true} />
+        <DataTable data={usage} columns={columns} showAllRows={false} />
       </PageBody>
     </>
   );

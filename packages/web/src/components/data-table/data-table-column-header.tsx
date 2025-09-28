@@ -19,10 +19,13 @@ export function DataTableColumnHeader<TData, TValue>({
     return <div className={cn(className)}>{title}</div>;
   }
 
-  const handleKeyDown = (event: React.KeyboardEvent) => {
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
-      column.getToggleSortingHandler()?.(event as any);
+      const sortingHandler = column.getToggleSortingHandler();
+      if (sortingHandler) {
+        sortingHandler(event);
+      }
     }
   };
 
