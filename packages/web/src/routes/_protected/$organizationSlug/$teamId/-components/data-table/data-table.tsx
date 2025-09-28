@@ -7,6 +7,8 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
+  type RowSelectionState,
+  type Table as TanstackTable,
   useReactTable,
 } from '@tanstack/react-table';
 import * as React from 'react';
@@ -19,7 +21,15 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { cn } from '@/lib/utils';
-import { BulkEditToolbar } from './data-bulk-edit-toolbar-v2';
+import {
+  BulkEditProvider,
+  BulkEditToolbar,
+  BulkEditToolbarActions,
+  BulkEditToolbarDeleteAction,
+  BulkEditToolbarEditAction,
+  BulkEditToolbarSelection,
+  BulkEditToolbarSeparator,
+} from './data-table-bulk-edit-toolbar';
 import { Filterbar } from './data-table-filterbar';
 
 interface DataTableProps<TData> {
@@ -33,7 +43,7 @@ export function DataTable<TData>({
   data,
   showAllRows = false,
 }: DataTableProps<TData>) {
-  const [rowSelection, setRowSelection] = React.useState({});
+  const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
 
   const tableConfig = {
     data,
@@ -114,13 +124,63 @@ export function DataTable<TData>({
           </TableBody>
         </Table>
         {/*<DataTableBulkEditor table={table} rowSelection={rowSelection} />*/}
-        <BulkEditToolbar
+        {/*<BulkEditToolbar
           table={table}
           rowSelection={rowSelection}
           onEdit={() => {}}
           onDelete={() => {}}
-        />
+          actions={[
+            {
+              label: 'Duplicate',
+              icon: Copy,
+              onClick: () => {
+                // Implement duplicate functionality here
+              },
+            },
+          ]}
+        />*/}
+        <Toolbar table={table} rowSelection={rowSelection} />
       </div>
     </div>
+  );
+}
+
+function Toolbar<TData>({
+  table,
+  rowSelection,
+}: {
+  table: TanstackTable<TData>;
+  rowSelection: RowSelectionState;
+}) {
+  const _handleEdit = () => {
+    // Implement edit functionality here
+  };
+
+  const _handleExport = () => {
+    // Implement export functionality here
+  };
+
+  const _handleDelete = () => {
+    // Implement delete functionality here
+  };
+
+  return (
+    <BulkEditProvider
+      table={table}
+      rowSelection={rowSelection}
+      actions={{
+        onEdit: () => {},
+        onDelete: () => {},
+      }}
+    >
+      <BulkEditToolbar>
+        <BulkEditToolbarSelection />
+        <BulkEditToolbarSeparator />
+        <BulkEditToolbarActions>
+          <BulkEditToolbarEditAction />
+          <BulkEditToolbarDeleteAction />
+        </BulkEditToolbarActions>
+      </BulkEditToolbar>
+    </BulkEditProvider>
   );
 }

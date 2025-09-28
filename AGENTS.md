@@ -44,3 +44,4 @@ The `/llms` folder contains library-specific documentation files (`.txt` format)
 
 - DO NOT RUN MIGRATIONS OR THE DEV SERVER EVER
 - DO NOT UPDATE THE API FOR NOW. IT WILL BE UPDATED IN THE FUTURE.
+- When creating new components, ensure they follow the established code style guidelines and focus on composition.
