@@ -77,13 +77,11 @@ function OrganizationLayout() {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <main className="w-full">
-        <SidebarInset className="flex h-screen flex-col">
-          <div className="flex h-full flex-col">
-            <Outlet />
-          </div>
-        </SidebarInset>
-      </main>
+      <SidebarInset className="flex h-screen flex-col">
+        <div className="flex h-full flex-col">
+          <Outlet />
+        </div>
+      </SidebarInset>
     </SidebarProvider>
   );
 }
