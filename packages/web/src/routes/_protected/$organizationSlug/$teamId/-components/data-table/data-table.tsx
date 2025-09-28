@@ -80,10 +80,15 @@ export function DataTable<TData>({
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="border-border border-y">
-                {headerGroup.headers.map((header) => (
+                {headerGroup.headers.map((header, i) => (
                   <TableHead
                     key={header.id}
-                    className={cn(header.column.columnDef.meta?.className)}
+                    className={cn(
+                      header.column.columnDef.meta?.className,
+                      i === headerGroup.headers.length - 1
+                        ? '-translate-x-2'
+                        : '',
+                    )}
                   >
                     {flexRender(
                       header.column.columnDef.header,
