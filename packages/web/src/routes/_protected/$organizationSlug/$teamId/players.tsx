@@ -36,7 +36,9 @@ import { PlayersToolbar } from './-players/players-toolbar';
 
 const getTeamPlayers = createServerFn({ method: 'GET' })
   .middleware([authMiddleware])
-  .validator((data: { teamId: string }) => S.decodeSync(TeamIdSchema)(data))
+  .validator((data: typeof TeamIdSchema.Type) =>
+    S.decodeSync(TeamIdSchema)(data),
+  )
   .handler(async ({ data }) => {
     const { PlayerAPI } = await import('@lax-db/core/player/index');
     return await PlayerAPI.getTeamPlayers(data.teamId);

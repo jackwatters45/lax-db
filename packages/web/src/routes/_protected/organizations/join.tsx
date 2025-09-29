@@ -2,21 +2,9 @@ import { effectTsResolver } from '@hookform/resolvers/effect-ts';
 import { useMutation } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
-import { Schema } from 'effect';
+import { Schema as S } from 'effect';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-
-// Server function for accepting invitations
-const acceptInvitation = createServerFn({ method: 'POST' })
-  .validator((data: { invitationId: string }) => data)
-  .handler(async ({ data }) => {
-    const { OrganizationAPI } = await import('@lax-db/core/organization/index');
-    const { getWebRequest } = await import('@tanstack/react-start/server');
-
-    const request = getWebRequest();
-    return await OrganizationAPI.acceptInvitation(data, request.headers);
-  });
-
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -30,16 +18,27 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 
-const formSchema = Schema.Struct({
-  invitationId: Schema.String.pipe(
-    Schema.minLength(1, { message: () => 'Invitation code is required' }),
-    Schema.minLength(10, {
+const AcceptInvitationSchema = S.Struct({
+  invitationId: S.String.pipe(
+    S.minLength(1, { message: () => 'Invitation code is required' }),
+    S.minLength(10, {
       message: () => 'Invitation code must be at least 10 characters',
     }),
   ),
 });
+type FormData = typeof AcceptInvitationSchema.Type;
 
-type FormData = typeof formSchema.Type;
+const acceptInvitation = createServerFn({ method: 'POST' })
+  .validator((data: typeof AcceptInvitationSchema.Type) =>
+    S.decodeSync(AcceptInvitationSchema)(data),
+  )
+  .handler(async ({ data }) => {
+    const { OrganizationAPI } = await import('@lax-db/core/organization/index');
+    const { getWebRequest } = await import('@tanstack/react-start/server');
+
+    const request = getWebRequest();
+    return await OrganizationAPI.acceptInvitation(data, request.headers);
+  });
 
 export const Route = createFileRoute('/_protected/organizations/join')({
   component: JoinOrganizationPage,
@@ -49,7 +48,7 @@ function JoinOrganizationPage() {
   // const router = useRouter();
 
   const form = useForm<FormData>({
-    resolver: effectTsResolver(formSchema),
+    resolver: effectTsResolver(AcceptInvitationSchema),
     defaultValues: {
       invitationId: '',
     },

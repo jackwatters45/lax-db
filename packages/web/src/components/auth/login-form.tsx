@@ -53,7 +53,7 @@ export const redirectToOrg = createServerFn().handler(async () => {
   }
 });
 
-const loginSchema = Schema.Struct({
+const LoginSchema = Schema.Struct({
   email: Schema.String.pipe(
     Schema.filter((email) => /\S+@\S+\.\S+/.test(email), {
       message: () => 'Please enter a valid email address',
@@ -63,8 +63,7 @@ const loginSchema = Schema.Struct({
     Schema.minLength(1, { message: () => 'Password is required' }),
   ),
 });
-
-type LoginFormValues = typeof loginSchema.Type;
+type LoginFormValues = typeof LoginSchema.Type;
 
 type LoginFormProps = {
   redirect?: string;
@@ -80,7 +79,7 @@ export function LoginForm({ redirect, className, ...props }: LoginFormProps) {
   }, []);
 
   const form = useForm<LoginFormValues>({
-    resolver: effectTsResolver(loginSchema),
+    resolver: effectTsResolver(LoginSchema),
     defaultValues: {
       email: '',
       password: '',

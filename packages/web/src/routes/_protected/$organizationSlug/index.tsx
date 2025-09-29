@@ -6,6 +6,7 @@ import {
 } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import type { Team, TeamMember } from 'better-auth/plugins';
+import { Schema as S } from 'effect';
 import { ArrowRight, Plus, Trash2, Users } from 'lucide-react';
 import { toast } from 'sonner';
 import { DashboardHeader } from '@/components/sidebar/dashboard-header';
@@ -25,6 +26,7 @@ import { BreadcrumbItem, BreadcrumbLink } from '@/components/ui/breadcrumb';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { authMiddleware } from '@/lib/middleware';
+import { TeamIdSchema } from '@/lib/schema';
 
 // Server function for getting user organization context
 const getUserOrganizationContext = createServerFn()
@@ -38,7 +40,7 @@ const getUserOrganizationContext = createServerFn()
 // Server function for deleting teams
 const deleteTeam = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
-  .validator((data: { teamId: string }) => data)
+  .validator((data: { teamId: string }) => S.decodeSync(TeamIdSchema)(data))
   .handler(async ({ data, context }) => {
     const { TeamsAPI } = await import('@lax-db/core/team/index');
 

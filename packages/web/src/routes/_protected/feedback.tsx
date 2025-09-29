@@ -3,7 +3,7 @@ import { RATING_ENUM, TOPIC_ENUM } from '@lax-db/core/feedback/types';
 import { useMutation } from '@tanstack/react-query';
 import { createFileRoute, useRouter } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
-import { Schema } from 'effect';
+import { Schema as S } from 'effect';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -27,22 +27,22 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { authMiddleware } from '@/lib/middleware';
 
-const feedbackSchema = Schema.Struct({
-  topic: Schema.Literal(...TOPIC_ENUM),
-  rating: Schema.Literal(...RATING_ENUM),
-  feedback: Schema.String.pipe(
-    Schema.minLength(10, {
+const FeedbackSchema = S.Struct({
+  topic: S.Literal(...TOPIC_ENUM),
+  rating: S.Literal(...RATING_ENUM),
+  feedback: S.String.pipe(
+    S.minLength(10, {
       message: () => 'Feedback must be at least 10 characters long',
     }),
   ),
 });
 
-type FeedbackFormValues = typeof feedbackSchema.Type;
+type FeedbackFormValues = typeof FeedbackSchema.Type;
 
 // Server function for submitting feedback
 const submitFeedback = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
-  .validator((data: FeedbackFormValues) => data)
+  .validator((data: FeedbackFormValues) => S.decodeSync(FeedbackSchema)(data))
   .handler(async ({ data, context: { session } }) => {
     const { FeedbackAPI } = await import('@lax-db/core/feedback/index');
 
@@ -79,7 +79,7 @@ function FeedbackPage() {
   });
 
   const form = useForm<FeedbackFormValues>({
-    resolver: effectTsResolver(feedbackSchema),
+    resolver: effectTsResolver(FeedbackSchema),
     defaultValues: {
       feedback: '',
     },
