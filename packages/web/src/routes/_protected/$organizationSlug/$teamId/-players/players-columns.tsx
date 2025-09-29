@@ -225,7 +225,7 @@ export function createEditablePlayerColumns({
 
         const _handleDeletePlayer = async () => {
           try {
-            await deletePlayer({ data: player.playerId });
+            await deletePlayer({ data: { playerId: player.playerId } });
             // Trigger data refresh - you might want to pass this as a prop
             setPlayers((prev) => prev.filter((p) => p.id !== player.playerId));
           } catch (error) {

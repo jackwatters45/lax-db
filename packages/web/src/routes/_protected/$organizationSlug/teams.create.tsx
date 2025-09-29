@@ -2,7 +2,7 @@ import { effectTsResolver } from '@hookform/resolvers/effect-ts';
 import { useMutation } from '@tanstack/react-query';
 import { createFileRoute, Link, useRouter } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
-import { Schema } from 'effect';
+import { Schema as S, Schema } from 'effect';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { DashboardHeader } from '@/components/sidebar/dashboard-header';
@@ -25,13 +25,18 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { authMiddleware } from '@/lib/middleware';
 
-// Server function for creating teams
+const CreateTeamSchema = S.Struct({
+  name: S.String,
+  description: S.String.pipe(S.optional),
+});
+
 const createTeam = createServerFn({ method: 'POST' })
-  .validator((data: { name: string; description?: string }) => data)
   .middleware([authMiddleware])
+  .validator((data: typeof CreateTeamSchema.Type) =>
+    S.decodeSync(CreateTeamSchema)(data),
+  )
   .handler(async ({ data, context }) => {
     const { TeamsAPI } = await import('@lax-db/core/team/index');
-
     return await TeamsAPI.createTeam(data, context.headers);
   });
 

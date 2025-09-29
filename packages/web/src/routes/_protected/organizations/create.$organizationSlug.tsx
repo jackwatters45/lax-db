@@ -7,7 +7,7 @@ import {
   useRouter,
 } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
-import { Schema } from 'effect';
+import { Schema as S } from 'effect';
 import { ArrowLeft } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -24,41 +24,20 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { authMiddleware } from '@/lib/middleware';
+import { CreateOrganizationSchema } from '@/lib/schema';
 
 const createOrganization = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
-  .validator((data: { name: string; slug: string }) => data)
+  .validator((data: typeof CreateOrganizationSchema.Type) =>
+    S.decodeSync(CreateOrganizationSchema)(data),
+  )
   .handler(async ({ data, context }) => {
     const { OrganizationAPI } = await import('@lax-db/core/organization/index');
 
     return await OrganizationAPI.createOrganization(data, context.headers);
   });
 
-const formSchema = Schema.Struct({
-  name: Schema.String.pipe(
-    Schema.minLength(1, { message: () => 'Club name is required' }),
-    Schema.minLength(3, {
-      message: () => 'Club name must be at least 3 characters',
-    }),
-    Schema.maxLength(100, {
-      message: () => 'Club name must be less than 100 characters',
-    }),
-  ),
-  slug: Schema.String.pipe(
-    Schema.minLength(1, { message: () => 'Club slug is required' }),
-    Schema.minLength(3, {
-      message: () => 'Club slug must be at least 3 characters',
-    }),
-    Schema.maxLength(50, {
-      message: () => 'Club slug must be less than 50 characters',
-    }),
-    Schema.filter((slug) => /^[a-z0-9-]+$/.test(slug), {
-      message: () =>
-        'Club slug can only contain lowercase letters, numbers, and hyphens',
-    }),
-  ),
-});
-type FormData = typeof formSchema.Type;
+type FormData = typeof CreateOrganizationSchema.Type;
 
 const generateSlug = (name: string) => {
   return name
@@ -85,7 +64,7 @@ function CreateOrganizationPage() {
   const hasExistingOrganizations = !!organizations.length;
 
   const form = useForm<FormData>({
-    resolver: effectTsResolver(formSchema),
+    resolver: effectTsResolver(CreateOrganizationSchema),
     defaultValues: {
       name: '',
       slug: '',

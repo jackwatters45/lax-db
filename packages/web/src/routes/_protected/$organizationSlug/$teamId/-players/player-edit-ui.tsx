@@ -1,6 +1,6 @@
 import type { Player } from '@lax-db/core/player/player.sql';
 import { createServerFn } from '@tanstack/react-start';
-import { Schema } from 'effect';
+import { Schema as S, Schema } from 'effect';
 import { UserPlus } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -19,7 +19,35 @@ import {
 } from '@/components/ui/popover';
 import { authMiddleware } from '@/lib/middleware';
 
-const addPlayerToTeamSchema = Schema.Struct({
+// Temporary player type for new rows
+type TempPlayer = {
+  id: string;
+  name: string | null;
+  email: string | null;
+  phone: string | null;
+  dateOfBirth: string | null;
+  jerseyNumber: number | null;
+  position: string | null;
+  isNew?: boolean;
+};
+
+const SearchSchema = S.Struct({
+  query: Schema.String.pipe(
+    Schema.minLength(1, { message: () => 'Search query is required' }),
+  ),
+});
+
+const searchPlayers = createServerFn({ method: 'POST' })
+  .middleware([authMiddleware])
+  .validator((data: typeof SearchSchema.Type) =>
+    S.decodeSync(SearchSchema)(data),
+  )
+  .handler(async ({ data: { query } }) => {
+    const { PlayerAPI } = await import('@lax-db/core/player/index');
+    return await PlayerAPI.search(query);
+  });
+
+const AddPlayerToTeamSchema = S.Struct({
   name: Schema.String.pipe(
     Schema.minLength(1, { message: () => 'Name is required' }),
   ),
@@ -35,33 +63,27 @@ const addPlayerToTeamSchema = Schema.Struct({
   ),
   position: Schema.optional(Schema.String),
 });
+// type AddPlayerToTeamFormValues = typeof AddPlayerToTeamSchema.Type;
 
-type AddPlayerToTeamFormValues = typeof addPlayerToTeamSchema.Type;
-
-// Temporary player type for new rows
-type TempPlayer = {
-  id: string;
-  name: string | null;
-  email: string | null;
-  phone: string | null;
-  dateOfBirth: string | null;
-  jerseyNumber: number | null;
-  position: string | null;
-  isNew?: boolean;
-};
-
-const searchPlayers = createServerFn({ method: 'POST' })
-  .middleware([authMiddleware])
-  .validator((query: string) => query)
-  .handler(async ({ data: query }) => {
-    const { PlayerAPI } = await import('@lax-db/core/player/index');
-    return await PlayerAPI.search(query);
-  });
+const TeamIdSchema = Schema.String;
 
 const addPlayerToTeam = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
   .validator(
-    (data: { formData: AddPlayerToTeamFormValues; teamId: string }) => data,
+    (data: {
+      formData: typeof AddPlayerToTeamSchema.Type;
+      teamId: typeof TeamIdSchema.Type;
+    }) => {
+      const formDataDecoded = S.decodeSync(AddPlayerToTeamSchema)(
+        data.formData,
+      );
+      const teamIdDecoded = S.decodeSync(TeamIdSchema)(data.teamId);
+
+      return {
+        formData: formDataDecoded,
+        teamId: teamIdDecoded,
+      };
+    },
   )
   .handler(async ({ data: { formData, teamId } }) => {
     const { PlayerAPI } = await import('@lax-db/core/player/index');
@@ -85,20 +107,31 @@ const addPlayerToTeam = createServerFn({ method: 'POST' })
     return player;
   });
 
+const RemovePlayerFromTeamSchema = S.Struct({
+  teamId: S.String,
+  playerId: S.String,
+});
 const removePlayerFromTeam = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
-  .validator((data: { teamId: string; playerId: string }) => data)
+  .validator((data: typeof RemovePlayerFromTeamSchema.Type) =>
+    S.decodeSync(RemovePlayerFromTeamSchema)(data),
+  )
   .handler(async ({ data }) => {
     const { PlayerAPI } = await import('@lax-db/core/player/index');
     return await PlayerAPI.removePlayerFromTeam(data.teamId, data.playerId);
   });
 
+const DeletePlayerSchema = S.Struct({
+  playerId: S.String,
+});
 const deletePlayer = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
-  .validator((playerId: string) => playerId)
-  .handler(async ({ data: playerId }) => {
+  .validator((data: typeof DeletePlayerSchema.Type) =>
+    S.decodeSync(DeletePlayerSchema)(data),
+  )
+  .handler(async ({ data }) => {
     const { PlayerAPI } = await import('@lax-db/core/player/index');
-    return await PlayerAPI.deletePlayer(playerId);
+    return await PlayerAPI.deletePlayer(data.playerId);
   });
 
 export function PlayerSearchCommand({
@@ -124,7 +157,9 @@ export function PlayerSearchCommand({
 
       setIsSearching(true);
       try {
-        const results = await searchPlayers({ data: searchQuery });
+        const results = await searchPlayers({
+          data: { query: searchQuery },
+        });
         setSearchResults(results);
       } catch (error) {
         console.error('Search failed:', error);
@@ -218,10 +253,4 @@ export function PlayerSearchCommand({
   );
 }
 
-export {
-  addPlayerToTeam,
-  removePlayerFromTeam,
-  deletePlayer,
-  type AddPlayerToTeamFormValues,
-  type TempPlayer,
-};
+export { addPlayerToTeam, removePlayerFromTeam, deletePlayer, type TempPlayer };
