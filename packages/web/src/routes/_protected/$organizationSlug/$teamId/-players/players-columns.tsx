@@ -1,16 +1,28 @@
+import { Link } from '@tanstack/react-router';
 import { type ColumnDef, createColumnHelper } from '@tanstack/react-table';
+import { User2 } from 'lucide-react';
+import type React from 'react';
 import { useState } from 'react';
 import { DataTableColumnHeader } from '@/components/data-table/data-table-column-header';
-import { Checkbox } from '@/components/ui/checkbox';
 import {
-  addPlayerToTeam,
-  deletePlayer,
-  PlayerActionButtons,
-  PlayerEditCell,
-  PlayerSearchCommand,
-  removePlayerFromTeam,
-  type TempPlayer,
-} from './player-edit-ui';
+  RowActionDeleteItem,
+  RowActionItem,
+  RowActionRemoveItem,
+  RowActionSeparator,
+  RowActionsDropdown,
+  RowActionsProvider,
+} from '@/components/data-table/data-table-row-actions';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { POSITION_SELECT_FIELDS } from '@/lib/constants';
+import { deletePlayer, removePlayerFromTeam } from './player-edit-ui';
 
 type PlayerWithTeamInfo = {
   id: string;
@@ -26,77 +38,20 @@ type PlayerWithTeamInfo = {
 
 const columnHelper = createColumnHelper<PlayerWithTeamInfo>();
 
-export function createPlayerColumns(teamId: string, onDataChange: () => void) {
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [editData, setEditData] = useState<Partial<TempPlayer>>({});
-
-  const handleEdit = (player: PlayerWithTeamInfo) => {
-    setEditingId(player.id);
-    setEditData({
-      name: player.name,
-      email: player.email,
-      phone: player.phone,
-      dateOfBirth: player.dateOfBirth,
-      jerseyNumber: player.jerseyNumber,
-      position: player.position,
-      isNew: 'isNew' in player ? player.isNew : false,
-    });
+type EditablePlayerColumnsProps = {
+  organizationSlug: string;
+  teamId: string;
+  actions: {
+    setPlayers: React.Dispatch<React.SetStateAction<PlayerWithTeamInfo[]>>;
+    onSave: (id: string, data: PlayerWithTeamInfo) => Promise<void>;
   };
+};
 
-  const handleSave = async () => {
-    if (!editingId || !editData) return;
-
-    try {
-      if ('isNew' in editData && editData.isNew) {
-        await addPlayerToTeam({
-          data: {
-            formData: {
-              name: editData.name || '',
-              email: editData.email || undefined,
-              phone: editData.phone || undefined,
-              dateOfBirth: editData.dateOfBirth || undefined,
-              jerseyNumber: editData.jerseyNumber || undefined,
-              position: editData.position || undefined,
-            },
-            teamId,
-          },
-        });
-        onDataChange();
-      }
-      setEditingId(null);
-      setEditData({});
-    } catch (error) {
-      console.error('Error saving player:', error);
-    }
-  };
-
-  const handleCancel = () => {
-    setEditingId(null);
-    setEditData({});
-  };
-
-  const handleRemoveFromTeam = async (playerId: string) => {
-    if (confirm('Remove this player from the team?')) {
-      try {
-        await removePlayerFromTeam({ data: { teamId, playerId } });
-        onDataChange();
-      } catch (error) {
-        console.error('Error removing player from team:', error);
-      }
-    }
-  };
-
-  const handleDeletePlayer = async (playerId: string) => {
-    if (confirm('Permanently delete this player? This cannot be undone.')) {
-      try {
-        await deletePlayer({ data: playerId });
-        onDataChange();
-      } catch (error) {
-        console.error('Error deleting player:', error);
-      }
-    }
-  };
-
+export function createEditablePlayerColumns({
+  organizationSlug,
+  teamId,
+  actions: { onSave, setPlayers },
+}: EditablePlayerColumnsProps): ColumnDef<PlayerWithTeamInfo>[] {
   return [
     columnHelper.display({
       id: 'select',
@@ -117,7 +72,11 @@ export function createPlayerColumns(teamId: string, onDataChange: () => void) {
       cell: ({ row }) => (
         <Checkbox
           checked={row.getIsSelected()}
-          onCheckedChange={() => row.toggleSelected()}
+          onCheckedChange={(checked) => {
+            console.log({ checked });
+            row.toggleSelected();
+            console.log({ IsSelected: row.getIsSelected() });
+          }}
           className="translate-y-0.5"
           aria-label="Select row"
         />
@@ -134,29 +93,21 @@ export function createPlayerColumns(teamId: string, onDataChange: () => void) {
       ),
       enableSorting: true,
       meta: {
-        className: 'text-center w-16',
+        className: 'w-16',
         displayName: 'Jersey Number',
       },
-      cell: ({ row }) => {
-        const player = row.original;
-        const isEditing = editingId === player.id;
-
-        return isEditing ? (
-          <PlayerEditCell
-            value={editData.jerseyNumber ?? null}
-            onChange={(value) =>
-              setEditData((prev) => ({
-                ...prev,
-                jerseyNumber: value as number,
-              }))
-            }
+      cell: ({ row: { original: player } }) => {
+        return (
+          <Input
+            variant="data"
             type="number"
+            defaultValue={player.jerseyNumber ?? ''}
+            onBlur={(e) => {
+              const value = e.target.value ? Number(e.target.value) : null;
+              onSave(player.id, { ...player, jerseyNumber: value });
+            }}
             placeholder="#"
           />
-        ) : (
-          <div className="text-center font-medium">
-            {player.jerseyNumber || '-'}
-          </div>
         );
       },
     }),
@@ -171,31 +122,17 @@ export function createPlayerColumns(teamId: string, onDataChange: () => void) {
         className: 'text-left',
         displayName: 'Name',
       },
-      cell: ({ row }) => {
-        const player = row.original;
-        const isEditing = editingId === player.id;
-
-        return isEditing ? (
-          <PlayerSearchCommand
-            value={editData.name || ''}
-            onSelect={(selectedPlayer) => {
-              setEditData((prev) => ({
-                ...prev,
-                name: selectedPlayer.name,
-                email: selectedPlayer.email,
-                phone: selectedPlayer.phone,
-                dateOfBirth: selectedPlayer.dateOfBirth,
-              }));
+      cell: ({ row: { original: player } }) => {
+        return (
+          <Input
+            variant="data"
+            defaultValue={player.name}
+            onBlur={(e) => {
+              const value = e.target.value;
+              onSave(player.id, { ...player, name: value });
             }}
-            onCreateNew={(name) => {
-              setEditData((prev) => ({
-                ...prev,
-                name,
-              }));
-            }}
+            placeholder="Player name"
           />
-        ) : (
-          <div className="font-medium">{player.name}</div>
         );
       },
     }),
@@ -212,18 +149,25 @@ export function createPlayerColumns(teamId: string, onDataChange: () => void) {
       filterFn: 'arrIncludesSome',
       cell: ({ row }) => {
         const player = row.original;
-        const isEditing = editingId === player.id;
 
-        return isEditing ? (
-          <PlayerEditCell
-            value={editData.position ?? null}
-            onChange={(value) =>
-              setEditData((prev) => ({ ...prev, position: value as string }))
-            }
-            type="position"
-          />
-        ) : (
-          <div className="text-muted-foreground">{player.position || '-'}</div>
+        return (
+          <Select
+            value={player.position || ''}
+            onValueChange={(value) => {
+              onSave(player.id, { ...player, position: value });
+            }}
+          >
+            <SelectTrigger variant="data">
+              <SelectValue placeholder="Select position" />
+            </SelectTrigger>
+            <SelectContent>
+              {POSITION_SELECT_FIELDS.map((position) => (
+                <SelectItem key={position.value} value={position.value}>
+                  {position.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         );
       },
     }),
@@ -231,27 +175,24 @@ export function createPlayerColumns(teamId: string, onDataChange: () => void) {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Email" />
       ),
-      enableSorting: false,
+      enableSorting: true,
       enableColumnFilter: true,
       meta: {
         className: 'text-left',
         displayName: 'Email',
       },
-      cell: ({ row }) => {
-        const player = row.original;
-        const isEditing = editingId === player.id;
-
-        return isEditing ? (
-          <PlayerEditCell
-            value={editData.email ?? null}
-            onChange={(value) =>
-              setEditData((prev) => ({ ...prev, email: value as string }))
-            }
+      cell: ({ row: { original: player } }) => {
+        return (
+          <Input
+            variant="data"
             type="email"
+            defaultValue={player.email || ''}
+            onBlur={(e) => {
+              const value = e.target.value || null;
+              onSave(player.id, { ...player, email: value });
+            }}
             placeholder="email@example.com"
           />
-        ) : (
-          <div className="text-muted-foreground">{player.email || '-'}</div>
         );
       },
     }),
@@ -266,18 +207,104 @@ export function createPlayerColumns(teamId: string, onDataChange: () => void) {
       },
       cell: ({ row }) => {
         const player = row.original;
-        const isEditing = editingId === player.id;
+        const [_removeDialogOpen, setRemoveDialogOpen] = useState(false);
+        const [_deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+        const _handleRemoveFromTeam = async () => {
+          try {
+            await removePlayerFromTeam({
+              data: { teamId, playerId: player.playerId },
+            });
+            // Trigger data refresh - you might want to pass this as a prop
+            window.location.reload();
+          } catch (error) {
+            console.error('Error removing player from team:', error);
+          }
+          setRemoveDialogOpen(false);
+        };
+
+        const _handleDeletePlayer = async () => {
+          try {
+            await deletePlayer({ data: player.playerId });
+            // Trigger data refresh - you might want to pass this as a prop
+            setPlayers((prev) => prev.filter((p) => p.id !== player.playerId));
+          } catch (error) {
+            console.error('Error deleting player:', error);
+          }
+          setDeleteDialogOpen(false);
+        };
 
         return (
-          <PlayerActionButtons
-            isEditing={isEditing}
-            onEdit={() => handleEdit(player)}
-            onSave={handleSave}
-            onCancel={handleCancel}
-            onRemoveFromTeam={handleRemoveFromTeam}
-            onDelete={handleDeletePlayer}
-            playerId={player.playerId}
-          />
+          <>
+            <RowActionsProvider
+              row={row}
+              actions={{
+                onDelete: () => setDeleteDialogOpen(true),
+                onRemove: () => setRemoveDialogOpen(true),
+              }}
+            >
+              <RowActionsDropdown>
+                <Link
+                  to="/$organizationSlug/players/$playerId"
+                  params={{
+                    organizationSlug: organizationSlug,
+                    playerId: player.playerId,
+                  }}
+                >
+                  <RowActionItem icon={User2}>View</RowActionItem>
+                </Link>
+                <RowActionRemoveItem>Remove From Team</RowActionRemoveItem>
+                <RowActionSeparator />
+
+                <RowActionDeleteItem>Delete Player</RowActionDeleteItem>
+              </RowActionsDropdown>
+            </RowActionsProvider>
+
+            {/*<AlertDialog
+              open={removeDialogOpen}
+              onOpenChange={setRemoveDialogOpen}
+            >
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Remove Player from Team</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Are you sure you want to remove {player.name} from this
+                    team?
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleRemoveFromTeam}>
+                    Remove
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+
+            <AlertDialog
+              open={deleteDialogOpen}
+              onOpenChange={setDeleteDialogOpen}
+            >
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Delete Player</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Are you sure you want to permanently delete {player.name}?
+                    This action cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={handleDeletePlayer}
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  >
+                    Delete
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>*/}
+          </>
         );
       },
     }),

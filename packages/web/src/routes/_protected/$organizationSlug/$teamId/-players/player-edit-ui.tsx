@@ -1,7 +1,7 @@
 import type { Player } from '@lax-db/core/player/player.sql';
 import { createServerFn } from '@tanstack/react-start';
 import { Schema } from 'effect';
-import { Check, Edit2, Trash2, UserMinus, UserPlus, X } from 'lucide-react';
+import { UserPlus } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
@@ -12,19 +12,11 @@ import {
   CommandItem,
   CommandList,
 } from '@/components/ui/command';
-import { Input } from '@/components/ui/input';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { authMiddleware } from '@/lib/middleware';
 
 const addPlayerToTeamSchema = Schema.Struct({
@@ -223,123 +215,6 @@ export function PlayerSearchCommand({
         </Command>
       </PopoverContent>
     </Popover>
-  );
-}
-
-export function PlayerEditCell({
-  value,
-  onChange,
-  type,
-  placeholder,
-}: {
-  value: string | number | null;
-  onChange: (value: string | number | null) => void;
-  type: 'text' | 'email' | 'number' | 'position';
-  placeholder?: string;
-}) {
-  if (type === 'position') {
-    return (
-      <Select
-        value={value?.toString() || ''}
-        onValueChange={(val) => onChange(val)}
-      >
-        <SelectTrigger>
-          <SelectValue placeholder="Select position" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="Attack">Attack</SelectItem>
-          <SelectItem value="Midfield">Midfield</SelectItem>
-          <SelectItem value="Defense">Defense</SelectItem>
-          <SelectItem value="Goalie">Goalie</SelectItem>
-        </SelectContent>
-      </Select>
-    );
-  }
-
-  return (
-    <Input
-      type={type}
-      value={value?.toString() || ''}
-      onChange={(e) => {
-        const val = e.target.value;
-        onChange(type === 'number' ? Number(val) : val);
-      }}
-      placeholder={placeholder}
-      className={type === 'number' ? 'w-16' : ''}
-    />
-  );
-}
-
-export function PlayerActionButtons({
-  isEditing,
-  onEdit,
-  onSave,
-  onCancel,
-  onRemoveFromTeam,
-  onDelete,
-  playerId,
-}: {
-  isEditing: boolean;
-  onEdit: () => void;
-  onSave: () => void;
-  onCancel: () => void;
-  onRemoveFromTeam: (playerId: string) => void;
-  onDelete: (playerId: string) => void;
-  playerId: string;
-}) {
-  if (isEditing) {
-    return (
-      <div className="flex gap-1">
-        <Button
-          size="sm"
-          variant="ghost"
-          onClick={onSave}
-          className="h-8 w-8 p-0"
-        >
-          <Check className="h-4 w-4" />
-        </Button>
-        <Button
-          size="sm"
-          variant="ghost"
-          onClick={onCancel}
-          className="h-8 w-8 p-0"
-        >
-          <X className="h-4 w-4" />
-        </Button>
-      </div>
-    );
-  }
-
-  return (
-    <div className="flex gap-1">
-      <Button
-        size="sm"
-        variant="ghost"
-        onClick={onEdit}
-        className="h-8 w-8 p-0"
-        title="Edit player"
-      >
-        <Edit2 className="h-4 w-4" />
-      </Button>
-      <Button
-        size="sm"
-        variant="ghost"
-        onClick={() => onRemoveFromTeam(playerId)}
-        className="h-8 w-8 p-0 text-orange-600 hover:text-orange-700"
-        title="Remove from team"
-      >
-        <UserMinus className="h-4 w-4" />
-      </Button>
-      <Button
-        size="sm"
-        variant="ghost"
-        onClick={() => onDelete(playerId)}
-        className="h-8 w-8 p-0 text-red-600 hover:text-red-700"
-        title="Delete player permanently"
-      >
-        <Trash2 className="h-4 w-4" />
-      </Button>
-    </div>
   );
 }
 

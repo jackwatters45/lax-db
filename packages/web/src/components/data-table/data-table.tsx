@@ -163,16 +163,16 @@ type DataTableRowProps = ClassNameProp & {
 
 function DataTableRow({ row, className }: DataTableRowProps) {
   return (
-    <TableRow
-      onClick={() => row.toggleSelected(!row.getIsSelected())}
-      className={cn('group select-none hover:bg-muted/50', className)}
-    >
+    <TableRow className={cn('group hover:bg-muted/50', className)}>
       {row.getVisibleCells().map((cell, index) => (
         <TableCell
           key={cell.id}
           className={cn(
             row.getIsSelected() ? 'bg-muted/50' : '',
-            'relative whitespace-nowrap py-1 text-muted-foreground first:w-10',
+            'relative whitespace-nowrap py-1 text-muted-foreground first:w-8',
+            index === 0 ? '' : 'border-l',
+            index === 0 ? 'pl-2' : '',
+            index === row.getVisibleCells().length - 1 ? 'pr-2' : '',
             cell.column.columnDef.meta?.className,
           )}
         >

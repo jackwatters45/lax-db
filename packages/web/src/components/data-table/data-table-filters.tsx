@@ -25,7 +25,7 @@ import {
 } from '@/components/ui/select';
 import { focusRing } from '@/lib/tw';
 import { cn } from '@/lib/utils';
-import { useFilterbar } from './data-table-filterbar';
+import { useFilterBar } from './data-table-filterbar';
 
 export type ConditionFilter = {
   condition: string;
@@ -83,7 +83,7 @@ function FilterSearch({
   placeholder = 'Search...',
   className,
 }: FilterSearchProps) {
-  const { table } = useFilterbar();
+  const { table } = useFilterBar();
 
   const [searchTerm, setSearchTerm] = React.useState<string>('');
 
@@ -106,7 +106,7 @@ function FilterSearch({
 type FilterClearProps = { className?: string };
 
 function FilterClear({ className }: FilterClearProps) {
-  const { table } = useFilterbar();
+  const { table } = useFilterBar();
 
   const isFiltered = table.getState().columnFilters.length > 0;
 
@@ -288,7 +288,7 @@ function FilterCheckbox<TData, TValue>({
         <button
           type="button"
           className={cn(
-            'flex w-full items-center gap-x-1.5 whitespace-nowrap rounded-md border border-border px-2 py-1.5 font-medium text-muted-foreground hover:bg-muted sm:w-fit sm:text-xs',
+            'flex h-7 w-full items-center gap-x-1.5 whitespace-nowrap rounded-md border border-border px-2 py-1.5 font-medium text-muted-foreground text-sm hover:bg-muted sm:w-fit',
             selectedValues && selectedValues.length > 0 ? '' : 'border-dashed',
             focusRing,
           )}

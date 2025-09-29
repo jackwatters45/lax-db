@@ -1,40 +1,27 @@
-import type { Table } from '@tanstack/react-table';
 import { Plus } from 'lucide-react';
+import { useDataTable } from '@/components/data-table/data-table';
 import {
   FilterActions,
   FilterBar,
   FilterBarAddButton,
-  FilterbarProvider,
-  FilterbarViewOptions,
+  FilterBarDisplayTypeToggle,
+  FilterBarProvider,
+  FilterBarViewOptions,
   FilterCheckbox,
   FilterClear,
   FilterGroup,
   FilterSearch,
 } from '@/components/data-table/data-table-filterbar';
-import { useDataTable } from '../../../../../components/data-table/data-table';
-import type { PlayerWithTeamInfo } from './players-columns';
+import { POSITION_SELECT_FIELDS } from '@/lib/constants';
 
-export interface PlayerDataTableToolbarProps {
-  table: Table<PlayerWithTeamInfo>;
-}
-
-const positions = [
-  { label: 'Attack', value: 'Attack' },
-  { label: 'Midfield', value: 'Midfield' },
-  { label: 'Face-off', value: 'Face-off' },
-  { label: 'Long Stick Midfield', value: 'Long Stick Midfield' },
-  { label: 'Defense', value: 'Defense' },
-  { label: 'Goalie', value: 'Goalie' },
-];
-
-export function PlayersFilterbar() {
+export function PlayersFilterBar({ onAddPlayer }: { onAddPlayer: () => void }) {
   const { table } = useDataTable();
 
   return (
-    <FilterbarProvider
+    <FilterBarProvider
       table={table}
       actions={{
-        onAdd: () => {},
+        onAdd: onAddPlayer,
       }}
     >
       <FilterBar>
@@ -46,19 +33,20 @@ export function PlayersFilterbar() {
             <FilterCheckbox
               column={table.getColumn('position')}
               title="Position"
-              options={positions}
+              options={POSITION_SELECT_FIELDS}
             />
           )}
           <FilterClear />
         </FilterGroup>
         <FilterActions>
-          <FilterbarViewOptions />
+          <FilterBarDisplayTypeToggle />
+          <FilterBarViewOptions />
           <FilterBarAddButton>
             <Plus className="size-4" />
-            Add Player
+            <span className="hidden lg:block">Add Player</span>
           </FilterBarAddButton>
         </FilterActions>
       </FilterBar>
-    </FilterbarProvider>
+    </FilterBarProvider>
   );
 }

@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
-import type { ColumnDef } from '@tanstack/react-table';
+import { Schema as S } from 'effect';
 import { useState } from 'react';
 import {
   DataTableBody,
@@ -15,44 +15,80 @@ import {
   BreadcrumbLink,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { authMiddleware } from '@/lib/middleware';
+import { TeamIdSchema } from '@/lib/schema';
 import { TeamHeader } from './-components/team-header';
 import {
-  createPlayerColumns,
+  createEditablePlayerColumns,
   type PlayerWithTeamInfo,
 } from './-players/players-columns';
-import { PlayersFilterbar } from './-players/players-filterbar';
+import { PlayersFilterBar } from './-players/players-filterbar';
 import { PlayersToolbar } from './-players/players-toolbar';
 
 const getTeamPlayers = createServerFn({ method: 'GET' })
   .middleware([authMiddleware])
-  .validator((data: { teamId: string }) => data)
+  .validator((data: { teamId: string }) => S.decodeSync(TeamIdSchema)(data))
   .handler(async ({ data }) => {
     const { PlayerAPI } = await import('@lax-db/core/player/index');
     return await PlayerAPI.getTeamPlayers(data.teamId);
   });
 
+const searchParams = S.standardSchemaV1(
+  S.Struct({
+    editingId: S.String.pipe(S.optional),
+  }),
+);
+
 export const Route = createFileRoute(
   '/_protected/$organizationSlug/$teamId/players',
 )({
   component: RouteComponent,
+  validateSearch: searchParams,
   loader: async ({ params }) => {
     const players = await getTeamPlayers({ data: { teamId: params.teamId } });
     return { players };
   },
 });
 
-// add players logic
-// add fields
 function RouteComponent() {
+  return (
+    <>
+      <Header />
+      <PageBody className="py-4">
+        <PlayersDataTable />
+      </PageBody>
+    </>
+  );
+}
+
+// TODO: commits
+// TODO: obsidian
+//
+// TODO: alert dialog action component
+// TODO: connect to backend - useMutation - remove players state part?
+// TODO: add fields + db
+// TODO: checkbox
+// TODO: filters, sort, etc
+function PlayersDataTable() {
   const { players: initialPlayers } = Route.useLoaderData();
-  const { teamId } = Route.useParams();
+  const { organizationSlug, teamId } = Route.useParams();
+
   const [players, setPlayers] = useState<PlayerWithTeamInfo[]>(initialPlayers);
 
-  const _handleAddPlayer = () => {
+  const handleAddPlayer = () => {
+    const tempId = `temp-${Date.now()}`;
     const newPlayer: PlayerWithTeamInfo = {
-      id: `temp-${Date.now()}`,
-      playerId: `temp-${Date.now()}`,
+      id: tempId,
+      playerId: tempId,
       name: '',
       email: null,
       phone: null,
@@ -64,40 +100,74 @@ function RouteComponent() {
     setPlayers((prev) => [...prev, newPlayer]);
   };
 
-  const handleDataChange = () => {
-    window.location.reload();
+  const handleSavePlayer = async (
+    id: string,
+    updatedPlayer: PlayerWithTeamInfo,
+  ) => {
+    setPlayers((prev) => prev.map((p) => (p.id === id ? updatedPlayer : p)));
   };
 
-  const columns = createPlayerColumns(teamId, handleDataChange);
+  const columns = createEditablePlayerColumns({
+    organizationSlug,
+    teamId,
+    actions: {
+      onSave: handleSavePlayer,
+      setPlayers,
+    },
+  });
 
   return (
-    <>
-      <Header />
-      <PageBody className="py-4">
-        <PlayersDataTable players={players} columns={columns} />
-      </PageBody>
-    </>
+    <Tabs defaultValue="list">
+      <DataTableProvider columns={columns} data={players} showAllRows={true}>
+        <DataTableRoot>
+          <PlayersFilterBar onAddPlayer={handleAddPlayer} />
+          <TabsContent value="list">
+            <DataTableContent>
+              <DataTableHeader />
+              <DataTableBody />
+            </DataTableContent>
+          </TabsContent>
+          <TabsContent value="cards" className="container">
+            <PlayerCards players={players} />
+          </TabsContent>
+          <PlayersToolbar />
+        </DataTableRoot>
+      </DataTableProvider>
+    </Tabs>
   );
 }
 
-function PlayersDataTable({
-  columns,
-  players,
-}: {
-  columns: ColumnDef<PlayerWithTeamInfo>[];
-  players: PlayerWithTeamInfo[];
-}) {
+function PlayerCards({ players }: { players: PlayerWithTeamInfo[] }) {
   return (
-    <DataTableProvider columns={columns} data={players} showAllRows={true}>
-      <DataTableRoot>
-        <PlayersFilterbar />
-        <DataTableContent>
-          <DataTableHeader />
-          <DataTableBody />
-        </DataTableContent>
-        <PlayersToolbar />
-      </DataTableRoot>
-    </DataTableProvider>
+    <div className="xl:gris-cols-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {[...players, ...players, ...players, ...players, ...players].map(
+        (player, i) => (
+          <PlayerCard key={`${player.id}-${i}`} player={player} />
+        ),
+      )}
+    </div>
+  );
+}
+
+function PlayerCard({ player }: { player: PlayerWithTeamInfo }) {
+  return (
+    <Card className="">
+      <CardHeader>
+        <CardTitle>{player.name}</CardTitle>
+        <CardDescription>{player.email}</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form>
+          <div className="flex flex-col gap-6">
+            <div className="grid gap-2">1</div>
+            <div className="grid gap-2">
+              <div className="flex items-center">2</div>
+            </div>
+          </div>
+        </form>
+      </CardContent>
+      <CardFooter className="flex-col gap-2">Footer</CardFooter>
+    </Card>
   );
 }
 

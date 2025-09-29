@@ -1,6 +1,7 @@
 import type { RemixiconComponentType } from '@remixicon/react';
 import { RiDeleteBinLine, RiEdit2Line, RiMoreFill } from '@remixicon/react';
 import type { Row } from '@tanstack/react-table';
+import { UserMinus } from 'lucide-react';
 import * as React from 'react';
 import { Button } from '@/components/ui/button';
 import {
@@ -11,10 +12,12 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
+import type { ClassNameChildrenProp } from '@/types';
 
 type RowActions<TData = unknown> = {
   onEdit?: (row: Row<TData>) => void;
   onDelete?: (row: Row<TData>) => void;
+  onRemove?: (row: Row<TData>) => void;
 };
 
 type RowActionsContextValue<TData = unknown> = {
@@ -119,7 +122,7 @@ function RowActionItem({
   );
 }
 
-function RowActionEditItem({ className }: { className?: string }) {
+function RowActionEditItem({ className, children }: ClassNameChildrenProp) {
   const { actions, row } = useRowActions();
 
   if (!actions?.onEdit) {
@@ -134,12 +137,12 @@ function RowActionEditItem({ className }: { className?: string }) {
       onClick={() => actions.onEdit?.(row)}
       className={className}
     >
-      Edit
+      {children}
     </RowActionItem>
   );
 }
 
-function RowActionDeleteItem({ className }: { className?: string }) {
+function RowActionDeleteItem({ className, children }: ClassNameChildrenProp) {
   const { actions, row } = useRowActions();
 
   if (!actions?.onDelete) {
@@ -155,7 +158,27 @@ function RowActionDeleteItem({ className }: { className?: string }) {
       variant="destructive"
       className={className}
     >
-      Delete
+      {children}
+    </RowActionItem>
+  );
+}
+
+function RowActionRemoveItem({ className, children }: ClassNameChildrenProp) {
+  const { actions, row } = useRowActions();
+
+  if (!actions?.onRemove) {
+    throw new Error(
+      'RowActionRemoveItem requires onRemove action to be provided to RowActionsProvider',
+    );
+  }
+
+  return (
+    <RowActionItem
+      icon={UserMinus}
+      onClick={() => actions.onDelete?.(row)}
+      className={className}
+    >
+      {children}
     </RowActionItem>
   );
 }
@@ -164,31 +187,13 @@ function RowActionSeparator() {
   return <DropdownMenuSeparator />;
 }
 
-// Legacy component for backwards compatibility
-interface DataTableRowActionsProps<TData> {
-  row: Row<TData>;
-}
-
-export function DataTableRowActions<TData>({
-  row,
-}: DataTableRowActionsProps<TData>) {
-  return (
-    <RowActionsProvider row={row}>
-      <RowActionsDropdown>
-        <RowActionItem>Add</RowActionItem>
-        <RowActionItem>Edit</RowActionItem>
-        <RowActionItem variant="destructive">Delete</RowActionItem>
-      </RowActionsDropdown>
-    </RowActionsProvider>
-  );
-}
-
 export {
   RowActionsProvider,
   RowActionsDropdown,
   RowActionItem,
   RowActionEditItem,
   RowActionDeleteItem,
+  RowActionRemoveItem,
   RowActionSeparator,
   useRowActions,
 };
