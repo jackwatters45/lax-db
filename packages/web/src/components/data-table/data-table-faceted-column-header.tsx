@@ -16,7 +16,7 @@ import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import { DataTableColumnHeader } from './data-table-column-header';
 
-interface FacetedColumnHeaderProps<TData, TValue> {
+type FacetedColumnHeaderProps<TData, TValue> = {
   column: Column<TData, TValue>;
   title: string;
   options: {
@@ -24,7 +24,7 @@ interface FacetedColumnHeaderProps<TData, TValue> {
     value: string;
     count: number;
   }[];
-}
+};
 
 export function FacetedColumnHeader<TData, TValue>({
   column,

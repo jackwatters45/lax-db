@@ -3,11 +3,11 @@ import type { Column } from '@tanstack/react-table';
 
 import { cn } from '@/lib/utils';
 
-interface DataTableColumnHeaderProps<TData, TValue>
-  extends React.HTMLAttributes<HTMLButtonElement> {
-  column: Column<TData, TValue>;
-  title: string;
-}
+type DataTableColumnHeaderProps<TData, TValue> =
+  React.HTMLAttributes<HTMLButtonElement> & {
+    column: Column<TData, TValue>;
+    title: string;
+  };
 
 export function DataTableColumnHeader<TData, TValue>({
   column,
