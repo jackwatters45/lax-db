@@ -1,5 +1,6 @@
 import { RiEqualizer2Line } from '@remixicon/react';
 import type { Table } from '@tanstack/react-table';
+import { Grid2X2, List } from 'lucide-react';
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -10,38 +11,39 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
+import { TabsList, TabsTrigger } from '../ui/tabs';
 
-type FilterbarActions = {
+type FilterBarActions = {
   onAdd?: () => void;
 };
 
-type FilterbarContextValue<TData = unknown> = {
+type FilterBarContextValue<TData = unknown> = {
   table: Table<TData>;
-  actions?: FilterbarActions;
+  actions?: FilterBarActions;
 };
 
-const FilterbarContext =
-  React.createContext<FilterbarContextValue<unknown> | null>(null);
+const FilterBarContext =
+  React.createContext<FilterBarContextValue<unknown> | null>(null);
 
-export function useFilterbar<TData = unknown>(): FilterbarContextValue<TData> {
-  const context = React.use(FilterbarContext);
+export function useFilterBar<TData = unknown>(): FilterBarContextValue<TData> {
+  const context = React.use(FilterBarContext);
   if (!context) {
-    throw new Error('useFilterbar must be used within a FilterbarProvider');
+    throw new Error('useFilterBar must be used within a FilterBarProvider');
   }
-  return context as FilterbarContextValue<TData>;
+  return context as FilterBarContextValue<TData>;
 }
 
-type FilterbarProviderProps<TData = unknown> = {
+type FilterBarProviderProps<TData = unknown> = {
   table: Table<TData>;
-  actions?: FilterbarActions;
+  actions?: FilterBarActions;
   children?: React.ReactNode;
 };
 
-function FilterbarProvider<TData>({
+function FilterBarProvider<TData>({
   table,
   actions,
   children,
-}: FilterbarProviderProps<TData>) {
+}: FilterBarProviderProps<TData>) {
   const value = React.useMemo(
     () => ({
       table,
@@ -51,9 +53,9 @@ function FilterbarProvider<TData>({
   );
 
   return (
-    <FilterbarContext.Provider value={value as FilterbarContextValue<unknown>}>
+    <FilterBarContext.Provider value={value as FilterBarContextValue<unknown>}>
       {children}
-    </FilterbarContext.Provider>
+    </FilterBarContext.Provider>
   );
 }
 
@@ -99,8 +101,8 @@ function FilterActions({ children, className }: FilterGroupProps) {
   );
 }
 
-function FilterbarViewOptions() {
-  const { table } = useFilterbar();
+function FilterBarViewOptions() {
+  const { table } = useFilterBar();
   const columns = table.getAllColumns();
 
   return (
@@ -159,12 +161,25 @@ type FilterBarAddButtonProps = React.PropsWithChildren & {
 };
 
 function FilterBarAddButton({ children, className }: FilterBarAddButtonProps) {
-  const { actions } = useFilterbar();
+  const { actions } = useFilterBar();
 
   return (
     <Button onClick={actions?.onAdd} size={'sm'} className={className}>
       {children}
     </Button>
+  );
+}
+
+function FilterBarDisplayTypeToggle() {
+  return (
+    <TabsList>
+      <TabsTrigger value="list">
+        <List className="size-4" />
+      </TabsTrigger>
+      <TabsTrigger value="cards">
+        <Grid2X2 className="size-4" />
+      </TabsTrigger>
+    </TabsList>
   );
 }
 
@@ -180,9 +195,10 @@ import {
 export {
   FilterActions,
   FilterBar,
-  FilterbarProvider,
+  FilterBarProvider,
   FilterGroup,
-  FilterbarViewOptions,
+  FilterBarViewOptions,
+  FilterBarDisplayTypeToggle,
   FilterBarAddButton,
   FilterCheckbox,
   FilterClear,

@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
+import { Schema } from 'effect';
 import { Mail, Plus, Settings, UserMinus } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { PageBody } from '@/components/layout/page-content';
@@ -13,18 +14,18 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { authClient } from '@/lib/auth-client';
 import { authMiddleware } from '@/lib/middleware';
+import { TeamIdSchema } from '@/lib/schema';
 import { TeamHeader } from './-components/team-header';
 
-// Server function to get team data
 const getTeamData = createServerFn({ method: 'GET' })
   .middleware([authMiddleware])
-  .validator((data: { teamId: string }) => data)
-  .handler(async ({ data, context }) => {
+  .validator((data: { teamId: string }) =>
+    Schema.decodeSync(TeamIdSchema)(data),
+  )
+  .handler(async ({ data: { teamId }, context }) => {
     const { auth } = await import('@lax-db/core/auth');
 
     try {
-      const { teamId } = data;
-
       // Get team members and active member role
       const [membersResult, activeMemberResult] = await Promise.all([
         auth.api.listTeamMembers({
@@ -50,7 +51,7 @@ const getTeamData = createServerFn({ method: 'GET' })
     } catch (error) {
       console.error('Error loading team data:', error);
       return {
-        teamId: data.teamId,
+        teamId,
         members: [],
         activeMember: null,
         canManageTeam: false,
