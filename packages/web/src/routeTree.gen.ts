@@ -15,7 +15,6 @@ import { Route as ProtectedRouteImport } from './routes/_protected';
 import { Route as ProtectedOrganizationSlugRouteImport } from './routes/_protected/$organizationSlug';
 import { Route as ProtectedOrganizationSlugTeamIdRouteImport } from './routes/_protected/$organizationSlug/$teamId';
 import { Route as ProtectedOrganizationSlugTeamIdIndexRouteImport } from './routes/_protected/$organizationSlug/$teamId/index';
-import { Route as ProtectedOrganizationSlugTeamIdMeepRouteImport } from './routes/_protected/$organizationSlug/$teamId/meep';
 import { Route as ProtectedOrganizationSlugTeamIdPlayersRouteImport } from './routes/_protected/$organizationSlug/$teamId/players';
 import { Route as ProtectedOrganizationSlugFilmFilmIdRouteImport } from './routes/_protected/$organizationSlug/film/$filmId';
 import { Route as ProtectedOrganizationSlugFilmIndexRouteImport } from './routes/_protected/$organizationSlug/film/index';
@@ -244,12 +243,6 @@ const ProtectedOrganizationSlugTeamIdPlayersRoute =
     path: '/players',
     getParentRoute: () => ProtectedOrganizationSlugTeamIdRoute,
   } as any);
-const ProtectedOrganizationSlugTeamIdMeepRoute =
-  ProtectedOrganizationSlugTeamIdMeepRouteImport.update({
-    id: '/meep',
-    path: '/meep',
-    getParentRoute: () => ProtectedOrganizationSlugTeamIdRoute,
-  } as any);
 const ProtectedOrganizationSlugSettingsUsersIndexRoute =
   ProtectedOrganizationSlugSettingsUsersIndexRouteImport.update({
     id: '/settings/users/',
@@ -458,7 +451,6 @@ export interface FileRoutesByFullPath {
   '/organizations/create': typeof ProtectedOrganizationsCreateRouteWithChildren;
   '/organizations/join': typeof ProtectedOrganizationsJoinRoute;
   '/$organizationSlug/': typeof ProtectedOrganizationSlugIndexRoute;
-  '/$organizationSlug/$teamId/meep': typeof ProtectedOrganizationSlugTeamIdMeepRoute;
   '/$organizationSlug/$teamId/players': typeof ProtectedOrganizationSlugTeamIdPlayersRoute;
   '/$organizationSlug/film/$filmId': typeof ProtectedOrganizationSlugFilmFilmIdRoute;
   '/$organizationSlug/film/upload': typeof ProtectedOrganizationSlugFilmUploadRoute;
@@ -518,7 +510,6 @@ export interface FileRoutesByTo {
   '/organizations/create': typeof ProtectedOrganizationsCreateRouteWithChildren;
   '/organizations/join': typeof ProtectedOrganizationsJoinRoute;
   '/$organizationSlug': typeof ProtectedOrganizationSlugIndexRoute;
-  '/$organizationSlug/$teamId/meep': typeof ProtectedOrganizationSlugTeamIdMeepRoute;
   '/$organizationSlug/$teamId/players': typeof ProtectedOrganizationSlugTeamIdPlayersRoute;
   '/$organizationSlug/film/$filmId': typeof ProtectedOrganizationSlugFilmFilmIdRoute;
   '/$organizationSlug/film/upload': typeof ProtectedOrganizationSlugFilmUploadRoute;
@@ -582,7 +573,6 @@ export interface FileRoutesById {
   '/_protected/organizations/create': typeof ProtectedOrganizationsCreateRouteWithChildren;
   '/_protected/organizations/join': typeof ProtectedOrganizationsJoinRoute;
   '/_protected/$organizationSlug/': typeof ProtectedOrganizationSlugIndexRoute;
-  '/_protected/$organizationSlug/$teamId/meep': typeof ProtectedOrganizationSlugTeamIdMeepRoute;
   '/_protected/$organizationSlug/$teamId/players': typeof ProtectedOrganizationSlugTeamIdPlayersRoute;
   '/_protected/$organizationSlug/film/$filmId': typeof ProtectedOrganizationSlugFilmFilmIdRoute;
   '/_protected/$organizationSlug/film/upload': typeof ProtectedOrganizationSlugFilmUploadRoute;
@@ -646,7 +636,6 @@ export interface FileRouteTypes {
     | '/organizations/create'
     | '/organizations/join'
     | '/$organizationSlug/'
-    | '/$organizationSlug/$teamId/meep'
     | '/$organizationSlug/$teamId/players'
     | '/$organizationSlug/film/$filmId'
     | '/$organizationSlug/film/upload'
@@ -706,7 +695,6 @@ export interface FileRouteTypes {
     | '/organizations/create'
     | '/organizations/join'
     | '/$organizationSlug'
-    | '/$organizationSlug/$teamId/meep'
     | '/$organizationSlug/$teamId/players'
     | '/$organizationSlug/film/$filmId'
     | '/$organizationSlug/film/upload'
@@ -769,7 +757,6 @@ export interface FileRouteTypes {
     | '/_protected/organizations/create'
     | '/_protected/organizations/join'
     | '/_protected/$organizationSlug/'
-    | '/_protected/$organizationSlug/$teamId/meep'
     | '/_protected/$organizationSlug/$teamId/players'
     | '/_protected/$organizationSlug/film/$filmId'
     | '/_protected/$organizationSlug/film/upload'
@@ -1058,13 +1045,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedOrganizationSlugTeamIdPlayersRouteImport;
       parentRoute: typeof ProtectedOrganizationSlugTeamIdRoute;
     };
-    '/_protected/$organizationSlug/$teamId/meep': {
-      id: '/_protected/$organizationSlug/$teamId/meep';
-      path: '/meep';
-      fullPath: '/$organizationSlug/$teamId/meep';
-      preLoaderRoute: typeof ProtectedOrganizationSlugTeamIdMeepRouteImport;
-      parentRoute: typeof ProtectedOrganizationSlugTeamIdRoute;
-    };
     '/_protected/$organizationSlug/settings/users/': {
       id: '/_protected/$organizationSlug/settings/users/';
       path: '/settings/users';
@@ -1304,15 +1284,12 @@ declare module '@tanstack/react-start/server' {
 }
 
 interface ProtectedOrganizationSlugTeamIdRouteChildren {
-  ProtectedOrganizationSlugTeamIdMeepRoute: typeof ProtectedOrganizationSlugTeamIdMeepRoute;
   ProtectedOrganizationSlugTeamIdPlayersRoute: typeof ProtectedOrganizationSlugTeamIdPlayersRoute;
   ProtectedOrganizationSlugTeamIdIndexRoute: typeof ProtectedOrganizationSlugTeamIdIndexRoute;
 }
 
 const ProtectedOrganizationSlugTeamIdRouteChildren: ProtectedOrganizationSlugTeamIdRouteChildren =
   {
-    ProtectedOrganizationSlugTeamIdMeepRoute:
-      ProtectedOrganizationSlugTeamIdMeepRoute,
     ProtectedOrganizationSlugTeamIdPlayersRoute:
       ProtectedOrganizationSlugTeamIdPlayersRoute,
     ProtectedOrganizationSlugTeamIdIndexRoute:

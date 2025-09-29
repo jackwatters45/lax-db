@@ -26,14 +26,6 @@ export function TeamSubNav({ organizationSlug, teamId }: TeamHeaderProps) {
           Players
         </Link>
       </NavbarItem>
-      <NavbarItem asChild>
-        <Link
-          to="/$organizationSlug/$teamId/meep"
-          params={{ organizationSlug, teamId }}
-        >
-          Meep
-        </Link>
-      </NavbarItem>
     </Navbar>
   );
 }
