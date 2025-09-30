@@ -19,18 +19,6 @@ import {
 } from '@/components/ui/popover';
 import { authMiddleware } from '@/lib/middleware';
 
-// Temporary player type for new rows
-type TempPlayer = {
-  id: string;
-  name: string | null;
-  email: string | null;
-  phone: string | null;
-  dateOfBirth: string | null;
-  jerseyNumber: number | null;
-  position: string | null;
-  isNew?: boolean;
-};
-
 const SearchSchema = S.Struct({
   query: Schema.String.pipe(
     Schema.minLength(1, { message: () => 'Search query is required' }),
@@ -91,47 +79,21 @@ const addPlayerToTeam = createServerFn({ method: 'POST' })
     // First create the player
     const player = await PlayerAPI.create({
       name: formData.name,
-      email: formData.email,
-      phone: formData.phone,
-      dateOfBirth: formData.dateOfBirth,
+      email: formData.email ?? null,
+      phone: formData.phone ?? null,
+      dateOfBirth: formData.dateOfBirth ?? null,
+      userId: null,
     });
 
     // Then add them to the team
     await PlayerAPI.addPlayerToTeam({
       playerId: player.id,
       teamId,
-      jerseyNumber: formData.jerseyNumber,
-      position: formData.position,
+      jerseyNumber: formData.jerseyNumber ?? null,
+      position: formData.position ?? null,
     });
 
     return player;
-  });
-
-const RemovePlayerFromTeamSchema = S.Struct({
-  teamId: S.String,
-  playerId: S.String,
-});
-const removePlayerFromTeam = createServerFn({ method: 'POST' })
-  .middleware([authMiddleware])
-  .validator((data: typeof RemovePlayerFromTeamSchema.Type) =>
-    S.decodeSync(RemovePlayerFromTeamSchema)(data),
-  )
-  .handler(async ({ data }) => {
-    const { PlayerAPI } = await import('@lax-db/core/player/index');
-    return await PlayerAPI.removePlayerFromTeam(data.teamId, data.playerId);
-  });
-
-const DeletePlayerSchema = S.Struct({
-  playerId: S.String,
-});
-const deletePlayer = createServerFn({ method: 'POST' })
-  .middleware([authMiddleware])
-  .validator((data: typeof DeletePlayerSchema.Type) =>
-    S.decodeSync(DeletePlayerSchema)(data),
-  )
-  .handler(async ({ data }) => {
-    const { PlayerAPI } = await import('@lax-db/core/player/index');
-    return await PlayerAPI.deletePlayer(data.playerId);
   });
 
 export function PlayerSearchCommand({
@@ -253,4 +215,4 @@ export function PlayerSearchCommand({
   );
 }
 
-export { addPlayerToTeam, removePlayerFromTeam, deletePlayer, type TempPlayer };
+export { addPlayerToTeam };

@@ -10,7 +10,7 @@ export const playerTable = pgTable(
     userId: text('user_id').references(() => userTable.id, {
       onDelete: 'set null',
     }),
-    name: text('name').notNull(),
+    name: text('name'),
     email: text('email'), // For future invitations
     phone: text('phone'),
     dateOfBirth: text('date_of_birth'), // More accurate than age

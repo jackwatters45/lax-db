@@ -1,6 +1,6 @@
+import type { PartialNullable } from '@lax-db/core/types';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { createServerFn } from '@tanstack/react-start';
 import { Schema as S } from 'effect';
 import {
   DataTableBody,
@@ -24,79 +24,24 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
-import { authMiddleware } from '@/lib/middleware';
-import { TeamIdSchema } from '@/lib/schema';
-import { TeamHeader } from './-components/team-header';
+import { TeamHeader } from '../-components/team-header';
 import {
   createEditablePlayerColumns,
-  type PlayerWithTeamInfo,
-} from './-players/players-columns';
-import { PlayersFilterBar } from './-players/players-filterbar';
-import { PlayersToolbar } from './-players/players-toolbar';
-
-const getTeamPlayers = createServerFn({ method: 'GET' })
-  .middleware([authMiddleware])
-  .validator((data: typeof TeamIdSchema.Type) =>
-    S.decodeSync(TeamIdSchema)(data),
-  )
-  .handler(async ({ data }) => {
-    const { PlayerAPI } = await import('@lax-db/core/player/index');
-    return await PlayerAPI.getTeamPlayers(data.teamId);
-  });
-
-const UpdatePlayerInputSchema = S.Struct({
-  playerId: S.String,
-  teamId: S.String,
-  name: S.optional(S.String),
-  email: S.optional(S.NullOr(S.String)),
-  phone: S.optional(S.NullOr(S.String)),
-  dateOfBirth: S.optional(S.NullOr(S.String)),
-  jerseyNumber: S.optional(S.NullOr(S.Number)),
-  position: S.optional(S.NullOr(S.String)),
-});
-
-const updatePlayerFn = createServerFn({ method: 'POST' })
-  .middleware([authMiddleware])
-  .validator((data: typeof UpdatePlayerInputSchema.Type) =>
-    S.decodeSync(UpdatePlayerInputSchema)(data),
-  )
-  .handler(async ({ data }) => {
-    const { PlayerAPI } = await import('@lax-db/core/player/index');
-    const { Effect, Runtime } = await import('effect');
-
-    const { teamId, jerseyNumber, position, ...playerFields } = data;
-
-    const runtime = Runtime.defaultRuntime;
-
-    await Runtime.runPromise(runtime)(
-      Effect.gen(function* () {
-        const updates = [];
-
-        if (Object.keys(playerFields).length > 1) {
-          updates.push(
-            Effect.promise(() => PlayerAPI.updatePlayer(playerFields)),
-          );
-        }
-
-        if (jerseyNumber !== undefined || position !== undefined) {
-          updates.push(
-            Effect.promise(() =>
-              PlayerAPI.updateTeamPlayer({
-                teamId,
-                playerId: data.playerId,
-                jerseyNumber,
-                position,
-              }),
-            ),
-          );
-        }
-
-        if (updates.length > 0) {
-          yield* Effect.all(updates, { concurrency: 'unbounded' });
-        }
-      }),
-    );
-  });
+  type TeamPlayerWithInfo,
+} from './-components/players-columns';
+import { PlayersFilterBar } from './-components/players-filterbar';
+import { PlayersToolbar } from './-components/players-toolbar';
+import {
+  type AddPlayerWithTeamInputSchema,
+  addPlayerToTeamFn,
+  type DeletePlayerInputSchema,
+  deletePlayerFn,
+  getTeamPlayers,
+  type RemovePlayerFromTeamInputSchema,
+  removePlayerFromTeamFn,
+  type UpdatePlayerInputSchema,
+  updatePlayerFn,
+} from './-server';
 
 const searchParams = S.standardSchemaV1(
   S.Struct({
@@ -105,8 +50,10 @@ const searchParams = S.standardSchemaV1(
 );
 
 // TODO: cmd for users
+// TODO: add fields
+// TODO: clean up migrations
 export const Route = createFileRoute(
-  '/_protected/$organizationSlug/$teamId/players',
+  '/_protected/$organizationSlug/$teamId/players/',
 )({
   component: RouteComponent,
   validateSearch: searchParams,
@@ -131,6 +78,7 @@ function RouteComponent() {
 
 function PlayersDataTable() {
   const { organizationSlug, teamId } = Route.useParams();
+
   const queryClient = useQueryClient();
 
   const { data: players = [] } = useQuery({
@@ -141,22 +89,98 @@ function PlayersDataTable() {
   const updatePlayerMutation = useMutation({
     mutationFn: (data: typeof UpdatePlayerInputSchema.Type) =>
       updatePlayerFn({ data }),
-    onMutate: async (variables) => {
-      await queryClient.cancelQueries({ queryKey: ['players', teamId] });
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['players', teamId] });
+    },
+  });
 
-      const previousPlayers = queryClient.getQueryData<PlayerWithTeamInfo[]>([
+  const addPlayerMutation = useMutation({
+    mutationFn: (data: typeof AddPlayerWithTeamInputSchema.Type) =>
+      addPlayerToTeamFn({ data }),
+    onMutate: async (variables, ctx) => {
+      await ctx.client.cancelQueries({ queryKey: ['players', teamId] });
+
+      const previousPlayers = ctx.client.getQueryData<TeamPlayerWithInfo[]>([
         'players',
         teamId,
       ]);
 
-      queryClient.setQueryData<PlayerWithTeamInfo[]>(
+      const tempId = `temp-${Date.now()}`;
+      const optimisticPlayer: TeamPlayerWithInfo = {
+        id: tempId,
+        playerId: tempId,
+        name: variables.name,
+        email: variables.email || null,
+        phone: variables.phone || null,
+        dateOfBirth: variables.dateOfBirth || null,
+        jerseyNumber: variables.jerseyNumber || null,
+        position: variables.position || null,
+        teamId: variables.teamId,
+        userId: null,
+        createdAt: new Date(),
+        updatedAt: null,
+        deletedAt: null,
+      };
+
+      ctx.client.setQueryData<TeamPlayerWithInfo[]>(
         ['players', teamId],
-        (old = []) =>
-          old.map((player) =>
-            player.playerId === variables.playerId
-              ? { ...player, ...variables }
-              : player,
-          ),
+        (old = []) => [...old, optimisticPlayer],
+      );
+
+      return { previousPlayers };
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousPlayers) {
+        queryClient.setQueryData(['players', teamId], context.previousPlayers);
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['players', teamId] });
+    },
+  });
+
+  const removePlayerMutation = useMutation({
+    mutationFn: (data: typeof RemovePlayerFromTeamInputSchema.Type) =>
+      removePlayerFromTeamFn({ data }),
+    onMutate: async (variables, ctx) => {
+      await ctx.client.cancelQueries({ queryKey: ['players', teamId] });
+
+      const previousPlayers = ctx.client.getQueryData<TeamPlayerWithInfo[]>([
+        'players',
+        teamId,
+      ]);
+
+      ctx.client.setQueryData<TeamPlayerWithInfo[]>(
+        ['players', teamId],
+        (old = []) => old.filter((p) => p.playerId !== variables.playerId),
+      );
+
+      return { previousPlayers };
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousPlayers) {
+        queryClient.setQueryData(['players', teamId], context.previousPlayers);
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['players', teamId] });
+    },
+  });
+
+  const deletePlayerMutation = useMutation({
+    mutationFn: (data: typeof DeletePlayerInputSchema.Type) =>
+      deletePlayerFn({ data }),
+    onMutate: async (variables, ctx) => {
+      await ctx.client.cancelQueries({ queryKey: ['players', teamId] });
+
+      const previousPlayers = ctx.client.getQueryData<TeamPlayerWithInfo[]>([
+        'players',
+        teamId,
+      ]);
+
+      ctx.client.setQueryData<TeamPlayerWithInfo[]>(
+        ['players', teamId],
+        (old = []) => old.filter((p) => p.playerId !== variables.playerId),
       );
 
       return { previousPlayers };
@@ -172,30 +196,36 @@ function PlayersDataTable() {
   });
 
   const handleAddPlayer = () => {
-    const tempId = `temp-${Date.now()}`;
-    const _newPlayer: PlayerWithTeamInfo = {
-      id: tempId,
-      playerId: tempId,
+    addPlayerMutation.mutate({
+      teamId,
       name: '',
       email: null,
       phone: null,
       dateOfBirth: null,
       jerseyNumber: null,
       position: null,
-      isNew: true,
-    };
+      userId: null,
+    });
   };
 
   const columns = createEditablePlayerColumns({
     organizationSlug,
-    teamId,
     actions: {
-      onUpdate: (playerId: string, updates: Partial<PlayerWithTeamInfo>) => {
+      onUpdate: (
+        playerId: string,
+        updates: PartialNullable<TeamPlayerWithInfo>,
+      ) => {
         updatePlayerMutation.mutate({
+          ...updates,
           playerId,
           teamId,
-          ...updates,
         });
+      },
+      onRemove: (playerId: string) => {
+        removePlayerMutation.mutate({ teamId, playerId });
+      },
+      onDelete: (playerId: string) => {
+        deletePlayerMutation.mutate({ playerId });
       },
     },
   });
@@ -221,7 +251,7 @@ function PlayersDataTable() {
   );
 }
 
-function PlayerCards({ players }: { players: PlayerWithTeamInfo[] }) {
+function PlayerCards({ players }: { players: TeamPlayerWithInfo[] }) {
   return (
     <div className="xl:gris-cols-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {[...players, ...players, ...players, ...players, ...players].map(
@@ -233,7 +263,7 @@ function PlayerCards({ players }: { players: PlayerWithTeamInfo[] }) {
   );
 }
 
-function PlayerCard({ player }: { player: PlayerWithTeamInfo }) {
+function PlayerCard({ player }: { player: TeamPlayerWithInfo }) {
   return (
     <Card className="">
       <CardHeader>
