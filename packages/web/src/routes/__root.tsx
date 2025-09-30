@@ -9,10 +9,7 @@ import {
   Outlet,
   Scripts,
 } from '@tanstack/react-router';
-import {
-  TanStackRouterDevtools,
-  TanStackRouterDevtoolsPanel,
-} from '@tanstack/react-router-devtools';
+import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
 import type * as React from 'react';
 import { DefaultCatchBoundary } from '@/components/default-catch-boundary';
 import { NotFound } from '@/components/not-found';
@@ -92,7 +89,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body className="antialiased">
         {children}
-        <TanStackRouterDevtools position="bottom-right" />
         <TanStackDevtools
           config={{ position: 'bottom-left' }}
           plugins={[
