@@ -1,6 +1,6 @@
 {
-  "id": "40fd9709-061a-46b5-8542-2e5d0f23e563",
-  "prevId": "e304b0fe-1cb5-4c01-b026-b2db93490dae",
+  "id": "a5e08126-1711-46a8-9893-52003dcbdeac",
+  "prevId": "5893d0dc-9375-4051-9859-6c4ba4cd9790",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -660,6 +660,12 @@
           "primaryKey": true,
           "notNull": true
         },
+        "organization_id": {
+          "name": "organization_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
         "user_id": {
           "name": "user_id",
           "type": "text",
@@ -710,6 +716,21 @@
         }
       },
       "indexes": {
+        "idx_player_organization": {
+          "name": "idx_player_organization",
+          "columns": [
+            {
+              "expression": "organization_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
         "idx_player_name": {
           "name": "idx_player_name",
           "columns": [
@@ -742,6 +763,15 @@
         }
       },
       "foreignKeys": {
+        "player_organization_id_organization_id_fk": {
+          "name": "player_organization_id_organization_id_fk",
+          "tableFrom": "player",
+          "tableTo": "organization",
+          "columnsFrom": ["organization_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
         "player_user_id_user_id_fk": {
           "name": "player_user_id_user_id_fk",
           "tableFrom": "player",
