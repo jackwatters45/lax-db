@@ -136,13 +136,17 @@ function FilterBarViewOptions() {
                     className="flex items-center gap-2 rounded-sm px-2 py-1.5 text-sm hover:bg-accent hover:text-accent-foreground"
                   >
                     <Checkbox
+                      id={column.id}
                       checked={column.getIsVisible()}
                       onCheckedChange={(value) =>
                         column.toggleVisibility(!!value)
                       }
                       aria-label={`Toggle ${label} column visibility`}
                     />
-                    <Label className="cursor-pointer font-normal text-sm">
+                    <Label
+                      htmlFor={column.id}
+                      className="cursor-pointer font-normal text-sm"
+                    >
                       {label}
                     </Label>
                   </div>

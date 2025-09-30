@@ -64,11 +64,7 @@ export function createEditablePlayerColumns({
       cell: ({ row }) => (
         <Checkbox
           checked={row.getIsSelected()}
-          onCheckedChange={(checked) => {
-            console.log({ checked });
-            row.toggleSelected();
-            console.log({ IsSelected: row.getIsSelected() });
-          }}
+          onCheckedChange={() => row.toggleSelected()}
           className="translate-y-0.5"
           aria-label="Select row"
         />

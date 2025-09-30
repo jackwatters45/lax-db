@@ -1,5 +1,6 @@
 import {
   type ColumnDef,
+  type ColumnFiltersState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -9,6 +10,7 @@ import {
   type RowSelectionState,
   type Table as TanstackTable,
   useReactTable,
+  type VisibilityState,
 } from '@tanstack/react-table';
 import * as React from 'react';
 import {
@@ -25,7 +27,6 @@ import type { ClassNameChildrenProp, ClassNameProp } from '@/types';
 type DataTableContextValue<TData = unknown> = {
   table: TanstackTable<TData>;
   columns: ColumnDef<TData>[];
-  showAllRows: boolean;
 };
 
 const DataTableContext =
@@ -53,6 +54,12 @@ function DataTableProvider<TData>({
   children,
 }: DataTableProviderProps<TData>) {
   const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    [],
+  );
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({});
+  const [globalFilter, setGlobalFilter] = React.useState('');
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
     pageSize: 10,
@@ -63,12 +70,18 @@ function DataTableProvider<TData>({
     columns,
     state: {
       rowSelection,
+      columnFilters,
+      columnVisibility,
+      globalFilter,
       ...(!showAllRows && { pagination }),
     },
     enableRowSelection: true,
-    getFilteredRowModel: getFilteredRowModel(),
     onRowSelectionChange: setRowSelection,
+    onColumnFiltersChange: setColumnFilters,
+    onColumnVisibilityChange: setColumnVisibility,
+    onGlobalFilterChange: setGlobalFilter,
     getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
     ...(!showAllRows && {
       getPaginationRowModel: getPaginationRowModel(),
@@ -78,13 +91,10 @@ function DataTableProvider<TData>({
 
   const table = useReactTable(tableConfig);
 
-  const value = React.useMemo(
-    () => ({
-      table,
-      columns,
-    }),
-    [table, columns],
-  );
+  const value = {
+    table,
+    columns,
+  };
 
   return (
     <DataTableContext.Provider value={value as DataTableContextValue<unknown>}>
