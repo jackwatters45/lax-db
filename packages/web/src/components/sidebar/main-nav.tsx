@@ -1,14 +1,5 @@
 import { Link, useRouteContext } from '@tanstack/react-router';
-import {
-  BookOpen,
-  Dumbbell,
-  Search,
-  Settings,
-  Trophy,
-  User,
-  Users,
-  Video,
-} from 'lucide-react';
+import { Settings, Trophy, User, Users } from 'lucide-react';
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -59,7 +50,7 @@ export function MainNav() {
             </Link>
           </SidebarMenuButton>
         </SidebarMenuItem>
-        <SidebarMenuItem>
+        {/*<SidebarMenuItem>
           <SidebarMenuButton asChild tooltip={'Playbook'}>
             <Link
               to={'/$organizationSlug/playbook'}
@@ -102,7 +93,7 @@ export function MainNav() {
               <span>Scouting</span>
             </Link>
           </SidebarMenuButton>
-        </SidebarMenuItem>
+        </SidebarMenuItem>*/}
         <SidebarMenuItem>
           <SidebarMenuButton asChild tooltip={'Settings'}>
             <Link
