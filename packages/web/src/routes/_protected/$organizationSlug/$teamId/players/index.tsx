@@ -2,6 +2,7 @@ import type { PartialNullable } from '@lax-db/core/types';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { Schema as S } from 'effect';
+import { useMemo } from 'react';
 import {
   DataTableBody,
   DataTableContent,
@@ -237,28 +238,39 @@ function PlayersDataTable() {
     });
   };
 
-  const columns = createEditablePlayerColumns({
-    organizationSlug,
-    teamPlayers: players,
-    actions: {
-      onUpdate: (
-        playerId: string,
-        updates: PartialNullable<TeamPlayerWithInfo>,
-      ) => {
-        updatePlayerMutation.mutate({
-          ...updates,
-          playerId,
-          teamId,
-        });
-      },
-      onRemove: (playerId: string) => {
-        removePlayerMutation.mutate({ teamId, playerId });
-      },
-      onDelete: (playerId: string) => {
-        deletePlayerMutation.mutate({ playerId });
-      },
-    },
-  });
+  const columns = useMemo(
+    () =>
+      createEditablePlayerColumns({
+        organizationSlug,
+        teamPlayers: players,
+        actions: {
+          onUpdate: (
+            playerId: string,
+            updates: PartialNullable<TeamPlayerWithInfo>,
+          ) => {
+            updatePlayerMutation.mutate({
+              ...updates,
+              playerId,
+              teamId,
+            });
+          },
+          onRemove: (playerId: string) => {
+            removePlayerMutation.mutate({ teamId, playerId });
+          },
+          onDelete: (playerId: string) => {
+            deletePlayerMutation.mutate({ playerId });
+          },
+        },
+      }),
+    [
+      organizationSlug,
+      players,
+      teamId,
+      updatePlayerMutation,
+      removePlayerMutation,
+      deletePlayerMutation,
+    ],
+  );
 
   return (
     <Tabs defaultValue="list">
