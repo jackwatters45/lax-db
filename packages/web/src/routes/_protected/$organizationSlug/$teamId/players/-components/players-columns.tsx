@@ -22,11 +22,13 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { POSITION_SELECT_FIELDS } from '@/lib/constants';
+import { PlayerSearchCombobox } from './player-edit-ui';
 
 const columnHelper = createColumnHelper<TeamPlayerWithInfo>();
 
 type EditablePlayerColumnsProps = {
   organizationSlug: string;
+  teamPlayers: TeamPlayerWithInfo[];
   actions: {
     onUpdate: (
       playerId: string,
@@ -39,6 +41,7 @@ type EditablePlayerColumnsProps = {
 
 export function createEditablePlayerColumns({
   organizationSlug,
+  teamPlayers,
   actions: { onUpdate, onRemove, onDelete },
 }: EditablePlayerColumnsProps): ColumnDef<TeamPlayerWithInfo>[] {
   return [
@@ -112,15 +115,28 @@ export function createEditablePlayerColumns({
         displayName: 'Name',
       },
       cell: ({ row: { original: player } }) => {
+        const excludePlayerIds = teamPlayers.map((p) => p.playerId);
+
         return (
-          <Input
-            variant="data"
-            defaultValue={player.name ?? ''}
-            onBlur={(e) => {
-              const value = e.target.value;
-              onUpdate(player.playerId, { name: value });
+          <PlayerSearchCombobox
+            organizationId={organizationSlug}
+            value={player.name ?? ''}
+            excludePlayerIds={excludePlayerIds}
+            onSelect={(selectedPlayer) => {
+              onUpdate(player.playerId, {
+                name: selectedPlayer.name,
+                email: selectedPlayer.email,
+                phone: selectedPlayer.phone,
+                dateOfBirth: selectedPlayer.dateOfBirth,
+              });
             }}
-            placeholder="Player name"
+            onRename={(name) => {
+              onUpdate(player.playerId, { name });
+            }}
+            onCreateNew={(name) => {
+              onUpdate(player.playerId, { name });
+            }}
+            placeholder="Search or add player..."
           />
         );
       },

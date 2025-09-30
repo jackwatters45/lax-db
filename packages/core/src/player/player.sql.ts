@@ -1,5 +1,6 @@
 import { index, integer, pgTable, text } from 'drizzle-orm/pg-core';
 import { timestamps } from '../drizzle/types';
+import { organizationTable } from '../organization/organization.sql';
 import { teamTable } from '../team/team.sql';
 import { userTable } from '../user/user.sql';
 
@@ -7,17 +8,20 @@ export const playerTable = pgTable(
   'player',
   {
     id: text('id').primaryKey(),
+    organizationId: text('organization_id')
+      .notNull()
+      .references(() => organizationTable.id, { onDelete: 'cascade' }),
     userId: text('user_id').references(() => userTable.id, {
       onDelete: 'set null',
     }),
     name: text('name'),
-    email: text('email'), // For future invitations
+    email: text('email'),
     phone: text('phone'),
-    dateOfBirth: text('date_of_birth'), // More accurate than age
-    // Removed number, position, age - these are now team-specific in teamPlayerTable
+    dateOfBirth: text('date_of_birth'),
     ...timestamps,
   },
   (table) => [
+    index('idx_player_organization').on(table.organizationId),
     index('idx_player_name').on(table.name),
     index('idx_player_email').on(table.email),
   ],

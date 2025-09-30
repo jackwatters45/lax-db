@@ -78,6 +78,9 @@ function RouteComponent() {
 
 function PlayersDataTable() {
   const { organizationSlug, teamId } = Route.useParams();
+  const {
+    activeOrganization: { id: organizationId },
+  } = Route.useRouteContext();
 
   const queryClient = useQueryClient();
 
@@ -108,6 +111,7 @@ function PlayersDataTable() {
       const tempId = `temp-${Date.now()}`;
       const optimisticPlayer: TeamPlayerWithInfo = {
         id: tempId,
+        organizationId: variables.organizationId,
         playerId: tempId,
         name: variables.name,
         email: variables.email || null,
@@ -196,7 +200,10 @@ function PlayersDataTable() {
   });
 
   const handleAddPlayer = () => {
+    if (!organizationId) return;
+
     addPlayerMutation.mutate({
+      organizationId,
       teamId,
       name: '',
       email: null,
@@ -210,6 +217,7 @@ function PlayersDataTable() {
 
   const columns = createEditablePlayerColumns({
     organizationSlug,
+    teamPlayers: players,
     actions: {
       onUpdate: (
         playerId: string,

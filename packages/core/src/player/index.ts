@@ -1,4 +1,4 @@
-import { and, eq, ilike } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import { Context, Effect, Layer, Runtime, Schema as S } from 'effect';
 import type { ParseError } from 'effect/ParseResult';
 import { DatabaseError, DatabaseLive, DatabaseService } from '../drizzle';
@@ -9,6 +9,8 @@ import {
   CreatePlayerInputSchema,
   type DeletePlayerInput,
   DeletePlayerInputSchema,
+  type GetAllPlayersInput,
+  GetAllPlayersInputSchema,
   type RemovePlayerFromTeamInput,
   RemovePlayerFromTeamInputSchema,
   type UpdatePlayerInput,
@@ -39,8 +41,9 @@ export class PlayerError extends Error {
 export class PlayerService extends Context.Tag('PlayerService')<
   PlayerService,
   {
-    readonly getAll: () => Effect.Effect<Player[], DatabaseError>;
-    readonly search: (query: string) => Effect.Effect<Player[], DatabaseError>;
+    readonly getAll: (
+      input: GetAllPlayersInput,
+    ) => Effect.Effect<Player[], DatabaseError | ParseError>;
     readonly create: (
       input: CreatePlayerInput,
     ) => Effect.Effect<Player, ParseError | PlayerError | DatabaseError>;
@@ -71,22 +74,23 @@ export const PlayerServiceLive = Layer.effect(
     const dbService = yield* DatabaseService;
 
     return {
-      getAll: () =>
-        Effect.tryPromise({
-          try: () => dbService.db.select().from(playerTable),
-          catch: (error) =>
-            new DatabaseError(error, 'Failed to get all players'),
-        }),
+      getAll: (input: GetAllPlayersInput) =>
+        Effect.gen(function* () {
+          const validated = yield* S.decode(GetAllPlayersInputSchema)(input);
 
-      search: (query: string) =>
-        Effect.tryPromise({
-          try: () =>
-            dbService.db
-              .select()
-              .from(playerTable)
-              .where(ilike(playerTable.name, `%${query}%`)),
-          catch: (error) =>
-            new DatabaseError(error, 'Failed to search players'),
+          const result = yield* Effect.tryPromise({
+            try: () =>
+              dbService.db
+                .select()
+                .from(playerTable)
+                .where(
+                  eq(playerTable.organizationId, validated.organizationId),
+                ),
+            catch: (error) =>
+              new DatabaseError(error, 'Failed to get all players'),
+          });
+
+          return result;
         }),
 
       create: (input: CreatePlayerInput) =>
@@ -101,6 +105,7 @@ export const PlayerServiceLive = Layer.effect(
                 .insert(playerTable)
                 .values({
                   id,
+                  organizationId: validated.organizationId,
                   userId: validated.userId || null,
                   name: validated.name,
                   email: validated.email || null,
@@ -128,6 +133,7 @@ export const PlayerServiceLive = Layer.effect(
               .select({
                 // Player fields
                 id: playerTable.id,
+                organizationId: playerTable.organizationId,
                 userId: playerTable.userId,
                 name: playerTable.name,
                 email: playerTable.email,
@@ -278,20 +284,10 @@ const runtime = Runtime.defaultRuntime;
 
 // Simple async API - no Effect boilerplate needed
 export const PlayerAPI = {
-  async getAll(): Promise<Player[]> {
+  async getAll(input: GetAllPlayersInput): Promise<Player[]> {
     const effect = Effect.gen(function* () {
       const service = yield* PlayerService;
-      return yield* service.getAll();
-    });
-    return await Runtime.runPromise(runtime)(
-      Effect.provide(effect, PlayerServiceLive),
-    );
-  },
-
-  async search(query: string): Promise<Player[]> {
-    const effect = Effect.gen(function* () {
-      const service = yield* PlayerService;
-      return yield* service.search(query);
+      return yield* service.getAll(input);
     });
     return await Runtime.runPromise(runtime)(
       Effect.provide(effect, PlayerServiceLive),
