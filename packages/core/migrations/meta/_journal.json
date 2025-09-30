@@ -40,22 +40,8 @@
     {
       "idx": 5,
       "version": "7",
-      "when": 1759195176188,
-      "tag": "0005_orange_aaron_stack",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "7",
-      "when": 1727635200000,
-      "tag": "0006_burly_obadiah_stane",
-      "breakpoints": true
-    },
-    {
-      "idx": 7,
-      "version": "7",
-      "when": 1759208035664,
-      "tag": "0007_groovy_micromacro",
+      "when": 1759211592685,
+      "tag": "0005_petite_guardian",
       "breakpoints": true
     }
   ]
