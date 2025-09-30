@@ -96,7 +96,9 @@ export function createEditablePlayerColumns({
             defaultValue={player.jerseyNumber ?? ''}
             onBlur={(e) => {
               const value = e.target.value ? Number(e.target.value) : null;
-              onUpdate(player.playerId, { jerseyNumber: value });
+              if (value !== player.jerseyNumber) {
+                onUpdate(player.playerId, { jerseyNumber: value });
+              }
             }}
             placeholder="#"
           />
@@ -194,7 +196,9 @@ export function createEditablePlayerColumns({
             defaultValue={player.email || ''}
             onBlur={(e) => {
               const value = e.target.value || null;
-              onUpdate(player.playerId, { email: value });
+              if (value !== player.email) {
+                onUpdate(player.playerId, { email: value });
+              }
             }}
             placeholder="email@example.com"
           />

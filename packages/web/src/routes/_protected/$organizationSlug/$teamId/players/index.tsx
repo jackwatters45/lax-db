@@ -92,6 +92,28 @@ function PlayersDataTable() {
   const updatePlayerMutation = useMutation({
     mutationFn: (data: typeof UpdatePlayerInputSchema.Type) =>
       updatePlayerFn({ data }),
+    onMutate: async (variables, ctx) => {
+      await ctx.client.cancelQueries({ queryKey: ['players', teamId] });
+      const previousPlayers = ctx.client.getQueryData<TeamPlayerWithInfo[]>([
+        'players',
+        teamId,
+      ]);
+      ctx.client.setQueryData<TeamPlayerWithInfo[]>(
+        ['players', teamId],
+        (old = []) =>
+          old.map((player) =>
+            player.playerId === variables.playerId
+              ? { ...player, ...variables }
+              : player,
+          ),
+      );
+      return { previousPlayers };
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousPlayers) {
+        queryClient.setQueryData(['players', teamId], context.previousPlayers);
+      }
+    },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['players', teamId] });
     },
