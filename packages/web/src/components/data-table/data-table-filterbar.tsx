@@ -124,8 +124,8 @@ function FilterBarViewOptions() {
             sideOffset={7}
             className="z-50 w-fit space-y-2"
           >
-            <Label className="font-medium">Display properties</Label>
-            <div className="flex flex-col space-y-1">
+            <Label className="font-semibold">Display Properties</Label>
+            <div className="mt-2 flex flex-col space-y-2">
               {columns.map((column) => {
                 if (!column.getCanHide()) return null;
                 const label =
@@ -133,7 +133,7 @@ function FilterBarViewOptions() {
                 return (
                   <div
                     key={column.id}
-                    className="flex items-center gap-2 rounded-sm px-2 py-1.5 text-sm hover:bg-accent hover:text-accent-foreground"
+                    className="flex items-center gap-2 overflow-y-auto rounded-sm text-sm hover:bg-accent hover:text-accent-foreground"
                   >
                     <Checkbox
                       id={column.id}
