@@ -29,8 +29,6 @@ const getDashboardData = createServerFn({ method: 'GET' })
         }),
       ]);
 
-      console.log({ organizations, activeOrganization });
-
       return {
         organizations,
         activeOrganization,
