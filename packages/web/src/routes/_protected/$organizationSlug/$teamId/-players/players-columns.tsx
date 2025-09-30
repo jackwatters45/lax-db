@@ -1,7 +1,6 @@
 import { Link } from '@tanstack/react-router';
 import { type ColumnDef, createColumnHelper } from '@tanstack/react-table';
 import { User2 } from 'lucide-react';
-import type React from 'react';
 import { useState } from 'react';
 import { DataTableColumnHeader } from '@/components/data-table/data-table-column-header';
 import {
@@ -42,15 +41,14 @@ type EditablePlayerColumnsProps = {
   organizationSlug: string;
   teamId: string;
   actions: {
-    setPlayers: React.Dispatch<React.SetStateAction<PlayerWithTeamInfo[]>>;
-    onSave: (id: string, data: PlayerWithTeamInfo) => Promise<void>;
+    onUpdate: (playerId: string, updates: Partial<PlayerWithTeamInfo>) => void;
   };
 };
 
 export function createEditablePlayerColumns({
   organizationSlug,
   teamId,
-  actions: { onSave, setPlayers },
+  actions: { onUpdate },
 }: EditablePlayerColumnsProps): ColumnDef<PlayerWithTeamInfo>[] {
   return [
     columnHelper.display({
@@ -104,7 +102,7 @@ export function createEditablePlayerColumns({
             defaultValue={player.jerseyNumber ?? ''}
             onBlur={(e) => {
               const value = e.target.value ? Number(e.target.value) : null;
-              onSave(player.id, { ...player, jerseyNumber: value });
+              onUpdate(player.playerId, { jerseyNumber: value });
             }}
             placeholder="#"
           />
@@ -129,7 +127,7 @@ export function createEditablePlayerColumns({
             defaultValue={player.name}
             onBlur={(e) => {
               const value = e.target.value;
-              onSave(player.id, { ...player, name: value });
+              onUpdate(player.playerId, { name: value });
             }}
             placeholder="Player name"
           />
@@ -154,7 +152,7 @@ export function createEditablePlayerColumns({
           <Select
             value={player.position || ''}
             onValueChange={(value) => {
-              onSave(player.id, { ...player, position: value });
+              onUpdate(player.playerId, { position: value });
             }}
           >
             <SelectTrigger variant="data">
@@ -189,7 +187,7 @@ export function createEditablePlayerColumns({
             defaultValue={player.email || ''}
             onBlur={(e) => {
               const value = e.target.value || null;
-              onSave(player.id, { ...player, email: value });
+              onUpdate(player.playerId, { email: value });
             }}
             placeholder="email@example.com"
           />
@@ -226,8 +224,6 @@ export function createEditablePlayerColumns({
         const _handleDeletePlayer = async () => {
           try {
             await deletePlayer({ data: { playerId: player.playerId } });
-            // Trigger data refresh - you might want to pass this as a prop
-            setPlayers((prev) => prev.filter((p) => p.id !== player.playerId));
           } catch (error) {
             console.error('Error deleting player:', error);
           }

@@ -1,7 +1,7 @@
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { Schema as S } from 'effect';
-import { useState } from 'react';
 import {
   DataTableBody,
   DataTableContent,
@@ -44,20 +44,77 @@ const getTeamPlayers = createServerFn({ method: 'GET' })
     return await PlayerAPI.getTeamPlayers(data.teamId);
   });
 
+const UpdatePlayerInputSchema = S.Struct({
+  playerId: S.String,
+  teamId: S.String,
+  name: S.optional(S.String),
+  email: S.optional(S.NullOr(S.String)),
+  phone: S.optional(S.NullOr(S.String)),
+  dateOfBirth: S.optional(S.NullOr(S.String)),
+  jerseyNumber: S.optional(S.NullOr(S.Number)),
+  position: S.optional(S.NullOr(S.String)),
+});
+
+const updatePlayerFn = createServerFn({ method: 'POST' })
+  .middleware([authMiddleware])
+  .validator((data: typeof UpdatePlayerInputSchema.Type) =>
+    S.decodeSync(UpdatePlayerInputSchema)(data),
+  )
+  .handler(async ({ data }) => {
+    const { PlayerAPI } = await import('@lax-db/core/player/index');
+    const { Effect, Runtime } = await import('effect');
+
+    const { teamId, jerseyNumber, position, ...playerFields } = data;
+
+    const runtime = Runtime.defaultRuntime;
+
+    await Runtime.runPromise(runtime)(
+      Effect.gen(function* () {
+        const updates = [];
+
+        if (Object.keys(playerFields).length > 1) {
+          updates.push(
+            Effect.promise(() => PlayerAPI.updatePlayer(playerFields)),
+          );
+        }
+
+        if (jerseyNumber !== undefined || position !== undefined) {
+          updates.push(
+            Effect.promise(() =>
+              PlayerAPI.updateTeamPlayer({
+                teamId,
+                playerId: data.playerId,
+                jerseyNumber,
+                position,
+              }),
+            ),
+          );
+        }
+
+        if (updates.length > 0) {
+          yield* Effect.all(updates, { concurrency: 'unbounded' });
+        }
+      }),
+    );
+  });
+
 const searchParams = S.standardSchemaV1(
   S.Struct({
     editingId: S.String.pipe(S.optional),
   }),
 );
 
+// TODO: cmd for users
 export const Route = createFileRoute(
   '/_protected/$organizationSlug/$teamId/players',
 )({
   component: RouteComponent,
   validateSearch: searchParams,
-  loader: async ({ params }) => {
-    const players = await getTeamPlayers({ data: { teamId: params.teamId } });
-    return { players };
+  loader: async ({ params, context }) => {
+    await context.queryClient.prefetchQuery({
+      queryKey: ['players', params.teamId],
+      queryFn: () => getTeamPlayers({ data: { teamId: params.teamId } }),
+    });
   },
 });
 
@@ -72,21 +129,51 @@ function RouteComponent() {
   );
 }
 
-//
-// TODO: alert dialog action component
-// TODO: connect to backend - useMutation - remove players state part?
-// TODO: add fields + db
-// TODO: checkbox
-// TODO: filters, sort, etc
 function PlayersDataTable() {
-  const { players: initialPlayers } = Route.useLoaderData();
   const { organizationSlug, teamId } = Route.useParams();
+  const queryClient = useQueryClient();
 
-  const [players, setPlayers] = useState<PlayerWithTeamInfo[]>(initialPlayers);
+  const { data: players = [] } = useQuery({
+    queryKey: ['players', teamId],
+    queryFn: () => getTeamPlayers({ data: { teamId } }),
+  });
+
+  const updatePlayerMutation = useMutation({
+    mutationFn: (data: typeof UpdatePlayerInputSchema.Type) =>
+      updatePlayerFn({ data }),
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: ['players', teamId] });
+
+      const previousPlayers = queryClient.getQueryData<PlayerWithTeamInfo[]>([
+        'players',
+        teamId,
+      ]);
+
+      queryClient.setQueryData<PlayerWithTeamInfo[]>(
+        ['players', teamId],
+        (old = []) =>
+          old.map((player) =>
+            player.playerId === variables.playerId
+              ? { ...player, ...variables }
+              : player,
+          ),
+      );
+
+      return { previousPlayers };
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousPlayers) {
+        queryClient.setQueryData(['players', teamId], context.previousPlayers);
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['players', teamId] });
+    },
+  });
 
   const handleAddPlayer = () => {
     const tempId = `temp-${Date.now()}`;
-    const newPlayer: PlayerWithTeamInfo = {
+    const _newPlayer: PlayerWithTeamInfo = {
       id: tempId,
       playerId: tempId,
       name: '',
@@ -97,22 +184,19 @@ function PlayersDataTable() {
       position: null,
       isNew: true,
     };
-    setPlayers((prev) => [...prev, newPlayer]);
-  };
-
-  const handleSavePlayer = async (
-    id: string,
-    updatedPlayer: PlayerWithTeamInfo,
-  ) => {
-    setPlayers((prev) => prev.map((p) => (p.id === id ? updatedPlayer : p)));
   };
 
   const columns = createEditablePlayerColumns({
     organizationSlug,
     teamId,
     actions: {
-      onSave: handleSavePlayer,
-      setPlayers,
+      onUpdate: (playerId: string, updates: Partial<PlayerWithTeamInfo>) => {
+        updatePlayerMutation.mutate({
+          playerId,
+          teamId,
+          ...updates,
+        });
+      },
     },
   });
 
