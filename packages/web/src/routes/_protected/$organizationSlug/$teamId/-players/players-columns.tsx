@@ -235,76 +235,38 @@ export function createEditablePlayerColumns({
         };
 
         return (
-          <>
-            <RowActionsProvider
-              row={row}
-              actions={{
-                onDelete: () => setDeleteDialogOpen(true),
-                onRemove: () => setRemoveDialogOpen(true),
-              }}
-            >
-              <RowActionsDropdown>
-                <Link
-                  to="/$organizationSlug/players/$playerId"
-                  params={{
-                    organizationSlug: organizationSlug,
-                    playerId: player.playerId,
-                  }}
-                >
-                  <RowActionItem icon={User2}>View</RowActionItem>
-                </Link>
-                <RowActionRemoveItem>Remove From Team</RowActionRemoveItem>
-                <RowActionSeparator />
-
-                <RowActionDeleteItem>Delete Player</RowActionDeleteItem>
-              </RowActionsDropdown>
-            </RowActionsProvider>
-
-            {/*<AlertDialog
-              open={removeDialogOpen}
-              onOpenChange={setRemoveDialogOpen}
-            >
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Remove Player from Team</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Are you sure you want to remove {player.name} from this
-                    team?
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={handleRemoveFromTeam}>
-                    Remove
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-
-            <AlertDialog
-              open={deleteDialogOpen}
-              onOpenChange={setDeleteDialogOpen}
-            >
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Delete Player</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Are you sure you want to permanently delete {player.name}?
-                    This action cannot be undone.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction
-                    onClick={handleDeletePlayer}
-                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                  >
-                    Delete
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>*/}
-          </>
+          <RowActionsProvider
+            row={row}
+            actions={{
+              onDelete: () => setDeleteDialogOpen(true),
+              onRemove: () => setRemoveDialogOpen(true),
+            }}
+          >
+            <RowActionsDropdown>
+              <Link
+                to="/$organizationSlug/players/$playerId"
+                params={{
+                  organizationSlug: organizationSlug,
+                  playerId: player.playerId,
+                }}
+              >
+                <RowActionItem icon={User2}>View</RowActionItem>
+              </Link>
+              <RowActionRemoveItem
+                alertTitle="Remove Player from Team"
+                alertDescription="Are you sure you want to remove this player from the team?"
+              >
+                Remove From Team
+              </RowActionRemoveItem>
+              <RowActionSeparator />
+              <RowActionDeleteItem
+                alertTitle="Permanently Delete Player from Organization"
+                alertDescription="Are you sure you want to remove this player from the organization? This action cannot be undone."
+              >
+                Delete Player
+              </RowActionDeleteItem>
+            </RowActionsDropdown>
+          </RowActionsProvider>
         );
       },
     }),
