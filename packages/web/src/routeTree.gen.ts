@@ -15,7 +15,7 @@ import { Route as ProtectedRouteImport } from './routes/_protected';
 import { Route as ProtectedOrganizationSlugRouteImport } from './routes/_protected/$organizationSlug';
 import { Route as ProtectedOrganizationSlugTeamIdRouteImport } from './routes/_protected/$organizationSlug/$teamId';
 import { Route as ProtectedOrganizationSlugTeamIdIndexRouteImport } from './routes/_protected/$organizationSlug/$teamId/index';
-import { Route as ProtectedOrganizationSlugTeamIdPlayersRouteImport } from './routes/_protected/$organizationSlug/$teamId/players';
+import { Route as ProtectedOrganizationSlugTeamIdPlayersIndexRouteImport } from './routes/_protected/$organizationSlug/$teamId/players/index';
 import { Route as ProtectedOrganizationSlugFilmFilmIdRouteImport } from './routes/_protected/$organizationSlug/film/$filmId';
 import { Route as ProtectedOrganizationSlugFilmIndexRouteImport } from './routes/_protected/$organizationSlug/film/index';
 import { Route as ProtectedOrganizationSlugFilmUploadRouteImport } from './routes/_protected/$organizationSlug/film/upload';
@@ -237,12 +237,6 @@ const ProtectedOrganizationSlugFilmFilmIdRoute =
     path: '/film/$filmId',
     getParentRoute: () => ProtectedOrganizationSlugRoute,
   } as any);
-const ProtectedOrganizationSlugTeamIdPlayersRoute =
-  ProtectedOrganizationSlugTeamIdPlayersRouteImport.update({
-    id: '/players',
-    path: '/players',
-    getParentRoute: () => ProtectedOrganizationSlugTeamIdRoute,
-  } as any);
 const ProtectedOrganizationSlugSettingsUsersIndexRoute =
   ProtectedOrganizationSlugSettingsUsersIndexRouteImport.update({
     id: '/settings/users/',
@@ -302,6 +296,12 @@ const ProtectedOrganizationSlugGamesGameIdIndexRoute =
     id: '/games/$gameId/',
     path: '/games/$gameId/',
     getParentRoute: () => ProtectedOrganizationSlugRoute,
+  } as any);
+const ProtectedOrganizationSlugTeamIdPlayersIndexRoute =
+  ProtectedOrganizationSlugTeamIdPlayersIndexRouteImport.update({
+    id: '/players/',
+    path: '/players/',
+    getParentRoute: () => ProtectedOrganizationSlugTeamIdRoute,
   } as any);
 const ProtectedOrganizationSlugScoutingTeamsCreateRoute =
   ProtectedOrganizationSlugScoutingTeamsCreateRouteImport.update({
@@ -451,7 +451,6 @@ export interface FileRoutesByFullPath {
   '/organizations/create': typeof ProtectedOrganizationsCreateRouteWithChildren;
   '/organizations/join': typeof ProtectedOrganizationsJoinRoute;
   '/$organizationSlug/': typeof ProtectedOrganizationSlugIndexRoute;
-  '/$organizationSlug/$teamId/players': typeof ProtectedOrganizationSlugTeamIdPlayersRoute;
   '/$organizationSlug/film/$filmId': typeof ProtectedOrganizationSlugFilmFilmIdRoute;
   '/$organizationSlug/film/upload': typeof ProtectedOrganizationSlugFilmUploadRoute;
   '/$organizationSlug/games/create': typeof ProtectedOrganizationSlugGamesCreateRoute;
@@ -489,6 +488,7 @@ export interface FileRoutesByFullPath {
   '/$organizationSlug/practice/templates/create': typeof ProtectedOrganizationSlugPracticeTemplatesCreateRoute;
   '/$organizationSlug/scouting/teams/$teamId': typeof ProtectedOrganizationSlugScoutingTeamsTeamIdRoute;
   '/$organizationSlug/scouting/teams/create': typeof ProtectedOrganizationSlugScoutingTeamsCreateRoute;
+  '/$organizationSlug/$teamId/players': typeof ProtectedOrganizationSlugTeamIdPlayersIndexRoute;
   '/$organizationSlug/games/$gameId': typeof ProtectedOrganizationSlugGamesGameIdIndexRoute;
   '/$organizationSlug/playbook/plays': typeof ProtectedOrganizationSlugPlaybookPlaysIndexRoute;
   '/$organizationSlug/players/$playerId': typeof ProtectedOrganizationSlugPlayersPlayerIdIndexRoute;
@@ -510,7 +510,6 @@ export interface FileRoutesByTo {
   '/organizations/create': typeof ProtectedOrganizationsCreateRouteWithChildren;
   '/organizations/join': typeof ProtectedOrganizationsJoinRoute;
   '/$organizationSlug': typeof ProtectedOrganizationSlugIndexRoute;
-  '/$organizationSlug/$teamId/players': typeof ProtectedOrganizationSlugTeamIdPlayersRoute;
   '/$organizationSlug/film/$filmId': typeof ProtectedOrganizationSlugFilmFilmIdRoute;
   '/$organizationSlug/film/upload': typeof ProtectedOrganizationSlugFilmUploadRoute;
   '/$organizationSlug/games/create': typeof ProtectedOrganizationSlugGamesCreateRoute;
@@ -548,6 +547,7 @@ export interface FileRoutesByTo {
   '/$organizationSlug/practice/templates/create': typeof ProtectedOrganizationSlugPracticeTemplatesCreateRoute;
   '/$organizationSlug/scouting/teams/$teamId': typeof ProtectedOrganizationSlugScoutingTeamsTeamIdRoute;
   '/$organizationSlug/scouting/teams/create': typeof ProtectedOrganizationSlugScoutingTeamsCreateRoute;
+  '/$organizationSlug/$teamId/players': typeof ProtectedOrganizationSlugTeamIdPlayersIndexRoute;
   '/$organizationSlug/games/$gameId': typeof ProtectedOrganizationSlugGamesGameIdIndexRoute;
   '/$organizationSlug/playbook/plays': typeof ProtectedOrganizationSlugPlaybookPlaysIndexRoute;
   '/$organizationSlug/players/$playerId': typeof ProtectedOrganizationSlugPlayersPlayerIdIndexRoute;
@@ -573,7 +573,6 @@ export interface FileRoutesById {
   '/_protected/organizations/create': typeof ProtectedOrganizationsCreateRouteWithChildren;
   '/_protected/organizations/join': typeof ProtectedOrganizationsJoinRoute;
   '/_protected/$organizationSlug/': typeof ProtectedOrganizationSlugIndexRoute;
-  '/_protected/$organizationSlug/$teamId/players': typeof ProtectedOrganizationSlugTeamIdPlayersRoute;
   '/_protected/$organizationSlug/film/$filmId': typeof ProtectedOrganizationSlugFilmFilmIdRoute;
   '/_protected/$organizationSlug/film/upload': typeof ProtectedOrganizationSlugFilmUploadRoute;
   '/_protected/$organizationSlug/games/create': typeof ProtectedOrganizationSlugGamesCreateRoute;
@@ -611,6 +610,7 @@ export interface FileRoutesById {
   '/_protected/$organizationSlug/practice/templates/create': typeof ProtectedOrganizationSlugPracticeTemplatesCreateRoute;
   '/_protected/$organizationSlug/scouting/teams/$teamId': typeof ProtectedOrganizationSlugScoutingTeamsTeamIdRoute;
   '/_protected/$organizationSlug/scouting/teams/create': typeof ProtectedOrganizationSlugScoutingTeamsCreateRoute;
+  '/_protected/$organizationSlug/$teamId/players/': typeof ProtectedOrganizationSlugTeamIdPlayersIndexRoute;
   '/_protected/$organizationSlug/games/$gameId/': typeof ProtectedOrganizationSlugGamesGameIdIndexRoute;
   '/_protected/$organizationSlug/playbook/plays/': typeof ProtectedOrganizationSlugPlaybookPlaysIndexRoute;
   '/_protected/$organizationSlug/players/$playerId/': typeof ProtectedOrganizationSlugPlayersPlayerIdIndexRoute;
@@ -636,7 +636,6 @@ export interface FileRouteTypes {
     | '/organizations/create'
     | '/organizations/join'
     | '/$organizationSlug/'
-    | '/$organizationSlug/$teamId/players'
     | '/$organizationSlug/film/$filmId'
     | '/$organizationSlug/film/upload'
     | '/$organizationSlug/games/create'
@@ -674,6 +673,7 @@ export interface FileRouteTypes {
     | '/$organizationSlug/practice/templates/create'
     | '/$organizationSlug/scouting/teams/$teamId'
     | '/$organizationSlug/scouting/teams/create'
+    | '/$organizationSlug/$teamId/players'
     | '/$organizationSlug/games/$gameId'
     | '/$organizationSlug/playbook/plays'
     | '/$organizationSlug/players/$playerId'
@@ -695,7 +695,6 @@ export interface FileRouteTypes {
     | '/organizations/create'
     | '/organizations/join'
     | '/$organizationSlug'
-    | '/$organizationSlug/$teamId/players'
     | '/$organizationSlug/film/$filmId'
     | '/$organizationSlug/film/upload'
     | '/$organizationSlug/games/create'
@@ -733,6 +732,7 @@ export interface FileRouteTypes {
     | '/$organizationSlug/practice/templates/create'
     | '/$organizationSlug/scouting/teams/$teamId'
     | '/$organizationSlug/scouting/teams/create'
+    | '/$organizationSlug/$teamId/players'
     | '/$organizationSlug/games/$gameId'
     | '/$organizationSlug/playbook/plays'
     | '/$organizationSlug/players/$playerId'
@@ -757,7 +757,6 @@ export interface FileRouteTypes {
     | '/_protected/organizations/create'
     | '/_protected/organizations/join'
     | '/_protected/$organizationSlug/'
-    | '/_protected/$organizationSlug/$teamId/players'
     | '/_protected/$organizationSlug/film/$filmId'
     | '/_protected/$organizationSlug/film/upload'
     | '/_protected/$organizationSlug/games/create'
@@ -795,6 +794,7 @@ export interface FileRouteTypes {
     | '/_protected/$organizationSlug/practice/templates/create'
     | '/_protected/$organizationSlug/scouting/teams/$teamId'
     | '/_protected/$organizationSlug/scouting/teams/create'
+    | '/_protected/$organizationSlug/$teamId/players/'
     | '/_protected/$organizationSlug/games/$gameId/'
     | '/_protected/$organizationSlug/playbook/plays/'
     | '/_protected/$organizationSlug/players/$playerId/'
@@ -1038,13 +1038,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedOrganizationSlugFilmFilmIdRouteImport;
       parentRoute: typeof ProtectedOrganizationSlugRoute;
     };
-    '/_protected/$organizationSlug/$teamId/players': {
-      id: '/_protected/$organizationSlug/$teamId/players';
-      path: '/players';
-      fullPath: '/$organizationSlug/$teamId/players';
-      preLoaderRoute: typeof ProtectedOrganizationSlugTeamIdPlayersRouteImport;
-      parentRoute: typeof ProtectedOrganizationSlugTeamIdRoute;
-    };
     '/_protected/$organizationSlug/settings/users/': {
       id: '/_protected/$organizationSlug/settings/users/';
       path: '/settings/users';
@@ -1114,6 +1107,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/$organizationSlug/games/$gameId';
       preLoaderRoute: typeof ProtectedOrganizationSlugGamesGameIdIndexRouteImport;
       parentRoute: typeof ProtectedOrganizationSlugRoute;
+    };
+    '/_protected/$organizationSlug/$teamId/players/': {
+      id: '/_protected/$organizationSlug/$teamId/players/';
+      path: '/players';
+      fullPath: '/$organizationSlug/$teamId/players';
+      preLoaderRoute: typeof ProtectedOrganizationSlugTeamIdPlayersIndexRouteImport;
+      parentRoute: typeof ProtectedOrganizationSlugTeamIdRoute;
     };
     '/_protected/$organizationSlug/scouting/teams/create': {
       id: '/_protected/$organizationSlug/scouting/teams/create';
@@ -1284,16 +1284,16 @@ declare module '@tanstack/react-start/server' {
 }
 
 interface ProtectedOrganizationSlugTeamIdRouteChildren {
-  ProtectedOrganizationSlugTeamIdPlayersRoute: typeof ProtectedOrganizationSlugTeamIdPlayersRoute;
   ProtectedOrganizationSlugTeamIdIndexRoute: typeof ProtectedOrganizationSlugTeamIdIndexRoute;
+  ProtectedOrganizationSlugTeamIdPlayersIndexRoute: typeof ProtectedOrganizationSlugTeamIdPlayersIndexRoute;
 }
 
 const ProtectedOrganizationSlugTeamIdRouteChildren: ProtectedOrganizationSlugTeamIdRouteChildren =
   {
-    ProtectedOrganizationSlugTeamIdPlayersRoute:
-      ProtectedOrganizationSlugTeamIdPlayersRoute,
     ProtectedOrganizationSlugTeamIdIndexRoute:
       ProtectedOrganizationSlugTeamIdIndexRoute,
+    ProtectedOrganizationSlugTeamIdPlayersIndexRoute:
+      ProtectedOrganizationSlugTeamIdPlayersIndexRoute,
   };
 
 const ProtectedOrganizationSlugTeamIdRouteWithChildren =

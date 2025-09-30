@@ -1,7 +1,21 @@
 import { and, eq, ilike } from 'drizzle-orm';
-import { Context, Effect, Layer, Runtime, Schema } from 'effect';
+import { Context, Effect, Layer, Runtime, Schema as S } from 'effect';
 import type { ParseError } from 'effect/ParseResult';
 import { DatabaseError, DatabaseLive, DatabaseService } from '../drizzle';
+import {
+  type AddPlayerToTeamInput,
+  AddPlayerToTeamInputSchema,
+  type CreatePlayerInput,
+  CreatePlayerInputSchema,
+  type DeletePlayerInput,
+  DeletePlayerInputSchema,
+  type RemovePlayerFromTeamInput,
+  RemovePlayerFromTeamInputSchema,
+  type UpdatePlayerInput,
+  UpdatePlayerInputSchema,
+  type UpdateTeamPlayerInput,
+  UpdateTeamPlayerInputSchema,
+} from './player.schema';
 import {
   type Player,
   playerTable,
@@ -9,64 +23,7 @@ import {
   teamPlayerTable,
 } from './player.sql';
 
-// Input schemas
-export const CreatePlayerInput = Schema.Struct({
-  name: Schema.String.pipe(
-    Schema.minLength(1, { message: () => 'Name is required' }),
-  ),
-  email: Schema.optional(Schema.String),
-  phone: Schema.optional(Schema.String),
-  dateOfBirth: Schema.optional(Schema.String),
-  userId: Schema.optional(Schema.String),
-});
-type CreatePlayerInput = typeof CreatePlayerInput.Type;
-
-export const AddPlayerToTeamInput = Schema.Struct({
-  playerId: Schema.String.pipe(
-    Schema.minLength(1, { message: () => 'Player ID is required' }),
-  ),
-  teamId: Schema.String.pipe(
-    Schema.minLength(1, { message: () => 'Team ID is required' }),
-  ),
-  jerseyNumber: Schema.optional(
-    Schema.Number.pipe(
-      Schema.int({ message: () => 'Jersey number must be an integer' }),
-      Schema.positive({ message: () => 'Jersey number must be positive' }),
-    ),
-  ),
-  position: Schema.optional(Schema.String),
-});
-type AddPlayerToTeamInput = typeof AddPlayerToTeamInput.Type;
-
-export const UpdatePlayerInput = Schema.Struct({
-  playerId: Schema.String.pipe(
-    Schema.minLength(1, { message: () => 'Player ID is required' }),
-  ),
-  name: Schema.optional(Schema.String),
-  email: Schema.optional(Schema.NullOr(Schema.String)),
-  phone: Schema.optional(Schema.NullOr(Schema.String)),
-  dateOfBirth: Schema.optional(Schema.NullOr(Schema.String)),
-});
-type UpdatePlayerInput = typeof UpdatePlayerInput.Type;
-
-export const UpdateTeamPlayerInput = Schema.Struct({
-  teamId: Schema.String.pipe(
-    Schema.minLength(1, { message: () => 'Team ID is required' }),
-  ),
-  playerId: Schema.String.pipe(
-    Schema.minLength(1, { message: () => 'Player ID is required' }),
-  ),
-  jerseyNumber: Schema.optional(
-    Schema.NullOr(
-      Schema.Number.pipe(
-        Schema.int({ message: () => 'Jersey number must be an integer' }),
-        Schema.positive({ message: () => 'Jersey number must be positive' }),
-      ),
-    ),
-  ),
-  position: Schema.optional(Schema.NullOr(Schema.String)),
-});
-type UpdateTeamPlayerInput = typeof UpdateTeamPlayerInput.Type;
+export * from './player.schema';
 
 // Error classes
 export class PlayerError extends Error {
@@ -100,12 +57,11 @@ export class PlayerService extends Context.Tag('PlayerService')<
       input: AddPlayerToTeamInput,
     ) => Effect.Effect<TeamPlayer, ParseError | PlayerError | DatabaseError>;
     readonly removePlayerFromTeam: (
-      teamId: string,
-      playerId: string,
-    ) => Effect.Effect<void, DatabaseError>;
+      input: RemovePlayerFromTeamInput,
+    ) => Effect.Effect<void, DatabaseError | ParseError>;
     readonly deletePlayer: (
-      playerId: string,
-    ) => Effect.Effect<void, DatabaseError>;
+      input: DeletePlayerInput,
+    ) => Effect.Effect<void, DatabaseError | ParseError>;
   }
 >() {}
 
@@ -135,7 +91,7 @@ export const PlayerServiceLive = Layer.effect(
 
       create: (input: CreatePlayerInput) =>
         Effect.gen(function* () {
-          const validated = yield* Schema.decode(CreatePlayerInput)(input);
+          const validated = yield* S.decode(CreatePlayerInputSchema)(input);
 
           const id = crypto.randomUUID();
 
@@ -198,7 +154,7 @@ export const PlayerServiceLive = Layer.effect(
 
       updatePlayer: (input: UpdatePlayerInput) =>
         Effect.gen(function* () {
-          const validated = yield* Schema.decode(UpdatePlayerInput)(input);
+          const validated = yield* S.decode(UpdatePlayerInputSchema)(input);
           const { playerId, ...updateData } = validated;
 
           const result = yield* Effect.tryPromise({
@@ -223,7 +179,7 @@ export const PlayerServiceLive = Layer.effect(
 
       updateTeamPlayer: (input: UpdateTeamPlayerInput) =>
         Effect.gen(function* () {
-          const validated = yield* Schema.decode(UpdateTeamPlayerInput)(input);
+          const validated = yield* S.decode(UpdateTeamPlayerInputSchema)(input);
           const { teamId, playerId, ...updateData } = validated;
 
           const result = yield* Effect.tryPromise({
@@ -253,7 +209,7 @@ export const PlayerServiceLive = Layer.effect(
 
       addPlayerToTeam: (input: AddPlayerToTeamInput) =>
         Effect.gen(function* () {
-          const validated = yield* Schema.decode(AddPlayerToTeamInput)(input);
+          const validated = yield* S.decode(AddPlayerToTeamInputSchema)(input);
           const id = crypto.randomUUID();
 
           const result = yield* Effect.tryPromise({
@@ -281,29 +237,38 @@ export const PlayerServiceLive = Layer.effect(
           return result[0];
         }),
 
-      removePlayerFromTeam: (teamId: string, playerId: string) =>
-        Effect.tryPromise({
-          try: () =>
-            dbService.db
-              .delete(teamPlayerTable)
-              .where(
-                and(
-                  eq(teamPlayerTable.teamId, teamId),
-                  eq(teamPlayerTable.playerId, playerId),
+      removePlayerFromTeam: (input: RemovePlayerFromTeamInput) =>
+        Effect.gen(function* () {
+          const validated = yield* S.decode(RemovePlayerFromTeamInputSchema)(
+            input,
+          );
+          yield* Effect.tryPromise({
+            try: () =>
+              dbService.db
+                .delete(teamPlayerTable)
+                .where(
+                  and(
+                    eq(teamPlayerTable.teamId, validated.teamId),
+                    eq(teamPlayerTable.playerId, validated.playerId),
+                  ),
                 ),
-              ),
-          catch: (error) =>
-            new DatabaseError(error, 'Failed to remove player from team'),
-        }).pipe(Effect.map(() => {})),
+            catch: (error) =>
+              new DatabaseError(error, 'Failed to remove player from team'),
+          });
+        }),
 
-      deletePlayer: (playerId: string) =>
-        Effect.tryPromise({
-          try: () =>
-            dbService.db
-              .delete(playerTable)
-              .where(eq(playerTable.id, playerId)),
-          catch: (error) => new DatabaseError(error, 'Failed to delete player'),
-        }).pipe(Effect.map(() => {})),
+      deletePlayer: (input: DeletePlayerInput) =>
+        Effect.gen(function* () {
+          const validated = yield* S.decode(DeletePlayerInputSchema)(input);
+          yield* Effect.tryPromise({
+            try: () =>
+              dbService.db
+                .delete(playerTable)
+                .where(eq(playerTable.id, validated.playerId)),
+            catch: (error) =>
+              new DatabaseError(error, 'Failed to delete player'),
+          });
+        }),
     };
   }),
 ).pipe(Layer.provide(DatabaseLive));
@@ -363,10 +328,10 @@ export const PlayerAPI = {
     );
   },
 
-  async removePlayerFromTeam(teamId: string, playerId: string): Promise<void> {
+  async removePlayerFromTeam(input: RemovePlayerFromTeamInput): Promise<void> {
     const effect = Effect.gen(function* () {
       const service = yield* PlayerService;
-      return yield* service.removePlayerFromTeam(teamId, playerId);
+      return yield* service.removePlayerFromTeam(input);
     });
     return await Runtime.runPromise(runtime)(
       Effect.provide(effect, PlayerServiceLive),
@@ -393,13 +358,17 @@ export const PlayerAPI = {
     );
   },
 
-  async deletePlayer(playerId: string): Promise<void> {
+  async deletePlayer(input: DeletePlayerInput): Promise<void> {
     const effect = Effect.gen(function* () {
       const service = yield* PlayerService;
-      return yield* service.deletePlayer(playerId);
+      return yield* service.deletePlayer(input);
     });
     return await Runtime.runPromise(runtime)(
       Effect.provide(effect, PlayerServiceLive),
     );
   },
 };
+
+export type TeamPlayerWithInfo = Awaited<
+  ReturnType<typeof PlayerAPI.getTeamPlayers>
+>[number];

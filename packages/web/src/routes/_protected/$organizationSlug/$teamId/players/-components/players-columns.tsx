@@ -1,7 +1,8 @@
+import type { TeamPlayerWithInfo } from '@lax-db/core/player/index';
+import type { PartialNullable } from '@lax-db/core/types';
 import { Link } from '@tanstack/react-router';
 import { type ColumnDef, createColumnHelper } from '@tanstack/react-table';
 import { User2 } from 'lucide-react';
-import { useState } from 'react';
 import { DataTableColumnHeader } from '@/components/data-table/data-table-column-header';
 import {
   RowActionDeleteItem,
@@ -21,35 +22,25 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { POSITION_SELECT_FIELDS } from '@/lib/constants';
-import { deletePlayer, removePlayerFromTeam } from './player-edit-ui';
 
-type PlayerWithTeamInfo = {
-  id: string;
-  playerId: string;
-  name: string;
-  email: string | null;
-  phone: string | null;
-  dateOfBirth: string | null;
-  jerseyNumber: number | null;
-  position: string | null;
-  isNew?: boolean;
-};
-
-const columnHelper = createColumnHelper<PlayerWithTeamInfo>();
+const columnHelper = createColumnHelper<TeamPlayerWithInfo>();
 
 type EditablePlayerColumnsProps = {
   organizationSlug: string;
-  teamId: string;
   actions: {
-    onUpdate: (playerId: string, updates: Partial<PlayerWithTeamInfo>) => void;
+    onUpdate: (
+      playerId: string,
+      updates: PartialNullable<TeamPlayerWithInfo>,
+    ) => void;
+    onRemove: (playerId: string) => void;
+    onDelete: (playerId: string) => void;
   };
 };
 
 export function createEditablePlayerColumns({
   organizationSlug,
-  teamId,
-  actions: { onUpdate },
-}: EditablePlayerColumnsProps): ColumnDef<PlayerWithTeamInfo>[] {
+  actions: { onUpdate, onRemove, onDelete },
+}: EditablePlayerColumnsProps): ColumnDef<TeamPlayerWithInfo>[] {
   return [
     columnHelper.display({
       id: 'select',
@@ -124,7 +115,7 @@ export function createEditablePlayerColumns({
         return (
           <Input
             variant="data"
-            defaultValue={player.name}
+            defaultValue={player.name ?? ''}
             onBlur={(e) => {
               const value = e.target.value;
               onUpdate(player.playerId, { name: value });
@@ -205,37 +196,13 @@ export function createEditablePlayerColumns({
       },
       cell: ({ row }) => {
         const player = row.original;
-        const [_removeDialogOpen, setRemoveDialogOpen] = useState(false);
-        const [_deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-
-        const _handleRemoveFromTeam = async () => {
-          try {
-            await removePlayerFromTeam({
-              data: { teamId, playerId: player.playerId },
-            });
-            // Trigger data refresh - you might want to pass this as a prop
-            window.location.reload();
-          } catch (error) {
-            console.error('Error removing player from team:', error);
-          }
-          setRemoveDialogOpen(false);
-        };
-
-        const _handleDeletePlayer = async () => {
-          try {
-            await deletePlayer({ data: { playerId: player.playerId } });
-          } catch (error) {
-            console.error('Error deleting player:', error);
-          }
-          setDeleteDialogOpen(false);
-        };
 
         return (
           <RowActionsProvider
             row={row}
             actions={{
-              onDelete: () => setDeleteDialogOpen(true),
-              onRemove: () => setRemoveDialogOpen(true),
+              onDelete: () => onDelete(player.playerId),
+              onRemove: () => onRemove(player.playerId),
             }}
           >
             <RowActionsDropdown>
@@ -266,7 +233,7 @@ export function createEditablePlayerColumns({
         );
       },
     }),
-  ] as ColumnDef<PlayerWithTeamInfo>[];
+  ] as ColumnDef<TeamPlayerWithInfo>[];
 }
 
-export type { PlayerWithTeamInfo };
+export type { TeamPlayerWithInfo };
