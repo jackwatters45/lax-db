@@ -1,6 +1,7 @@
 import type { PartialNullable } from '@lax-db/core/types';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
+import { createServerFn } from '@tanstack/react-start';
 import { Schema as S } from 'effect';
 import { useMemo } from 'react';
 import {
@@ -25,6 +26,8 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
+import { authMiddleware } from '@/lib/middleware';
+import { TeamIdSchema } from '@/lib/schema';
 import { TeamHeader } from '../-components/team-header';
 import {
   createEditablePlayerColumns,
@@ -32,17 +35,17 @@ import {
 } from './-components/players-columns';
 import { PlayersFilterBar } from './-components/players-filterbar';
 import { PlayersToolbar } from './-components/players-toolbar';
-import {
-  type AddPlayerWithTeamInputSchema,
-  addPlayerToTeamFn,
-  type DeletePlayerInputSchema,
-  deletePlayerFn,
-  getTeamPlayers,
-  type RemovePlayerFromTeamInputSchema,
-  removePlayerFromTeamFn,
-  type UpdatePlayerInputSchema,
-  updatePlayerFn,
-} from './-server';
+import { usePlayerMutations } from './-mutations';
+
+const getTeamPlayers = createServerFn({ method: 'GET' })
+  .middleware([authMiddleware])
+  .validator((data: typeof TeamIdSchema.Type) =>
+    S.decodeSync(TeamIdSchema)(data),
+  )
+  .handler(async ({ data }) => {
+    const { PlayerAPI } = await import('@lax-db/core/player/index');
+    return await PlayerAPI.getTeamPlayers(data.teamId);
+  });
 
 const searchParams = S.standardSchemaV1(
   S.Struct({
@@ -50,7 +53,8 @@ const searchParams = S.standardSchemaV1(
   }),
 );
 
-// TODO: cmd for users
+// TODO: move mutations
+// TODO: cmd for users - logic
 // TODO: add fields
 // TODO: clean up migrations
 export const Route = createFileRoute(
@@ -83,149 +87,22 @@ function PlayersDataTable() {
     activeOrganization: { id: organizationId },
   } = Route.useRouteContext();
 
-  const queryClient = useQueryClient();
-
   const { data: players = [] } = useQuery({
     queryKey: ['players', teamId],
     queryFn: () => getTeamPlayers({ data: { teamId } }),
   });
 
-  const updatePlayerMutation = useMutation({
-    mutationFn: (data: typeof UpdatePlayerInputSchema.Type) =>
-      updatePlayerFn({ data }),
-    onMutate: async (variables, ctx) => {
-      await ctx.client.cancelQueries({ queryKey: ['players', teamId] });
-      const previousPlayers = ctx.client.getQueryData<TeamPlayerWithInfo[]>([
-        'players',
-        teamId,
-      ]);
-      ctx.client.setQueryData<TeamPlayerWithInfo[]>(
-        ['players', teamId],
-        (old = []) =>
-          old.map((player) =>
-            player.playerId === variables.playerId
-              ? { ...player, ...variables }
-              : player,
-          ),
-      );
-      return { previousPlayers };
-    },
-    onError: (_err, _variables, context) => {
-      if (context?.previousPlayers) {
-        queryClient.setQueryData(['players', teamId], context.previousPlayers);
-      }
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['players', teamId] });
-    },
-  });
-
-  const addPlayerMutation = useMutation({
-    mutationFn: (data: typeof AddPlayerWithTeamInputSchema.Type) =>
-      addPlayerToTeamFn({ data }),
-    onMutate: async (variables, ctx) => {
-      await ctx.client.cancelQueries({ queryKey: ['players', teamId] });
-
-      const previousPlayers = ctx.client.getQueryData<TeamPlayerWithInfo[]>([
-        'players',
-        teamId,
-      ]);
-
-      const tempId = `temp-${Date.now()}`;
-      const optimisticPlayer: TeamPlayerWithInfo = {
-        id: tempId,
-        organizationId: variables.organizationId,
-        playerId: tempId,
-        name: variables.name,
-        email: variables.email || null,
-        phone: variables.phone || null,
-        dateOfBirth: variables.dateOfBirth || null,
-        jerseyNumber: variables.jerseyNumber || null,
-        position: variables.position || null,
-        teamId: variables.teamId,
-        userId: null,
-        createdAt: new Date(),
-        updatedAt: null,
-        deletedAt: null,
-      };
-
-      ctx.client.setQueryData<TeamPlayerWithInfo[]>(
-        ['players', teamId],
-        (old = []) => [...old, optimisticPlayer],
-      );
-
-      return { previousPlayers };
-    },
-    onError: (_err, _variables, context) => {
-      if (context?.previousPlayers) {
-        queryClient.setQueryData(['players', teamId], context.previousPlayers);
-      }
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['players', teamId] });
-    },
-  });
-
-  const removePlayerMutation = useMutation({
-    mutationFn: (data: typeof RemovePlayerFromTeamInputSchema.Type) =>
-      removePlayerFromTeamFn({ data }),
-    onMutate: async (variables, ctx) => {
-      await ctx.client.cancelQueries({ queryKey: ['players', teamId] });
-
-      const previousPlayers = ctx.client.getQueryData<TeamPlayerWithInfo[]>([
-        'players',
-        teamId,
-      ]);
-
-      ctx.client.setQueryData<TeamPlayerWithInfo[]>(
-        ['players', teamId],
-        (old = []) => old.filter((p) => p.playerId !== variables.playerId),
-      );
-
-      return { previousPlayers };
-    },
-    onError: (_err, _variables, context) => {
-      if (context?.previousPlayers) {
-        queryClient.setQueryData(['players', teamId], context.previousPlayers);
-      }
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['players', teamId] });
-    },
-  });
-
-  const deletePlayerMutation = useMutation({
-    mutationFn: (data: typeof DeletePlayerInputSchema.Type) =>
-      deletePlayerFn({ data }),
-    onMutate: async (variables, ctx) => {
-      await ctx.client.cancelQueries({ queryKey: ['players', teamId] });
-
-      const previousPlayers = ctx.client.getQueryData<TeamPlayerWithInfo[]>([
-        'players',
-        teamId,
-      ]);
-
-      ctx.client.setQueryData<TeamPlayerWithInfo[]>(
-        ['players', teamId],
-        (old = []) => old.filter((p) => p.playerId !== variables.playerId),
-      );
-
-      return { previousPlayers };
-    },
-    onError: (_err, _variables, context) => {
-      if (context?.previousPlayers) {
-        queryClient.setQueryData(['players', teamId], context.previousPlayers);
-      }
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['players', teamId] });
-    },
-  });
+  const {
+    update,
+    add,
+    remove,
+    delete: deletePlayer,
+  } = usePlayerMutations(teamId);
 
   const handleAddPlayer = () => {
     if (!organizationId) return;
 
-    addPlayerMutation.mutate({
+    add.mutate({
       organizationId,
       teamId,
       name: '',
@@ -248,28 +125,21 @@ function PlayersDataTable() {
             playerId: string,
             updates: PartialNullable<TeamPlayerWithInfo>,
           ) => {
-            updatePlayerMutation.mutate({
+            update.mutate({
               ...updates,
               playerId,
               teamId,
             });
           },
           onRemove: (playerId: string) => {
-            removePlayerMutation.mutate({ teamId, playerId });
+            remove.mutate({ teamId, playerId });
           },
           onDelete: (playerId: string) => {
-            deletePlayerMutation.mutate({ playerId });
+            deletePlayer.mutate({ playerId });
           },
         },
       }),
-    [
-      organizationSlug,
-      players,
-      teamId,
-      updatePlayerMutation,
-      removePlayerMutation,
-      deletePlayerMutation,
-    ],
+    [organizationSlug, players, teamId, update, remove, deletePlayer],
   );
 
   return (
