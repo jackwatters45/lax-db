@@ -8,6 +8,10 @@ export const TeamIdSchema = S.String.pipe(
   S.minLength(1, { message: () => 'Team ID is required' }),
 );
 
+export const OrganizationIdSchema = S.String.pipe(
+  S.minLength(1, { message: () => 'Organization ID is required' }),
+);
+
 export const JerseyNumberSchema = S.NullOr(
   S.Number.pipe(
     S.int({ message: () => 'Jersey number must be an integer' }),
@@ -17,7 +21,13 @@ export const JerseyNumberSchema = S.NullOr(
 
 export const PositionSchema = S.NullOr(S.String);
 
+export const GetAllPlayersInputSchema = S.Struct({
+  organizationId: OrganizationIdSchema,
+});
+export type GetAllPlayersInput = typeof GetAllPlayersInputSchema.Type;
+
 export const CreatePlayerInputSchema = S.Struct({
+  organizationId: OrganizationIdSchema,
   name: S.String,
   email: S.NullOr(S.String),
   phone: S.NullOr(S.String),

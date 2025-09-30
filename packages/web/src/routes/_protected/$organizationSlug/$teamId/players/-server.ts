@@ -88,6 +88,7 @@ export const addPlayerToTeamFn = createServerFn({ method: 'POST' })
       Effect.gen(function* () {
         const newPlayer = yield* Effect.promise(() =>
           PlayerAPI.create({
+            organizationId: data.organizationId,
             name: data.name,
             email: data.email,
             phone: data.phone,

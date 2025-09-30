@@ -1,8 +1,9 @@
 import type { Player } from '@lax-db/core/player/player.sql';
+import { useQuery } from '@tanstack/react-query';
 import { createServerFn } from '@tanstack/react-start';
-import { Schema as S, Schema } from 'effect';
-import { UserPlus } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { Schema as S } from 'effect';
+import { Check, ChevronsUpDown, Edit, UserPlus } from 'lucide-react';
+import { useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Command,
@@ -11,202 +12,172 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
+  CommandSeparator,
 } from '@/components/ui/command';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import { Separator } from '@/components/ui/separator';
 import { authMiddleware } from '@/lib/middleware';
+import { cn } from '@/lib/utils';
 
-const SearchSchema = S.Struct({
-  query: Schema.String.pipe(
-    Schema.minLength(1, { message: () => 'Search query is required' }),
-  ),
+const OrganizationIdSchema = S.Struct({
+  organizationId: S.String,
 });
 
-const searchPlayers = createServerFn({ method: 'POST' })
+export const getOrganizationPlayers = createServerFn({ method: 'GET' })
   .middleware([authMiddleware])
-  .validator((data: typeof SearchSchema.Type) =>
-    S.decodeSync(SearchSchema)(data),
+  .validator((data: typeof OrganizationIdSchema.Type) =>
+    S.decodeSync(OrganizationIdSchema)(data),
   )
-  .handler(async ({ data: { query } }) => {
+  .handler(async ({ data }) => {
     const { PlayerAPI } = await import('@lax-db/core/player/index');
-    return await PlayerAPI.search(query);
+    return await PlayerAPI.getAll({ organizationId: data.organizationId });
   });
 
-const AddPlayerToTeamSchema = S.Struct({
-  name: Schema.String.pipe(
-    Schema.minLength(1, { message: () => 'Name is required' }),
-  ),
-  email: Schema.optional(Schema.String),
-  phone: Schema.optional(Schema.String),
-  dateOfBirth: Schema.optional(Schema.String),
-  // Team-specific fields
-  jerseyNumber: Schema.optional(
-    Schema.Number.pipe(
-      Schema.int({ message: () => 'Number must be an integer' }),
-      Schema.positive({ message: () => 'Number must be positive' }),
-    ),
-  ),
-  position: Schema.optional(Schema.String),
-});
-// type AddPlayerToTeamFormValues = typeof AddPlayerToTeamSchema.Type;
-
-const TeamIdSchema = Schema.String;
-
-const addPlayerToTeam = createServerFn({ method: 'POST' })
-  .middleware([authMiddleware])
-  .validator(
-    (data: {
-      formData: typeof AddPlayerToTeamSchema.Type;
-      teamId: typeof TeamIdSchema.Type;
-    }) => {
-      const formDataDecoded = S.decodeSync(AddPlayerToTeamSchema)(
-        data.formData,
-      );
-      const teamIdDecoded = S.decodeSync(TeamIdSchema)(data.teamId);
-
-      return {
-        formData: formDataDecoded,
-        teamId: teamIdDecoded,
-      };
-    },
-  )
-  .handler(async ({ data: { formData, teamId } }) => {
-    const { PlayerAPI } = await import('@lax-db/core/player/index');
-
-    // First create the player
-    const player = await PlayerAPI.create({
-      name: formData.name,
-      email: formData.email ?? null,
-      phone: formData.phone ?? null,
-      dateOfBirth: formData.dateOfBirth ?? null,
-      userId: null,
-    });
-
-    // Then add them to the team
-    await PlayerAPI.addPlayerToTeam({
-      playerId: player.id,
-      teamId,
-      jerseyNumber: formData.jerseyNumber ?? null,
-      position: formData.position ?? null,
-    });
-
-    return player;
-  });
-
-export function PlayerSearchCommand({
+export function PlayerSearchCombobox({
+  organizationId,
   value,
+  excludePlayerIds = [],
   onSelect,
+  onRename,
   onCreateNew,
+  placeholder = 'Search or add player...',
 }: {
-  value: string;
+  organizationId: string;
+  value?: string;
+  excludePlayerIds?: string[];
   onSelect: (player: Player) => void;
+  onRename: (name: string) => void;
   onCreateNew: (name: string) => void;
+  placeholder?: string;
 }) {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState<Player[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
 
-  useEffect(() => {
-    const search = async () => {
-      if (!searchQuery.trim()) {
-        setSearchResults([]);
-        return;
-      }
+  const { data: allPlayers = [], isLoading } = useQuery({
+    queryKey: ['organization-players', organizationId],
+    queryFn: () => getOrganizationPlayers({ data: { organizationId } }),
+  });
 
-      setIsSearching(true);
-      try {
-        const results = await searchPlayers({
-          data: { query: searchQuery },
-        });
-        setSearchResults(results);
-      } catch (error) {
-        console.error('Search failed:', error);
-        setSearchResults([]);
-      } finally {
-        setIsSearching(false);
-      }
-    };
+  const filteredPlayers = useMemo(() => {
+    const availablePlayers = allPlayers.filter(
+      (player) => !excludePlayerIds.includes(player.id),
+    );
 
-    const timeoutId = setTimeout(search, 300);
-    return () => clearTimeout(timeoutId);
-  }, [searchQuery]);
+    if (!searchQuery.trim()) return availablePlayers;
+
+    const query = searchQuery.toLowerCase();
+    return availablePlayers.filter(
+      (player) =>
+        player.name?.toLowerCase().includes(query) ||
+        player.email?.toLowerCase().includes(query) ||
+        player.phone?.toLowerCase().includes(query),
+    );
+  }, [allPlayers, excludePlayerIds, searchQuery]);
+
+  const selectedPlayer = allPlayers.find((p) => p.name === value);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
+        {/*biome-ignore lint/a11y/useSemanticElements: `<its fine>*/}
         <Button
-          variant="outline"
+          variant="ghost"
+          role="combobox"
           aria-expanded={open}
-          aria-haspopup="listbox"
-          className="w-full justify-between"
+          className="h-9 w-full justify-between border-0 px-2 font-normal hover:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
         >
-          {value || 'Search or add player...'}
+          <span className={cn(!value && 'text-muted-foreground')}>
+            {value || placeholder}
+          </span>
+          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-full p-0">
-        <Command>
+      <PopoverContent className="w-[300px] p-0" align="start">
+        <Command shouldFilter={false}>
           <CommandInput
             placeholder="Search players..."
             value={searchQuery}
             onValueChange={setSearchQuery}
           />
           <CommandList>
-            <CommandEmpty>
-              {isSearching ? (
-                'Searching...'
-              ) : (
-                <div className="p-2">
-                  <Button
-                    variant="ghost"
-                    onClick={() => {
-                      onCreateNew(searchQuery);
+            {isLoading ? (
+              <div className="py-6 text-center text-sm">Loading...</div>
+            ) : (
+              <>
+                {filteredPlayers.length > 0 ? (
+                  <CommandGroup heading="Organization Players">
+                    {filteredPlayers.map((player) => (
+                      <CommandItem
+                        key={player.id}
+                        value={player.id}
+                        onSelect={() => {
+                          onSelect(player);
+                          setOpen(false);
+                          setSearchQuery('');
+                        }}
+                      >
+                        <Check
+                          className={cn(
+                            'mr-2 h-4 w-4',
+                            selectedPlayer?.id === player.id
+                              ? 'opacity-100'
+                              : 'opacity-0',
+                          )}
+                        />
+                        <div className="flex flex-col">
+                          <span>{player.name || 'Unnamed'}</span>
+                          {(player.email || player.phone) && (
+                            <span className="text-muted-foreground text-xs">
+                              {player.email || player.phone}
+                            </span>
+                          )}
+                        </div>
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                ) : (
+                  <CommandEmpty>
+                    {searchQuery
+                      ? 'No players found'
+                      : 'No players in organization'}
+                  </CommandEmpty>
+                )}
+                {filteredPlayers.length > 0 && <CommandSeparator />}
+                {searchQuery && (
+                  <>
+                    <Separator orientation="horizontal" />
+                    <CommandGroup>
+                      <CommandItem
+                        onSelect={() => {
+                          onRename(searchQuery);
+                          setOpen(false);
+                          setSearchQuery('');
+                        }}
+                      >
+                        <Edit className="mr-2 h-4 w-4" />
+                        Rename to "{searchQuery}"
+                      </CommandItem>
+                    </CommandGroup>
+                    <CommandSeparator />
+                  </>
+                )}
+                <CommandGroup>
+                  <CommandItem
+                    onSelect={() => {
+                      onCreateNew(searchQuery || '');
                       setOpen(false);
+                      setSearchQuery('');
                     }}
-                    className="w-full justify-start"
                   >
                     <UserPlus className="mr-2 h-4 w-4" />
-                    Create "{searchQuery}"
-                  </Button>
-                </div>
-              )}
-            </CommandEmpty>
-            {searchResults.length > 0 && (
-              <CommandGroup heading="Existing Players">
-                {searchResults.map((player) => (
-                  <CommandItem
-                    key={player.id}
-                    onSelect={() => {
-                      onSelect(player);
-                      setOpen(false);
-                    }}
-                  >
-                    <div className="flex flex-col">
-                      <span>{player.name}</span>
-                      <span className="text-muted-foreground text-xs">
-                        {player.email || 'No email'} •{' '}
-                        {player.phone || 'No phone'}
-                      </span>
-                    </div>
+                    Create {searchQuery ? `"${searchQuery}"` : 'new player'}
                   </CommandItem>
-                ))}
-              </CommandGroup>
-            )}
-            {searchQuery && (
-              <CommandGroup>
-                <CommandItem
-                  onSelect={() => {
-                    onCreateNew(searchQuery);
-                    setOpen(false);
-                  }}
-                >
-                  <UserPlus className="mr-2 h-4 w-4" />
-                  Create "{searchQuery}"
-                </CommandItem>
-              </CommandGroup>
+                </CommandGroup>
+              </>
             )}
           </CommandList>
         </Command>
@@ -214,5 +185,3 @@ export function PlayerSearchCommand({
     </Popover>
   );
 }
-
-export { addPlayerToTeam };
