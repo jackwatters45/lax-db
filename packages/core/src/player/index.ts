@@ -38,6 +38,36 @@ export const AddPlayerToTeamInput = Schema.Struct({
 });
 type AddPlayerToTeamInput = typeof AddPlayerToTeamInput.Type;
 
+export const UpdatePlayerInput = Schema.Struct({
+  playerId: Schema.String.pipe(
+    Schema.minLength(1, { message: () => 'Player ID is required' }),
+  ),
+  name: Schema.optional(Schema.String),
+  email: Schema.optional(Schema.NullOr(Schema.String)),
+  phone: Schema.optional(Schema.NullOr(Schema.String)),
+  dateOfBirth: Schema.optional(Schema.NullOr(Schema.String)),
+});
+type UpdatePlayerInput = typeof UpdatePlayerInput.Type;
+
+export const UpdateTeamPlayerInput = Schema.Struct({
+  teamId: Schema.String.pipe(
+    Schema.minLength(1, { message: () => 'Team ID is required' }),
+  ),
+  playerId: Schema.String.pipe(
+    Schema.minLength(1, { message: () => 'Player ID is required' }),
+  ),
+  jerseyNumber: Schema.optional(
+    Schema.NullOr(
+      Schema.Number.pipe(
+        Schema.int({ message: () => 'Jersey number must be an integer' }),
+        Schema.positive({ message: () => 'Jersey number must be positive' }),
+      ),
+    ),
+  ),
+  position: Schema.optional(Schema.NullOr(Schema.String)),
+});
+type UpdateTeamPlayerInput = typeof UpdateTeamPlayerInput.Type;
+
 // Error classes
 export class PlayerError extends Error {
   readonly _tag = 'PlayerError';
@@ -57,6 +87,12 @@ export class PlayerService extends Context.Tag('PlayerService')<
     readonly create: (
       input: CreatePlayerInput,
     ) => Effect.Effect<Player, ParseError | PlayerError | DatabaseError>;
+    readonly updatePlayer: (
+      input: UpdatePlayerInput,
+    ) => Effect.Effect<Player, ParseError | PlayerError | DatabaseError>;
+    readonly updateTeamPlayer: (
+      input: UpdateTeamPlayerInput,
+    ) => Effect.Effect<TeamPlayer, ParseError | PlayerError | DatabaseError>;
     readonly getTeamPlayers: (
       teamId: string,
     ) => Effect.Effect<(Player & TeamPlayer)[], DatabaseError>;
@@ -158,6 +194,61 @@ export const PlayerServiceLive = Layer.effect(
               .where(eq(teamPlayerTable.teamId, teamId)),
           catch: (error) =>
             new DatabaseError(error, 'Failed to get team players'),
+        }),
+
+      updatePlayer: (input: UpdatePlayerInput) =>
+        Effect.gen(function* () {
+          const validated = yield* Schema.decode(UpdatePlayerInput)(input);
+          const { playerId, ...updateData } = validated;
+
+          const result = yield* Effect.tryPromise({
+            try: () =>
+              dbService.db
+                .update(playerTable)
+                .set(updateData)
+                .where(eq(playerTable.id, playerId))
+                .returning(),
+            catch: (error) =>
+              new DatabaseError(error, 'Failed to update player'),
+          });
+
+          if (!result[0]) {
+            return yield* Effect.fail(
+              new PlayerError('Update failed', 'Failed to update player'),
+            );
+          }
+
+          return result[0];
+        }),
+
+      updateTeamPlayer: (input: UpdateTeamPlayerInput) =>
+        Effect.gen(function* () {
+          const validated = yield* Schema.decode(UpdateTeamPlayerInput)(input);
+          const { teamId, playerId, ...updateData } = validated;
+
+          const result = yield* Effect.tryPromise({
+            try: () =>
+              dbService.db
+                .update(teamPlayerTable)
+                .set(updateData)
+                .where(
+                  and(
+                    eq(teamPlayerTable.teamId, teamId),
+                    eq(teamPlayerTable.playerId, playerId),
+                  ),
+                )
+                .returning(),
+            catch: (error) =>
+              new DatabaseError(error, 'Failed to update team player'),
+          });
+
+          if (!result[0]) {
+            return yield* Effect.fail(
+              new PlayerError('Update failed', 'Failed to update team player'),
+            );
+          }
+
+          return result[0];
         }),
 
       addPlayerToTeam: (input: AddPlayerToTeamInput) =>
@@ -276,6 +367,26 @@ export const PlayerAPI = {
     const effect = Effect.gen(function* () {
       const service = yield* PlayerService;
       return yield* service.removePlayerFromTeam(teamId, playerId);
+    });
+    return await Runtime.runPromise(runtime)(
+      Effect.provide(effect, PlayerServiceLive),
+    );
+  },
+
+  async updatePlayer(input: UpdatePlayerInput): Promise<Player> {
+    const effect = Effect.gen(function* () {
+      const service = yield* PlayerService;
+      return yield* service.updatePlayer(input);
+    });
+    return await Runtime.runPromise(runtime)(
+      Effect.provide(effect, PlayerServiceLive),
+    );
+  },
+
+  async updateTeamPlayer(input: UpdateTeamPlayerInput): Promise<TeamPlayer> {
+    const effect = Effect.gen(function* () {
+      const service = yield* PlayerService;
+      return yield* service.updateTeamPlayer(input);
     });
     return await Runtime.runPromise(runtime)(
       Effect.provide(effect, PlayerServiceLive),
