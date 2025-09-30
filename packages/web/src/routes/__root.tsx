@@ -90,7 +90,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <body className="antialiased">
         {children}
         <TanStackDevtools
-          config={{ position: 'bottom-left' }}
+          config={{ position: 'bottom-left', openHotkey: undefined }}
           plugins={[
             {
               name: 'Tanstack Router',
