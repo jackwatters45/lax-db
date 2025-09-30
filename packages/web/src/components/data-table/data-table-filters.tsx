@@ -156,8 +156,10 @@ function FilterSelect<TData, TValue>({
         <button
           type="button"
           className={cn(
-            'flex w-full items-center gap-x-1.5 whitespace-nowrap rounded-md border border-border px-2 py-1.5 font-medium text-muted-foreground hover:bg-muted sm:w-fit sm:text-xs',
-            selectedValues ? '' : 'border-dashed',
+            'flex w-full items-center gap-x-1.5 whitespace-nowrap rounded-md border border-border px-2 py-1.5 font-medium hover:bg-muted sm:w-fit sm:text-xs',
+            selectedValues
+              ? 'text-foreground'
+              : 'border-dashed text-muted-foreground',
             focusRing,
           )}
         >
@@ -238,9 +240,6 @@ function FilterSelect<TData, TValue>({
                 </SelectContent>
               </Select>
             </div>
-            <Button type="submit" className="w-full sm:py-1">
-              Apply
-            </Button>
             {columnFilterLabels && columnFilterLabels.length > 0 && (
               <Button
                 variant="secondary"
@@ -289,8 +288,10 @@ function FilterCheckbox<TData, TValue>({
         <button
           type="button"
           className={cn(
-            'flex h-7 w-full items-center gap-x-1.5 whitespace-nowrap rounded-md border border-border px-2 py-1.5 font-medium text-muted-foreground text-sm hover:bg-muted sm:w-fit',
-            selectedValues && selectedValues.length > 0 ? '' : 'border-dashed',
+            'flex h-7 w-full items-center gap-x-1.5 whitespace-nowrap rounded-md border border-border px-2 py-1.5 font-medium text-sm hover:bg-muted sm:w-fit',
+            selectedValues && selectedValues.length > 0
+              ? 'text-foreground'
+              : 'border-dashed text-muted-foreground',
             focusRing,
           )}
         >
@@ -386,9 +387,6 @@ function FilterCheckbox<TData, TValue>({
                 })}
               </div>
             </div>
-            <Button type="submit" className="w-full sm:py-1">
-              Apply
-            </Button>
             {columnFilterLabels && columnFilterLabels.length > 0 && (
               <Button
                 variant="secondary"
@@ -455,10 +453,10 @@ function FilterNumber<TData, TValue>({
         <button
           type="button"
           className={cn(
-            'flex w-full items-center gap-x-1.5 whitespace-nowrap rounded-md border border-border px-2 py-1.5 font-medium text-muted-foreground hover:bg-muted sm:w-fit sm:text-xs',
+            'flex w-full items-center gap-x-1.5 whitespace-nowrap rounded-md border border-border px-2 py-1.5 font-medium hover:bg-muted sm:w-fit sm:text-xs',
             selectedValues && selectedValues.condition !== ''
-              ? ''
-              : 'border-dashed',
+              ? 'text-foreground'
+              : 'border-dashed text-muted-foreground',
             focusRing,
           )}
         >
@@ -595,9 +593,6 @@ function FilterNumber<TData, TValue>({
                 </div>
               </div>
             </div>
-            <Button type="submit" className="w-full sm:py-1">
-              Apply
-            </Button>
             {columnFilterLabels && columnFilterLabels.length > 0 && (
               <Button
                 variant="secondary"
