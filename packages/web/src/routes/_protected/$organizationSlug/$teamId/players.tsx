@@ -72,8 +72,6 @@ function RouteComponent() {
   );
 }
 
-// TODO: commits
-// TODO: obsidian
 //
 // TODO: alert dialog action component
 // TODO: connect to backend - useMutation - remove players state part?
