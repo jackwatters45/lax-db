@@ -1,6 +1,7 @@
 'use client';
 
 import { Slot } from '@radix-ui/react-slot';
+import { createServerFn } from '@tanstack/react-start';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { PanelLeft } from 'lucide-react';
 import * as React from 'react';
@@ -30,6 +31,27 @@ const SIDEBAR_WIDTH = '16rem';
 const SIDEBAR_WIDTH_MOBILE = '18rem';
 const SIDEBAR_WIDTH_ICON = '3rem';
 const SIDEBAR_KEYBOARD_SHORTCUT = 'b';
+
+const _getSidebarState = createServerFn({ method: 'GET' }).handler(async () => {
+  const { getWebRequest } = await import('@tanstack/react-start/server');
+  const request = getWebRequest();
+  const cookie = request.headers.get('cookie');
+  if (!cookie) return true;
+
+  const match = cookie.match(new RegExp(`${SIDEBAR_COOKIE_NAME}=([^;]+)`));
+  return match?.[1] !== 'false';
+});
+
+const setSidebarState = createServerFn({ method: 'POST' })
+  .validator((data: { open: boolean }) => data)
+  .handler(async ({ data }) => {
+    const { setResponseHeader } = await import('@tanstack/react-start/server');
+    setResponseHeader(
+      'Set-Cookie',
+      `${SIDEBAR_COOKIE_NAME}=${String(data.open)}; Path=/; Max-Age=${SIDEBAR_COOKIE_MAX_AGE}; SameSite=Lax`,
+    );
+    return { success: true };
+  });
 
 type SidebarContextProps = {
   state: 'expanded' | 'collapsed';
@@ -74,10 +96,8 @@ const SidebarProvider = React.forwardRef<
   ) => {
     const isMobile = useIsMobile();
     const [openMobile, setOpenMobile] = React.useState(false);
-
-    // This is the internal state of the sidebar.
-    // We use openProp and setOpenProp for control from outside the component.
     const [_open, _setOpen] = React.useState(defaultOpen);
+
     const open = openProp ?? _open;
     const setOpen = React.useCallback(
       (value: boolean | ((value: boolean) => boolean)) => {
@@ -88,9 +108,7 @@ const SidebarProvider = React.forwardRef<
           _setOpen(openState);
         }
 
-        // This sets the cookie to keep the sidebar state.
-        // biome-ignore lint/suspicious/noDocumentCookie: <from shadcn>
-        document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`;
+        setSidebarState({ data: { open: openState } });
       },
       [setOpenProp, open],
     );
