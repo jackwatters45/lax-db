@@ -1,5 +1,6 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 import * as React from 'react';
+import { useDebouncedCallback } from 'use-debounce';
 import { cn } from '@/lib/utils';
 
 const inputVariants = cva(
@@ -35,4 +36,37 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 );
 Input.displayName = 'Input';
 
-export { Input };
+export interface DebouncedInputProps
+  extends Omit<InputProps, 'value' | 'onChange'> {
+  value: string | number | null;
+  onDebouncedChange: (value: string) => void;
+  debounceMs?: number;
+}
+
+const DebouncedInput = React.forwardRef<HTMLInputElement, DebouncedInputProps>(
+  (
+    { value: initialValue, onDebouncedChange, debounceMs = 500, ...props },
+    ref,
+  ) => {
+    const [value, setValue] = React.useState(initialValue ?? '');
+
+    const debouncedUpdate = useDebouncedCallback((newValue: string) => {
+      onDebouncedChange(newValue);
+    }, debounceMs);
+
+    return (
+      <Input
+        {...props}
+        ref={ref}
+        value={value}
+        onChange={(e) => {
+          setValue(e.target.value);
+          debouncedUpdate(e.target.value);
+        }}
+      />
+    );
+  },
+);
+DebouncedInput.displayName = 'DebouncedInput';
+
+export { Input, DebouncedInput };
