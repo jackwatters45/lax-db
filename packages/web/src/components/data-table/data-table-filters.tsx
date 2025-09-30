@@ -116,6 +116,7 @@ function FilterClear({ className }: FilterClearProps) {
     <Button
       variant="ghost"
       onClick={() => table.resetColumnFilters()}
+      size={'sm'}
       className={cn(
         'border border-border px-2 font-semibold text-primary sm:border-none sm:py-1',
         className,
