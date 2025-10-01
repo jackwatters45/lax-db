@@ -51,7 +51,7 @@ const deleteTeam = createServerFn({ method: 'POST' })
     return await TeamsAPI.deleteTeam(data, context.headers);
   });
 
-export const Route = createFileRoute('/_protected/$organizationSlug/')({
+export const Route = createFileRoute('/_protected/$organizationSlug/teams')({
   component: TeamsOverviewPage,
   loader: async () => {
     return await getUserOrganizationContext();
