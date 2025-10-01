@@ -9,12 +9,14 @@ const getDashboardData = createServerFn({ method: 'GET' })
   .validator((data: { organizationSlug: string }) => data)
   .handler(async ({ context, data }) => {
     const { auth } = await import('@lax-db/core/auth');
+    const { getWebRequest } = await import('@tanstack/react-start/server');
 
     try {
       if (!context.session?.user) {
         return {
           organizations: [],
           activeOrganization: null,
+          sidebarOpen: true,
         };
       }
 
@@ -29,15 +31,22 @@ const getDashboardData = createServerFn({ method: 'GET' })
         }),
       ]);
 
+      const request = getWebRequest();
+      const cookie = request.headers.get('cookie');
+      const match = cookie?.match(/sidebar_state=([^;]+)/);
+      const sidebarOpen = match?.[1] !== 'false';
+
       return {
         organizations,
         activeOrganization,
+        sidebarOpen,
       };
     } catch (error) {
       console.error('Dashboard data error:', error);
       return {
         organizations: [],
         activeOrganization: null,
+        sidebarOpen: true,
       };
     }
   });
@@ -61,6 +70,7 @@ export const Route = createFileRoute('/_protected/$organizationSlug')({
     return {
       organizations: data.organizations,
       activeOrganization: activeOrganization,
+      sidebarOpen: data.sidebarOpen,
     };
   },
   loader: async ({ params }) => {
@@ -72,8 +82,10 @@ export const Route = createFileRoute('/_protected/$organizationSlug')({
 });
 
 function OrganizationLayout() {
+  const { sidebarOpen } = Route.useRouteContext();
+
   return (
-    <SidebarProvider>
+    <SidebarProvider defaultOpen={sidebarOpen}>
       <AppSidebar />
       <SidebarInset className="flex h-screen flex-col">
         <div className="flex h-full flex-col">
