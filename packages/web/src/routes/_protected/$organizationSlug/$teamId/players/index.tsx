@@ -30,6 +30,7 @@ import { PlayerCards } from './-components/players-cards';
 import { createEditablePlayerColumns } from './-components/players-columns';
 import { PlayersFilterBar } from './-components/players-filterbar';
 import { PlayersToolbar } from './-components/players-toolbar';
+import { getTeamPlayersQK } from './-mutations';
 
 const getTeamPlayers = createServerFn({ method: 'GET' })
   .middleware([authMiddleware])
@@ -41,9 +42,8 @@ const getTeamPlayers = createServerFn({ method: 'GET' })
     return await PlayerAPI.getTeamPlayers(data.teamId);
   });
 
-// TODO: make team breadcrumb a dropdown
-// TODO: cmd for users - logic
 // TODO: clean up
+// TODO: cmd for users - logic
 // TODO: root players page
 // TODO: individual player page
 // TODO: getTeamPlayers
@@ -55,7 +55,7 @@ export const Route = createFileRoute(
   component: RouteComponent,
   loader: async ({ params, context }) => {
     await context.queryClient.prefetchQuery({
-      queryKey: ['players', params.teamId],
+      queryKey: getTeamPlayersQK(context.activeOrganization.id, params.teamId),
       queryFn: () => getTeamPlayers({ data: { teamId: params.teamId } }),
     });
   },
@@ -76,29 +76,28 @@ function RouteComponent() {
 
 function PlayersDataTable() {
   const { organizationSlug, teamId } = Route.useParams();
-  const {
-    activeOrganization: { id: organizationId },
-  } = Route.useRouteContext();
+  const { activeOrganization } = Route.useRouteContext();
 
   const { data: players = [] } = useQuery({
-    queryKey: ['players', teamId],
+    queryKey: getTeamPlayersQK(activeOrganization.id, teamId),
     queryFn: () => getTeamPlayers({ data: { teamId } }),
   });
 
   const columns = useMemo(
     () =>
       createEditablePlayerColumns({
+        organizationId: activeOrganization.id,
         organizationSlug,
         teamId,
       }),
-    [organizationSlug, teamId],
+    [activeOrganization.id, organizationSlug, teamId],
   );
 
   return (
     <DataTableProvider columns={columns} data={players} showAllRows={true}>
       <DataTableRoot>
         <PlayersFilterBar
-          organizationId={organizationId}
+          organizationId={activeOrganization.id}
           teamId={teamId}
           excludePlayerIds={players.map((p) => p.playerId)}
         />
