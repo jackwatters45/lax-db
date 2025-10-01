@@ -1,7 +1,19 @@
 import type { RowSelectionState, Table } from '@tanstack/react-table';
 import type { LucideIcon } from 'lucide-react';
-import { Edit, Trash2, X } from 'lucide-react';
+import { Copy, Edit, Trash2, UserMinus, X } from 'lucide-react';
 import * as React from 'react';
+import { toast } from 'sonner';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -14,6 +26,7 @@ import {
 import { cn } from '@/lib/utils';
 
 type BulkEditActions = {
+  onRemove?: () => void;
   onEdit?: () => void;
   onDelete?: () => void;
 };
@@ -227,7 +240,7 @@ function BulkEditToolbarEditAction({ className }: { className?: string }) {
 }
 
 function BulkEditToolbarDeleteAction({ className }: { className?: string }) {
-  const { actions } = useBulkEdit();
+  const { actions, selectedCount } = useBulkEdit();
 
   if (!actions?.onDelete) {
     throw new Error(
@@ -236,13 +249,161 @@ function BulkEditToolbarDeleteAction({ className }: { className?: string }) {
   }
 
   return (
-    <BulkEditToolbarAction
-      icon={Trash2}
-      label="Delete"
-      onClick={actions.onDelete}
-      variant="destructive"
-      className={className}
-    />
+    <AlertDialog>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <AlertDialogTrigger asChild>
+            <Button
+              variant="ghost"
+              size="sm"
+              className={cn(
+                'h-7 w-7 p-0 text-destructive hover:text-destructive',
+                className,
+              )}
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          </AlertDialogTrigger>
+        </TooltipTrigger>
+        <TooltipContent>Delete Permanently</TooltipContent>
+      </Tooltip>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogDescription>
+            This will permanently delete {selectedCount}{' '}
+            {selectedCount === 1 ? 'item' : 'items'}. This action cannot be
+            undone.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={actions.onDelete}
+            className={cn(
+              'bg-destructive text-destructive-foreground hover:bg-destructive/90',
+            )}
+          >
+            Delete
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
+
+function BulkEditToolbarRemoveAction({
+  className,
+  icon,
+  tooltipContent,
+}: {
+  className?: string;
+  icon?: LucideIcon;
+  tooltipContent?: string;
+}) {
+  const { actions, selectedCount } = useBulkEdit();
+
+  if (!actions?.onRemove) {
+    throw new Error(
+      'BulkEditToolbarRemoveAction requires onRemove action to be provided to BulkEditProvider',
+    );
+  }
+
+  const Icon = icon || UserMinus;
+
+  return (
+    <AlertDialog>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <AlertDialogTrigger asChild>
+            <Button
+              variant="ghost"
+              size="sm"
+              className={cn(
+                'h-7 w-7 p-0 text-destructive hover:text-destructive',
+                className,
+              )}
+            >
+              <Icon className="h-4 w-4" />
+            </Button>
+          </AlertDialogTrigger>
+        </TooltipTrigger>
+        <TooltipContent>{tooltipContent || 'Remove'}</TooltipContent>
+      </Tooltip>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Remove from team?</AlertDialogTitle>
+          <AlertDialogDescription>
+            This will remove {selectedCount}{' '}
+            {selectedCount === 1 ? 'player' : 'players'} from this team. The
+            player records will not be deleted.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={actions.onRemove}
+            className={cn(
+              'bg-destructive text-destructive-foreground hover:bg-destructive/90',
+            )}
+          >
+            Remove
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
+
+function BulkEditToolbarCopyAction({
+  className,
+  icon,
+  tooltipContent,
+  columnId,
+}: {
+  className?: string;
+  icon?: LucideIcon;
+  tooltipContent?: string;
+  columnId: string;
+}) {
+  const { table } = useBulkEdit();
+  const Icon = icon || Copy;
+
+  const handleCopy = async () => {
+    const selectedRows = table.getFilteredSelectedRowModel().rows;
+    const values = selectedRows
+      .map((row) => {
+        const value = row.getValue(columnId);
+        return value ? String(value) : '';
+      })
+      .filter(Boolean);
+
+    if (values.length === 0) {
+      toast.error('No values to copy');
+      return;
+    }
+
+    const text = values.join(', ');
+    await navigator.clipboard.writeText(text);
+    toast.success(
+      `Copied ${values.length} ${values.length === 1 ? 'value' : 'values'}`,
+    );
+  };
+
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={handleCopy}
+          className={cn('h-7 w-7 p-0', className)}
+        >
+          <Icon className="h-4 w-4" />
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>{tooltipContent || 'Copy'}</TooltipContent>
+    </Tooltip>
   );
 }
 
@@ -256,6 +417,8 @@ export {
   BulkEditToolbarAction,
   BulkEditToolbarEditAction,
   BulkEditToolbarDeleteAction,
+  BulkEditToolbarRemoveAction,
+  BulkEditToolbarCopyAction,
   BulkEditToolbarSeparator,
   useBulkEdit,
 };

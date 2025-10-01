@@ -72,3 +72,15 @@ export const DeletePlayerInputSchema = S.Struct({
   playerId: S.String,
 });
 export type DeletePlayerInput = typeof DeletePlayerInputSchema.Type;
+
+export const BulkRemovePlayersFromTeamInputSchema = S.Struct({
+  teamId: S.String,
+  playerIds: S.Array(S.String),
+});
+export type BulkRemovePlayersFromTeamInput =
+  typeof BulkRemovePlayersFromTeamInputSchema.Type;
+
+export const BulkDeletePlayersInputSchema = S.Struct({
+  playerIds: S.Array(S.String),
+});
+export type BulkDeletePlayersInput = typeof BulkDeletePlayersInputSchema.Type;
