@@ -1,7 +1,14 @@
 import { Slot } from '@radix-ui/react-slot';
-import { ChevronRight, MoreHorizontal } from 'lucide-react';
+import { ChevronRight, ChevronsUpDown, MoreHorizontal } from 'lucide-react';
 import * as React from 'react';
-
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
 
 const Breadcrumb = React.forwardRef<
@@ -102,6 +109,45 @@ const BreadcrumbEllipsis = ({
 );
 BreadcrumbEllipsis.displayName = 'BreadcrumbElipssis';
 
+const BreadcrumbDropdown = DropdownMenu;
+BreadcrumbDropdown.displayName = 'BreadcrumbDropdown';
+
+const BreadcrumbDropdownTrigger = React.forwardRef<
+  React.ComponentRef<typeof DropdownMenuTrigger>,
+  React.ComponentPropsWithoutRef<typeof DropdownMenuTrigger>
+>(({ className, ...props }, ref) => (
+  <DropdownMenuTrigger
+    ref={ref}
+    className={cn(
+      'flex items-center gap-1 p-0.5 transition-colors hover:text-foreground',
+      className,
+    )}
+    {...props}
+  >
+    <ChevronsUpDown className="h-3 w-3" />
+  </DropdownMenuTrigger>
+));
+BreadcrumbDropdownTrigger.displayName = 'BreadcrumbDropdownTrigger';
+
+const BreadcrumbDropdownContent = DropdownMenuContent;
+BreadcrumbDropdownContent.displayName = 'BreadcrumbDropdownContent';
+
+const BreadcrumbDropdownItem = React.forwardRef<
+  React.ComponentRef<typeof DropdownMenuItem>,
+  React.ComponentPropsWithoutRef<typeof DropdownMenuItem> & {
+    asChild?: boolean;
+  }
+>(({ asChild, ...props }, ref) => (
+  <DropdownMenuItem ref={ref} asChild={asChild} {...props} />
+));
+BreadcrumbDropdownItem.displayName = 'BreadcrumbDropdownItem';
+
+const BreadcrumbDropdownLabel = DropdownMenuLabel;
+BreadcrumbDropdownLabel.displayName = 'BreadcrumbDropdownLabel';
+
+const BreadcrumbDropdownSeparator = DropdownMenuSeparator;
+BreadcrumbDropdownSeparator.displayName = 'BreadcrumbDropdownSeparator';
+
 export {
   Breadcrumb,
   BreadcrumbList,
@@ -110,4 +156,10 @@ export {
   BreadcrumbPage,
   BreadcrumbSeparator,
   BreadcrumbEllipsis,
+  BreadcrumbDropdown,
+  BreadcrumbDropdownTrigger,
+  BreadcrumbDropdownContent,
+  BreadcrumbDropdownItem,
+  BreadcrumbDropdownLabel,
+  BreadcrumbDropdownSeparator,
 };

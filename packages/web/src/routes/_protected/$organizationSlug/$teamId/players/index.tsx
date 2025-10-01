@@ -12,6 +12,12 @@ import {
 } from '@/components/data-table/data-table';
 import { PageBody } from '@/components/layout/page-content';
 import {
+  BreadcrumbDropdown,
+  BreadcrumbDropdownContent,
+  BreadcrumbDropdownItem,
+  BreadcrumbDropdownLabel,
+  BreadcrumbDropdownSeparator,
+  BreadcrumbDropdownTrigger,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbSeparator,
@@ -35,11 +41,14 @@ const getTeamPlayers = createServerFn({ method: 'GET' })
     return await PlayerAPI.getTeamPlayers(data.teamId);
   });
 
-// TODO: cmd for users - logic
-// TODO: add fields
-// TODO: clean up
 // TODO: make team breadcrumb a dropdown
+// TODO: cmd for users - logic
+// TODO: clean up
 // TODO: root players page
+// TODO: individual player page
+// TODO: getTeamPlayers
+
+// TODO: add fields
 export const Route = createFileRoute(
   '/_protected/$organizationSlug/$teamId/players/',
 )({
@@ -110,7 +119,7 @@ function PlayersDataTable() {
 
 function Header() {
   const { organizationSlug } = Route.useParams();
-  const { activeTeam } = Route.useRouteContext();
+  const { activeTeam, teams } = Route.useRouteContext();
 
   return (
     <TeamHeader organizationSlug={organizationSlug} activeTeam={activeTeam}>
@@ -123,14 +132,31 @@ function Header() {
       </BreadcrumbItem>
       <BreadcrumbSeparator />
       <BreadcrumbItem>
-        <BreadcrumbLink title={activeTeam.name} asChild>
-          <Link
-            to="/$organizationSlug/$teamId"
-            params={{ organizationSlug, teamId: activeTeam.id }}
-          >
-            {activeTeam.name}
-          </Link>
-        </BreadcrumbLink>
+        <BreadcrumbDropdown>
+          <BreadcrumbLink asChild>
+            <Link
+              to="/$organizationSlug/$teamId"
+              params={{ organizationSlug, teamId: activeTeam.id }}
+            >
+              {activeTeam.name}
+            </Link>
+          </BreadcrumbLink>
+          <BreadcrumbDropdownTrigger />
+          <BreadcrumbDropdownContent>
+            <BreadcrumbDropdownLabel>Switch Team</BreadcrumbDropdownLabel>
+            <BreadcrumbDropdownSeparator />
+            {teams.map((team) => (
+              <BreadcrumbDropdownItem asChild key={team.id}>
+                <Link
+                  to="/$organizationSlug/$teamId/players"
+                  params={{ organizationSlug, teamId: team.id }}
+                >
+                  {team.name}
+                </Link>
+              </BreadcrumbDropdownItem>
+            ))}
+          </BreadcrumbDropdownContent>
+        </BreadcrumbDropdown>
       </BreadcrumbItem>
       <BreadcrumbSeparator />
       <BreadcrumbItem>

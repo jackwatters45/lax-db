@@ -68,7 +68,10 @@ export const Route = createFileRoute('/_protected/$organizationSlug/$teamId')({
     return {
       organizations: context.organizations,
       activeOrganization: context.activeOrganization,
-      teams: data.teams,
+      teams: data.teams.map((team) => ({
+        id: team.id,
+        name: team.name,
+      })),
       activeTeam,
     };
   },
