@@ -8,6 +8,7 @@ import {
   getSortedRowModel,
   type Row,
   type RowSelectionState,
+  type TableMeta,
   type Table as TanstackTable,
   useReactTable,
   type VisibilityState,
@@ -44,6 +45,7 @@ type DataTableProviderProps<TData> = {
   columns: ColumnDef<TData>[];
   data: TData[];
   showAllRows?: boolean;
+  meta?: TableMeta<TData>;
   children: React.ReactNode;
 };
 
@@ -51,6 +53,7 @@ function DataTableProvider<TData>({
   columns,
   data,
   showAllRows = true,
+  meta,
   children,
 }: DataTableProviderProps<TData>) {
   const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
@@ -68,6 +71,7 @@ function DataTableProvider<TData>({
   const table = useReactTable({
     data,
     columns,
+    meta,
     state: {
       rowSelection,
       columnFilters,

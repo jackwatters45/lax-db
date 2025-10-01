@@ -5,4 +5,7 @@ declare module '@tanstack/react-table' {
     className?: string;
     displayName: string;
   }
+  interface TableMeta {
+    excludePlayerIds?: string[];
+  }
 }

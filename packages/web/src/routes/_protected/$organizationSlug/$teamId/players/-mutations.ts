@@ -100,7 +100,7 @@ export function useUpdatePlayer(organizationId: string, teamId: string) {
           context.previousPlayers,
         );
       }
-      toast('An error occurred while updating the player');
+      toast.error('Failed to update player');
     },
   });
 
@@ -212,6 +212,7 @@ export function useAddPlayerToTeam(organizationId: string, teamId: string) {
           context.previousPlayers,
         );
       }
+      toast.error('Failed to add player to team');
     },
   });
 }
@@ -276,6 +277,7 @@ export function useRemovePlayerFromTeam(
           context.previousPlayers,
         );
       }
+      toast.error('Failed to remove player from team');
     },
     onSettled: () => {
       queryClient.invalidateQueries({
@@ -314,6 +316,7 @@ export function useBulkRemovePlayersFromTeam(
           context.previousPlayers,
         );
       }
+      toast.error('Failed to remove players from team');
     },
     onSettled: () => {
       queryClient.invalidateQueries({
@@ -349,6 +352,7 @@ export function useBulkDeletePlayers(organizationId: string, teamId: string) {
           context.previousPlayers,
         );
       }
+      toast.error('Failed to delete players');
     },
     onSettled: () => {
       queryClient.invalidateQueries({
@@ -395,6 +399,7 @@ export function useDeletePlayer(organizationId: string, teamId: string) {
           context.previousPlayers,
         );
       }
+      toast.error('Failed to delete player');
     },
     onSettled: () => {
       queryClient.invalidateQueries({
@@ -495,6 +500,7 @@ export function useLinkPlayer(organizationId: string, teamId: string) {
           context.previousPlayers,
         );
       }
+      toast.error('Failed to link player');
     },
     onSettled: () => {
       queryClient.invalidateQueries({
@@ -524,6 +530,9 @@ export function useAddExistingPlayerToTeam(
   return useMutation({
     mutationFn: (data: typeof AddPlayerToTeamInputSchema.Type) =>
       addExistingPlayerToTeamFn({ data }),
+    onError: () => {
+      toast.error('Failed to add existing player to team');
+    },
     onSettled: () => {
       queryClient.invalidateQueries({
         queryKey: getTeamPlayersQK(organizationId, teamId),

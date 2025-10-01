@@ -93,8 +93,18 @@ function PlayersDataTable() {
     [activeOrganization.id, organizationSlug, teamId],
   );
 
+  const excludePlayerIds = useMemo(
+    () => players.map((p) => p.playerId),
+    [players],
+  );
+
   return (
-    <DataTableProvider columns={columns} data={players} showAllRows={true}>
+    <DataTableProvider
+      columns={columns}
+      data={players}
+      showAllRows={true}
+      meta={{ excludePlayerIds }}
+    >
       <DataTableRoot>
         <PlayersFilterBar
           organizationId={activeOrganization.id}
