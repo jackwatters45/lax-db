@@ -1,3 +1,4 @@
+import type { TeamPlayerWithInfo } from '@lax-db/core/player/index';
 import {
   Card,
   CardContent,
@@ -6,7 +7,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import type { TeamPlayerWithInfo } from './players-columns';
 
 export function PlayerCards({ players }: { players: TeamPlayerWithInfo[] }) {
   return (

@@ -106,17 +106,17 @@ export function createEditablePlayerColumns({
         className: 'text-left',
         displayName: 'Name',
       },
-      cell: ({ row: { original: player }, table }) => {
+      cell: ({ row, table }) => {
+        const player = row.original;
         const { handleUpdate } = useUpdatePlayer(organizationId, teamId);
 
-        const allPlayers = table.options.data as TeamPlayerWithInfo[];
-        const excludePlayerIds = allPlayers.map((p) => p.playerId);
+        const excludePlayerIds = table.options.meta?.excludePlayerIds;
 
         return (
           <PlayerSearchCombobox
             organizationId={organizationSlug}
             value={player.name ?? ''}
-            excludePlayerIds={excludePlayerIds}
+            excludePlayerIds={excludePlayerIds ?? []}
             placeholder="Search or add player..."
             onSelect={(selectedPlayer) => {
               handleUpdate(player.playerId, {
@@ -247,5 +247,3 @@ export function createEditablePlayerColumns({
     }),
   ] as ColumnDef<TeamPlayerWithInfo>[];
 }
-
-export type { TeamPlayerWithInfo };
