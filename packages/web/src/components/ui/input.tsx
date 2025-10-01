@@ -1,6 +1,5 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 import * as React from 'react';
-import { useDebouncedCallback } from 'use-debounce';
 import { cn } from '@/lib/utils';
 
 const inputVariants = cva(
@@ -36,37 +35,25 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 );
 Input.displayName = 'Input';
 
-export interface DebouncedInputProps
-  extends Omit<InputProps, 'value' | 'onChange'> {
-  value: string | number | null;
-  onDebouncedChange: (value: string) => void;
-  debounceMs?: number;
+export interface ControlledInput extends Omit<InputProps, 'defaultValue'> {
+  onUpdate: (value: string | null) => void;
 }
 
-const DebouncedInput = React.forwardRef<HTMLInputElement, DebouncedInputProps>(
-  (
-    { value: initialValue, onDebouncedChange, debounceMs = 500, ...props },
-    ref,
-  ) => {
-    const [value, setValue] = React.useState(initialValue ?? '');
-
-    const debouncedUpdate = useDebouncedCallback((newValue: string) => {
-      onDebouncedChange(newValue);
-    }, debounceMs);
+const ControlledInput = React.forwardRef<HTMLInputElement, ControlledInput>(
+  ({ value, onUpdate, ...props }, ref) => {
+    const [localValue, setLocalValue] = React.useState(value?.toString() ?? '');
 
     return (
       <Input
         {...props}
         ref={ref}
-        value={value}
-        onChange={(e) => {
-          setValue(e.target.value);
-          debouncedUpdate(e.target.value);
-        }}
+        value={localValue}
+        onChange={(e) => setLocalValue(e.target.value)}
+        onBlur={() => onUpdate(localValue)}
       />
     );
   },
 );
-DebouncedInput.displayName = 'DebouncedInput';
+ControlledInput.displayName = 'ControlledInput';
 
-export { Input, DebouncedInput };
+export { ControlledInput, Input };

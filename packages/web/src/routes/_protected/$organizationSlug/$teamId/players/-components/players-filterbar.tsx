@@ -3,7 +3,6 @@ import { useDataTable } from '@/components/data-table/data-table';
 import {
   FilterActions,
   FilterBar,
-  FilterBarAddButton,
   FilterBarDisplayTypeToggle,
   FilterBarProvider,
   FilterBarViewOptions,
@@ -12,18 +11,23 @@ import {
   FilterGroup,
   FilterSearch,
 } from '@/components/data-table/data-table-filterbar';
+import { Button } from '@/components/ui/button';
 import { POSITION_SELECT_FIELDS } from '@/lib/constants';
+import { AddPlayerCommand } from './add-player-command';
 
-export function PlayersFilterBar({ onAddPlayer }: { onAddPlayer: () => void }) {
+export function PlayersFilterBar({
+  organizationId,
+  teamId,
+  excludePlayerIds,
+}: {
+  organizationId: string;
+  teamId: string;
+  excludePlayerIds: string[];
+}) {
   const { table } = useDataTable();
 
   return (
-    <FilterBarProvider
-      table={table}
-      actions={{
-        onAdd: onAddPlayer,
-      }}
-    >
+    <FilterBarProvider table={table}>
       <FilterBar>
         <FilterGroup>
           {table.getColumn('name')?.getIsVisible() && (
@@ -41,10 +45,16 @@ export function PlayersFilterBar({ onAddPlayer }: { onAddPlayer: () => void }) {
         <FilterActions>
           <FilterBarDisplayTypeToggle />
           <FilterBarViewOptions />
-          <FilterBarAddButton>
-            <Plus className="size-4" />
-            <span className="hidden lg:block">Add Player</span>
-          </FilterBarAddButton>
+          <AddPlayerCommand
+            organizationId={organizationId}
+            teamId={teamId}
+            excludePlayerIds={excludePlayerIds}
+          >
+            <Button size="sm">
+              <Plus className="size-4" />
+              <span className="hidden lg:block">Add Player</span>
+            </Button>
+          </AddPlayerCommand>
         </FilterActions>
       </FilterBar>
     </FilterBarProvider>

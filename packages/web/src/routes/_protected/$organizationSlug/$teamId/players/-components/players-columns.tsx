@@ -1,5 +1,4 @@
 import type { TeamPlayerWithInfo } from '@lax-db/core/player/index';
-import type { PartialNullable } from '@lax-db/core/types';
 import { Link } from '@tanstack/react-router';
 import { type ColumnDef, createColumnHelper } from '@tanstack/react-table';
 import { User2 } from 'lucide-react';
@@ -13,7 +12,7 @@ import {
   RowActionsProvider,
 } from '@/components/data-table/data-table-row-actions';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
+import { ControlledInput } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
@@ -22,27 +21,19 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { POSITION_SELECT_FIELDS } from '@/lib/constants';
+import { usePlayerMutations, useUpdatePlayer } from '../-mutations';
 import { PlayerSearchCombobox } from './player-edit-ui';
 
 const columnHelper = createColumnHelper<TeamPlayerWithInfo>();
 
 type EditablePlayerColumnsProps = {
   organizationSlug: string;
-  teamPlayers: TeamPlayerWithInfo[];
-  actions: {
-    onUpdate: (
-      playerId: string,
-      updates: PartialNullable<TeamPlayerWithInfo>,
-    ) => void;
-    onRemove: (playerId: string) => void;
-    onDelete: (playerId: string) => void;
-  };
+  teamId: string;
 };
 
 export function createEditablePlayerColumns({
   organizationSlug,
-  teamPlayers,
-  actions: { onUpdate, onRemove, onDelete },
+  teamId,
 }: EditablePlayerColumnsProps): ColumnDef<TeamPlayerWithInfo>[] {
   return [
     columnHelper.display({
@@ -85,16 +76,17 @@ export function createEditablePlayerColumns({
         displayName: 'Jersey Number',
       },
       cell: ({ row: { original: player } }) => {
+        const { handleUpdate } = useUpdatePlayer(teamId);
+
         return (
-          <Input
+          <ControlledInput
+            key={`jersey-${player.playerId}`}
             variant="data"
             type="number"
-            defaultValue={player.jerseyNumber ?? ''}
-            onBlur={(e) => {
-              const value = e.target.value ? Number(e.target.value) : null;
-              if (value !== player.jerseyNumber) {
-                onUpdate(player.playerId, { jerseyNumber: value });
-              }
+            value={player.jerseyNumber ?? ''}
+            onUpdate={(newValue) => {
+              const numValue = newValue ? Number(newValue) : null;
+              handleUpdate(player.playerId, { jerseyNumber: numValue });
             }}
             placeholder="#"
           />
@@ -112,29 +104,26 @@ export function createEditablePlayerColumns({
         className: 'text-left',
         displayName: 'Name',
       },
-      cell: ({ row: { original: player } }) => {
-        const excludePlayerIds = teamPlayers.map((p) => p.playerId);
+      cell: ({ row: { original: player }, table }) => {
+        const { handleUpdate } = useUpdatePlayer(teamId);
+
+        const allPlayers = table.options.data as TeamPlayerWithInfo[];
+        const excludePlayerIds = allPlayers.map((p) => p.playerId);
 
         return (
           <PlayerSearchCombobox
             organizationId={organizationSlug}
             value={player.name ?? ''}
             excludePlayerIds={excludePlayerIds}
+            placeholder="Search or add player..."
             onSelect={(selectedPlayer) => {
-              onUpdate(player.playerId, {
+              handleUpdate(player.playerId, {
                 name: selectedPlayer.name,
                 email: selectedPlayer.email,
                 phone: selectedPlayer.phone,
                 dateOfBirth: selectedPlayer.dateOfBirth,
               });
             }}
-            onRename={(name) => {
-              onUpdate(player.playerId, { name });
-            }}
-            onCreateNew={(name) => {
-              onUpdate(player.playerId, { name });
-            }}
-            placeholder="Search or add player..."
           />
         );
       },
@@ -152,12 +141,13 @@ export function createEditablePlayerColumns({
       filterFn: 'arrIncludesSome',
       cell: ({ row }) => {
         const player = row.original;
+        const { handleUpdate } = useUpdatePlayer(teamId);
 
         return (
           <Select
             value={player.position || ''}
             onValueChange={(value) => {
-              onUpdate(player.playerId, { position: value });
+              handleUpdate(player.playerId, { position: value });
             }}
           >
             <SelectTrigger variant="data">
@@ -185,16 +175,16 @@ export function createEditablePlayerColumns({
         displayName: 'Email',
       },
       cell: ({ row: { original: player } }) => {
+        const { handleUpdate } = useUpdatePlayer(teamId);
+
         return (
-          <Input
+          <ControlledInput
+            key={`email-${player.playerId}`}
             variant="data"
             type="email"
-            defaultValue={player.email || ''}
-            onBlur={(e) => {
-              const value = e.target.value || null;
-              if (value !== player.email) {
-                onUpdate(player.playerId, { email: value });
-              }
+            value={player.email || ''}
+            onUpdate={(newValue) => {
+              handleUpdate(player.playerId, { email: newValue });
             }}
             placeholder="email@example.com"
           />
@@ -213,12 +203,16 @@ export function createEditablePlayerColumns({
       cell: ({ row }) => {
         const player = row.original;
 
+        const mutations = usePlayerMutations(teamId);
+
         return (
           <RowActionsProvider
             row={row}
             actions={{
-              onDelete: () => onDelete(player.playerId),
-              onRemove: () => onRemove(player.playerId),
+              onDelete: () =>
+                mutations.delete.mutate({ playerId: player.playerId }),
+              onRemove: () =>
+                mutations.remove.mutate({ teamId, playerId: player.playerId }),
             }}
           >
             <RowActionsDropdown>

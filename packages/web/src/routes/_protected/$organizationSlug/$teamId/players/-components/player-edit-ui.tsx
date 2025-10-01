@@ -2,7 +2,7 @@ import type { Player } from '@lax-db/core/player/player.sql';
 import { useQuery } from '@tanstack/react-query';
 import { createServerFn } from '@tanstack/react-start';
 import { Schema as S } from 'effect';
-import { Check, ChevronsUpDown, Edit, UserPlus } from 'lucide-react';
+import { Check, ChevronsUpDown } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
@@ -12,14 +12,12 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-  CommandSeparator,
 } from '@/components/ui/command';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { Separator } from '@/components/ui/separator';
 import { authMiddleware } from '@/lib/middleware';
 import { cn } from '@/lib/utils';
 
@@ -42,16 +40,12 @@ export function PlayerSearchCombobox({
   value,
   excludePlayerIds = [],
   onSelect,
-  onRename,
-  onCreateNew,
   placeholder = 'Search or add player...',
 }: {
   organizationId: string;
   value?: string;
   excludePlayerIds?: string[];
   onSelect: (player: Player) => void;
-  onRename: (name: string) => void;
-  onCreateNew: (name: string) => void;
   placeholder?: string;
 }) {
   const [open, setOpen] = useState(false);
@@ -106,78 +100,43 @@ export function PlayerSearchCombobox({
           <CommandList>
             {isLoading ? (
               <div className="py-6 text-center text-sm">Loading...</div>
-            ) : (
-              <>
-                {filteredPlayers.length > 0 ? (
-                  <CommandGroup heading="Organization Players">
-                    {filteredPlayers.map((player) => (
-                      <CommandItem
-                        key={player.id}
-                        value={player.id}
-                        onSelect={() => {
-                          onSelect(player);
-                          setOpen(false);
-                          setSearchQuery('');
-                        }}
-                      >
-                        <Check
-                          className={cn(
-                            'mr-2 h-4 w-4',
-                            selectedPlayer?.id === player.id
-                              ? 'opacity-100'
-                              : 'opacity-0',
-                          )}
-                        />
-                        <div className="flex flex-col">
-                          <span>{player.name || 'Unnamed'}</span>
-                          {(player.email || player.phone) && (
-                            <span className="text-muted-foreground text-xs">
-                              {player.email || player.phone}
-                            </span>
-                          )}
-                        </div>
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-                ) : (
-                  <CommandEmpty>
-                    {searchQuery
-                      ? 'No players found'
-                      : 'No players in organization'}
-                  </CommandEmpty>
-                )}
-                {filteredPlayers.length > 0 && <CommandSeparator />}
-                {searchQuery && (
-                  <>
-                    <Separator orientation="horizontal" />
-                    <CommandGroup>
-                      <CommandItem
-                        onSelect={() => {
-                          onRename(searchQuery);
-                          setOpen(false);
-                          setSearchQuery('');
-                        }}
-                      >
-                        <Edit className="mr-2 h-4 w-4" />
-                        Rename to "{searchQuery}"
-                      </CommandItem>
-                    </CommandGroup>
-                    <CommandSeparator />
-                  </>
-                )}
-                <CommandGroup>
+            ) : filteredPlayers.length > 0 ? (
+              <CommandGroup heading="Organization Players">
+                {filteredPlayers.map((player) => (
                   <CommandItem
+                    key={player.id}
+                    value={player.id}
                     onSelect={() => {
-                      onCreateNew(searchQuery || '');
+                      onSelect(player);
                       setOpen(false);
                       setSearchQuery('');
                     }}
                   >
-                    <UserPlus className="mr-2 h-4 w-4" />
-                    Create {searchQuery ? `"${searchQuery}"` : 'new player'}
+                    <Check
+                      className={cn(
+                        'mr-2 h-4 w-4',
+                        selectedPlayer?.id === player.id
+                          ? 'opacity-100'
+                          : 'opacity-0',
+                      )}
+                    />
+                    <div className="flex flex-col">
+                      <span>{player.name || 'Unnamed'}</span>
+                      {(player.email || player.phone) && (
+                        <span className="text-muted-foreground text-xs">
+                          {player.email || player.phone}
+                        </span>
+                      )}
+                    </div>
                   </CommandItem>
-                </CommandGroup>
-              </>
+                ))}
+              </CommandGroup>
+            ) : (
+              <CommandEmpty>
+                {searchQuery
+                  ? 'No players found'
+                  : 'No players in organization'}
+              </CommandEmpty>
             )}
           </CommandList>
         </Command>

@@ -65,7 +65,7 @@ function DataTableProvider<TData>({
     pageSize: 10,
   });
 
-  const tableConfig = {
+  const table = useReactTable({
     data,
     columns,
     state: {
@@ -87,14 +87,15 @@ function DataTableProvider<TData>({
       getPaginationRowModel: getPaginationRowModel(),
       onPaginationChange: setPagination,
     }),
-  };
+  });
 
-  const table = useReactTable(tableConfig);
-
-  const value = {
-    table,
-    columns,
-  };
+  const value = React.useMemo(
+    () => ({
+      table,
+      columns,
+    }),
+    [table, columns],
+  );
 
   return (
     <DataTableContext.Provider value={value as DataTableContextValue<unknown>}>
