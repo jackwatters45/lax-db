@@ -42,6 +42,9 @@ Lax DB aims to better equip lacrosse players with modern tools and features to e
 #### Small Features
 
 - **Export Table Contents**: Export table contents to CSV or Excel format. Export entire table contents or use bulk edit to control exported rows.
+- **Table Views**
+- **Table Column + Rows Dragging**
+- **Table Column Resizing**
 
 ### ✅ Completed Features
 
