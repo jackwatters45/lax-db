@@ -21,8 +21,12 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { POSITION_SELECT_FIELDS } from '@/lib/constants';
-import { usePlayerMutations, useUpdatePlayer } from '../-mutations';
-import { PlayerSearchCombobox } from './player-edit-ui';
+import {
+  useLinkPlayer,
+  usePlayerMutations,
+  useUpdatePlayer,
+} from '../-mutations';
+import { PlayerReplaceCombobox } from './player-replace-combobox';
 
 const columnHelper = createColumnHelper<TeamPlayerWithInfo>();
 
@@ -108,23 +112,33 @@ export function createEditablePlayerColumns({
       },
       cell: ({ row, table }) => {
         const player = row.original;
+        const linkPlayer = useLinkPlayer(organizationId, teamId);
         const { handleUpdate } = useUpdatePlayer(organizationId, teamId);
 
         const excludePlayerIds = table.options.meta?.excludePlayerIds;
 
         return (
-          <PlayerSearchCombobox
-            organizationId={organizationSlug}
+          <PlayerReplaceCombobox
+            organizationId={organizationId}
             value={player.name ?? ''}
             excludePlayerIds={excludePlayerIds ?? []}
-            placeholder="Search or add player..."
             onSelect={(selectedPlayer) => {
-              handleUpdate(player.playerId, {
-                name: selectedPlayer.name,
-                email: selectedPlayer.email,
-                phone: selectedPlayer.phone,
-                dateOfBirth: selectedPlayer.dateOfBirth,
+              linkPlayer.mutate({
+                currentPlayerId: player.playerId,
+                existingPlayer: {
+                  id: selectedPlayer.id,
+                  name: selectedPlayer.name,
+                  email: selectedPlayer.email,
+                  phone: selectedPlayer.phone,
+                  dateOfBirth: selectedPlayer.dateOfBirth,
+                  organizationId: selectedPlayer.organizationId,
+                },
+                jerseyNumber: player.jerseyNumber ?? null,
+                position: player.position ?? null,
               });
+            }}
+            onRename={(newName) => {
+              handleUpdate(player.playerId, { name: newName });
             }}
           />
         );
@@ -227,13 +241,13 @@ export function createEditablePlayerColumns({
               >
                 <RowActionItem icon={User2}>View</RowActionItem>
               </Link>
+              <RowActionSeparator />
               <RowActionRemoveItem
                 alertTitle="Remove Player from Team"
                 alertDescription="Are you sure you want to remove this player from the team?"
               >
                 Remove From Team
               </RowActionRemoveItem>
-              <RowActionSeparator />
               <RowActionDeleteItem
                 alertTitle="Permanently Delete Player from Organization"
                 alertDescription="Are you sure you want to remove this player from the organization? This action cannot be undone."

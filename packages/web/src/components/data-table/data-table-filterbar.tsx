@@ -13,26 +13,6 @@ import {
 import { cn } from '@/lib/utils';
 import { TabsList, TabsTrigger } from '../ui/tabs';
 
-type FilterBarActions = {
-  onAdd?: () => void;
-};
-
-type FilterBarContextValue<TData = unknown> = {
-  table: Table<TData>;
-  actions?: FilterBarActions;
-};
-
-const FilterBarContext =
-  React.createContext<FilterBarContextValue<unknown> | null>(null);
-
-export function useFilterBar<TData = unknown>(): FilterBarContextValue<TData> {
-  const context = React.use(FilterBarContext);
-  if (!context) {
-    throw new Error('useFilterBar must be used within a FilterBarProvider');
-  }
-  return context as FilterBarContextValue<TData>;
-}
-
 type FilterBarProviderProps<TData = unknown> = {
   table: Table<TData>;
   actions?: FilterBarActions;
@@ -195,6 +175,12 @@ import {
   FilterSearch,
   FilterSelect,
 } from './data-table-filters';
+import {
+  type FilterBarActions,
+  FilterBarContext,
+  type FilterBarContextValue,
+  useFilterBar,
+} from './use-filterbar';
 
 export {
   FilterActions,

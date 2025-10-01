@@ -1,6 +1,7 @@
+import { TeamIdSchema } from '@lax-db/core/player/player.schema';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
-import { Schema } from 'effect';
+import { Schema as S } from 'effect';
 import { Mail, Plus, Settings, UserMinus } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { PageBody } from '@/components/layout/page-content';
@@ -14,13 +15,16 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { authClient } from '@/lib/auth-client';
 import { authMiddleware } from '@/lib/middleware';
-import { TeamIdSchema } from '@/lib/schema';
 import { TeamHeader } from './-components/team-header';
+
+const GetTeamDataSchema = S.Struct({
+  teamId: TeamIdSchema,
+});
 
 const getTeamData = createServerFn({ method: 'GET' })
   .middleware([authMiddleware])
-  .validator((data: { teamId: string }) =>
-    Schema.decodeSync(TeamIdSchema)(data),
+  .validator((data: typeof GetTeamDataSchema.Type) =>
+    S.decodeSync(GetTeamDataSchema)(data),
   )
   .handler(async ({ data: { teamId }, context }) => {
     const { auth } = await import('@lax-db/core/auth');

@@ -194,6 +194,7 @@ function RowActionRemoveItem({
       {...props}
       onClick={() => actions.onRemove?.(row)}
       icon={UserMinus}
+      variant="destructive"
     >
       {children}
     </RowActionAlertItem>
@@ -238,12 +239,7 @@ function RowActionAlertItem({
             e.preventDefault();
             setOpen(true);
           }}
-          className={cn(
-            'gap-2',
-            variant === 'destructive' &&
-              'text-destructive focus:text-destructive',
-            className,
-          )}
+          className={cn('gap-2', className)}
         >
           {Icon && <Icon className="h-4 w-4" />}
           {children}
@@ -284,5 +280,4 @@ export {
   RowActionDeleteItem,
   RowActionRemoveItem,
   RowActionSeparator,
-  useRowActions,
 };

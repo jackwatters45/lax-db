@@ -1,3 +1,4 @@
+import { TeamIdSchema } from '@lax-db/core/player/player.schema';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
@@ -24,7 +25,6 @@ import {
 } from '@/components/ui/breadcrumb';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { authMiddleware } from '@/lib/middleware';
-import { TeamIdSchema } from '@/lib/schema';
 import { TeamHeader } from '../-components/team-header';
 import { PlayerCards } from './-components/players-cards';
 import { createEditablePlayerColumns } from './-components/players-columns';
@@ -32,23 +32,21 @@ import { PlayersFilterBar } from './-components/players-filterbar';
 import { PlayersToolbar } from './-components/players-toolbar';
 import { getTeamPlayersQK } from './-mutations';
 
+const GetTeamPlayers = S.Struct({
+  teamId: TeamIdSchema,
+});
+
 const getTeamPlayers = createServerFn({ method: 'GET' })
   .middleware([authMiddleware])
-  .validator((data: typeof TeamIdSchema.Type) =>
-    S.decodeSync(TeamIdSchema)(data),
+  .validator((data: typeof GetTeamPlayers.Type) =>
+    S.decodeSync(GetTeamPlayers)(data),
   )
   .handler(async ({ data }) => {
     const { PlayerAPI } = await import('@lax-db/core/player/index');
     return await PlayerAPI.getTeamPlayers(data.teamId);
   });
 
-// TODO: clean up
-// TODO: cmd for users - logic
-// TODO: root players page
-// TODO: individual player page
-// TODO: getTeamPlayers
-
-// TODO: add fields
+// TODO: more of a replace than an update - make sure updates add user options + exclude ids or something...
 export const Route = createFileRoute(
   '/_protected/$organizationSlug/$teamId/players/',
 )({
