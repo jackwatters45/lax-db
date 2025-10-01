@@ -89,13 +89,10 @@ function DataTableProvider<TData>({
     }),
   });
 
-  const value = React.useMemo(
-    () => ({
-      table,
-      columns,
-    }),
-    [table, columns],
-  );
+  const value = {
+    columns,
+    table,
+  };
 
   return (
     <DataTableContext.Provider value={value as DataTableContextValue<unknown>}>
