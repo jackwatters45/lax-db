@@ -20,3 +20,5 @@ node_modules
 .turbo
 .opencode
 .opencode.json
+
+.zed
