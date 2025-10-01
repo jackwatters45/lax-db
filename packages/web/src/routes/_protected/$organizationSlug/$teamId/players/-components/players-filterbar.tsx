@@ -1,5 +1,4 @@
 import { Plus } from 'lucide-react';
-import { useDataTable } from '@/components/data-table/data-table';
 import {
   FilterActions,
   FilterBar,
@@ -11,6 +10,7 @@ import {
   FilterGroup,
   FilterSearch,
 } from '@/components/data-table/data-table-filterbar';
+import { useDataTable } from '@/components/data-table/use-data-table';
 import { Button } from '@/components/ui/button';
 import { POSITION_SELECT_FIELDS } from '@/lib/constants';
 import { AddPlayerCommand } from './add-player-command';

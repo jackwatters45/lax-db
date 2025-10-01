@@ -1,11 +1,10 @@
 # Lax DB - Project Planning
 
-- Submenu
-- Players
-  - frontend
-  - db
-  - core
-  - add to team
+- I kind of want to add livestore with cloudflare???
+
+- // TODO: root players page
+- // TODO: individual player page
+- // TODO: add fields - if no field set for team some specific stuff ie position
 
 ## Overview
 
@@ -17,12 +16,9 @@ Lax DB aims to better equip lacrosse players with modern tools and features to e
 
 - **Team Management**: Team creation, roster management, coaching staff organization
 - **Organization Management**: Multi-team organization structure and administration
+- **Player Management**: Individual player profiles, development tracking, goal setting
 
 ### 📋 Planned Features
-
-#### Immediate Next Features
-
-- **Player Management**: Individual player profiles, development tracking, goal setting
 
 #### Features with Mock UI (Ready for Development)
 
@@ -42,6 +38,10 @@ Lax DB aims to better equip lacrosse players with modern tools and features to e
 - **Learning Management**: Rules & strategy library, video tutorials, quizzes
 - **Recruitment Tools**: Player highlight reels, college recruiting profiles, showcase tracking
 - **Mobile App**: Offline capability, GPS integration, camera integration, fitness tracker sync
+
+#### Small Features
+
+- **Export Table Contents**: Export table contents to CSV or Excel format. Export entire table contents or use bulk edit to control exported rows.
 
 ### ✅ Completed Features
 

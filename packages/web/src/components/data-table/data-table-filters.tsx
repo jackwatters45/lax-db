@@ -25,7 +25,7 @@ import {
 } from '@/components/ui/select';
 import { focusRing } from '@/lib/tw';
 import { cn } from '@/lib/utils';
-import { useFilterBar } from './data-table-filterbar';
+import { useFilterBar } from './use-filterbar';
 
 export type ConditionFilter = {
   condition: string;

@@ -256,10 +256,7 @@ function BulkEditToolbarDeleteAction({ className }: { className?: string }) {
             <Button
               variant="ghost"
               size="sm"
-              className={cn(
-                'h-7 w-7 p-0 text-destructive hover:text-destructive',
-                className,
-              )}
+              className={cn('h-7 w-7 p-0', className)}
             >
               <Trash2 className="h-4 w-4" />
             </Button>
@@ -319,10 +316,7 @@ function BulkEditToolbarRemoveAction({
             <Button
               variant="ghost"
               size="sm"
-              className={cn(
-                'h-7 w-7 p-0 text-destructive hover:text-destructive',
-                className,
-              )}
+              className={cn('h-7 w-7 p-0', className)}
             >
               <Icon className="h-4 w-4" />
             </Button>
@@ -420,5 +414,4 @@ export {
   BulkEditToolbarRemoveAction,
   BulkEditToolbarCopyAction,
   BulkEditToolbarSeparator,
-  useBulkEdit,
 };

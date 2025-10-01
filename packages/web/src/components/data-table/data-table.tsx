@@ -9,7 +9,6 @@ import {
   type Row,
   type RowSelectionState,
   type TableMeta,
-  type Table as TanstackTable,
   useReactTable,
   type VisibilityState,
 } from '@tanstack/react-table';
@@ -24,22 +23,11 @@ import {
 } from '@/components/ui/table';
 import { cn } from '@/lib/utils';
 import type { ClassNameChildrenProp, ClassNameProp } from '@/types';
-
-type DataTableContextValue<TData = unknown> = {
-  table: TanstackTable<TData>;
-  columns: ColumnDef<TData>[];
-};
-
-const DataTableContext =
-  React.createContext<DataTableContextValue<unknown> | null>(null);
-
-function useDataTable<TData = unknown>(): DataTableContextValue<TData> {
-  const context = React.use(DataTableContext);
-  if (!context) {
-    throw new Error('useDataTable must be used within a DataTableProvider');
-  }
-  return context as DataTableContextValue<TData>;
-}
+import {
+  DataTableContext,
+  type DataTableContextValue,
+  useDataTable,
+} from './use-data-table';
 
 type DataTableProviderProps<TData> = {
   columns: ColumnDef<TData>[];
@@ -205,5 +193,5 @@ export {
   DataTableHeader,
   DataTableProvider,
   DataTableRoot,
-  useDataTable,
+  type useDataTable,
 };

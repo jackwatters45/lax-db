@@ -1,9 +1,5 @@
 import { Schema as S } from 'effect';
 
-export const TeamIdSchema = S.Struct({
-  teamId: S.String,
-});
-
 export const CreateOrganizationSchema = S.Struct({
   name: S.String.pipe(
     S.minLength(1, { message: () => 'Club name is required' }),

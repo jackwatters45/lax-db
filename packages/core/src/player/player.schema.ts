@@ -1,15 +1,15 @@
 import { Schema as S } from 'effect';
+import { Base64IdSchema } from '../schema';
 
-export const PlayerIdSchema = S.String.pipe(
+export const PlayerIdSchema = S.UUID.pipe(
   S.minLength(1, { message: () => 'Player ID is required' }),
 );
 
-export const TeamIdSchema = S.String.pipe(
-  S.minLength(1, { message: () => 'Team ID is required' }),
-);
+// TODO: move these..
+export const TeamIdSchema = Base64IdSchema('Team ID is required');
 
-export const OrganizationIdSchema = S.String.pipe(
-  S.minLength(1, { message: () => 'Organization ID is required' }),
+export const OrganizationIdSchema = Base64IdSchema(
+  'Organization ID is required',
 );
 
 export const JerseyNumberSchema = S.NullOr(

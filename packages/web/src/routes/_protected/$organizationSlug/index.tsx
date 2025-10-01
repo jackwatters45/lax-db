@@ -1,3 +1,4 @@
+import { TeamIdSchema } from '@lax-db/core/player/player.schema';
 import {
   createFileRoute,
   Link,
@@ -26,9 +27,7 @@ import { BreadcrumbItem, BreadcrumbLink } from '@/components/ui/breadcrumb';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { authMiddleware } from '@/lib/middleware';
-import { TeamIdSchema } from '@/lib/schema';
 
-// Server function for getting user organization context
 const getUserOrganizationContext = createServerFn()
   .middleware([authMiddleware])
   .handler(async ({ context }) => {
@@ -37,10 +36,15 @@ const getUserOrganizationContext = createServerFn()
     return await OrganizationAPI.getUserOrganizationContext(context.headers);
   });
 
-// Server function for deleting teams
+const DeleteTeamSchema = S.Struct({
+  teamId: TeamIdSchema,
+});
+
 const deleteTeam = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
-  .validator((data: { teamId: string }) => S.decodeSync(TeamIdSchema)(data))
+  .validator((data: typeof DeleteTeamSchema.Type) =>
+    S.decodeSync(DeleteTeamSchema)(data),
+  )
   .handler(async ({ data, context }) => {
     const { TeamsAPI } = await import('@lax-db/core/team/index');
 
