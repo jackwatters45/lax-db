@@ -7,9 +7,12 @@ import {
   UpdatePlayerInputSchema,
   UpdateTeamPlayerInputSchema,
 } from '@lax-db/core/player/player.schema';
+import type { PartialNullable } from '@lax-db/core/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createServerFn } from '@tanstack/react-start';
 import { Schema as S } from 'effect';
+import { useMemo } from 'react';
+import { toast } from 'sonner';
 import { authMiddleware } from '@/lib/middleware';
 
 // Update player
@@ -64,7 +67,8 @@ export const updatePlayerFn = createServerFn({ method: 'POST' })
 export function useUpdatePlayer(teamId: string) {
   const queryClient = useQueryClient();
 
-  return useMutation({
+  const mutation = useMutation({
+    // mutationKey: ['players', teamId],
     mutationFn: (data: typeof UpdatePlayerAndTeamInputSchema.Type) =>
       updatePlayerFn({ data }),
     onMutate: async (variables, ctx) => {
@@ -73,6 +77,7 @@ export function useUpdatePlayer(teamId: string) {
         'players',
         teamId,
       ]);
+
       ctx.client.setQueryData<TeamPlayerWithInfo[]>(
         ['players', teamId],
         (old = []) =>
@@ -82,17 +87,32 @@ export function useUpdatePlayer(teamId: string) {
               : player,
           ),
       );
+
       return { previousPlayers };
     },
     onError: (_err, _variables, context) => {
       if (context?.previousPlayers) {
         queryClient.setQueryData(['players', teamId], context.previousPlayers);
       }
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['players', teamId] });
+      toast('An error occurred while updating the player');
     },
   });
+
+  const handleUpdate = (
+    playerId: string,
+    updates: PartialNullable<TeamPlayerWithInfo>,
+  ) => {
+    mutation.mutate({
+      ...updates,
+      playerId,
+      teamId,
+    });
+  };
+
+  return {
+    mutation,
+    handleUpdate,
+  };
 }
 
 // Add player to team
@@ -185,9 +205,9 @@ export function useAddPlayerToTeam(teamId: string) {
         queryClient.setQueryData(['players', teamId], context.previousPlayers);
       }
     },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['players', teamId] });
-    },
+    // onSettled: () => {
+    //   queryClient.invalidateQueries({ queryKey: ['players', teamId] });
+    // },
   });
 }
 
@@ -277,14 +297,140 @@ export function useDeletePlayer(teamId: string) {
   });
 }
 
+// Link existing player to team (replace current player)
+const LinkPlayerInputSchema = S.Struct({
+  currentPlayerId: S.String,
+  newPlayerId: S.String,
+  teamId: S.String,
+  jerseyNumber: S.NullOr(S.Number),
+  position: S.NullOr(S.String),
+});
+
+export const linkPlayerFn = createServerFn({ method: 'POST' })
+  .middleware([authMiddleware])
+  .validator((data: typeof LinkPlayerInputSchema.Type) =>
+    S.decodeSync(LinkPlayerInputSchema)(data),
+  )
+  .handler(async ({ data }) => {
+    const { PlayerAPI } = await import('@lax-db/core/player/index');
+
+    // Remove current player from team
+    await PlayerAPI.removePlayerFromTeam({
+      teamId: data.teamId,
+      playerId: data.currentPlayerId,
+    });
+
+    // Add new player to team
+    return await PlayerAPI.addPlayerToTeam({
+      playerId: data.newPlayerId,
+      teamId: data.teamId,
+      jerseyNumber: data.jerseyNumber,
+      position: data.position,
+    });
+  });
+
+export function useLinkPlayer(teamId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: {
+      currentPlayerId: string;
+      existingPlayer: {
+        id: string;
+        name: string | null;
+        email: string | null;
+        phone: string | null;
+        dateOfBirth: string | null;
+        organizationId: string;
+      };
+      jerseyNumber: number | null;
+      position: string | null;
+    }) =>
+      linkPlayerFn({
+        data: {
+          currentPlayerId: data.currentPlayerId,
+          newPlayerId: data.existingPlayer.id,
+          teamId,
+          jerseyNumber: data.jerseyNumber,
+          position: data.position,
+        },
+      }),
+    onMutate: async (variables, ctx) => {
+      await ctx.client.cancelQueries({ queryKey: ['players', teamId] });
+
+      const previousPlayers = ctx.client.getQueryData<TeamPlayerWithInfo[]>([
+        'players',
+        teamId,
+      ]);
+
+      ctx.client.setQueryData<TeamPlayerWithInfo[]>(
+        ['players', teamId],
+        (old = []) =>
+          old.map((player) =>
+            player.playerId === variables.currentPlayerId
+              ? {
+                  ...player,
+                  id: variables.existingPlayer.id,
+                  playerId: variables.existingPlayer.id,
+                  name: variables.existingPlayer.name,
+                  email: variables.existingPlayer.email,
+                  phone: variables.existingPlayer.phone,
+                  dateOfBirth: variables.existingPlayer.dateOfBirth,
+                  organizationId: variables.existingPlayer.organizationId,
+                }
+              : player,
+          ),
+      );
+
+      return { previousPlayers };
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousPlayers) {
+        queryClient.setQueryData(['players', teamId], context.previousPlayers);
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['players', teamId] });
+    },
+  });
+}
+
+// Add existing player to team (without creating player)
+export const addExistingPlayerToTeamFn = createServerFn({ method: 'POST' })
+  .middleware([authMiddleware])
+  .validator((data: typeof AddPlayerToTeamInputSchema.Type) =>
+    S.decodeSync(AddPlayerToTeamInputSchema)(data),
+  )
+  .handler(async ({ data }) => {
+    const { PlayerAPI } = await import('@lax-db/core/player/index');
+    return await PlayerAPI.addPlayerToTeam(data);
+  });
+
+export function useAddExistingPlayerToTeam(teamId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: typeof AddPlayerToTeamInputSchema.Type) =>
+      addExistingPlayerToTeamFn({ data }),
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['players', teamId] });
+    },
+  });
+}
+
 // Combined hook
 export function usePlayerMutations(teamId: string) {
-  return {
-    update: useUpdatePlayer(teamId),
-    add: useAddPlayerToTeam(teamId),
-    remove: useRemovePlayerFromTeam(teamId),
-    delete: useDeletePlayer(teamId),
-  };
+  const addExisting = useAddExistingPlayerToTeam(teamId);
+  const update = useUpdatePlayer(teamId);
+  const add = useAddPlayerToTeam(teamId);
+  const link = useLinkPlayer(teamId);
+  const remove = useRemovePlayerFromTeam(teamId);
+  const deletePlayer = useDeletePlayer(teamId);
+
+  return useMemo(
+    () => ({ addExisting, update, add, link, remove, delete: deletePlayer }),
+    [addExisting, update, add, link, remove, deletePlayer],
+  );
 }
 
 // Re-export schemas
