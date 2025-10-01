@@ -27,11 +27,13 @@ import { PlayerSearchCombobox } from './player-edit-ui';
 const columnHelper = createColumnHelper<TeamPlayerWithInfo>();
 
 type EditablePlayerColumnsProps = {
+  organizationId: string;
   organizationSlug: string;
   teamId: string;
 };
 
 export function createEditablePlayerColumns({
+  organizationId,
   organizationSlug,
   teamId,
 }: EditablePlayerColumnsProps): ColumnDef<TeamPlayerWithInfo>[] {
@@ -76,7 +78,7 @@ export function createEditablePlayerColumns({
         displayName: 'Jersey Number',
       },
       cell: ({ row: { original: player } }) => {
-        const { handleUpdate } = useUpdatePlayer(teamId);
+        const { handleUpdate } = useUpdatePlayer(organizationId, teamId);
 
         return (
           <ControlledInput
@@ -105,7 +107,7 @@ export function createEditablePlayerColumns({
         displayName: 'Name',
       },
       cell: ({ row: { original: player }, table }) => {
-        const { handleUpdate } = useUpdatePlayer(teamId);
+        const { handleUpdate } = useUpdatePlayer(organizationId, teamId);
 
         const allPlayers = table.options.data as TeamPlayerWithInfo[];
         const excludePlayerIds = allPlayers.map((p) => p.playerId);
@@ -141,7 +143,7 @@ export function createEditablePlayerColumns({
       filterFn: 'arrIncludesSome',
       cell: ({ row }) => {
         const player = row.original;
-        const { handleUpdate } = useUpdatePlayer(teamId);
+        const { handleUpdate } = useUpdatePlayer(organizationId, teamId);
 
         return (
           <Select
@@ -175,7 +177,7 @@ export function createEditablePlayerColumns({
         displayName: 'Email',
       },
       cell: ({ row: { original: player } }) => {
-        const { handleUpdate } = useUpdatePlayer(teamId);
+        const { handleUpdate } = useUpdatePlayer(organizationId, teamId);
 
         return (
           <ControlledInput
@@ -203,7 +205,7 @@ export function createEditablePlayerColumns({
       cell: ({ row }) => {
         const player = row.original;
 
-        const mutations = usePlayerMutations(teamId);
+        const mutations = usePlayerMutations(organizationId, teamId);
 
         return (
           <RowActionsProvider
