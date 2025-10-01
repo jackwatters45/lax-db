@@ -100,30 +100,32 @@ export const OrganizationServiceLive = Layer.effect(
             }),
           );
 
-          // Set the newly created organization as the active one
-          if (result?.id) {
-            yield* Effect.tryPromise(() =>
-              auth.api.setActiveOrganization({
-                headers,
-                body: {
-                  organizationId: result.id,
-                },
-              }),
-            ).pipe(
-              Effect.mapError((cause) => {
-                console.error(
-                  'Failed to set new organization as active:',
-                  cause,
-                );
-                // Don't fail the whole operation if setting active fails
-                return new OrganizationError(
-                  cause,
-                  'Organization created but failed to set as active',
-                );
-              }),
-              Effect.orElse(() => Effect.succeed(null)), // Continue even if this fails
+          const organizationId = result?.id;
+          if (!organizationId) {
+            yield* Effect.fail(
+              new OrganizationError(
+                'No organization ID returned',
+                'Failed to create organization',
+              ),
             );
           }
+
+          yield* Effect.tryPromise(() =>
+            auth.api.setActiveOrganization({
+              headers,
+              body: {
+                organizationId,
+              },
+            }),
+          ).pipe(
+            Effect.mapError((cause) => {
+              console.error('Failed to set new organization as active:', cause);
+              return new OrganizationError(
+                cause,
+                'Organization created but failed to set as active',
+              );
+            }),
+          );
         }),
 
       acceptInvitation: (input, headers) =>
