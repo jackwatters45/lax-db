@@ -1,40 +1,70 @@
+import type { TeamPlayerWithInfo } from '@lax-db/core/player/index';
+import { createFileRoute } from '@tanstack/react-router';
+import type { Table } from '@tanstack/react-table';
+import { Mail } from 'lucide-react';
 import { useDataTable } from '@/components/data-table/data-table';
 import {
   BulkEditProvider,
   BulkEditToolbar,
   BulkEditToolbarActions,
+  BulkEditToolbarCopyAction,
   BulkEditToolbarDeleteAction,
-  BulkEditToolbarEditAction,
+  BulkEditToolbarRemoveAction,
   BulkEditToolbarSelection,
   BulkEditToolbarSeparator,
 } from '@/components/data-table/data-table-bulk-edit-toolbar';
+import { usePlayerMutations } from '../-mutations';
+
+const Route = createFileRoute(
+  '/_protected/$organizationSlug/$teamId/players/',
+)();
+
+const getPlayerIds = (table: Table<TeamPlayerWithInfo>) => {
+  const selectedRows = table.getFilteredSelectedRowModel().rows;
+  return selectedRows.map((row) => row.original.playerId);
+};
 
 export function PlayersToolbar() {
-  const { table } = useDataTable();
+  const { teamId } = Route.useParams();
+  const { activeOrganization } = Route.useRouteContext();
+
+  const { table } = useDataTable<TeamPlayerWithInfo>();
   const rowSelection = table.getState().rowSelection;
 
-  const onEdit = () => {
-    // Implement edit functionality here
-  };
+  const { bulkDelete, bulkRemove } = usePlayerMutations(
+    activeOrganization.id,
+    teamId,
+  );
 
   const onDelete = () => {
-    // Implement delete functionality here
+    const playerIds = getPlayerIds(table);
+    bulkDelete.mutate({ playerIds });
+    table.resetRowSelection();
+  };
+
+  const onRemove = () => {
+    const playerIds = getPlayerIds(table);
+    bulkRemove.mutate({ playerIds, teamId });
+    table.resetRowSelection();
   };
 
   return (
     <BulkEditProvider
       table={table}
       rowSelection={rowSelection}
-      actions={{
-        onEdit: onEdit,
-        onDelete: onDelete,
-      }}
+      actions={{ onDelete, onRemove }}
     >
       <BulkEditToolbar>
         <BulkEditToolbarSelection />
         <BulkEditToolbarSeparator />
         <BulkEditToolbarActions>
-          <BulkEditToolbarEditAction />
+          <BulkEditToolbarCopyAction
+            columnId="email"
+            tooltipContent="Copy Emails"
+            icon={Mail}
+          />
+          <BulkEditToolbarSeparator />
+          <BulkEditToolbarRemoveAction tooltipContent="Remove From Team" />
           <BulkEditToolbarDeleteAction />
         </BulkEditToolbarActions>
       </BulkEditToolbar>

@@ -1,10 +1,14 @@
-import { and, eq } from 'drizzle-orm';
+import { and, eq, inArray } from 'drizzle-orm';
 import { Context, Effect, Layer, Runtime, Schema as S } from 'effect';
 import type { ParseError } from 'effect/ParseResult';
 import { DatabaseError, DatabaseLive, DatabaseService } from '../drizzle';
 import {
   type AddPlayerToTeamInput,
   AddPlayerToTeamInputSchema,
+  type BulkDeletePlayersInput,
+  BulkDeletePlayersInputSchema,
+  type BulkRemovePlayersFromTeamInput,
+  BulkRemovePlayersFromTeamInputSchema,
   type CreatePlayerInput,
   CreatePlayerInputSchema,
   type DeletePlayerInput,
@@ -62,8 +66,14 @@ export class PlayerService extends Context.Tag('PlayerService')<
     readonly removePlayerFromTeam: (
       input: RemovePlayerFromTeamInput,
     ) => Effect.Effect<void, DatabaseError | ParseError>;
+    readonly bulkRemovePlayersFromTeam: (
+      input: BulkRemovePlayersFromTeamInput,
+    ) => Effect.Effect<void, DatabaseError | ParseError>;
     readonly deletePlayer: (
       input: DeletePlayerInput,
+    ) => Effect.Effect<void, DatabaseError | ParseError>;
+    readonly bulkDeletePlayers: (
+      input: BulkDeletePlayersInput,
     ) => Effect.Effect<void, DatabaseError | ParseError>;
   }
 >() {}
@@ -263,6 +273,29 @@ export const PlayerServiceLive = Layer.effect(
           });
         }),
 
+      bulkRemovePlayersFromTeam: (input: BulkRemovePlayersFromTeamInput) =>
+        Effect.gen(function* () {
+          const validated = yield* S.decode(
+            BulkRemovePlayersFromTeamInputSchema,
+          )(input);
+          yield* Effect.tryPromise({
+            try: () =>
+              dbService.db
+                .delete(teamPlayerTable)
+                .where(
+                  and(
+                    eq(teamPlayerTable.teamId, validated.teamId),
+                    inArray(teamPlayerTable.playerId, validated.playerIds),
+                  ),
+                ),
+            catch: (error) =>
+              new DatabaseError(
+                error,
+                'Failed to bulk remove players from team',
+              ),
+          });
+        }),
+
       deletePlayer: (input: DeletePlayerInput) =>
         Effect.gen(function* () {
           const validated = yield* S.decode(DeletePlayerInputSchema)(input);
@@ -273,6 +306,21 @@ export const PlayerServiceLive = Layer.effect(
                 .where(eq(playerTable.id, validated.playerId)),
             catch: (error) =>
               new DatabaseError(error, 'Failed to delete player'),
+          });
+        }),
+
+      bulkDeletePlayers: (input: BulkDeletePlayersInput) =>
+        Effect.gen(function* () {
+          const validated = yield* S.decode(BulkDeletePlayersInputSchema)(
+            input,
+          );
+          yield* Effect.tryPromise({
+            try: () =>
+              dbService.db
+                .delete(playerTable)
+                .where(inArray(playerTable.id, validated.playerIds)),
+            catch: (error) =>
+              new DatabaseError(error, 'Failed to bulk delete players'),
           });
         }),
     };
@@ -358,6 +406,28 @@ export const PlayerAPI = {
     const effect = Effect.gen(function* () {
       const service = yield* PlayerService;
       return yield* service.deletePlayer(input);
+    });
+    return await Runtime.runPromise(runtime)(
+      Effect.provide(effect, PlayerServiceLive),
+    );
+  },
+
+  async bulkRemovePlayersFromTeam(
+    input: BulkRemovePlayersFromTeamInput,
+  ): Promise<void> {
+    const effect = Effect.gen(function* () {
+      const service = yield* PlayerService;
+      return yield* service.bulkRemovePlayersFromTeam(input);
+    });
+    return await Runtime.runPromise(runtime)(
+      Effect.provide(effect, PlayerServiceLive),
+    );
+  },
+
+  async bulkDeletePlayers(input: BulkDeletePlayersInput): Promise<void> {
+    const effect = Effect.gen(function* () {
+      const service = yield* PlayerService;
+      return yield* service.bulkDeletePlayers(input);
     });
     return await Runtime.runPromise(runtime)(
       Effect.provide(effect, PlayerServiceLive),
