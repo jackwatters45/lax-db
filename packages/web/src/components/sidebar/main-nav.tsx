@@ -20,8 +20,9 @@ export function MainNav() {
         <SidebarMenuItem>
           <SidebarMenuButton asChild tooltip={'Teams'}>
             <Link
-              to={'/$organizationSlug'}
+              to={'/$organizationSlug/teams'}
               params={{ organizationSlug: activeOrganization.slug }}
+              activeProps={{ className: 'bg-muted' }}
             >
               <Users />
               <span>Teams</span>
@@ -33,6 +34,7 @@ export function MainNav() {
             <Link
               to={'/$organizationSlug/players'}
               params={{ organizationSlug: activeOrganization.slug }}
+              activeProps={{ className: 'bg-muted' }}
             >
               <User />
               <span>Players</span>
@@ -44,6 +46,7 @@ export function MainNav() {
             <Link
               to={'/$organizationSlug/games'}
               params={{ organizationSlug: activeOrganization.slug }}
+              activeProps={{ className: 'bg-muted' }}
             >
               <Trophy />
               <span>Games</span>
@@ -99,6 +102,7 @@ export function MainNav() {
             <Link
               to={'/$organizationSlug/settings/general'}
               params={{ organizationSlug: activeOrganization.slug }}
+              activeProps={{ className: 'bg-muted' }}
             >
               <Settings />
               <span>Settings</span>

@@ -304,7 +304,7 @@ export function SearchCommand() {
   return (
     <>
       <Button
-        className="h-8 w-full cursor-text justify-between border-input bg-secondary pr-1 pl-2 font-normal text-foreground focus:border-ring focus:ring-0 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-2"
+        className="h-8 w-full cursor-text justify-between pr-1 pl-2 font-normal text-foreground focus:border-ring focus:ring-0 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-2"
         variant="outline"
         onClick={(e) => {
           e.preventDefault();
