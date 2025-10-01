@@ -1,5 +1,9 @@
 import { Schema as S } from 'effect';
-import { Base64IdSchema } from '../schema';
+import {
+  Base64IdSchema,
+  JerseyNumberSchema as BaseJerseyNumberSchema,
+  EmailSchema,
+} from '../schema';
 
 export const PlayerIdSchema = S.UUID.pipe(
   S.minLength(1, { message: () => 'Player ID is required' }),
@@ -12,12 +16,7 @@ export const OrganizationIdSchema = Base64IdSchema(
   'Organization ID is required',
 );
 
-export const JerseyNumberSchema = S.NullOr(
-  S.Number.pipe(
-    S.int({ message: () => 'Jersey number must be an integer' }),
-    S.positive({ message: () => 'Jersey number must be positive' }),
-  ),
-);
+export const JerseyNumberSchema = S.NullOr(BaseJerseyNumberSchema);
 
 export const PositionSchema = S.NullOr(S.String);
 
@@ -29,7 +28,7 @@ export type GetAllPlayersInput = typeof GetAllPlayersInputSchema.Type;
 export const CreatePlayerInputSchema = S.Struct({
   organizationId: OrganizationIdSchema,
   name: S.String,
-  email: S.NullOr(S.String),
+  email: S.NullOr(EmailSchema),
   phone: S.NullOr(S.String),
   dateOfBirth: S.NullOr(S.String),
   userId: S.NullOr(S.String),
@@ -39,7 +38,7 @@ export type CreatePlayerInput = typeof CreatePlayerInputSchema.Type;
 export const UpdatePlayerInputSchema = S.Struct({
   playerId: PlayerIdSchema,
   name: S.optional(S.NullOr(S.String)),
-  email: S.optional(S.NullOr(S.String)),
+  email: S.optional(S.NullOr(EmailSchema)),
   phone: S.optional(S.NullOr(S.String)),
   dateOfBirth: S.optional(S.NullOr(S.String)),
 });

@@ -1,7 +1,10 @@
 import type { TeamPlayerWithInfo } from '@lax-db/core/player/index';
+import { EmailSchema, JerseyNumberSchema } from '@lax-db/core/schema';
 import { Link } from '@tanstack/react-router';
 import { type ColumnDef, createColumnHelper } from '@tanstack/react-table';
+import { Schema as S } from 'effect';
 import { User2 } from 'lucide-react';
+import { toast } from 'sonner';
 import { DataTableColumnHeader } from '@/components/data-table/data-table-column-header';
 import {
   RowActionDeleteItem,
@@ -92,6 +95,16 @@ export function createEditablePlayerColumns({
             value={player.jerseyNumber ?? ''}
             onUpdate={(newValue) => {
               const numValue = newValue ? Number(newValue) : null;
+
+              if (numValue !== null) {
+                const result =
+                  S.decodeUnknownEither(JerseyNumberSchema)(numValue);
+                if (result._tag === 'Left') {
+                  toast.error('Jersey number must be between 0 and 1000');
+                  return;
+                }
+              }
+
               handleUpdate(player.playerId, { jerseyNumber: numValue });
             }}
             placeholder="#"
@@ -200,7 +213,17 @@ export function createEditablePlayerColumns({
             type="email"
             value={player.email || ''}
             onUpdate={(newValue) => {
-              handleUpdate(player.playerId, { email: newValue });
+              const emailValue = newValue || null;
+
+              if (emailValue) {
+                const result = S.decodeUnknownEither(EmailSchema)(emailValue);
+                if (result._tag === 'Left') {
+                  toast.error('Please enter a valid email address');
+                  return;
+                }
+              }
+
+              handleUpdate(player.playerId, { email: emailValue });
             }}
             placeholder="email@example.com"
           />
