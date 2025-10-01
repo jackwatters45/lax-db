@@ -67,7 +67,20 @@ const SidebarContext = React.createContext<SidebarContextProps | null>(null);
 
 function useSidebar() {
   const context = React.useContext(SidebarContext);
+
+  // gracefully handle missing context edge case - likely race case
   if (!context) {
+    if (typeof window === 'undefined') {
+      return {
+        state: 'expanded' as const,
+        open: true,
+        setOpen: () => {},
+        openMobile: false,
+        setOpenMobile: () => {},
+        isMobile: false,
+        toggleSidebar: () => {},
+      };
+    }
     throw new Error('useSidebar must be used within a SidebarProvider.');
   }
 
