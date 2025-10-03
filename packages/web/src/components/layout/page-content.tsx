@@ -14,3 +14,13 @@ export function PageBody({ children, className }: PageBodyProps) {
     <div className={cn('flex-1 overflow-auto', className)}>{children}</div>
   );
 }
+
+/**
+ * PageBody component for the standardized padding.
+ * Use this to wrap the content within the PageBody.
+ */
+export function PageContainer({ children, className }: PageBodyProps) {
+  return (
+    <div className={cn('container mx-auto py-8', className)}>{children}</div>
+  );
+}
