@@ -1,4 +1,4 @@
-import { Link } from '@tanstack/react-router';
+import { Link, useRouteContext } from '@tanstack/react-router';
 import type React from 'react';
 import { Fragment } from 'react';
 import {
@@ -21,6 +21,9 @@ import {
 import { NavUserHeader } from '../nav/nav-user';
 
 export function DashboardHeader({ children }: { children: React.ReactNode }) {
+  const { activeOrganization } = useRouteContext({
+    from: '/_protected/$organizationSlug',
+  });
   return (
     <header className="flex h-12 shrink-0 items-center justify-between gap-2 border-b bg-background pr-2 pl-4">
       <div className="flex min-w-0 flex-1 items-center gap-2">
@@ -38,12 +41,18 @@ export function DashboardHeader({ children }: { children: React.ReactNode }) {
         </Breadcrumb>
       </div>
       <div className="flex items-center gap-2">
-        <Link to="/plan">
+        <Link
+          to="/$organizationSlug/plan"
+          params={{ organizationSlug: activeOrganization.slug }}
+        >
           <Button variant="outline" size={'sm'}>
             Plan
           </Button>
         </Link>
-        <Link to="/feedback">
+        <Link
+          to="/$organizationSlug/feedback"
+          params={{ organizationSlug: activeOrganization.slug }}
+        >
           <Button variant="outline" size={'sm'}>
             Feedback
           </Button>
