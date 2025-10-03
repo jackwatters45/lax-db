@@ -125,11 +125,11 @@ function PlayersDataTable() {
 }
 
 function Header() {
-  const { organizationSlug } = Route.useParams();
+  const { organizationSlug, teamId } = Route.useParams();
   const { activeTeam, teams } = Route.useRouteContext();
 
   return (
-    <TeamHeader organizationSlug={organizationSlug} activeTeam={activeTeam}>
+    <TeamHeader organizationSlug={organizationSlug} teamId={teamId}>
       <BreadcrumbItem>
         <BreadcrumbLink className="max-w-full truncate" title="Teams" asChild>
           <Link to="/$organizationSlug" params={{ organizationSlug }}>
