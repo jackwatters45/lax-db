@@ -1,5 +1,6 @@
-import { Link, useRouteContext } from '@tanstack/react-router';
+import { Link, useMatchRoute, useRouteContext } from '@tanstack/react-router';
 import { Settings, Trophy, User, Users } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -9,6 +10,28 @@ import {
 } from '../ui/sidebar';
 
 export function MainNav() {
+  const routeMatch = useMatchRoute();
+
+  // UGLY
+  const isSettings =
+    routeMatch({ to: '/$organizationSlug/settings/general' }) ||
+    routeMatch({ to: '/$organizationSlug/settings/users' }) ||
+    routeMatch({ to: '/$organizationSlug/settings/billing' });
+
+  const isNotTeams =
+    routeMatch({ to: '/$organizationSlug/players', fuzzy: true }) ||
+    routeMatch({ to: '/$organizationSlug/games', fuzzy: true }) ||
+    routeMatch({ to: '/$organizationSlug/feedback', fuzzy: true }) ||
+    routeMatch({ to: '/$organizationSlug/plan', fuzzy: true }) ||
+    routeMatch({ to: '/$organizationSlug/organization/join' }) ||
+    routeMatch({ to: '/$organizationSlug/organization/create' }) ||
+    isSettings;
+
+  const isTeams =
+    (routeMatch({ to: '/$organizationSlug' }) ||
+      routeMatch({ to: '/$organizationSlug/$teamId', fuzzy: true })) &&
+    !isNotTeams;
+
   const { activeOrganization } = useRouteContext({
     from: '/_protected/$organizationSlug',
   });
@@ -20,9 +43,9 @@ export function MainNav() {
         <SidebarMenuItem>
           <SidebarMenuButton asChild tooltip={'Teams'}>
             <Link
-              to={'/$organizationSlug/teams'}
+              to={'/$organizationSlug'}
               params={{ organizationSlug: activeOrganization.slug }}
-              activeProps={{ className: 'bg-muted shadow-sm' }}
+              className={cn(isTeams && 'bg-muted shadow')}
             >
               <Users />
               <span>Teams</span>
@@ -34,7 +57,7 @@ export function MainNav() {
             <Link
               to={'/$organizationSlug/players'}
               params={{ organizationSlug: activeOrganization.slug }}
-              activeProps={{ className: 'bg-muted shadow-sm' }}
+              activeProps={{ className: 'bg-muted shadow' }}
             >
               <User />
               <span>Players</span>
@@ -46,7 +69,7 @@ export function MainNav() {
             <Link
               to={'/$organizationSlug/games'}
               params={{ organizationSlug: activeOrganization.slug }}
-              activeProps={{ className: 'bg-muted shadow-sm' }}
+              activeProps={{ className: 'bg-muted shadow' }}
             >
               <Trophy />
               <span>Games</span>
@@ -100,10 +123,9 @@ export function MainNav() {
         <SidebarMenuItem>
           <SidebarMenuButton asChild tooltip={'Settings'}>
             <Link
-              to={'/$organizationSlug/settings'}
+              to={'/$organizationSlug/settings/general'}
               params={{ organizationSlug: activeOrganization.slug }}
-              activeProps={{ className: 'bg-muted shadow-sm' }}
-              isN
+              className={cn(isSettings && 'bg-muted shadow')}
             >
               <Settings />
               <span>Settings</span>
