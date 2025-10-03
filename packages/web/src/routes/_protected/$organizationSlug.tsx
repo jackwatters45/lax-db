@@ -7,7 +7,7 @@ import { authMiddleware } from '@/lib/middleware';
 const getDashboardData = createServerFn({ method: 'GET' })
   .middleware([authMiddleware])
   .validator((data: { organizationSlug: string }) => data)
-  .handler(async ({ context, data }) => {
+  .handler(async ({ context }) => {
     const { auth } = await import('@lax-db/core/auth');
     const { getWebRequest } = await import('@tanstack/react-start/server');
 
@@ -23,12 +23,7 @@ const getDashboardData = createServerFn({ method: 'GET' })
       const headers = context.headers;
       const [organizations, activeOrganization] = await Promise.all([
         auth.api.listOrganizations({ headers }),
-        auth.api.getFullOrganization({
-          headers,
-          query: {
-            organizationSlug: data.organizationSlug,
-          },
-        }),
+        auth.api.getFullOrganization({ headers }),
       ]);
 
       const request = getWebRequest();
@@ -62,7 +57,7 @@ export const Route = createFileRoute('/_protected/$organizationSlug')({
       throw redirect({
         to: '/organizations/create',
         search: {
-          redirect: location.pathname || '/teams',
+          redirectUrl: location.pathname || '/teams',
         },
       });
     }

@@ -1,16 +1,11 @@
 import { effectTsResolver } from '@hookform/resolvers/effect-ts';
 import { useMutation } from '@tanstack/react-query';
-import {
-  createFileRoute,
-  Link,
-  useRouteContext,
-  useRouter,
-} from '@tanstack/react-router';
+import { Link, useCanGoBack, useRouter } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { Schema as S } from 'effect';
-import { ArrowLeft } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
+import { PageContainer } from '@/components/layout/page-content';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -47,21 +42,13 @@ const generateSlug = (name: string) => {
     .slice(0, 50);
 };
 
-export const Route = createFileRoute(
-  '/_protected/organizations/create/$organizationSlug',
-)({
-  component: CreateOrganizationPage,
-});
-
-function CreateOrganizationPage() {
+export function CreateOrganizationForm({
+  organizationSlug,
+}: {
+  organizationSlug?: string;
+}) {
   const router = useRouter();
-  const { organizationSlug } = Route.useParams();
-  const { organizations } = useRouteContext({
-    from: '/_protected/$organizationSlug',
-  });
-
-  // Check if user has existing organizations
-  const hasExistingOrganizations = !!organizations.length;
+  const canGoBack = useCanGoBack();
 
   const form = useForm<FormData>({
     resolver: effectTsResolver(CreateOrganizationSchema),
@@ -103,18 +90,9 @@ function CreateOrganizationPage() {
   };
 
   return (
-    <div className="container mx-auto max-w-2xl py-8">
-      <div className="mb-8">
-        {hasExistingOrganizations && (
-          <Link to="/$organizationSlug" params={{ organizationSlug }}>
-            <Button variant="ghost" className="mb-4">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Teams
-            </Button>
-          </Link>
-        )}
-
-        <h1 className="font-bold text-3xl">Create Your Athletic Club</h1>
+    <PageContainer className="space-y-4">
+      <div>
+        <h1 className="font-bold text-xl">Create Your Athletic Club</h1>
         <p className="text-muted-foreground">
           Set up your organization to start managing teams and players
         </p>
@@ -166,23 +144,23 @@ function CreateOrganizationPage() {
               />
 
               <div className="flex gap-4 pt-4">
-                {hasExistingOrganizations && (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="flex-1"
-                    asChild
-                  >
-                    <Link to="/$organizationSlug" params={{ organizationSlug }}>
+                {organizationSlug ? (
+                  <Button type="button" variant="outline" asChild>
+                    <Link
+                      to="/$organizationSlug"
+                      params={{ organizationSlug }}
+                      onClick={(e) => {
+                        if (canGoBack) {
+                          e.preventDefault();
+                          router.history.back();
+                        }
+                      }}
+                    >
                       Cancel
                     </Link>
                   </Button>
-                )}
-                <Button
-                  type="submit"
-                  disabled={createOrgMutation.isPending}
-                  className={hasExistingOrganizations ? 'flex-1' : 'w-full'}
-                >
+                ) : null}
+                <Button type="submit" disabled={createOrgMutation.isPending}>
                   {createOrgMutation.isPending ? 'Creating...' : 'Create Club'}
                 </Button>
               </div>
@@ -190,6 +168,6 @@ function CreateOrganizationPage() {
           </Form>
         </CardContent>
       </Card>
-    </div>
+    </PageContainer>
   );
 }
