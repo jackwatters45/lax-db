@@ -7,6 +7,12 @@ import { useEffect, useState } from 'react';
 import { PageBody } from '@/components/layout/page-content';
 import { Badge } from '@/components/ui/badge';
 import {
+  BreadcrumbDropdown,
+  BreadcrumbDropdownContent,
+  BreadcrumbDropdownItem,
+  BreadcrumbDropdownLabel,
+  BreadcrumbDropdownSeparator,
+  BreadcrumbDropdownTrigger,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbSeparator,
@@ -411,11 +417,11 @@ function InvitePlayerDialog({
 }
 
 function Header() {
-  const { organizationSlug } = Route.useParams();
-  const { activeTeam } = Route.useRouteContext();
+  const { organizationSlug, teamId } = Route.useParams();
+  const { activeTeam, teams } = Route.useRouteContext();
 
   return (
-    <TeamHeader organizationSlug={organizationSlug} activeTeam={activeTeam}>
+    <TeamHeader organizationSlug={organizationSlug} teamId={teamId}>
       <BreadcrumbItem>
         <BreadcrumbLink className="max-w-full truncate" title="Teams" asChild>
           <Link to="/$organizationSlug" params={{ organizationSlug }}>
@@ -425,14 +431,34 @@ function Header() {
       </BreadcrumbItem>
       <BreadcrumbSeparator />
       <BreadcrumbItem>
-        <BreadcrumbLink title={activeTeam.name} asChild>
-          <Link
-            to="/$organizationSlug/$teamId"
-            params={{ organizationSlug, teamId: activeTeam.id }}
-          >
-            {activeTeam.name}
-          </Link>
-        </BreadcrumbLink>
+        <BreadcrumbDropdown>
+          <BreadcrumbLink asChild>
+            <Link
+              to="/$organizationSlug/$teamId"
+              params={{ organizationSlug, teamId: activeTeam.id }}
+            >
+              {activeTeam.name}
+            </Link>
+          </BreadcrumbLink>
+          <BreadcrumbDropdownTrigger />
+          <BreadcrumbDropdownContent>
+            <BreadcrumbDropdownLabel>Switch Team</BreadcrumbDropdownLabel>
+            <BreadcrumbDropdownSeparator />
+            {teams.map((team) => (
+              <BreadcrumbDropdownItem asChild key={team.id}>
+                <Link
+                  to="/$organizationSlug/$teamId"
+                  params={{
+                    organizationSlug,
+                    teamId: team.id,
+                  }}
+                >
+                  {team.name}
+                </Link>
+              </BreadcrumbDropdownItem>
+            ))}
+          </BreadcrumbDropdownContent>
+        </BreadcrumbDropdown>
       </BreadcrumbItem>
     </TeamHeader>
   );
