@@ -1,8 +1,5 @@
 import { effectTsResolver } from '@hookform/resolvers/effect-ts';
-import { auth } from '@lax-db/core/auth';
 import { redirect } from '@tanstack/react-router';
-import { createServerFn } from '@tanstack/react-start';
-import { getWebRequest } from '@tanstack/react-start/server';
 import { Schema } from 'effect';
 import { useEffect, useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
@@ -20,39 +17,6 @@ import { Input } from '@/components/ui/input';
 import { authClient } from '@/lib/auth-client';
 import { cn } from '@/lib/utils';
 
-export const redirectToOrg = createServerFn().handler(async () => {
-  const { headers } = getWebRequest();
-
-  try {
-    const session = await auth.api.getSession({ headers });
-    if (!session?.user) {
-      throw redirect({
-        to: '/login',
-      });
-    }
-
-    // Get user's organizations using better-auth API
-    const activeOrg = await auth.api.getFullOrganization({ headers });
-    if (!activeOrg) {
-      throw redirect({
-        to: '/organizations/create',
-      });
-    }
-
-    throw redirect({
-      to: '/$organizationSlug',
-      params: {
-        organizationSlug: activeOrg.slug,
-      },
-    });
-  } catch (error) {
-    console.error('login-form: Error in redirect-to-org:', error);
-    throw redirect({
-      to: '/login',
-    });
-  }
-});
-
 const LoginSchema = Schema.Struct({
   email: Schema.String.pipe(
     Schema.filter((email) => /\S+@\S+\.\S+/.test(email), {
@@ -65,11 +29,15 @@ const LoginSchema = Schema.Struct({
 });
 type LoginFormValues = typeof LoginSchema.Type;
 
-type LoginFormProps = {
-  redirect?: string;
-} & React.ComponentPropsWithoutRef<'div'>;
+type LoginFormProps = React.ComponentPropsWithoutRef<'div'> & {
+  redirectUrl?: string;
+};
 
-export function LoginForm({ redirect, className, ...props }: LoginFormProps) {
+export function LoginForm({
+  redirectUrl,
+  className,
+  ...props
+}: LoginFormProps) {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState('');
   const [lastMethod, setLastMethod] = useState<string | null>(null);
@@ -99,8 +67,9 @@ export function LoginForm({ redirect, className, ...props }: LoginFormProps) {
         if (result.error) {
           setError(result.error.message || 'Login failed');
         } else {
-          // Call server function to redirect to organization
-          await redirectToOrg();
+          throw redirect({
+            to: redirectUrl || '/_protected/redirect',
+          });
         }
       } catch (error) {
         setError(
@@ -116,14 +85,11 @@ export function LoginForm({ redirect, className, ...props }: LoginFormProps) {
     try {
       const result = await authClient.signIn.social({
         provider: 'google',
-        callbackURL: `${window.location.origin}/api/redirect-to-org`,
+        callbackURL: redirectUrl || '/_protected/redirect',
       });
 
       if (result.error) {
         setError(result.error.message || 'Google sign in failed');
-      } else {
-        // Navigate to API endpoint that will handle organization redirect
-        await redirectToOrg();
       }
     } catch (error) {
       setError(
