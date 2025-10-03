@@ -25,12 +25,12 @@ import {
 } from '@/components/ui/breadcrumb';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { authMiddleware } from '@/lib/middleware';
+import { getTeamPlayersQK } from '@/mutations/players';
 import { TeamHeader } from '../-components/team-header';
 import { PlayerCards } from './-components/players-cards';
 import { createEditablePlayerColumns } from './-components/players-columns';
 import { PlayersFilterBar } from './-components/players-filterbar';
 import { PlayersToolbar } from './-components/players-toolbar';
-import { getTeamPlayersQK } from './-mutations';
 
 const GetTeamPlayers = S.Struct({
   teamId: TeamIdSchema,

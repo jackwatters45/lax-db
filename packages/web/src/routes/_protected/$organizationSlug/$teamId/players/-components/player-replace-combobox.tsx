@@ -17,8 +17,8 @@ import {
   SearchComboboxTrigger,
   useSearchCombobox,
 } from '@/components/ui/search-combobox';
-import { getOrgPlayersQK } from '../-mutations';
-import { getOrganizationPlayers } from '../-queries';
+import { getOrgPlayersQK } from '@/mutations/players';
+import { getOrganizationPlayers } from '@/query/players';
 
 export function PlayerReplaceCombobox({
   organizationId,

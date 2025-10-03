@@ -77,8 +77,6 @@ export const Route = createFileRoute('/_protected/$organizationSlug/$teamId/')({
 });
 
 function TeamManagementPage() {
-  const { organizationSlug } = Route.useParams();
-  const { activeTeam } = Route.useRouteContext();
   const { teamId, members, canManageTeam } = Route.useLoaderData();
   const [teamName, setTeamName] = useState<string>('');
   const [invitePlayerOpen, setInvitePlayerOpen] = useState(false);

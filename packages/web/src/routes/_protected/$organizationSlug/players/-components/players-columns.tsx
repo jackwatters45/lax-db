@@ -1,5 +1,9 @@
 import type { TeamPlayerWithInfo } from '@lax-db/core/player/index';
-import { EmailSchema, JerseyNumberSchema } from '@lax-db/core/schema';
+import {
+  EmailSchema,
+  JerseyNumberSchema,
+  PlayerNameSchema,
+} from '@lax-db/core/schema';
 import { Link } from '@tanstack/react-router';
 import { type ColumnDef, createColumnHelper } from '@tanstack/react-table';
 import { Schema as S } from 'effect';
@@ -9,7 +13,6 @@ import { DataTableColumnHeader } from '@/components/data-table/data-table-column
 import {
   RowActionDeleteItem,
   RowActionItem,
-  RowActionRemoveItem,
   RowActionSeparator,
   RowActionsDropdown,
   RowActionsProvider,
@@ -24,21 +27,22 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { POSITION_SELECT_FIELDS } from '@/lib/constants';
-import { usePlayerMutations } from '../-mutations';
-import { PlayerReplaceCombobox } from './player-replace-combobox';
+import { usePlayerMutations, useUpdatePlayer } from '../-mutations';
+
+// import { usePlayerMutations } from '../-mutations';
+
+// import { PlayerReplaceCombobox } from './player-replace-combobox';
 
 const columnHelper = createColumnHelper<TeamPlayerWithInfo>();
 
 type EditablePlayerColumnsProps = {
   organizationId: string;
   organizationSlug: string;
-  teamId: string;
 };
 
 export function createEditablePlayerColumns({
   organizationId,
   organizationSlug,
-  teamId,
 }: EditablePlayerColumnsProps) {
   return [
     columnHelper.display({
@@ -81,8 +85,8 @@ export function createEditablePlayerColumns({
         displayName: 'Jersey Number',
       },
       cell: ({ row: { original: player } }) => {
-        const mutations = usePlayerMutations(organizationId, teamId);
-        const handleUpdate = mutations.update.handleUpdate;
+        // const mutations = usePlayerMutations(organizationId, teamId);
+        // const handleUpdate = mutations.update.handleUpdate;
 
         return (
           <ControlledInput
@@ -102,7 +106,7 @@ export function createEditablePlayerColumns({
                 }
               }
 
-              handleUpdate(player.playerId, { jerseyNumber: numValue });
+              // handleUpdate(player.playerId, { jerseyNumber: numValue });
             }}
             placeholder="#"
           />
@@ -120,39 +124,67 @@ export function createEditablePlayerColumns({
         className: 'text-left',
         displayName: 'Name',
       },
-      cell: ({ row, table }) => {
+      cell: ({ row }) => {
         const player = row.original;
-        const mutations = usePlayerMutations(organizationId, teamId);
-        const handleUpdate = mutations.update.handleUpdate;
-        const linkPlayer = mutations.link;
-
-        const excludePlayerIds = table.options.meta?.excludePlayerIds;
+        const { mutation } = useUpdatePlayer(organizationId);
 
         return (
-          <PlayerReplaceCombobox
-            organizationId={organizationId}
+          <ControlledInput
+            key={`playerId-${player.playerId}`}
+            variant="data"
+            type="text"
             value={player.name ?? ''}
-            excludePlayerIds={excludePlayerIds ?? []}
-            onSelect={(selectedPlayer) => {
-              linkPlayer.mutate({
-                currentPlayerId: player.playerId,
-                existingPlayer: {
-                  id: selectedPlayer.id,
-                  name: selectedPlayer.name,
-                  email: selectedPlayer.email,
-                  phone: selectedPlayer.phone,
-                  dateOfBirth: selectedPlayer.dateOfBirth,
-                  organizationId: selectedPlayer.organizationId,
-                },
-                jerseyNumber: player.jerseyNumber ?? null,
-                position: player.position ?? null,
-              });
+            onUpdate={(newName) => {
+              const nameValue = newName || null;
+
+              if (nameValue) {
+                const result =
+                  S.decodeUnknownEither(PlayerNameSchema)(nameValue);
+
+                if (result._tag === 'Left') {
+                  toast.error(
+                    'Player name must be between 1 and 100 characters',
+                  );
+                  return;
+                }
+              }
+
+              // mutation.mutate(player.playerId, { name: nameValue });
             }}
-            onRename={(newName) => {
-              handleUpdate(player.playerId, { name: newName });
-            }}
+            placeholder="Player name"
           />
         );
+        // const mutations = usePlayerMutations(organizationId, teamId);
+        // const handleUpdate = mutations.update.handleUpdate;
+        // const linkPlayer = mutations.link;
+
+        // const excludePlayerIds = table.options.meta?.excludePlayerIds;
+
+        // return (
+        //   <PlayerReplaceCombobox
+        //     organizationId={organizationId}
+        //     value={player.name ?? ''}
+        //     excludePlayerIds={excludePlayerIds ?? []}
+        //     onSelect={(selectedPlayer) => {
+        //       linkPlayer.mutate({
+        //         currentPlayerId: player.playerId,
+        //         existingPlayer: {
+        //           id: selectedPlayer.id,
+        //           name: selectedPlayer.name,
+        //           email: selectedPlayer.email,
+        //           phone: selectedPlayer.phone,
+        //           dateOfBirth: selectedPlayer.dateOfBirth,
+        //           organizationId: selectedPlayer.organizationId,
+        //         },
+        //         jerseyNumber: player.jerseyNumber ?? null,
+        //         position: player.position ?? null,
+        //       });
+        //     }}
+        //     onRename={(newName) => {
+        //       handleUpdate(player.playerId, { name: newName });
+        //     }}
+        //   />
+        // );
       },
     }),
     columnHelper.accessor('position', {
@@ -168,14 +200,14 @@ export function createEditablePlayerColumns({
       filterFn: 'arrIncludesSome',
       cell: ({ row }) => {
         const player = row.original;
-        const mutations = usePlayerMutations(organizationId, teamId);
-        const handleUpdate = mutations.update.handleUpdate;
+        // const mutations = usePlayerMutations(organizationId, teamId);
+        // const handleUpdate = mutations.update.handleUpdate;
 
         return (
           <Select
             value={player.position || ''}
-            onValueChange={(value) => {
-              handleUpdate(player.playerId, { position: value });
+            onValueChange={(_value) => {
+              // handleUpdate(player.playerId, { position: value });
             }}
           >
             <SelectTrigger variant="data">
@@ -203,8 +235,8 @@ export function createEditablePlayerColumns({
         displayName: 'Email',
       },
       cell: ({ row: { original: player } }) => {
-        const mutations = usePlayerMutations(organizationId, teamId);
-        const handleUpdate = mutations.update.handleUpdate;
+        // const mutations = usePlayerMutations(organizationId, teamId);
+        // const handleUpdate = mutations.update.handleUpdate;
 
         return (
           <ControlledInput
@@ -223,7 +255,7 @@ export function createEditablePlayerColumns({
                 }
               }
 
-              handleUpdate(player.playerId, { email: emailValue });
+              // handleUpdate(player.playerId, { email: emailValue });
             }}
             placeholder="email@example.com"
           />
@@ -242,7 +274,7 @@ export function createEditablePlayerColumns({
       cell: ({ row }) => {
         const player = row.original;
 
-        const mutations = usePlayerMutations(organizationId, teamId);
+        const mutations = usePlayerMutations(organizationId);
 
         return (
           <RowActionsProvider
@@ -250,24 +282,19 @@ export function createEditablePlayerColumns({
             actions={{
               onDelete: () =>
                 mutations.delete.mutate({ playerId: player.playerId }),
-              onRemove: () =>
-                mutations.remove.mutate({ teamId, playerId: player.playerId }),
             }}
           >
             <RowActionsDropdown>
               <Link
-                to="/$organizationSlug/$teamId/players/$playerId"
-                params={{ organizationSlug, teamId, playerId: player.playerId }}
+                to="/$organizationSlug/players/$playerId"
+                params={{
+                  organizationSlug: organizationSlug,
+                  playerId: player.playerId,
+                }}
               >
                 <RowActionItem icon={User2}>View</RowActionItem>
               </Link>
               <RowActionSeparator />
-              <RowActionRemoveItem
-                alertTitle="Remove Player from Team"
-                alertDescription="Are you sure you want to remove this player from the team?"
-              >
-                Remove From Team
-              </RowActionRemoveItem>
               <RowActionDeleteItem
                 alertTitle="Permanently Delete Player from Organization"
                 alertDescription="Are you sure you want to remove this player from the organization? This action cannot be undone."
@@ -279,5 +306,5 @@ export function createEditablePlayerColumns({
         );
       },
     }),
-  ] as ColumnDef<TeamPlayerWithInfo>[];
+  ] as ColumnDef<any>[];
 }
