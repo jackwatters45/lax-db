@@ -3,6 +3,8 @@ import {
   Base64IdSchema,
   JerseyNumberSchema as BaseJerseyNumberSchema,
   EmailSchema,
+  NullablePlayerNameSchema,
+  PlayerNameSchema,
 } from '../schema';
 
 export const PlayerIdSchema = S.UUID.pipe(
@@ -27,7 +29,7 @@ export type GetAllPlayersInput = typeof GetAllPlayersInputSchema.Type;
 
 export const CreatePlayerInputSchema = S.Struct({
   organizationId: OrganizationIdSchema,
-  name: S.String,
+  name: PlayerNameSchema,
   email: S.NullOr(EmailSchema),
   phone: S.NullOr(S.String),
   dateOfBirth: S.NullOr(S.String),
@@ -37,7 +39,7 @@ export type CreatePlayerInput = typeof CreatePlayerInputSchema.Type;
 
 export const UpdatePlayerInputSchema = S.Struct({
   playerId: PlayerIdSchema,
-  name: S.optional(S.NullOr(S.String)),
+  name: S.optional(NullablePlayerNameSchema),
   email: S.optional(S.NullOr(EmailSchema)),
   phone: S.optional(S.NullOr(S.String)),
   dateOfBirth: S.optional(S.NullOr(S.String)),

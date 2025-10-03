@@ -1,4 +1,3 @@
-import type { Player } from '@lax-db/core/player/player.sql';
 import { useQuery } from '@tanstack/react-query';
 import { UserPlus } from 'lucide-react';
 import { useState } from 'react';
@@ -24,13 +23,9 @@ import { usePlayerMutations } from '../-mutations';
 
 export function AddPlayerCommand({
   organizationId,
-  teamId,
-  excludePlayerIds,
   children,
 }: {
   organizationId: string;
-  teamId: string;
-  excludePlayerIds: string[];
   children: React.ReactNode;
 }) {
   const [open, setOpen] = useState(false);
@@ -42,48 +37,19 @@ export function AddPlayerCommand({
     enabled: open,
   });
 
-  const mutations = usePlayerMutations(organizationId, teamId);
+  const _mutations = usePlayerMutations(organizationId);
 
-  const handleCreateNewPlayer = (name: string) => {
-    mutations.add.mutate({
-      organizationId,
-      teamId,
-      name,
-      email: null,
-      phone: null,
-      dateOfBirth: null,
-      jerseyNumber: null,
-      position: null,
-      userId: null,
-    });
-  };
-
-  const handleSelectExistingPlayer = (player: { id: string }) => {
-    // Just add existing player to team (they already exist in org)
-    mutations.addExisting.mutate({
-      playerId: player.id,
-      teamId,
-      jerseyNumber: null,
-      position: null,
-    });
-  };
-
-  const filteredPlayers = allPlayers
-    .filter((player) => !excludePlayerIds.includes(player.id))
-    .filter((player) => {
-      if (!searchQuery.trim()) return true;
-      const query = searchQuery.toLowerCase();
-      return (
-        player.name?.toLowerCase().includes(query) ||
-        player.email?.toLowerCase().includes(query) ||
-        player.phone?.toLowerCase().includes(query)
-      );
-    });
-
-  const handleSelect = (player: Player) => {
-    handleSelectExistingPlayer(player);
-    setOpen(false);
-    setSearchQuery('');
+  const handleCreateNewPlayer = (_name: string) => {
+    // mutations.add.mutate({
+    //   organizationId,
+    //   name,
+    //   email: null,
+    //   phone: null,
+    //   dateOfBirth: null,
+    //   jerseyNumber: null,
+    //   position: null,
+    //   userId: null,
+    // });
   };
 
   const handleCreate = () => {
@@ -111,15 +77,11 @@ export function AddPlayerCommand({
               <div className="py-6 text-center text-sm">Loading...</div>
             ) : (
               <>
-                {filteredPlayers.length > 0 && (
+                {allPlayers.length > 0 && (
                   <>
                     <CommandGroup heading="Existing Players">
-                      {filteredPlayers.map((player) => (
-                        <CommandItem
-                          key={player.id}
-                          value={player.id}
-                          onSelect={() => handleSelect(player)}
-                        >
+                      {allPlayers.map((player) => (
+                        <CommandItem key={player.id} value={player.id}>
                           <div className="flex flex-col">
                             <span>{player.name || 'Unnamed'}</span>
                             {(player.email || player.phone) && (
@@ -142,7 +104,7 @@ export function AddPlayerCommand({
                     </CommandItem>
                   </CommandGroup>
                 )}
-                {!searchQuery && filteredPlayers.length === 0 && (
+                {!searchQuery && (
                   <CommandEmpty>
                     Type a name to create a new player
                   </CommandEmpty>

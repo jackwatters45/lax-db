@@ -2,7 +2,7 @@
 
 ## TODO
 
-- [ ] commits
+- [x] commits
 - [ ] individual player page
 - [ ] probably move players individual pages away from teams
 - [ ] filters need an apply button (or do i even want them to have one?)
@@ -12,7 +12,7 @@
 - [ ] games
 - [ ] coaches
 - [ ] teams page
-- [ ] org switcher..
+- [x] org switcher..
 - [ ] org + team invites + joins
 - [ ] sidebar subpages/dropdown
 

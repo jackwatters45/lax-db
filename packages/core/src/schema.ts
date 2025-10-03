@@ -26,3 +26,15 @@ export const EmailSchema = S.String.pipe(
 );
 
 export const NullableEmailSchema = S.NullOr(S.String);
+
+export const PlayerNameSchema = S.String.pipe(
+  S.minLength(1, {
+    message: () => 'Player name must be at least 1 character',
+  }),
+  S.maxLength(100, {
+    message: () => 'Player name must be 100 characters or less',
+  }),
+  S.trimmed(),
+);
+
+export const NullablePlayerNameSchema = S.NullOr(PlayerNameSchema);
