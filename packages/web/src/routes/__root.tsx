@@ -15,8 +15,8 @@ import { DefaultCatchBoundary } from '@/components/default-catch-boundary';
 import { NotFound } from '@/components/not-found';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from '@/components/ui/sonner';
+import globalsCss from '@/globals.css?url';
 import { seo } from '@/lib/seo';
-import globalsCss from '@/styles/globals.css?url';
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
