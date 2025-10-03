@@ -5,17 +5,17 @@ import { LoginForm } from '@/components/auth/login-form';
 
 const loginSearchSchema = S.standardSchemaV1(
   S.Struct({
-    redirect: S.optional(S.String),
+    redirectUrl: S.optional(S.String),
   }),
 );
 
-export const Route = createFileRoute('/login')({
+export const Route = createFileRoute('/(auth)/login')({
   validateSearch: loginSearchSchema,
   component: LoginPage,
 });
 
 function LoginPage() {
-  const { redirect } = Route.useSearch();
+  const { redirectUrl } = Route.useSearch();
 
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
@@ -30,7 +30,7 @@ function LoginPage() {
         </div>
         <div className="flex flex-1 items-center justify-center">
           <div className="w-full max-w-xs">
-            <LoginForm redirect={redirect} />
+            <LoginForm redirectUrl={redirectUrl} />
           </div>
         </div>
       </div>
