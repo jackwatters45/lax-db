@@ -1,8 +1,5 @@
-import { useMutation } from '@tanstack/react-query';
 import { Link, useRouteContext, useRouter } from '@tanstack/react-router';
-import { createServerFn } from '@tanstack/react-start';
 import { ChevronsUpDown, Plus } from 'lucide-react';
-import { toast } from 'sonner';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,27 +8,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { authMiddleware } from '@/lib/middleware';
+import { useSwitchOrganization } from '@/mutations/organizations';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '../ui/sidebar';
-
-// Server function to switch active organization
-const switchActiveOrganization = createServerFn({ method: 'POST' })
-  .middleware([authMiddleware])
-  .validator((data: { organizationId: string }) => data)
-  .handler(async ({ data, context }) => {
-    const { auth } = await import('@lax-db/core/auth');
-
-    // Set the active organization in Better Auth
-    await auth.api.setActiveOrganization({
-      headers: context.headers,
-      body: {
-        organizationId: data.organizationId,
-      },
-    });
-
-    return { success: true };
-  });
 
 export function OrganizationSwitcher() {
   const router = useRouter();
@@ -39,26 +18,7 @@ export function OrganizationSwitcher() {
     from: '/_protected/$organizationSlug',
   });
 
-  // Mutation to switch organization
-  const switchOrgMutation = useMutation({
-    mutationFn: (organizationId: string) =>
-      switchActiveOrganization({ data: { organizationId } }),
-    onError: (error) => {
-      toast.error('Failed to switch organization');
-      console.error('Switch organization error:', error);
-    },
-    onSuccess: (_data, organizationId, _result, context) => {
-      context.client.invalidateQueries({ queryKey: ['teamMembers'] });
-      toast.success('Organization switched successfully');
-
-      const newOrg = organizations.find((org) => org.id === organizationId);
-      if (newOrg) {
-        router.navigate({ to: `/${newOrg.slug}` });
-      } else {
-        window.location.reload();
-      }
-    },
-  });
+  const switchOrg = useSwitchOrganization({ router });
 
   return (
     <SidebarMenu>
@@ -101,7 +61,7 @@ export function OrganizationSwitcher() {
               return (
                 <DropdownMenuItem
                   key={org.id}
-                  onClick={() => !isActive && switchOrgMutation.mutate(org.id)}
+                  onClick={() => !isActive && switchOrg.mutate(org.id)}
                   className="flex w-full items-center justify-between gap-2 p-2"
                 >
                   <div className="flex items-center gap-2">
@@ -121,7 +81,8 @@ export function OrganizationSwitcher() {
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
               <Link
-                to="/organizations/create"
+                to="/$organizationSlug/organization/create"
+                params={{ organizationSlug: activeOrganization.slug }}
                 className="flex items-center gap-2 p-2"
               >
                 <div className="flex size-6 items-center justify-center rounded-md border bg-background">
@@ -134,7 +95,8 @@ export function OrganizationSwitcher() {
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
               <Link
-                to="/organizations/join"
+                to="/$organizationSlug/organization/join"
+                params={{ organizationSlug: activeOrganization.slug }}
                 className="flex items-center gap-2 p-2"
               >
                 <div className="flex size-6 items-center justify-center rounded-md border bg-background">

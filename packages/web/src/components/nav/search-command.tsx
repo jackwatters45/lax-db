@@ -1,6 +1,9 @@
-import { useMutation } from '@tanstack/react-query';
-import { Link, useNavigate, useRouteContext } from '@tanstack/react-router';
-import { createServerFn } from '@tanstack/react-start';
+import {
+  Link,
+  useNavigate,
+  useRouteContext,
+  useRouter,
+} from '@tanstack/react-router';
 import {
   BookOpen,
   Building2,
@@ -18,7 +21,6 @@ import {
 } from 'lucide-react';
 import React from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
-import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import {
   CommandDialog,
@@ -30,49 +32,20 @@ import {
   CommandSeparator,
   CommandShortcut,
 } from '@/components/ui/command';
-import { authMiddleware } from '@/lib/middleware';
-
-// Server function to switch active organization
-const switchActiveOrganization = createServerFn({ method: 'POST' })
-  .middleware([authMiddleware])
-  .validator((data: { organizationId: string }) => data)
-  .handler(async ({ data, context }) => {
-    const { auth } = await import('@lax-db/core/auth');
-
-    // Set the active organization in Better Auth
-    await auth.api.setActiveOrganization({
-      headers: context.headers,
-      body: {
-        organizationId: data.organizationId,
-      },
-    });
-
-    return { success: true };
-  });
+import { useSwitchOrganization } from '@/mutations/organizations';
 
 export function SearchCommand() {
-  const [open, setOpen] = React.useState(false);
-  const navigate = useNavigate();
-
-  // Mutation to switch organization
-  const switchOrgMutation = useMutation({
-    mutationFn: (organizationId: string) =>
-      switchActiveOrganization({ data: { organizationId } }),
-    onError: (error) => {
-      toast.error('Failed to switch organization');
-      console.error('Switch organization error:', error);
-    },
-    onSuccess: () => {
-      toast.success('Organization switched successfully');
-      setOpen(false);
-    },
-  });
-
-  useHotkeys('meta+k', () => setOpen(true));
-
   const { organizations, activeOrganization } = useRouteContext({
     from: '/_protected/$organizationSlug',
   });
+
+  const [open, setOpen] = React.useState(false);
+  const navigate = useNavigate();
+  const router = useRouter();
+
+  const switchOrg = useSwitchOrganization({ setOpen, router });
+
+  useHotkeys('meta+k', () => setOpen(true));
 
   const navigationItems = activeOrganization
     ? [
@@ -142,13 +115,13 @@ export function SearchCommand() {
   const generalItems = [
     {
       label: 'Plan',
-      href: '/plan',
+      href: '/$organizationSlug/plan',
       icon: FileText,
       shortcut: '⌘⇧L',
     },
     {
       label: 'Feedback',
-      href: '/feedback',
+      href: '/$organizationSlug/feedback',
       icon: MessageSquare,
       shortcut: '⌘⇧E',
     },
@@ -230,74 +203,80 @@ export function SearchCommand() {
   });
 
   useHotkeys('meta+shift+l', () => {
-    navigate({ to: '/plan' });
+    navigate({
+      to: '/$organizationSlug/plan',
+      params: { organizationSlug: activeOrganization.slug },
+    });
   });
 
   useHotkeys('meta+shift+e', () => {
-    navigate({ to: '/feedback' });
+    navigate({
+      to: '/$organizationSlug/feedback',
+      params: { organizationSlug: activeOrganization.slug },
+    });
   });
 
   // Organization switching hotkeys (⌘⇧1-9 for first 9 organizations)
   useHotkeys('meta+shift+1', () => {
     const org = organizations[0];
     if (org && org.id !== activeOrganization?.id) {
-      switchOrgMutation.mutate(org.id);
+      switchOrg.mutate(org.id);
     }
   });
 
   useHotkeys('meta+shift+2', () => {
     const org = organizations[1];
     if (org && org.id !== activeOrganization?.id) {
-      switchOrgMutation.mutate(org.id);
+      switchOrg.mutate(org.id);
     }
   });
 
   useHotkeys('meta+shift+3', () => {
     const org = organizations[2];
     if (org && org.id !== activeOrganization?.id) {
-      switchOrgMutation.mutate(org.id);
+      switchOrg.mutate(org.id);
     }
   });
 
   useHotkeys('meta+shift+4', () => {
     const org = organizations[3];
     if (org && org.id !== activeOrganization?.id) {
-      switchOrgMutation.mutate(org.id);
+      switchOrg.mutate(org.id);
     }
   });
 
   useHotkeys('meta+shift+5', () => {
     const org = organizations[4];
     if (org && org.id !== activeOrganization?.id) {
-      switchOrgMutation.mutate(org.id);
+      switchOrg.mutate(org.id);
     }
   });
 
   useHotkeys('meta+shift+6', () => {
     const org = organizations[5];
     if (org && org.id !== activeOrganization?.id) {
-      switchOrgMutation.mutate(org.id);
+      switchOrg.mutate(org.id);
     }
   });
 
   useHotkeys('meta+shift+7', () => {
     const org = organizations[6];
     if (org && org.id !== activeOrganization?.id) {
-      switchOrgMutation.mutate(org.id);
+      switchOrg.mutate(org.id);
     }
   });
 
   useHotkeys('meta+shift+8', () => {
     const org = organizations[7];
     if (org && org.id !== activeOrganization?.id) {
-      switchOrgMutation.mutate(org.id);
+      switchOrg.mutate(org.id);
     }
   });
 
   useHotkeys('meta+shift+9', () => {
     const org = organizations[8];
     if (org && org.id !== activeOrganization?.id) {
-      switchOrgMutation.mutate(org.id);
+      switchOrg.mutate(org.id);
     }
   });
 
@@ -336,7 +315,7 @@ export function SearchCommand() {
                     key={org.id}
                     onSelect={() => {
                       if (!isActive) {
-                        switchOrgMutation.mutate(org.id);
+                        switchOrg.mutate(org.id);
                       }
                     }}
                   >
@@ -352,9 +331,21 @@ export function SearchCommand() {
                 );
               })}
               <CommandItem asChild onSelect={() => setOpen(false)}>
-                <Link to="/organizations/create">
+                <Link
+                  to="/$organizationSlug/organization/create"
+                  params={{ organizationSlug: activeOrganization.slug }}
+                >
                   <Plus className="mr-2 h-4 w-4" />
                   <span>Create Organization</span>
+                </Link>
+              </CommandItem>
+              <CommandItem asChild onSelect={() => setOpen(false)}>
+                <Link
+                  to="/$organizationSlug/organization/join"
+                  params={{ organizationSlug: activeOrganization.slug }}
+                >
+                  <Plus className="mr-2 h-4 w-4" />
+                  <span>Join Organization</span>
                 </Link>
               </CommandItem>
             </CommandGroup>
