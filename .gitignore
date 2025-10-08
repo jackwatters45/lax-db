@@ -26,3 +26,7 @@ node_modules
 .opencode.json
 
 .zed
+
+# not root sst.env files (testing out to not be annoying with git)
+**/sst-env.d.ts
+!sst-env.d.ts
