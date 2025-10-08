@@ -3,7 +3,7 @@ URL: /docs/basic-usage
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/basic-usage.mdx
 
 Getting started with Better Auth
-        
+
 ***
 
 title: Basic Usage
@@ -90,7 +90,7 @@ const { data, error } = await authClient.signIn.email({
          */
         callbackURL: "/dashboard",
         /**
-         * remember the user session after the browser is closed. 
+         * remember the user session after the browser is closed.
          * @default true
          */
         rememberMe: false
@@ -157,7 +157,7 @@ await authClient.signIn.social({
      * A URL to redirect after the user authenticates with the provider
      * @default "/"
      */
-    callbackURL: "/dashboard", 
+    callbackURL: "/dashboard",
     /**
      * A URL to redirect if an error occurs during the sign in process
      */
@@ -167,7 +167,7 @@ await authClient.signIn.social({
      */
     newUserCallbackURL: "/welcome",
     /**
-     * disable the automatic redirect to the provider. 
+     * disable the automatic redirect to the provider.
      * @default false
      */
     disableRedirect: true,
@@ -186,7 +186,7 @@ await authClient.signOut();
 
 you can pass `fetchOptions` to redirect onSuccess
 
-```ts title="user-card.tsx" 
+```ts title="user-card.tsx"
 await authClient.signOut({
   fetchOptions: {
     onSuccess: () => {
@@ -209,7 +209,7 @@ Better Auth provides a `useSession` hook to easily access session data on the cl
 <Tabs items={["React", "Vue","Svelte", "Solid", "Vanilla"]} defaultValue="React">
   <Tab value="React">
     ```tsx title="user.tsx"
-    import { authClient } from "@/lib/auth-client" // import the auth client // [!code highlight] 
+    import { authClient } from "@/lib/auth-client" // import the auth client // [!code highlight]
 
     export function User(){
 
@@ -267,7 +267,7 @@ Better Auth provides a `useSession` hook to easily access session data on the cl
 
     authClient.useSession.subscribe((value)=>{
         //do something with the session //
-    }) 
+    })
     ```
   </Tab>
 
@@ -459,7 +459,7 @@ Below is an example of how to add two factor authentication using two factor plu
 
     Once we're done with the server, we need to add the plugin to the client. To do this, you need to import the plugin and pass it to the `plugins` option of the auth client. For example, to add two factor authentication, you can use the following code:
 
-    ```ts title="auth-client.ts"  
+    ```ts title="auth-client.ts"
     import { createAuthClient } from "better-auth/client";
     import { twoFactorClient } from "better-auth/client/plugins"; // [!code highlight]
 
@@ -498,7 +498,7 @@ Below is an example of how to add two factor authentication using two factor plu
 
     const verifyTOTP = async() => {
         const data = await authClient.twoFactor.verifyTOTP({
-            code: "123456", // the code entered by the user 
+            code: "123456", // the code entered by the user
             /**
              * If the device is trusted, the user won't
              * need to pass 2FA again on the same device
@@ -521,7 +521,7 @@ URL: /docs/comparison
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/comparison.mdx
 
 Comparison of Better Auth versus over other auth libraries and services.
-        
+
 ***
 
 title: Comparison
@@ -564,7 +564,7 @@ URL: /docs/installation
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/installation.mdx
 
 Learn how to configure Better Auth in your project.
-        
+
 ***
 
 title: Installation
@@ -1086,7 +1086,7 @@ URL: /docs/introduction
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/introduction.mdx
 
 Introduction to Better Auth.
-        
+
 ***
 
 title: Introduction
@@ -1118,7 +1118,7 @@ URL: /docs/adapters/community-adapters
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/adapters/community-adapters.mdx
 
 Integrate Better Auth with community made database adapters.
-        
+
 ***
 
 title: Community Adapters
@@ -1144,7 +1144,7 @@ URL: /docs/adapters/drizzle
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/adapters/drizzle.mdx
 
 Integrate Better Auth with Drizzle ORM.
-        
+
 ***
 
 title: Drizzle ORM Adapter
@@ -1232,7 +1232,7 @@ URL: /docs/adapters/mongo
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/adapters/mongo.mdx
 
 Integrate Better Auth with MongoDB.
-        
+
 ***
 
 title: MongoDB Adapter
@@ -1271,7 +1271,7 @@ URL: /docs/adapters/mssql
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/adapters/mssql.mdx
 
 Integrate Better Auth with MS SQL.
-        
+
 ***
 
 title: MS SQL
@@ -1377,7 +1377,7 @@ URL: /docs/adapters/mysql
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/adapters/mysql.mdx
 
 Integrate Better Auth with MySQL.
-        
+
 ***
 
 title: MySQL
@@ -1454,7 +1454,7 @@ URL: /docs/adapters/other-relational-databases
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/adapters/other-relational-databases.mdx
 
 Integrate Better Auth with other relational databases.
-        
+
 ***
 
 title: Other Relational Databases
@@ -1508,7 +1508,7 @@ URL: /docs/adapters/postgresql
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/adapters/postgresql.mdx
 
 Integrate Better Auth with PostgreSQL.
-        
+
 ***
 
 title: PostgreSQL
@@ -1582,7 +1582,7 @@ URL: /docs/adapters/prisma
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/adapters/prisma.mdx
 
 Integrate Better Auth with Prisma.
-        
+
 ***
 
 title: Prisma
@@ -1652,7 +1652,7 @@ URL: /docs/adapters/sqlite
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/adapters/sqlite.mdx
 
 Integrate Better Auth with SQLite.
-        
+
 ***
 
 title: SQLite
@@ -1724,7 +1724,7 @@ URL: /docs/authentication/apple
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/authentication/apple.mdx
 
 Apple provider setup and usage.
-        
+
 ***
 
 title: Apple
@@ -1866,7 +1866,7 @@ URL: /docs/authentication/discord
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/authentication/discord.mdx
 
 Discord provider setup and usage.
-        
+
 ***
 
 title: Discord
@@ -1887,10 +1887,10 @@ description: Discord provider setup and usage.
 
     To configure the provider, you need to import the provider and pass it to the `socialProviders` option of the auth instance.
 
-    ```ts title="auth.ts" 
+    ```ts title="auth.ts"
     import { betterAuth } from "better-auth"
 
-    export const auth = betterAuth({ 
+    export const auth = betterAuth({
         socialProviders: {
             discord: { // [!code highlight]
                 clientId: process.env.DISCORD_CLIENT_ID as string, // [!code highlight]
@@ -1928,7 +1928,7 @@ URL: /docs/authentication/dropbox
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/authentication/dropbox.mdx
 
 Dropbox provider setup and usage.
-        
+
 ***
 
 title: Dropbox
@@ -1992,7 +1992,7 @@ URL: /docs/authentication/email-password
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/authentication/email-password.mdx
 
 Implementing email and password authentication with Better Auth.
-        
+
 ***
 
 title: Email & Password
@@ -2107,7 +2107,7 @@ To sign a user out, you can use the `signOut` function provided by the client.
 
 you can pass `fetchOptions` to redirect onSuccess
 
-```ts title="auth-client.ts" 
+```ts title="auth-client.ts"
 await authClient.signOut({
   fetchOptions: {
     onSuccess: () => {
@@ -2237,11 +2237,11 @@ Once you configured your server you can call `requestPasswordReset` function to 
   ```ts
   type requestPasswordReset = {
       /**
-       * The email address of the user to send a password reset email to 
+       * The email address of the user to send a password reset email to
        */
       email: string = "john.doe@example.com"
       /**
-       * The URL to redirect the user to reset their password. If the token isn't valid or expired, it'll be redirected with a query parameter `?error=INVALID_TOKEN`. If the token is valid, it'll be redirected with a query parameter `?token=VALID_TOKEN 
+       * The URL to redirect the user to reset their password. If the token isn't valid or expired, it'll be redirected with a query parameter `?error=INVALID_TOKEN`. If the token is valid, it'll be redirected with a query parameter `?token=VALID_TOKEN
        */
       redirectTo?: string = "https://example.com/reset-password"
   }
@@ -2270,11 +2270,11 @@ const { data, error } = await authClient.resetPassword({
 
   type resetPassword = {
       /**
-       * The new password to set 
+       * The new password to set
        */
       newPassword: string = "password1234"
       /**
-       * The token to reset the password 
+       * The token to reset the password
        */
       token: string
   }
@@ -2387,7 +2387,7 @@ URL: /docs/authentication/facebook
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/authentication/facebook.mdx
 
 Facebook provider setup and usage.
-        
+
 ***
 
 title: Facebook
@@ -2416,7 +2416,7 @@ description: Facebook provider setup and usage.
 
     To configure the provider, you need to import the provider and pass it to the `socialProviders` option of the auth instance.
 
-    ```ts title="auth.ts"  
+    ```ts title="auth.ts"
     import { betterAuth } from "better-auth"
 
     export const auth = betterAuth({
@@ -2513,7 +2513,7 @@ URL: /docs/authentication/github
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/authentication/github.mdx
 
 GitHub provider setup and usage.
-        
+
 ***
 
 title: GitHub
@@ -2557,7 +2557,7 @@ description: GitHub provider setup and usage.
 
     * `provider`: The provider to use. It should be set to `github`.
 
-    ```ts title="auth-client.ts"  
+    ```ts title="auth-client.ts"
     import { createAuthClient } from "better-auth/client"
     const authClient =  createAuthClient()
 
@@ -2602,7 +2602,7 @@ URL: /docs/authentication/gitlab
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/authentication/gitlab.mdx
 
 GitLab provider setup and usage.
-        
+
 ***
 
 title: GitLab
@@ -2645,7 +2645,7 @@ description: GitLab provider setup and usage.
 
     * `provider`: The provider to use. It should be set to `gitlab`.
 
-    ```ts title="auth-client.ts"  
+    ```ts title="auth-client.ts"
     import { createAuthClient } from "better-auth/client"
     const authClient =  createAuthClient()
 
@@ -2665,7 +2665,7 @@ URL: /docs/authentication/google
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/authentication/google.mdx
 
 Google provider setup and usage.
-        
+
 ***
 
 title: Google
@@ -2686,7 +2686,7 @@ description: Google provider setup and usage.
 
     To configure the provider, you need to pass the `clientId` and `clientSecret` to `socialProviders.google` in your auth configuration.
 
-    ```ts title="auth.ts"   
+    ```ts title="auth.ts"
     import { betterAuth } from "better-auth"
 
     export const auth = betterAuth({
@@ -2810,7 +2810,7 @@ URL: /docs/authentication/huggingface
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/authentication/huggingface.mdx
 
 Hugging Face provider setup and usage.
-        
+
 ***
 
 title: Hugging Face
@@ -2852,7 +2852,7 @@ description: Hugging Face provider setup and usage.
 
     * `provider`: The provider to use. It should be set to `huggingface`.
 
-    ```ts title="auth-client.ts"  
+    ```ts title="auth-client.ts"
     import { createAuthClient } from "better-auth/client"
     const authClient =  createAuthClient()
 
@@ -2872,7 +2872,7 @@ URL: /docs/authentication/kick
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/authentication/kick.mdx
 
 Kick provider setup and usage.
-        
+
 ***
 
 title: Kick
@@ -2893,7 +2893,7 @@ description: Kick provider setup and usage.
 
     To configure the provider, you need to import the provider and pass it to the `socialProviders` option of the auth instance.
 
-    ```ts title="auth.ts"  
+    ```ts title="auth.ts"
     import { betterAuth } from "better-auth"
 
     export const auth = betterAuth({
@@ -2914,7 +2914,7 @@ description: Kick provider setup and usage.
 
     * `provider`: The provider to use. It should be set to `kick`.
 
-    ```ts title="auth-client.ts"  
+    ```ts title="auth-client.ts"
     import { createAuthClient } from "better-auth/client"
     const authClient =  createAuthClient()
 
@@ -2934,7 +2934,7 @@ URL: /docs/authentication/linear
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/authentication/linear.mdx
 
 Linear provider setup and usage.
-        
+
 ***
 
 title: Linear
@@ -2978,7 +2978,7 @@ description: Linear provider setup and usage.
 
     * `provider`: The provider to use. It should be set to `linear`.
 
-    ```ts title="auth-client.ts"  
+    ```ts title="auth-client.ts"
     import { createAuthClient } from "better-auth/client"
     const authClient = createAuthClient()
 
@@ -3025,7 +3025,7 @@ URL: /docs/authentication/linkedin
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/authentication/linkedin.mdx
 
 LinkedIn Provider
-        
+
 ***
 
 title: LinkedIn
@@ -3095,7 +3095,7 @@ URL: /docs/authentication/microsoft
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/authentication/microsoft.mdx
 
 Microsoft provider setup and usage.
-        
+
 ***
 
 title: Microsoft
@@ -3129,7 +3129,7 @@ Enabling OAuth with Microsoft Azure Entra ID (formerly Active Directory) allows 
                 clientId: process.env.MICROSOFT_CLIENT_ID as string, // [!code highlight]
                 clientSecret: process.env.MICROSOFT_CLIENT_SECRET as string, // [!code highlight]
                 // Optional
-                tenantId: 'common', // [!code highlight]                
+                tenantId: 'common', // [!code highlight]
                 prompt: "select_account", // Forces account selection // [!code highlight]
             }, // [!code highlight]
         },
@@ -3164,7 +3164,7 @@ URL: /docs/authentication/notion
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/authentication/notion.mdx
 
 Notion provider setup and usage.
-        
+
 ***
 
 title: Notion
@@ -3189,7 +3189,7 @@ description: Notion provider setup and usage.
 
     To configure the provider, you need to pass the `clientId` and `clientSecret` to `socialProviders.notion` in your auth configuration.
 
-    ```ts title="auth.ts"   
+    ```ts title="auth.ts"
     import { betterAuth } from "better-auth"
 
     export const auth = betterAuth({
@@ -3212,7 +3212,7 @@ To sign in with Notion, you can use the `signIn.social` function provided by the
 
 * `provider`: The provider to use. It should be set to `notion`.
 
-```ts title="auth-client.ts"  
+```ts title="auth-client.ts"
 import { createAuthClient } from "better-auth/client"
 const authClient =  createAuthClient()
 
@@ -3259,7 +3259,7 @@ URL: /docs/authentication/other-social-providers
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/authentication/other-social-providers.mdx
 
 Other social providers setup and usage.
-        
+
 ***
 
 title: Other Social Providers
@@ -3398,7 +3398,7 @@ URL: /docs/authentication/reddit
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/authentication/reddit.mdx
 
 Reddit provider setup and usage.
-        
+
 ***
 
 title: Reddit
@@ -3495,7 +3495,7 @@ URL: /docs/authentication/roblox
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/authentication/roblox.mdx
 
 Roblox provider setup and usage.
-        
+
 ***
 
 title: Roblox
@@ -3520,8 +3520,8 @@ description: Roblox provider setup and usage.
 
     To configure the provider, you need to import the provider and pass it to the `socialProviders` option of the auth instance.
 
-    ```ts title="auth.ts"  
-    import { betterAuth } from "better-auth" 
+    ```ts title="auth.ts"
+    import { betterAuth } from "better-auth"
 
     export const auth = betterAuth({
         socialProviders: {
@@ -3541,7 +3541,7 @@ description: Roblox provider setup and usage.
 
     * `provider`: The provider to use. It should be set to `roblox`.
 
-    ```ts title="auth-client.ts"  
+    ```ts title="auth-client.ts"
     import { createAuthClient } from "better-auth/client"
     const authClient =  createAuthClient()
 
@@ -3561,7 +3561,7 @@ URL: /docs/authentication/slack
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/authentication/slack.mdx
 
 Slack provider setup and usage.
-        
+
 ***
 
 title: Slack
@@ -3677,7 +3677,7 @@ URL: /docs/authentication/spotify
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/authentication/spotify.mdx
 
 Spotify provider setup and usage.
-        
+
 ***
 
 title: Spotify
@@ -3698,11 +3698,11 @@ description: Spotify provider setup and usage.
 
     To configure the provider, you need to import the provider and pass it to the `socialProviders` option of the auth instance.
 
-    ```ts title="auth.ts"  
+    ```ts title="auth.ts"
     import { betterAuth } from "better-auth"
 
     export const auth = betterAuth({
-       
+
         socialProviders: {
             spotify: { // [!code highlight]
                 clientId: process.env.SPOTIFY_CLIENT_ID as string, // [!code highlight]
@@ -3740,7 +3740,7 @@ URL: /docs/authentication/tiktok
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/authentication/tiktok.mdx
 
 TikTok provider setup and usage.
-        
+
 ***
 
 title: TikTok
@@ -3822,7 +3822,7 @@ URL: /docs/authentication/twitch
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/authentication/twitch.mdx
 
 Twitch provider setup and usage.
-        
+
 ***
 
 title: Twitch
@@ -3843,7 +3843,7 @@ description: Twitch provider setup and usage.
 
     To configure the provider, you need to import the provider and pass it to the `socialProviders` option of the auth instance.
 
-    ```ts title="auth.ts"  
+    ```ts title="auth.ts"
     import { betterAuth } from "better-auth"
 
     export const auth = betterAuth({
@@ -3864,7 +3864,7 @@ description: Twitch provider setup and usage.
 
     * `provider`: The provider to use. It should be set to `twitch`.
 
-    ```ts title="auth-client.ts"  
+    ```ts title="auth-client.ts"
     import { createAuthClient } from "better-auth/client"
     const authClient =  createAuthClient()
 
@@ -3884,7 +3884,7 @@ URL: /docs/authentication/twitter
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/authentication/twitter.mdx
 
 Twitter provider setup and usage.
-        
+
 ***
 
 title: Twitter (X)
@@ -3909,8 +3909,8 @@ description: Twitter provider setup and usage.
 
     To configure the provider, you need to import the provider and pass it to the `socialProviders` option of the auth instance.
 
-    ```ts title="auth.ts"  
-    import { betterAuth } from "better-auth" 
+    ```ts title="auth.ts"
+    import { betterAuth } from "better-auth"
 
     export const auth = betterAuth({
         socialProviders: {
@@ -3930,7 +3930,7 @@ description: Twitter provider setup and usage.
 
     * `provider`: The provider to use. It should be set to `twitter`.
 
-    ```ts title="auth-client.ts"  
+    ```ts title="auth-client.ts"
     import { createAuthClient } from "better-auth/client"
     const authClient =  createAuthClient()
 
@@ -3950,7 +3950,7 @@ URL: /docs/authentication/vk
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/authentication/vk.mdx
 
 VK ID Provider
-        
+
 ***
 
 title: VK
@@ -4012,7 +4012,7 @@ URL: /docs/authentication/zoom
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/authentication/zoom.mdx
 
 Zoom provider setup and usage.
-        
+
 ***
 
 title: Zoom
@@ -4102,7 +4102,7 @@ URL: /docs/concepts/api
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/concepts/api.mdx
 
 Better Auth API.
-        
+
 ***
 
 title: API
@@ -4229,7 +4229,7 @@ URL: /docs/concepts/cli
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/concepts/cli.mdx
 
 Built-in CLI for managing your project.
-        
+
 ***
 
 title: CLI
@@ -4304,7 +4304,7 @@ URL: /docs/concepts/client
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/concepts/client.mdx
 
 Better Auth client library for authentication.
-        
+
 ***
 
 title: Client
@@ -4352,12 +4352,12 @@ Import `createAuthClient` from the package for your framework (e.g., "better-aut
 </Callout>
 
 <Tabs
-  items={["react", "vue", "svelte", "solid", 
+  items={["react", "vue", "svelte", "solid",
 "vanilla"]}
   defaultValue="react"
 >
   <Tab value="vanilla">
-    ```ts title="lib/auth-client.ts" 
+    ```ts title="lib/auth-client.ts"
     import { createAuthClient } from "better-auth/client"
     export const authClient = createAuthClient({
         baseURL: "http://localhost:3000" // The base URL of your auth server // [!code highlight]
@@ -4366,7 +4366,7 @@ Import `createAuthClient` from the package for your framework (e.g., "better-aut
   </Tab>
 
   <Tab value="react" title="lib/auth-client.ts">
-    ```ts title="lib/auth-client.ts"  
+    ```ts title="lib/auth-client.ts"
     import { createAuthClient } from "better-auth/react"
     export const authClient = createAuthClient({
         baseURL: "http://localhost:3000" // The base URL of your auth server // [!code highlight]
@@ -4375,7 +4375,7 @@ Import `createAuthClient` from the package for your framework (e.g., "better-aut
   </Tab>
 
   <Tab value="vue" title="lib/auth-client.ts">
-    ```ts title="lib/auth-client.ts" 
+    ```ts title="lib/auth-client.ts"
     import { createAuthClient } from "better-auth/vue"
     export const authClient = createAuthClient({
         baseURL: "http://localhost:3000" // The base URL of your auth server // [!code highlight]
@@ -4384,7 +4384,7 @@ Import `createAuthClient` from the package for your framework (e.g., "better-aut
   </Tab>
 
   <Tab value="svelte" title="lib/auth-client.ts">
-    ```ts title="lib/auth-client.ts" 
+    ```ts title="lib/auth-client.ts"
     import { createAuthClient } from "better-auth/svelte"
     export const authClient = createAuthClient({
         baseURL: "http://localhost:3000" // The base URL of your auth server // [!code highlight]
@@ -4393,7 +4393,7 @@ Import `createAuthClient` from the package for your framework (e.g., "better-aut
   </Tab>
 
   <Tab value="solid" title="lib/auth-client.ts">
-    ```ts title="lib/auth-client.ts" 
+    ```ts title="lib/auth-client.ts"
     import { createAuthClient } from "better-auth/solid"
     export const authClient = createAuthClient({
         baseURL: "http://localhost:3000" // The base URL of your auth server // [!code highlight]
@@ -4435,7 +4435,7 @@ On top of normal methods, the client provides hooks to easily access different r
         const {
             data: session,
             isPending, //loading state
-            error, //error object 
+            error, //error object
             refetch //refetch the session
         } = useSession()
         return (
@@ -4526,7 +4526,7 @@ On top of normal methods, the client provides hooks to easily access different r
             >
                 <button onClick={toggle}>Log out</button>
             </Show>
-        ); 
+        );
     }
     ```
   </Tab>
@@ -4558,7 +4558,7 @@ await authClient.signIn.email({
     password: "password1234",
 }, {
     onSuccess(ctx) {
-            //      
+            //
     }
 })
 
@@ -4569,7 +4569,7 @@ await authClient.signIn.email({
     password: "password1234",
     fetchOptions: {
         onSuccess(ctx) {
-            //      
+            //
         }
     },
 })
@@ -4706,7 +4706,7 @@ URL: /docs/concepts/cookies
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/concepts/cookies.mdx
 
 Learn how cookies are used in Better Auth.
-        
+
 ***
 
 title: Cookies
@@ -4811,7 +4811,7 @@ URL: /docs/concepts/database
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/concepts/database.mdx
 
 Learn how to use a database with Better Auth.
-        
+
 ***
 
 title: Database
@@ -5433,7 +5433,7 @@ URL: /docs/concepts/email
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/concepts/email.mdx
 
 Learn how to use email with Better Auth.
-        
+
 ***
 
 title: Email
@@ -5626,7 +5626,7 @@ URL: /docs/concepts/hooks
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/concepts/hooks.mdx
 
 Better Auth Hooks let you customize BetterAuth's behavior
-        
+
 ***
 
 title: Hooks
@@ -5878,7 +5878,7 @@ URL: /docs/concepts/oauth
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/concepts/oauth.mdx
 
 How Better Auth handles OAuth
-        
+
 ***
 
 title: OAuth
@@ -6091,7 +6091,7 @@ URL: /docs/concepts/plugins
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/concepts/plugins.mdx
 
 Learn how to use plugins with Better Auth.
-        
+
 ***
 
 title: Plugins
@@ -6638,7 +6638,7 @@ URL: /docs/concepts/rate-limit
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/concepts/rate-limit.mdx
 
 How to limit the number of requests a user can make to the server in a given time period.
-        
+
 ***
 
 title: Rate Limit
@@ -6696,7 +6696,7 @@ Rate limiting uses the connecting IP address to track the number of requests mad
 default header checked is `x-forwarded-for`, which is commonly used in production environments. If
 you are using a different header to track the user's IP address, you'll need to specify it.
 
-```ts title="auth.ts" 
+```ts title="auth.ts"
 export const auth = betterAuth({
     //...other options
     advanced: {
@@ -6866,26 +6866,26 @@ Table Name: `rateLimit`
 
 <DatabaseTable
   fields={[
-      { 
-      name: "id", 
-      type: "string", 
+      {
+      name: "id",
+      type: "string",
       description: "Database ID",
       isPrimaryKey: true
       },
-      { 
-      name: "key", 
-      type: "string", 
+      {
+      name: "key",
+      type: "string",
       description: "Unique identifier for each rate limit key",
       },
-      { 
-      name: "count", 
-      type: "integer", 
-      description: "Time window in seconds" 
+      {
+      name: "count",
+      type: "integer",
+      description: "Time window in seconds"
       },
-      { 
-      name: "lastRequest", 
-      type: "bigint", 
-      description: "Max requests in the window" 
+      {
+      name: "lastRequest",
+      type: "bigint",
+      description: "Max requests in the window"
       }]}
 />
 
@@ -6896,7 +6896,7 @@ URL: /docs/concepts/session-management
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/concepts/session-management.mdx
 
 Better Auth session management.
-        
+
 ***
 
 title: Session Management
@@ -7091,7 +7091,7 @@ or on the server
 await auth.api.getSession({
     query: {
         disableCookieCache: true,
-    }, 
+    },
     headers: req.headers, // pass the headers
 });
 ```
@@ -7179,7 +7179,7 @@ URL: /docs/concepts/typescript
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/concepts/typescript.mdx
 
 Better Auth TypeScript integration.
-        
+
 ***
 
 title: TypeScript
@@ -7221,7 +7221,7 @@ if you can't set `strict` to `true`, you can enable `strictNullChecks`:
 
 Both the client SDK and the server offer types that can be inferred using the `$Infer` property. Plugins can extend base types like `User` and `Session`, and you can use `$Infer` to infer these types. Additionally, plugins can provide extra types that can also be inferred through `$Infer`.
 
-```ts title="auth-client.ts" 
+```ts title="auth-client.ts"
 import { createAuthClient } from "better-auth/client"
 
 const authClient = createAuthClient()
@@ -7233,7 +7233,7 @@ The `Session` type includes both `session` and `user` properties. The user prope
 
 You can also infer types on the server side.
 
-```ts title="auth.ts" 
+```ts title="auth.ts"
 import { betterAuth } from "better-auth"
 import Database from "better-sqlite3"
 
@@ -7259,10 +7259,10 @@ export const auth = betterAuth({
           role: {
               type: "string",
               input: false
-            } 
+            }
         }
     }
-   
+
 })
 
 type Session = typeof auth.$Infer.Session
@@ -7333,7 +7333,7 @@ URL: /docs/concepts/users-accounts
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/concepts/users-accounts.mdx
 
 User and account management.
-        
+
 ***
 
 title: User & Accounts
@@ -7651,7 +7651,7 @@ If account linking is disabled, no accounts can be linked, regardless of the pro
 export const auth = betterAuth({
     account: {
         accountLinking: {
-            enabled: true, 
+            enabled: true,
         }
     },
 });
@@ -7789,7 +7789,7 @@ URL: /docs/examples/astro
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/examples/astro.mdx
 
 Better Auth Astro example.
-        
+
 ***
 
 title: Astro Example
@@ -7844,7 +7844,7 @@ URL: /docs/examples/next-js
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/examples/next-js.mdx
 
 Better Auth Next.js example.
-        
+
 ***
 
 title: Next.js Example
@@ -7892,7 +7892,7 @@ URL: /docs/examples/nuxt
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/examples/nuxt.mdx
 
 Better Auth Nuxt example.
-        
+
 ***
 
 title: Nuxt Example
@@ -7938,7 +7938,7 @@ URL: /docs/examples/remix
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/examples/remix.mdx
 
 Better Auth Remix example.
-        
+
 ***
 
 title: Remix Example
@@ -7984,7 +7984,7 @@ URL: /docs/examples/svelte-kit
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/examples/svelte-kit.mdx
 
 Better Auth SvelteKit example.
-        
+
 ***
 
 title: SvelteKit Example
@@ -8030,7 +8030,7 @@ URL: /docs/guides/browser-extension-guide
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/guides/browser-extension-guide.mdx
 
 A step-by-step guide to creating a browser extension with Better Auth.
-        
+
 ***
 
 title: Browser Extension Guide
@@ -8216,7 +8216,7 @@ If you would like to view a completed example, you can check out the <Link href=
         trustedOrigins: [
             // Support a specific extension ID
             "chrome-extension://YOUR_EXTENSION_ID",
-            
+
             // Or support multiple extensions with wildcard (less secure)
             "chrome-extension://*"
         ],
@@ -8252,7 +8252,7 @@ URL: /docs/guides/clerk-migration-guide
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/guides/clerk-migration-guide.mdx
 
 A step-by-step guide to transitioning from Clerk to Better Auth.
-        
+
 ***
 
 title: Migrating from Clerk to Better Auth
@@ -8307,8 +8307,8 @@ Before starting the migration process, set up Better Auth in your project. Follo
     import { Pool } from "pg";
 
     export const auth = betterAuth({
-        database: new Pool({ 
-            connectionString: process.env.DATABASE_URL 
+        database: new Pool({
+            connectionString: process.env.DATABASE_URL
         }),
     })
     ```
@@ -8323,8 +8323,8 @@ Before starting the migration process, set up Better Auth in your project. Follo
     import { betterAuth } from "better-auth";
 
     export const auth = betterAuth({
-        database: new Pool({ 
-            connectionString: process.env.DATABASE_URL 
+        database: new Pool({
+            connectionString: process.env.DATABASE_URL
         }),
         emailAndPassword: { // [!code highlight]
             enabled: true, // [!code highlight]
@@ -8349,10 +8349,10 @@ Before starting the migration process, set up Better Auth in your project. Follo
     import { betterAuth } from "better-auth";
 
     export const auth = betterAuth({
-        database: new Pool({ 
-            connectionString: process.env.DATABASE_URL 
+        database: new Pool({
+            connectionString: process.env.DATABASE_URL
         }),
-        emailAndPassword: { 
+        emailAndPassword: {
             enabled: true,
         },
         socialProviders: { // [!code highlight]
@@ -8384,10 +8384,10 @@ Before starting the migration process, set up Better Auth in your project. Follo
     import { admin, twoFactor, phoneNumber, username } from "better-auth/plugins";
 
     export const auth = betterAuth({
-        database: new Pool({ 
-            connectionString: process.env.DATABASE_URL 
+        database: new Pool({
+            connectionString: process.env.DATABASE_URL
         }),
-        emailAndPassword: { 
+        emailAndPassword: {
             enabled: true,
         },
         socialProviders: {
@@ -8587,7 +8587,7 @@ Before starting the migration process, set up Better Auth in your project. Follo
                   ...(isUsernameEnabled ? {
                       username: username,
                   } : {}),
-                  // # Phone Number (if you enabled phone number plugin)  
+                  // # Phone Number (if you enabled phone number plugin)
                   ...(isPhoneNumberEnabled ? {
                       phoneNumber: primary_phone_number,
                       phoneNumberVerified: verified_phone_numbers.length > 0,
@@ -8709,7 +8709,7 @@ Before starting the migration process, set up Better Auth in your project. Follo
           email: "user@example.com",
           password: "password",
         });
-        
+
         if (error) {
           console.error(error);
           return;
@@ -8781,7 +8781,7 @@ URL: /docs/guides/create-a-db-adapter
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/guides/create-a-db-adapter.mdx
 
 Learn how to create a custom database adapter for Better-Auth
-        
+
 ***
 
 title: Create a Database Adapter
@@ -9367,7 +9367,7 @@ URL: /docs/guides/next-auth-migration-guide
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/guides/next-auth-migration-guide.mdx
 
 A step-by-step guide to transitioning from NextAuth.js to Better Auth.
-        
+
 ***
 
 title: Migrating from NextAuth.js to Better Auth
@@ -9569,7 +9569,7 @@ URL: /docs/guides/optimizing-for-performance
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/guides/optimizing-for-performance.mdx
 
 A guide to optimizing your Better Auth application for performance.
-        
+
 ***
 
 title: Optimizing for Performance
@@ -9726,7 +9726,7 @@ URL: /docs/guides/supabase-migration-guide
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/guides/supabase-migration-guide.mdx
 
 A step-by-step guide to transitioning from Supabase Auth to Better Auth.
-        
+
 ***
 
 title: Migrating from Supabase Auth to Better Auth
@@ -9781,8 +9781,8 @@ Before starting the migration process, set up Better Auth in your project. Follo
     import { Pool } from "pg";
 
     export const auth = betterAuth({
-        database: new Pool({ 
-            connectionString: process.env.DATABASE_URL 
+        database: new Pool({
+            connectionString: process.env.DATABASE_URL
         }),
     })
     ```
@@ -9797,8 +9797,8 @@ Before starting the migration process, set up Better Auth in your project. Follo
     import { admin, anonymous } from "better-auth/plugins";
 
     export const auth = betterAuth({
-        database: new Pool({ 
-            connectionString: process.env.DATABASE_URL 
+        database: new Pool({
+            connectionString: process.env.DATABASE_URL
         }),
     	emailVerification: {
     		sendEmailVerification: async(user)=>{
@@ -9822,10 +9822,10 @@ Before starting the migration process, set up Better Auth in your project. Follo
     import { admin, anonymous } from "better-auth/plugins";
 
     export const auth = betterAuth({
-        database: new Pool({ 
-            connectionString: process.env.DATABASE_URL 
+        database: new Pool({
+            connectionString: process.env.DATABASE_URL
         }),
-        emailAndPassword: { 
+        emailAndPassword: {
             enabled: true,
         },
         socialProviders: { // [!code highlight]
@@ -9847,10 +9847,10 @@ Before starting the migration process, set up Better Auth in your project. Follo
     import { admin, anonymous } from "better-auth/plugins";
 
     export const auth = betterAuth({
-        database: new Pool({ 
-            connectionString: process.env.DATABASE_URL 
+        database: new Pool({
+            connectionString: process.env.DATABASE_URL
         }),
-        emailAndPassword: { 
+        emailAndPassword: {
             enabled: true,
         },
         socialProviders: {
@@ -9927,7 +9927,7 @@ Before starting the migration process, set up Better Auth in your project. Follo
     	const db = ctx.options.database as Pool;
     	const users = await db
     		.query(`
-    			SELECT 
+    			SELECT
     				u.*,
     				COALESCE(
     					json_agg(
@@ -10071,7 +10071,7 @@ URL: /docs/guides/your-first-plugin
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/guides/your-first-plugin.mdx
 
 A step-by-step guide to creating your first Better Auth plugin.
-        
+
 ***
 
 title: Create your first plugin
@@ -10279,7 +10279,7 @@ In this guide, we’ll walk you through the steps of creating your first Better 
     ```ts title="server.ts"
     import { betterAuth } from "better-auth";
     import { birthdayPlugin } from "./birthday-plugin";// [!code highlight]
-     
+
     export const auth = betterAuth({
         plugins: [
           birthdayPlugin(),// [!code highlight]
@@ -10292,7 +10292,7 @@ In this guide, we’ll walk you through the steps of creating your first Better 
     ```ts title="auth-client.ts"
     import { createAuthClient } from "better-auth/client";
     import { birthdayClientPlugin } from "./birthday-plugin/client";// [!code highlight]
-     
+
     const authClient = createAuthClient({
         plugins: [
           birthdayClientPlugin()// [!code highlight]
@@ -10329,7 +10329,7 @@ URL: /docs/integrations/astro
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/integrations/astro.mdx
 
 Integrate Better Auth with Astro.
-        
+
 ***
 
 title: Astro Integration
@@ -10480,7 +10480,7 @@ URL: /docs/integrations/elysia
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/integrations/elysia.mdx
 
 Integrate Better Auth with Elysia.
-        
+
 ***
 
 title: Elysia Integration
@@ -10582,7 +10582,7 @@ URL: /docs/integrations/expo
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/integrations/expo.mdx
 
 Integrate Better Auth with Expo.
-        
+
 ***
 
 title: Expo Integration
@@ -10651,7 +10651,7 @@ Expo is a popular framework for building cross-platform apps with React Native. 
     <Tabs items={}>
       <Tab value="npm">
         ```bash
-        npm install better-auth @better-auth/expo 
+        npm install better-auth @better-auth/expo
         ```
       </Tab>
 
@@ -10718,9 +10718,9 @@ Expo is a popular framework for building cross-platform apps with React Native. 
 
     export const auth = betterAuth({
         plugins: [expo()],
-        emailAndPassword: { 
+        emailAndPassword: {
             enabled: true, // Enable authentication using email and password.
-          }, 
+          },
     });
     ```
   </Step>
@@ -10816,12 +10816,12 @@ Expo is a popular framework for building cross-platform apps with React Native. 
     export const auth = betterAuth({
         trustedOrigins: [
             // Basic scheme
-            "myapp://", 
-            
+            "myapp://",
+
             // Production & staging schemes
             "myapp-prod://",
             "myapp-staging://",
-            
+
             // Wildcard support for all paths following the scheme
             "myapp://*"
         ]
@@ -10892,7 +10892,7 @@ With Better Auth initialized, you can now use the `authClient` to authenticate u
 <Tabs items={["sign-in", "sign-up"]}>
   <Tab value="sign-in">
     ```tsx title="app/sign-in.tsx"
-    import { useState } from "react"; 
+    import { useState } from "react";
     import { View, TextInput, Button } from "react-native";
     import { authClient } from "@/lib/auth-client";
 
@@ -11134,7 +11134,7 @@ URL: /docs/integrations/express
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/integrations/express.mdx
 
 Integrate Better Auth with Express.
-        
+
 ***
 
 title: Express Integration
@@ -11166,7 +11166,7 @@ const app = express();
 const port = 3005;
 
 app.all("/api/auth/*", toNodeHandler(auth)); // For ExpressJS v4
-// app.all("/api/auth/*splat", toNodeHandler(auth)); For ExpressJS v5 
+// app.all("/api/auth/*splat", toNodeHandler(auth)); For ExpressJS v5
 
 // Mount express json middleware after Better Auth handler
 // or only apply it to routes that don't interact with Better Auth
@@ -11227,7 +11227,7 @@ URL: /docs/integrations/fastify
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/integrations/fastify.mdx
 
 Learn how to seamlessly integrate Better Auth with your Fastify application.
-        
+
 ***
 
 title: Better Auth Fastify Integration Guide
@@ -11295,7 +11295,7 @@ fastify.route({
     try {
       // Construct request URL
       const url = new URL(request.url, `http://${request.headers.host}`);
-      
+
       // Convert Fastify headers to standard Headers object
       const headers = new Headers();
       Object.entries(request.headers).forEach(([key, value]) => {
@@ -11319,7 +11319,7 @@ fastify.route({
 
     } catch (error) {
       fastify.log.error("Authentication Error:", error);
-      reply.status(500).send({ 
+      reply.status(500).send({
         error: "Internal authentication error",
         code: "AUTH_FAILURE"
       });
@@ -11380,7 +11380,7 @@ URL: /docs/integrations/hono
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/integrations/hono.mdx
 
 Integrate Better Auth with Hono.
-        
+
 ***
 
 title: Hono Integration
@@ -11417,7 +11417,7 @@ import { Hono } from "hono";
 import { auth } from "./auth";
 import { serve } from "@hono/node-server";
 import { cors } from "hono/cors";
- 
+
 const app = new Hono();
 
 app.use(
@@ -11443,7 +11443,7 @@ import { Hono } from "hono";
 import { auth } from "./auth";
 import { serve } from "@hono/node-server";
 import { cors } from "hono/cors";
- 
+
 const app = new Hono<{
 	Variables: {
 		user: typeof auth.$Infer.Session.user | null;
@@ -11479,7 +11479,7 @@ This will allow you to access the `user` and `session` object in all of your rou
 app.get("/session", (c) => {
 	const session = c.get("session")
 	const user = c.get("user")
-	
+
 	if(!user) return c.body(null, 401);
 
   	return c.json({
@@ -11545,8 +11545,8 @@ import type { AppType } from "./server"; // Your Hono app type
 
 const client = hc<AppType>("http://localhost:8787/", {
   fetch: ((input, init) => {
-    return fetch(input, { 
-      ...init, 
+    return fetch(input, {
+      ...init,
       credentials: "include" // Required for sending cookies cross-origin
     });
   }) satisfies typeof fetch,
@@ -11573,7 +11573,7 @@ URL: /docs/integrations/nestjs
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/integrations/nestjs.mdx
 
 Integrate Better Auth with NestJS.
-        
+
 ***
 
 title: NestJS Integration
@@ -11687,7 +11687,7 @@ URL: /docs/integrations/next
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/integrations/next.mdx
 
 Integrate Better Auth with Next.js.
-        
+
 ***
 
 title: Next.js integration
@@ -11979,7 +11979,7 @@ URL: /docs/integrations/nitro
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/integrations/nitro.mdx
 
 Integrate Better Auth with Nitro.
-        
+
 ***
 
 title: Nitro Integration
@@ -12254,7 +12254,7 @@ URL: /docs/integrations/nuxt
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/integrations/nuxt.mdx
 
 Integrate Better Auth with Nuxt.
-        
+
 ***
 
 title: Nuxt Integration
@@ -12372,7 +12372,7 @@ To add middleware to your Nuxt project, you can use the `useSession` method from
 ```ts title="middleware/auth.global.ts"
 import { authClient } from "~/lib/auth-client";
 export default defineNuxtRouteMiddleware(async (to, from) => {
-	const { data: session } = await authClient.useSession(useFetch); 
+	const { data: session } = await authClient.useSession(useFetch);
 	if (!session.value) {
 		if (to.path === "/dashboard") {
 			return navigateTo("/");
@@ -12396,7 +12396,7 @@ URL: /docs/integrations/remix
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/integrations/remix.mdx
 
 Integrate Better Auth with Remix.
-        
+
 ***
 
 title: Remix Integration
@@ -12609,7 +12609,7 @@ URL: /docs/integrations/solid-start
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/integrations/solid-start.mdx
 
 Integrate Better Auth with SolidStart.
-        
+
 ***
 
 title: SolidStart Integration
@@ -12636,7 +12636,7 @@ URL: /docs/integrations/svelte-kit
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/integrations/svelte-kit.mdx
 
 Integrate Better Auth with SvelteKit.
-        
+
 ***
 
 title: SvelteKit Integration
@@ -12738,7 +12738,7 @@ URL: /docs/integrations/tanstack
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/integrations/tanstack.mdx
 
 Integrate Better Auth with TanStack Start.
-        
+
 ***
 
 title: TanStack Start Integration
@@ -12819,7 +12819,7 @@ URL: /docs/plugins/2fa
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/plugins/2fa.mdx
 
 Enhance your app's security with two-factor authentication.
-        
+
 ***
 
 title: Two-Factor Authentication (2FA)
@@ -13063,11 +13063,11 @@ After the user has entered their 2FA code, you can verify it using `twoFactor.ve
   ```ts
   type verifyTOTP = {
       /**
-       * The otp code to verify. 
+       * The otp code to verify.
        */
       code: string = "012345"
       /**
-       * If true, the device will be trusted for 30 days. It'll be refreshed on every sign in request within this time. 
+       * If true, the device will be trusted for 30 days. It'll be refreshed on every sign in request within this time.
        */
       trustDevice?: boolean = true
   }
@@ -13105,7 +13105,7 @@ Sending an OTP is done by calling the `twoFactor.sendOtp` function. This functio
   ```ts
   type send2FaOTP = {
       /**
-       * If true, the device will be trusted for 30 days. It'll be refreshed on every sign in request within this time. 
+       * If true, the device will be trusted for 30 days. It'll be refreshed on every sign in request within this time.
        */
       trustDevice?: boolean = true
   }
@@ -13124,11 +13124,11 @@ After the user has entered their OTP code, you can verify it
   ```ts
   type verifyOTP = {
       /**
-       * The otp code to verify. 
+       * The otp code to verify.
        */
       code: string = "012345"
       /**
-       * If true, the device will be trusted for 30 days. It'll be refreshed on every sign in request within this time. 
+       * If true, the device will be trusted for 30 days. It'll be refreshed on every sign in request within this time.
        */
       trustDevice?: boolean = true
   }
@@ -13147,7 +13147,7 @@ Generate backup codes for account recovery:
   ```ts
   type generateBackupCodes = {
       /**
-       * The users password. 
+       * The users password.
        */
       password: string
   }
@@ -13170,15 +13170,15 @@ You can now allow users to provider backup code as account recover method.
   ```ts
   type verifyBackupCode = {
       /**
-       * A backup code to verify. 
+       * A backup code to verify.
        */
       code: string = "123456"
       /**
-       * If true, the session cookie will not be set. 
+       * If true, the session cookie will not be set.
        */
       disableSession?: boolean = false
       /**
-       * If true, the device will be trusted for 30 days. It'll be refreshed on every sign in request within this time. 
+       * If true, the device will be trusted for 30 days. It'll be refreshed on every sign in request within this time.
        */
       trustDevice?: boolean = true
   }
@@ -13197,7 +13197,7 @@ To display the backup codes to the user, you can call `viewBackupCodes` on the s
   ```ts
   type viewBackupCodes = {
       /**
-       * The user ID to view all backup codes. 
+       * The user ID to view all backup codes.
        */
       userId?: string | null = "user-id"
   }
@@ -13298,7 +13298,7 @@ these are options for OTP.
       type: "function",
   },
   period: {
-      description: "The period for otp in minutes.", 
+      description: "The period for otp in minutes.",
       type: "number",
       default: 3,
   },
@@ -13368,7 +13368,7 @@ URL: /docs/plugins/admin
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/plugins/admin.mdx
 
 Admin plugin for Better Auth
-        
+
 ***
 
 title: Admin
@@ -13450,23 +13450,23 @@ Allows an admin to create a new user.
   ```ts
   type createUser = {
       /**
-       * The email of the user. 
+       * The email of the user.
        */
       email: string = "user@example.com"
       /**
-       * The password of the user. 
+       * The password of the user.
        */
       password: string = "some-secure-password"
       /**
-       * The name of the user. 
+       * The name of the user.
        */
       name: string = "James Smith"
       /**
-       * A string or array of strings representing the roles to apply to the new user. 
+       * A string or array of strings representing the roles to apply to the new user.
        */
       role?: string | string[] = "user"
       /**
-       * Extra fields for the user. Including custom additional fields. 
+       * Extra fields for the user. Including custom additional fields.
        */
       data?: Record<string, any> = { customField: "customValue" }
   }
@@ -13481,15 +13481,15 @@ Allows an admin to list all users in the database.
   ```ts
   type listUsers = {
       /**
-       * The value to search for. 
+       * The value to search for.
        */
       searchValue?: string = "some name"
       /**
-       * The field to search in, defaults to email. Can be `email` or `name`. 
+       * The field to search in, defaults to email. Can be `email` or `name`.
        */
       searchField?: "email" | "name" = "name"
       /**
-       * The operator to use for the search. Can be `contains`, `starts_with` or `ends_with`. 
+       * The operator to use for the search. Can be `contains`, `starts_with` or `ends_with`.
        */
       searchOperator?: "contains" | "starts_with" | "ends_with" = "contains"
       /**
@@ -13497,27 +13497,27 @@ Allows an admin to list all users in the database.
        */
       limit?: string | number = 100
       /**
-       * The offset to start from. 
+       * The offset to start from.
        */
       offset?: string | number = 100
       /**
-       * The field to sort by. 
+       * The field to sort by.
        */
       sortBy?: string = "name"
       /**
-       * The direction to sort by. 
+       * The direction to sort by.
        */
       sortDirection?: "asc" | "desc" = "desc"
       /**
-       * The field to filter by. 
+       * The field to filter by.
        */
       filterField?: string = "email"
       /**
-       * The value to filter by. 
+       * The value to filter by.
        */
       filterValue?: string | number | boolean = "hello@example.com"
       /**
-       * The operator to use for the filter. 
+       * The operator to use for the filter.
        */
       filterOperator?: "eq" | "ne" | "lt" | "lte" | "gt" | "gte" = "eq"
   }
@@ -13581,7 +13581,7 @@ Changes the role of a user.
        */
       userId?: string = "user-id"
       /**
-       * The role to set, this can be a string or an array of strings. 
+       * The role to set, this can be a string or an array of strings.
        */
       role: string | string[] = "admin"
   }
@@ -13596,7 +13596,7 @@ Changes the password of a user.
   ```ts
   type setUserPassword = {
       /**
-       * The new password. 
+       * The new password.
        */
       newPassword: string = 'new-password'
       /**
@@ -13619,11 +13619,11 @@ Bans a user, preventing them from signing in and revokes all of their existing s
        */
       userId: string = "user-id"
       /**
-       * The reason for the ban. 
+       * The reason for the ban.
        */
       banReason?: string = "Spamming"
       /**
-       * The number of seconds until the ban expires. If not provided, the ban will never expire. 
+       * The number of seconds until the ban expires. If not provided, the ban will never expire.
        */
       banExpiresIn?: number = 60 * 60 * 24 * 7
   }
@@ -13653,7 +13653,7 @@ Lists all sessions for a user.
   ```ts
   type listUserSessions = {
       /**
-       * The user id. 
+       * The user id.
        */
       userId: string = "user-id"
   }
@@ -13668,7 +13668,7 @@ Revokes a specific session for a user.
   ```ts
   type revokeUserSession = {
       /**
-       * The session token which you want to revoke. 
+       * The session token which you want to revoke.
        */
       sessionToken: string = "session_token_here"
   }
@@ -13683,7 +13683,7 @@ Revokes all sessions for a user.
   ```ts
   type revokeUserSessions = {
       /**
-       * The user id which you want to revoke all sessions for. 
+       * The user id which you want to revoke all sessions for.
        */
       userId: string = "user-id"
   }
@@ -13698,7 +13698,7 @@ This feature allows an admin to create a session that mimics the specified user.
   ```ts
   type impersonateUser = {
       /**
-       * The user id which you want to impersonate. 
+       * The user id which you want to impersonate.
        */
       userId: string = "user-id"
   }
@@ -13724,7 +13724,7 @@ Hard deletes a user from the database.
   ```ts
   type removeUser = {
       /**
-       * The user id which you want to remove. 
+       * The user id which you want to remove.
        */
       userId: string = "user-id"
   }
@@ -13888,7 +13888,7 @@ To check a user's permissions, you can use the `hasPermission` function provided
   ```ts
   type userHasPermission = {
       /**
-       * The user id which you want to check the permissions for. 
+       * The user id which you want to check the permissions for.
        */
       userId?: string = "user-id"
       /**
@@ -13897,11 +13897,11 @@ To check a user's permissions, you can use the `hasPermission` function provided
        */
       role?: string = "admin"
       /**
-       * Optionally check if a single permission is granted. Must use this, or permissions. 
+       * Optionally check if a single permission is granted. Must use this, or permissions.
        */
       permission?: Record<string, string[]> = { "project": ["create", "update"] } /* Must use this, or permissions */,
       /**
-       * Optionally check if multiple permissions are granted. Must use this, or permission. 
+       * Optionally check if multiple permissions are granted. Must use this, or permission.
        */
       permissions?: Record<string, string[]>
   }
@@ -14119,7 +14119,7 @@ URL: /docs/plugins/anonymous
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/plugins/anonymous.mdx
 
 Anonymous plugin for Better Auth.
-        
+
 ***
 
 title: Anonymous\
@@ -14265,7 +14265,7 @@ URL: /docs/plugins/api-key
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/plugins/api-key.mdx
 
 API Key plugin for Better Auth.
-        
+
 ***
 
 title: API Key
@@ -14349,58 +14349,58 @@ You can view the list of API Key plugin options [here](/docs/plugins/api-key#api
   ```ts
   type createApiKey = {
       /**
-       * Name of the Api Key. 
+       * Name of the Api Key.
        */
       name?: string = 'project-api-key'
       /**
-       * Expiration time of the Api Key in seconds. 
+       * Expiration time of the Api Key in seconds.
        */
       expiresIn?: number = 60 * 60 * 24 * 7
       /**
-       * User Id of the user that the Api Key belongs to. server-only. 
+       * User Id of the user that the Api Key belongs to. server-only.
        * @serverOnly
        */
       userId?: string = "user-id"
       /**
-       * Prefix of the Api Key. 
+       * Prefix of the Api Key.
        */
       prefix?: string = 'project-api-key'
       /**
-       * Remaining number of requests. server-only. 
+       * Remaining number of requests. server-only.
        * @serverOnly
        */
       remaining?: number = 100
       /**
-       * Metadata of the Api Key. 
+       * Metadata of the Api Key.
        */
       metadata?: any | null = { someKey: 'someValue' }
       /**
-       * Amount to refill the remaining count of the Api Key. server-only. 
+       * Amount to refill the remaining count of the Api Key. server-only.
        * @serverOnly
        */
       refillAmount?: number = 100
       /**
-       * Interval to refill the Api Key in milliseconds. server-only. 
+       * Interval to refill the Api Key in milliseconds. server-only.
        * @serverOnly
        */
       refillInterval?: number = 1000
       /**
-       * The duration in milliseconds where each request is counted. Once the `maxRequests` is reached, the request will be rejected until the `timeWindow` has passed, at which point the `timeWindow` will be reset. server-only. 
+       * The duration in milliseconds where each request is counted. Once the `maxRequests` is reached, the request will be rejected until the `timeWindow` has passed, at which point the `timeWindow` will be reset. server-only.
        * @serverOnly
        */
       rateLimitTimeWindow?: number = 1000
       /**
-       * Maximum amount of requests allowed within a window. Once the `maxRequests` is reached, the request will be rejected until the `timeWindow` has passed, at which point the `timeWindow` will be reset. server-only. 
+       * Maximum amount of requests allowed within a window. Once the `maxRequests` is reached, the request will be rejected until the `timeWindow` has passed, at which point the `timeWindow` will be reset. server-only.
        * @serverOnly
        */
       rateLimitMax?: number = 100
       /**
-       * Whether the key has rate limiting enabled. server-only. 
+       * Whether the key has rate limiting enabled. server-only.
        * @serverOnly
        */
       rateLimitEnabled?: boolean = true
       /**
-       * Permissions of the Api Key. 
+       * Permissions of the Api Key.
        */
       permissions?: Record<string, string[]>
   }
@@ -14426,7 +14426,7 @@ Otherwise if it throws, it will throw an `APIError`.
 
   type verifyApiKey = {
       /**
-       * The key to verify. 
+       * The key to verify.
        */
       key: string = "your_api_key_here"
       /**
@@ -14455,7 +14455,7 @@ type Result = {
   ```ts
   type getApiKey = {
       /**
-       * The id of the Api Key. 
+       * The id of the Api Key.
        */
       id: string = "some-api-key-id"
   }
@@ -14479,65 +14479,65 @@ type Result = Omit<ApiKey, "key">;
   ```ts
   type updateApiKey = {
       /**
-       * The id of the Api Key to update. 
+       * The id of the Api Key to update.
        */
       keyId: string = "some-api-key-id"
       /**
-       * The id of the user which the api key belongs to. server-only. 
+       * The id of the user which the api key belongs to. server-only.
        * @serverOnly
        */
       userId?: string = "some-user-id"
       /**
-       * The name of the key. 
+       * The name of the key.
        */
       name?: string = "some-api-key-name"
       /**
-       * Whether the Api Key is enabled or not. server-only. 
+       * Whether the Api Key is enabled or not. server-only.
        * @serverOnly
        */
       enabled?: boolean = true
       /**
-       * The number of remaining requests. server-only. 
+       * The number of remaining requests. server-only.
        * @serverOnly
        */
       remaining?: number = 100
       /**
-       * The refill amount. server-only. 
+       * The refill amount. server-only.
        * @serverOnly
        */
       refillAmount?: number = 100
       /**
-       * The refill interval in milliseconds. server-only. 
+       * The refill interval in milliseconds. server-only.
        * @serverOnly
        */
       refillInterval?: number = 1000
       /**
-       * The metadata of the Api Key. server-only. 
+       * The metadata of the Api Key. server-only.
        * @serverOnly
        */
       metadata?: any | null = { "key": "value" }
       /**
-       * Expiration time of the Api Key in seconds. server-only. 
+       * Expiration time of the Api Key in seconds. server-only.
        * @serverOnly
        */
       expiresIn?: number = 60 * 60 * 24 * 7
       /**
-       * Whether the key has rate limiting enabled. server-only. 
+       * Whether the key has rate limiting enabled. server-only.
        * @serverOnly
        */
       rateLimitEnabled?: boolean = true
       /**
-       * The duration in milliseconds where each request is counted. server-only. 
+       * The duration in milliseconds where each request is counted. server-only.
        * @serverOnly
        */
       rateLimitTimeWindow?: number = 1000
       /**
-       * Maximum amount of requests allowed within a window. Once the `maxRequests` is reached, the request will be rejected until the `timeWindow` has passed, at which point the `timeWindow` will be reset. server-only. 
+       * Maximum amount of requests allowed within a window. Once the `maxRequests` is reached, the request will be rejected until the `timeWindow` has passed, at which point the `timeWindow` will be reset. server-only.
        * @serverOnly
        */
       rateLimitMax?: number = 100
       /**
-       * Update the permissions on the API Key. server-only. 
+       * Update the permissions on the API Key. server-only.
        * @serverOnly
        */
       permissions?: Record<string, string[]>
@@ -14558,7 +14558,7 @@ Otherwise, you'll receive the API Key details, except for the `key` value itself
   ```ts
   type deleteApiKey = {
       /**
-       * The id of the Api Key to delete. 
+       * The id of the Api Key to delete.
        */
       keyId: string = "some-api-key-id"
   }
@@ -15235,7 +15235,7 @@ URL: /docs/plugins/autumn
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/plugins/autumn.mdx
 
 Better Auth Plugin for Autumn Billing
-        
+
 ***
 
 title: Autumn Billing
@@ -15539,7 +15539,7 @@ URL: /docs/plugins/bearer
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/plugins/bearer.mdx
 
 Authenticate API requests using Bearer tokens instead of browser cookies
-        
+
 ***
 
 title: Bearer Token Authentication
@@ -15665,11 +15665,11 @@ export async function handler(req, res) {
   const session = await auth.api.getSession({
     headers: req.headers
   });
-  
+
   if (!session) {
     return res.status(401).json({ error: "Unauthorized" });
   }
-  
+
   // Process authenticated request
   // ...
 }
@@ -15686,7 +15686,7 @@ URL: /docs/plugins/captcha
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/plugins/captcha.mdx
 
 Captcha plugin
-        
+
 ***
 
 title: Captcha
@@ -15783,7 +15783,7 @@ URL: /docs/plugins/community-plugins
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/plugins/community-plugins.mdx
 
 A list of recommended community plugins.
-        
+
 ***
 
 title: Community Plugins
@@ -15808,7 +15808,7 @@ URL: /docs/plugins/dodopayments
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/plugins/dodopayments.mdx
 
 Better Auth Plugin for Dodo Payments
-        
+
 ***
 
 title: Dodo Payments
@@ -16029,7 +16029,7 @@ URL: /docs/plugins/dub
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/plugins/dub.mdx
 
 Better Auth Plugin for Lead Tracking using Dub links and OAuth Linking
-        
+
 ***
 
 title: Dub
@@ -16237,7 +16237,7 @@ URL: /docs/plugins/email-otp
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/plugins/email-otp.mdx
 
 Email OTP plugin for Better Auth.
-        
+
 ***
 
 title: Email OTP
@@ -16297,11 +16297,11 @@ First, send an OTP to the user's email address.
   ```ts
   type sendVerificationOTP = {
       /**
-       * Email address to send the OTP. 
+       * Email address to send the OTP.
        */
       email: string = "user@example.com"
       /**
-       * Type of the OTP. `sign-in`, `email-verification`, or `forget-password`. 
+       * Type of the OTP. `sign-in`, `email-verification`, or `forget-password`.
        */
       type: "email-verification" | "sign-in" | "forget-password" = "sign-in"
   }
@@ -16316,11 +16316,11 @@ Once the user provides the OTP, you can sign in the user using the `signIn.email
   ```ts
   type signInEmailOTP = {
       /**
-       * Email address to sign in. 
+       * Email address to sign in.
        */
       email: string = "user@example.com"
       /**
-       * OTP sent to the email. 
+       * OTP sent to the email.
        */
       otp: string = "123456"
   }
@@ -16339,11 +16339,11 @@ To verify the user's email address, use the `verifyEmail()` method.
   ```ts
   type verifyEmailOTP = {
       /**
-       * Email address to verify. 
+       * Email address to verify.
        */
       email: string = "user@example.com"
       /**
-       * OTP to verify. 
+       * OTP to verify.
        */
       otp: string = "123456"
   }
@@ -16358,7 +16358,7 @@ To reset the user's password, you must use the `forgotPassword` method:
   ```ts
   type forgetPasswordEmailOTP = {
       /**
-       * Email address to send the OTP. 
+       * Email address to send the OTP.
        */
       email: string = "user@example.com"
   }
@@ -16371,15 +16371,15 @@ After that, you may use the `resetPassword()` method to apply the password reset
   ```ts
   type resetPasswordEmailOTP = {
       /**
-       * Email address to reset the password. 
+       * Email address to reset the password.
        */
       email: string = "user@example.com"
       /**
-       * OTP sent to the email. 
+       * OTP sent to the email.
        */
       otp: string = "123456"
       /**
-       * New password. 
+       * New password.
        */
       password: string = "new-secure-password"
   }
@@ -16489,7 +16489,7 @@ Alternatively, you can pass a custom encryptor or hasher to store the OTP in you
 
 ```ts title="auth.ts"
 emailOTP({
-    storeOTP: { 
+    storeOTP: {
         encrypt: async (otp) => {
             return myCustomEncryptor(otp);
         },
@@ -16519,7 +16519,7 @@ URL: /docs/plugins/generic-oauth
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/plugins/generic-oauth.mdx
 
 Authenticate users with any OAuth provider
-        
+
 ***
 
 title: Generic OAuth
@@ -16542,10 +16542,10 @@ The Generic OAuth plugin provides a flexible way to integrate authentication wit
 
     export const auth = betterAuth({
         // ... other config options
-        plugins: [ 
+        plugins: [
             genericOAuth({ // [!code highlight]
                 config: [ // [!code highlight]
-                    { // [!code highlight] 
+                    { // [!code highlight]
                         providerId: "provider-id", // [!code highlight]
                         clientId: "test-client-id", // [!code highlight]
                         clientSecret: "test-client-secret", // [!code highlight]
@@ -16590,31 +16590,31 @@ To start the OAuth sign-in process:
   ```ts
   type signInWithOAuth2 = {
       /**
-       * The provider ID for the OAuth provider. 
+       * The provider ID for the OAuth provider.
        */
       providerId: string = "provider-id"
       /**
-       * The URL to redirect to after sign in. 
+       * The URL to redirect to after sign in.
        */
       callbackURL?: string = "/dashboard"
       /**
-       * The URL to redirect to if an error occurs. 
+       * The URL to redirect to if an error occurs.
        */
       errorCallbackURL?: string = "/error-page"
       /**
-       * The URL to redirect to after login if the user is new. 
+       * The URL to redirect to after login if the user is new.
        */
       newUserCallbackURL?: string = "/welcome"
       /**
-       * Disable redirect. 
+       * Disable redirect.
        */
       disableRedirect?: boolean = false
       /**
-       * Scopes to be passed to the provider authorization request. 
+       * Scopes to be passed to the provider authorization request.
        */
       scopes?: string[] = ["my-scope"]
       /**
-       * Explicitly request sign-up. Useful when disableImplicitSignUp is true for this provider. 
+       * Explicitly request sign-up. Useful when disableImplicitSignUp is true for this provider.
        */
       requestSignUp?: boolean = false
   }
@@ -16629,11 +16629,11 @@ To link an OAuth account to an existing user:
   ```ts
   type oAuth2LinkAccount = {
       /**
-       * The OAuth provider ID. 
+       * The OAuth provider ID.
        */
       providerId: string = "my-provider-id"
       /**
-       * The URL to redirect to once the account linking was complete. 
+       * The URL to redirect to once the account linking was complete.
        */
       callbackURL: string = "/successful-link"
   }
@@ -16774,7 +16774,7 @@ URL: /docs/plugins/have-i-been-pwned
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/plugins/have-i-been-pwned.mdx
 
 A plugin to check if a password has been compromised
-        
+
 ***
 
 title: Have I Been Pwned
@@ -16832,7 +16832,7 @@ URL: /docs/plugins/jwt
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/plugins/jwt.mdx
 
 Authenticate users with JWT tokens in services that can't use the session
-        
+
 ***
 
 title: JWT
@@ -16899,7 +16899,7 @@ Once you've installed the plugin, you can start using the JWT & JWKS plugin to g
 To get the token, call the `/token` endpoint. This will return the following:
 
 ```json
-  { 
+  {
     "token": "ey..."
   }
 ```
@@ -17022,26 +17022,26 @@ Table Name: `jwks`
 
 <DatabaseTable
   fields={[
-  { 
-    name: "id", 
-    type: "string", 
+  {
+    name: "id",
+    type: "string",
     description: "Unique identifier for each web key",
     isPrimaryKey: true
   },
-  { 
-    name: "publicKey", 
-    type: "string", 
-    description: "The public part of the web key" 
+  {
+    name: "publicKey",
+    type: "string",
+    description: "The public part of the web key"
   },
-  { 
-    name: "privateKey", 
-    type: "string", 
-    description: "The private part of the web key" 
+  {
+    name: "privateKey",
+    type: "string",
+    description: "The private part of the web key"
   },
-  { 
-    name: "createdAt", 
-    type: "Date", 
-    description: "Timestamp of when the web key was created" 
+  {
+    name: "createdAt",
+    type: "Date",
+    description: "Timestamp of when the web key was created"
   },
 ]}
 />
@@ -17157,7 +17157,7 @@ URL: /docs/plugins/magic-link
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/plugins/magic-link.mdx
 
 Magic link plugin
-        
+
 ***
 
 title: Magic link
@@ -17217,15 +17217,15 @@ To sign in with a magic link, you need to call `signIn.magicLink` with the user'
   ```ts
   type signInMagicLink = {
       /**
-       * Email address to send the magic link. 
+       * Email address to send the magic link.
        */
       email: string = "user@email.com"
       /**
-       * User display name. Only used if the user is registering for the first time. 
+       * User display name. Only used if the user is registering for the first time.
        */
       name?: string = "my-name"
       /**
-       * URL to redirect after magic link verification. 
+       * URL to redirect after magic link verification.
        */
       callbackURL?: string = "/dashboard"
       /**
@@ -17234,7 +17234,7 @@ To sign in with a magic link, you need to call `signIn.magicLink` with the user'
       newUserCallbackURL?: string = "/welcome"
       /**
        * URL to redirect if an error happen on verification
-       * If only callbackURL is provided but without an `errorCallbackURL` then they will be 
+       * If only callbackURL is provided but without an `errorCallbackURL` then they will be
        * redirected to the callbackURL with an `error` query parameter.
        */
       errorCallbackURL?: string = "/error"
@@ -17260,11 +17260,11 @@ If you want to handle the verification manually, (e.g, if you send the user a di
   ```ts
   type magicLinkVerify = {
       /**
-       * Verification token. 
+       * Verification token.
        */
       token: string = "123456"
       /**
-       * URL to redirect after magic link verification, if not provided will return the session. 
+       * URL to redirect after magic link verification, if not provided will return the session.
        */
       callbackURL?: string = "/dashboard"
   }
@@ -17310,7 +17310,7 @@ URL: /docs/plugins/mcp
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/plugins/mcp.mdx
 
 MCP provider plugin for Better Auth
-        
+
 ***
 
 title: MCP
@@ -17545,7 +17545,7 @@ URL: /docs/plugins/multi-session
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/plugins/multi-session.mdx
 
 Learn how to use multi-session plugin in Better Auth.
-        
+
 ***
 
 title: Multi Session
@@ -17613,7 +17613,7 @@ To set the active session, you can call the `setActive` method.
   ```ts
   type setActiveSession = {
       /**
-       * The session token to set as active. 
+       * The session token to set as active.
        */
       sessionToken: string = "some-session-token"
   }
@@ -17628,7 +17628,7 @@ To revoke a session, you can call the `revoke` method.
   ```ts
   type revokeDeviceSession = {
       /**
-       * The session token to revoke. 
+       * The session token to revoke.
        */
       sessionToken: string = "some-session-token"
   }
@@ -17662,7 +17662,7 @@ URL: /docs/plugins/oauth-proxy
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/plugins/oauth-proxy.mdx
 
 OAuth Proxy plugin for Better Auth
-        
+
 ***
 
 title: OAuth Proxy
@@ -17685,7 +17685,7 @@ A proxy plugin, that allows you to proxy OAuth requests. Useful for development 
         plugins: [ // [!code highlight]
             oAuthProxy({
                 productionURL: "https://my-main-app.com", // Optional - if the URL isn't inferred correctly // [!code highlight]
-                currentURL: "http://localhost:3000", // Optional - if the URL isn't inferred correctly // [!code highlight] 
+                currentURL: "http://localhost:3000", // Optional - if the URL isn't inferred correctly // [!code highlight]
             }), // [!code highlight]
         ] // [!code highlight]
     })
@@ -17701,7 +17701,7 @@ A proxy plugin, that allows you to proxy OAuth requests. Useful for development 
     export const auth = betterAuth({
        plugins: [
            oAuthProxy(),
-       ], 
+       ],
        socialProviders: {
             github: {
                 clientId: "your-client-id",
@@ -17744,7 +17744,7 @@ URL: /docs/plugins/oidc-provider
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/plugins/oidc-provider.mdx
 
 Open ID Connect plugin for Better Auth that allows you to have your own OIDC provider.
-        
+
 ***
 
 title: OIDC Provider
@@ -17852,71 +17852,71 @@ const application = await client.oauth2.register({
   ```ts
   type registerOAuthApplication = {
       /**
-       * A list of redirect URIs. 
+       * A list of redirect URIs.
        */
       redirect_uris: string[] = ["https://client.example.com/callback"]
       /**
-       * The authentication method for the token endpoint. 
+       * The authentication method for the token endpoint.
        */
       token_endpoint_auth_method?: "none" | "client_secret_basic" | "client_secret_post" = "client_secret_basic"
       /**
-       * The grant types supported by the application. 
+       * The grant types supported by the application.
        */
       grant_types?: ("authorization_code" | "implicit" | "password" | "client_credentials" | "refresh_token" | "urn:ietf:params:oauth:grant-type:jwt-bearer" | "urn:ietf:params:oauth:grant-type:saml2-bearer")[] = ["authorization_code"]
       /**
-       * The response types supported by the application. 
+       * The response types supported by the application.
        */
       response_types?: ("code" | "token")[] = ["code"]
       /**
-       * The name of the application. 
+       * The name of the application.
        */
       client_name?: string = "My App"
       /**
-       * The URI of the application. 
+       * The URI of the application.
        */
       client_uri?: string = "https://client.example.com"
       /**
-       * The URI of the application logo. 
+       * The URI of the application logo.
        */
       logo_uri?: string = "https://client.example.com/logo.png"
       /**
-       * The scopes supported by the application. Separated by spaces. 
+       * The scopes supported by the application. Separated by spaces.
        */
       scope?: string = "profile email"
       /**
-       * The contact information for the application. 
+       * The contact information for the application.
        */
       contacts?: string[] = ["admin@example.com"]
       /**
-       * The URI of the application terms of service. 
+       * The URI of the application terms of service.
        */
       tos_uri?: string = "https://client.example.com/tos"
       /**
-       * The URI of the application privacy policy. 
+       * The URI of the application privacy policy.
        */
       policy_uri?: string = "https://client.example.com/policy"
       /**
-       * The URI of the application JWKS. 
+       * The URI of the application JWKS.
        */
       jwks_uri?: string = "https://client.example.com/jwks"
       /**
-       * The JWKS of the application. 
+       * The JWKS of the application.
        */
       jwks?: Record<string, any> = {"keys": [{"kty": "RSA", "alg": "RS256", "use": "sig", "n": "...", "e": "..."}]}
       /**
-       * The metadata of the application. 
+       * The metadata of the application.
        */
       metadata?: Record<string, any> = {"key": "value"}
       /**
-       * The software ID of the application. 
+       * The software ID of the application.
        */
       software_id?: string = "my-software"
       /**
-       * The software version of the application. 
+       * The software version of the application.
        */
       software_version?: string = "1.0.0"
       /**
-       * The software statement of the application. 
+       * The software statement of the application.
        */
       software_statement?: string
   }
@@ -17956,7 +17956,7 @@ const auth = betterAuth({
             },
             {
                 clientId: "mobile-app",
-                clientSecret: "mobile-secret", 
+                clientSecret: "mobile-secret",
                 name: "Company Mobile App",
                 type: "native",
                 redirectURLs: ["com.company.app://auth"],
@@ -18116,58 +18116,58 @@ Table Name: `oauthApplication`
     description: "Database ID of the OAuth client",
     isPrimaryKey: true
  },
-  { 
-    name: "clientId", 
-    type: "string", 
+  {
+    name: "clientId",
+    type: "string",
     description: "Unique identifier for each OAuth client",
     isPrimaryKey: true
   },
-  { 
-    name: "clientSecret", 
-    type: "string", 
+  {
+    name: "clientSecret",
+    type: "string",
     description: "Secret key for the OAuth client. Optional for public clients using PKCE.",
     isOptional: true
   },
-  { 
-    name: "name", 
-    type: "string", 
+  {
+    name: "name",
+    type: "string",
     description: "Name of the OAuth client",
     isRequired: true
   },
-  { 
-    name: "redirectURLs", 
-    type: "string", 
+  {
+    name: "redirectURLs",
+    type: "string",
     description: "Comma-separated list of redirect URLs",
     isRequired: true
   },
-  { 
-    name: "metadata", 
+  {
+    name: "metadata",
     type: "string",
     description: "Additional metadata for the OAuth client",
     isOptional: true
   },
-  { 
-    name: "type", 
+  {
+    name: "type",
     type: "string",
     description: "Type of OAuth client (e.g., web, mobile)",
     isRequired: true
   },
-  { 
-    name: "disabled", 
-    type: "boolean", 
+  {
+    name: "disabled",
+    type: "boolean",
     description: "Indicates if the client is disabled",
     isRequired: true
   },
-  { 
-    name: "userId", 
-    type: "string", 
+  {
+    name: "userId",
+    type: "string",
     description: "ID of the user who owns the client. (optional)",
     isOptional: true
   },
-  { 
-    name: "createdAt", 
-    type: "Date", 
-    description: "Timestamp of when the OAuth client was created" 
+  {
+    name: "createdAt",
+    type: "Date",
+    description: "Timestamp of when the OAuth client was created"
   },
  {
     name: "updatedAt",
@@ -18189,53 +18189,53 @@ Table Name: `oauthAccessToken`
     description: "Database ID of the access token",
     isPrimaryKey: true
  },
-  { 
-    name: "accessToken", 
-    type: "string", 
+  {
+    name: "accessToken",
+    type: "string",
     description: "Access token issued to the client",
   },
-  { 
-    name: "refreshToken", 
-    type: "string", 
+  {
+    name: "refreshToken",
+    type: "string",
     description: "Refresh token issued to the client",
     isRequired: true
   },
-  { 
-    name: "accessTokenExpiresAt", 
-    type: "Date", 
+  {
+    name: "accessTokenExpiresAt",
+    type: "Date",
     description: "Expiration date of the access token",
     isRequired: true
   },
-  { 
-    name: "refreshTokenExpiresAt", 
-    type: "Date", 
+  {
+    name: "refreshTokenExpiresAt",
+    type: "Date",
     description: "Expiration date of the refresh token",
     isRequired: true
   },
-  { 
-    name: "clientId", 
-    type: "string", 
+  {
+    name: "clientId",
+    type: "string",
     description: "ID of the OAuth client",
     isForeignKey: true,
     references: { model: "oauthClient", field: "clientId" }
   },
-  { 
-    name: "userId", 
-    type: "string", 
+  {
+    name: "userId",
+    type: "string",
     description: "ID of the user associated with the token",
     isForeignKey: true,
     references: { model: "user", field: "id" }
   },
-  { 
-    name: "scopes", 
-    type: "string", 
+  {
+    name: "scopes",
+    type: "string",
     description: "Comma-separated list of scopes granted",
     isRequired: true
   },
-  { 
-    name: "createdAt", 
-    type: "Date", 
-    description: "Timestamp of when the access token was created" 
+  {
+    name: "createdAt",
+    type: "Date",
+    description: "Timestamp of when the access token was created"
   },
   {
     name: "updatedAt",
@@ -18251,42 +18251,42 @@ Table Name: `oauthConsent`
 
 <DatabaseTable
   fields={[
-  { 
-    name: "id", 
-    type: "string", 
+  {
+    name: "id",
+    type: "string",
     description: "Database ID of the consent",
     isPrimaryKey: true
   },
-  { 
-    name: "userId", 
-    type: "string", 
+  {
+    name: "userId",
+    type: "string",
     description: "ID of the user who gave consent",
     isForeignKey: true,
     references: { model: "user", field: "id" }
   },
-  { 
-    name: "clientId", 
-    type: "string", 
+  {
+    name: "clientId",
+    type: "string",
     description: "ID of the OAuth client",
     isForeignKey: true,
     references: { model: "oauthClient", field: "clientId" }
   },
-  { 
-    name: "scopes", 
-    type: "string", 
+  {
+    name: "scopes",
+    type: "string",
     description: "Comma-separated list of scopes consented to",
     isRequired: true
   },
-  { 
-    name: "consentGiven", 
-    type: "boolean", 
+  {
+    name: "consentGiven",
+    type: "boolean",
     description: "Indicates if consent was given",
     isRequired: true
   },
-  { 
-    name: "createdAt", 
-    type: "Date", 
-    description: "Timestamp of when the consent was given" 
+  {
+    name: "createdAt",
+    type: "Date",
+    description: "Timestamp of when the consent was given"
   },
   {
     name: "updatedAt",
@@ -18319,7 +18319,7 @@ URL: /docs/plugins/one-tap
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/plugins/one-tap.mdx
 
 One Tap plugin for Better Auth
-        
+
 ***
 
 title: One Tap
@@ -18450,7 +18450,7 @@ URL: /docs/plugins/one-time-token
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/plugins/one-time-token.mdx
 
 Generate and verify single-use token
-        
+
 ***
 
 title: One-Time Token Plugin
@@ -18496,7 +18496,7 @@ When the user clicks the link or submits the token, use the `auth.api.verifyOneT
   ```ts
   type verifyOneTimeToken = {
       /**
-       * The token to verify. 
+       * The token to verify.
        */
       token: string = "some-token"
   }
@@ -18562,7 +18562,7 @@ URL: /docs/plugins/open-api
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/plugins/open-api.mdx
 
 Open API reference for Better Auth.
-        
+
 ***
 
 title: Open API
@@ -18634,7 +18634,7 @@ URL: /docs/plugins/organization
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/plugins/organization.mdx
 
 The organization plugin allows you to manage your organization's members and teams.
-        
+
 ***
 
 title: Organization
@@ -18770,7 +18770,7 @@ To check if an organization slug is taken or not you can use the `checkSlug` fun
   ```ts
   type checkOrganizationSlug = {
       /**
-       * The organization slug to check.  
+       * The organization slug to check.
        */
       slug: string = "my-org"
   }
@@ -18928,11 +18928,11 @@ You can set the active organization by calling the `organization.setActive` func
   ```ts
   type setActiveOrganization = {
       /**
-       * The organization id to set as active. It can be null to unset the active organization.  
+       * The organization id to set as active. It can be null to unset the active organization.
        */
       organizationId?: string | null = "org-id"
       /**
-       * The organization slug to set as active. It can be null to unset the active organization if organizationId is not provided.  
+       * The organization slug to set as active. It can be null to unset the active organization if organizationId is not provided.
        */
       organizationSlug?: string = "org-slug"
   }
@@ -19034,11 +19034,11 @@ By default, if you don't pass any properties, it will use the active organizatio
   ```ts
   type getFullOrganization = {
       /**
-       * The organization id to get. By default, it will use the active organization.  
+       * The organization id to get. By default, it will use the active organization.
        */
       organizationId?: string = "org-id"
       /**
-       * The organization slug to get.  
+       * The organization slug to get.
        */
       organizationSlug?: string = "org-slug"
   }
@@ -19053,23 +19053,23 @@ To update organization info, you can use `organization.update`
   ```ts
   type updateOrganization = {
       /**
-       * A partial list of data to update the organization. 
+       * A partial list of data to update the organization.
        */
       data: {
           /**
-           * The name of the organization. 
+           * The name of the organization.
            */
           name?: string = "updated-name"
           /**
-           * The slug of the organization. 
+           * The slug of the organization.
            */
           slug?: string = "updated-slug"
           /**
-           * The logo of the organization. 
+           * The logo of the organization.
            */
           logo?: string = "new-logo.url"
           /**
-           * The metadata of the organization. 
+           * The metadata of the organization.
            */
           metadata?: Record<string, any> | null = { customerId: "test" }
       }
@@ -19158,23 +19158,23 @@ To invite users to an organization, you can use the `invite` function provided b
   ```ts
   type createInvitation = {
       /**
-       * The email address of the user to invite.  
+       * The email address of the user to invite.
        */
       email: string = "example@gmail.com"
       /**
-       * The role(s) to assign to the user. It can be `admin`, `member`, or `guest`.  
+       * The role(s) to assign to the user. It can be `admin`, `member`, or `guest`.
        */
       role: string | string[] = "member"
       /**
-       * The organization ID to invite the user to. Defaults to the active organization.  
+       * The organization ID to invite the user to. Defaults to the active organization.
        */
       organizationId?: string = "org-id"
       /**
-       * Resend the invitation email, if the user is already invited.  
+       * Resend the invitation email, if the user is already invited.
        */
       resend?: boolean = true
       /**
-       * The team ID to invite the user to.  
+       * The team ID to invite the user to.
        */
       teamId?: string = "team-id"
   }
@@ -19197,7 +19197,7 @@ Make sure to call the `acceptInvitation` function after the user is logged in.
   ```ts
   type acceptInvitation = {
       /**
-       * The ID of the invitation to accept.  
+       * The ID of the invitation to accept.
        */
       invitationId: string = "invitation-id"
   }
@@ -19214,7 +19214,7 @@ If you're looking for how a user can reject an invitation, you can find that [he
   ```ts
   type cancelInvitation = {
       /**
-       * The ID of the invitation to cancel.  
+       * The ID of the invitation to cancel.
        */
       invitationId: string = "invitation-id"
   }
@@ -19229,7 +19229,7 @@ If this user has received an invitation, but wants to decline it, this method wi
   ```ts
   type rejectInvitation = {
       /**
-       * The ID of the invitation to reject.  
+       * The ID of the invitation to reject.
        */
       invitationId: string = "invitation-id"
   }
@@ -19244,7 +19244,7 @@ To get an invitation you can use the `organization.getInvitation` function provi
   ```ts
   type getInvitation = {
       /**
-       * The ID of the invitation to get.  
+       * The ID of the invitation to get.
        */
       id: string = "invitation-id"
   }
@@ -19259,7 +19259,7 @@ To list all invitations for a given organization you can use the `listInvitation
   ```ts
   type listInvitations = {
       /**
-       * An optional ID of the organization to list invitations for. If not provided, will default to the users active organization. 
+       * An optional ID of the organization to list invitations for. If not provided, will default to the users active organization.
        */
       organizationId?: string = "organization-id"
   }
@@ -19298,11 +19298,11 @@ To remove you can use `organization.removeMember`
   ```ts
   type removeMember = {
       /**
-       * The ID or email of the member to remove. 
+       * The ID or email of the member to remove.
        */
       memberIdOrEmail: string = "user@example.com"
       /**
-       * The ID of the organization to remove the member from. If not provided, the active organization will be used. 
+       * The ID of the organization to remove the member from. If not provided, the active organization will be used.
        */
       organizationId?: string = "org-id"
   }
@@ -19317,15 +19317,15 @@ To update the role of a member in an organization, you can use the `organization
   ```ts
   type updateMemberRole = {
       /**
-       * The new role to be applied. This can be a string or array of strings representing the roles. 
+       * The new role to be applied. This can be a string or array of strings representing the roles.
        */
       role: string | string[] = ["admin", "sale"]
       /**
-       * The member id to apply the role update to. 
+       * The member id to apply the role update to.
        */
       memberId: string = "member-id"
       /**
-       * An optional organization ID which the member is a part of to apply the role update. If not provided, you must provide session headers to get the active organization. 
+       * An optional organization ID which the member is a part of to apply the role update. If not provided, you must provide session headers to get the active organization.
        */
       organizationId?: string = "organization-id"
   }
@@ -19351,19 +19351,19 @@ If you want to add a member directly to an organization without sending an invit
   ```ts
   type addMember = {
       /**
-       * The user Id which represents the user to be added as a member. If `null` is provided, then it's expected to provide session headers. 
+       * The user Id which represents the user to be added as a member. If `null` is provided, then it's expected to provide session headers.
        */
       userId?: string | null = "user-id"
       /**
-       * The role(s) to assign to the new member. 
+       * The role(s) to assign to the new member.
        */
       role: string | string[] = ["admin", "sale"]
       /**
-       * An optional organization ID to pass. If not provided, will default to the user's active organization. 
+       * An optional organization ID to pass. If not provided, will default to the user's active organization.
        */
       organizationId?: string = "org-id"
       /**
-       * An optional team ID to add the member to. 
+       * An optional team ID to add the member to.
        */
       teamId?: string = "team-id"
   }
@@ -19378,7 +19378,7 @@ To leave organization you can use `organization.leave` function. This function w
   ```ts
   type leaveOrganization = {
       /**
-       * The organization Id for the member to leave. 
+       * The organization Id for the member to leave.
        */
       organizationId: string = "organization-id"
   }
@@ -19666,11 +19666,11 @@ Create a new team within an organization:
   ```ts
   type createTeam = {
       /**
-       * The name of the team. 
+       * The name of the team.
        */
       name: string = "my-team"
       /**
-       * The organization ID which the team will be created in. Defaults to the active organization. 
+       * The organization ID which the team will be created in. Defaults to the active organization.
        */
       organizationId?: string = "organization-id"
   }
@@ -19685,7 +19685,7 @@ Get all teams in an organization:
   ```ts
   type listOrganizationTeams = {
       /**
-       * The organization ID which the teams are under to list. Defaults to the users active organization. 
+       * The organization ID which the teams are under to list. Defaults to the users active organization.
        */
       organizationId?: string = "organziation-id"
   }
@@ -19700,7 +19700,7 @@ Update a team's details:
   ```ts
   type updateTeam = {
       /**
-       * The ID of the team to be updated. 
+       * The ID of the team to be updated.
        */
       teamId: string = "team-id"
       /**
@@ -19736,11 +19736,11 @@ Delete a team from an organization:
   ```ts
   type removeTeam = {
       /**
-       * The team ID of the team to remove. 
+       * The team ID of the team to remove.
        */
       teamId: string = "team-id"
       /**
-       * The organization ID which the team falls under. If not provided, it will default to the user's active organization. 
+       * The organization ID which the team falls under. If not provided, it will default to the user's active organization.
        */
       organizationId?: string = "organization-id"
   }
@@ -20272,7 +20272,7 @@ URL: /docs/plugins/passkey
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/plugins/passkey.mdx
 
 Passkey
-        
+
 ***
 
 title: Passkey
@@ -20425,7 +20425,7 @@ You can delete a passkey by calling `passkey.delete` and providing the passkey I
   ```ts
   type deletePasskey = {
       /**
-       * The ID of the passkey to delete. 
+       * The ID of the passkey to delete.
        */
       id: string = "some-passkey-id"
   }
@@ -20442,7 +20442,7 @@ You can delete a passkey by calling `passkey.delete` and providing the passkey I
        */
       id: string = "id of passkey"
       /**
-       * The new name which the passkey will be updated to. 
+       * The new name which the passkey will be updated to.
        */
       name: string = "my-new-passkey-name"
   }
@@ -20511,9 +20511,9 @@ Table Name: `passkey`
 
 <DatabaseTable
   fields={[
-      { 
-          name: "id", 
-          type: "string", 
+      {
+          name: "id",
+          type: "string",
           description: "Unique identifier for each passkey",
           isPrimaryKey: true
       },
@@ -20523,14 +20523,14 @@ Table Name: `passkey`
           description: "The name of the passkey",
           isOptional: true
       },
-      { 
-          name: "publicKey", 
-          type: "string", 
+      {
+          name: "publicKey",
+          type: "string",
           description: "The public key of the passkey",
       },
-      { 
-          name: "userId", 
-          type: "string", 
+      {
+          name: "userId",
+          type: "string",
           description: "The ID of the user",
           isForeignKey: true
       },
@@ -20539,9 +20539,9 @@ Table Name: `passkey`
           type: "string",
           description: "The unique identifier of the registered credential",
       },
-      { 
-          name: "counter", 
-          type: "number", 
+      {
+          name: "counter",
+          type: "number",
           description: "The counter of the passkey",
       },
       {
@@ -20559,9 +20559,9 @@ Table Name: `passkey`
           type: "string",
           description: "The transports used to register the passkey",
       },
-      { 
-          name: "createdAt", 
-          type: "Date", 
+      {
+          name: "createdAt",
+          type: "Date",
           description: "The time when the passkey was created",
       },
       {
@@ -20592,7 +20592,7 @@ URL: /docs/plugins/phone-number
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/plugins/phone-number.mdx
 
 Phone number plugin
-        
+
 ***
 
 title: Phone Number
@@ -20612,13 +20612,13 @@ The phone number plugin extends the authentication system by allowing users to s
     import { phoneNumber } from "better-auth/plugins"
 
     const auth = betterAuth({
-        plugins: [ 
+        plugins: [
             phoneNumber({  // [!code highlight]
                 sendOTP: ({ phoneNumber, code }, request) => { // [!code highlight]
                     // Implement sending OTP code via SMS // [!code highlight]
                 } // [!code highlight]
             }) // [!code highlight]
-        ] 
+        ]
     })
     ```
   </Step>
@@ -20671,7 +20671,7 @@ To send an OTP to a user's phone number for verification, you can use the `sendV
   ```ts
   type sendPhoneNumberOTP = {
       /**
-       * Phone number to send OTP. 
+       * Phone number to send OTP.
        */
       phoneNumber: string = "+1234567890"
   }
@@ -20686,19 +20686,19 @@ After the OTP is sent, users can verify their phone number by providing the code
   ```ts
   type verifyPhoneNumber = {
       /**
-       * Phone number to verify. 
+       * Phone number to verify.
        */
       phoneNumber: string = "+1234567890"
       /**
-       * OTP code. 
+       * OTP code.
        */
       code: string = "123456"
       /**
-       * Disable session creation after verification. 
+       * Disable session creation after verification.
        */
       disableSession?: boolean = false
       /**
-       * Check if there is a session and update the phone number. 
+       * Check if there is a session and update the phone number.
        */
       updatePhoneNumber?: boolean = true
   }
@@ -20742,15 +20742,15 @@ In addition to signing in a user using send-verify flow, you can also use phone 
   ```ts
   type signInPhoneNumber = {
       /**
-       * Phone number to sign in. 
+       * Phone number to sign in.
        */
       phoneNumber: string = "+1234567890"
       /**
-       * Password to use for sign in. 
+       * Password to use for sign in.
        */
       password: string
       /**
-       * Remember the session. 
+       * Remember the session.
        */
       rememberMe?: boolean = true
   }
@@ -20799,7 +20799,7 @@ To initiate a request password reset flow using `phoneNumber`, you can start by 
   ```ts
   type requestPasswordResetPhoneNumber = {
       /**
-       * The phone number which is associated with the user. 
+       * The phone number which is associated with the user.
        */
       phoneNumber: string = "+1234567890"
   }
@@ -20812,15 +20812,15 @@ Then, you can reset the password by calling `resetPassword` on the client with t
   ```ts
   type resetPasswordPhoneNumber = {
       /**
-       * The one time password to reset the password. 
+       * The one time password to reset the password.
        */
       otp: string = "123456"
       /**
-       * The phone number to the account which intends to reset the password for. 
+       * The phone number to the account which intends to reset the password for.
        */
       phoneNumber: string = "+1234567890"
       /**
-       * The new password. 
+       * The new password.
        */
       newPassword: string = "new-and-secure-password"
   }
@@ -20867,16 +20867,16 @@ The plugin requires 2 fields to be added to the user table
 
 <DatabaseTable
   fields={[
-      { 
-          name: "phoneNumber", 
-          type: "string", 
+      {
+          name: "phoneNumber",
+          type: "string",
           description: "The phone number of the user",
           isUnique: true,
           isOptional: true
       },
-      { 
-          name: "phoneNumberVerified", 
-          type: "boolean", 
+      {
+          name: "phoneNumberVerified",
+          type: "boolean",
           description: "Whether the phone number is verified or not",
           defaultValue: false,
           isOptional: true
@@ -20923,7 +20923,7 @@ URL: /docs/plugins/polar
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/plugins/polar.mdx
 
 Better Auth Plugin for Payment and Checkouts using Polar
-        
+
 ***
 
 title: Polar
@@ -21401,7 +21401,7 @@ URL: /docs/plugins/siwe
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/plugins/siwe.mdx
 
 Sign in with Ethereum plugin for Better Auth
-        
+
 ***
 
 title: Sign In With Ethereum (SIWE)
@@ -21644,7 +21644,7 @@ URL: /docs/plugins/sso
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/plugins/sso.mdx
 
 Integrate Single Sign-On (SSO) with your application.
-        
+
 ***
 
 title: Single Sign-On (SSO)
@@ -21973,39 +21973,39 @@ const res = await auth.api.signInSSO({
   ```ts
   type signInSSO = {
       /**
-       * The email address to sign in with. This is used to identify the issuer to sign in with. It's optional if the issuer is provided. 
+       * The email address to sign in with. This is used to identify the issuer to sign in with. It's optional if the issuer is provided.
        */
       email?: string = "john@example.com"
       /**
-       * The slug of the organization to sign in with. 
+       * The slug of the organization to sign in with.
        */
       organizationSlug?: string = "example-org"
       /**
-       * The ID of the provider to sign in with. This can be provided instead of email or issuer. 
+       * The ID of the provider to sign in with. This can be provided instead of email or issuer.
        */
       providerId?: string = "example-provider"
       /**
-       * The domain of the provider. 
+       * The domain of the provider.
        */
       domain?: string = "example.com"
       /**
-       * The URL to redirect to after login. 
+       * The URL to redirect to after login.
        */
       callbackURL: string = "https://example.com/callback"
       /**
-       * The URL to redirect to after login. 
+       * The URL to redirect to after login.
        */
       errorCallbackURL?: string = "https://example.com/callback"
       /**
-       * The URL to redirect to after login if the user is new. 
+       * The URL to redirect to after login if the user is new.
        */
       newUserCallbackURL?: string = "https://example.com/new-user"
       /**
-       * Scopes to request from the provider. 
+       * Scopes to request from the provider.
        */
       scopes?: string[] = ["openid", "email", "profile", "offline_access"]
       /**
-       * Explicitly request sign-up. Useful when disableImplicitSignUp is true for this provider. 
+       * Explicitly request sign-up. Useful when disableImplicitSignUp is true for this provider.
        */
       requestSignUp?: boolean = true
   }
@@ -22125,19 +22125,19 @@ const auth = betterAuth({
                     // Assign roles based on SSO attributes
                     const department = userInfo.attributes?.department;
                     const jobTitle = userInfo.attributes?.jobTitle;
-                    
+
                     // Admins based on job title
-                    if (jobTitle?.toLowerCase().includes('manager') || 
+                    if (jobTitle?.toLowerCase().includes('manager') ||
                         jobTitle?.toLowerCase().includes('director') ||
                         jobTitle?.toLowerCase().includes('vp')) {
                         return "admin";
                     }
-                    
+
                     // Special roles for IT department
                     if (department?.toLowerCase() === 'it') {
                         return "admin";
                     }
-                    
+
                     // Default to member for everyone else
                     return "member";
                 },
@@ -22221,7 +22221,7 @@ provisionUser: async ({ user, userInfo }) => {
         await createUserResources(user.id);
         await markAsProvisioned(user.id);
     }
-    
+
     // Always update attributes (they might change)
     await updateUserAttributes(user.id, userInfo.attributes);
 },
@@ -22396,7 +22396,7 @@ URL: /docs/plugins/stripe
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/plugins/stripe.mdx
 
 Stripe plugin for Better Auth to manage subscriptions and payments.
-        
+
 ***
 
 title: Stripe
@@ -22659,39 +22659,39 @@ To create a subscription, use the `subscription.upgrade` method:
   ```ts
   type upgradeSubscription = {
       /**
-       * The name of the plan to upgrade to. 
+       * The name of the plan to upgrade to.
        */
       plan: string = "pro"
       /**
-       * Whether to upgrade to an annual plan. 
+       * Whether to upgrade to an annual plan.
        */
       annual?: boolean = true
       /**
-       * Reference id of the subscription to upgrade. 
+       * Reference id of the subscription to upgrade.
        */
       referenceId?: string = "123"
       /**
-       * The id of the subscription to upgrade. 
+       * The id of the subscription to upgrade.
        */
       subscriptionId?: string = "sub_123"
       metadata?: Record<string, any>
       /**
-       * Number of seats to upgrade to (if applicable). 
+       * Number of seats to upgrade to (if applicable).
        */
       seats?: number = 1
       /**
-       * Callback URL to redirect back after successful subscription. 
+       * Callback URL to redirect back after successful subscription.
        */
       successUrl: string
       /**
-       * Callback URL to redirect back after successful subscription. 
+       * Callback URL to redirect back after successful subscription.
        */
-      cancelUrl: string 
-       * Return URL to redirect back after successful subscription. 
+      cancelUrl: string
+       * Return URL to redirect back after successful subscription.
        */
       returnUrl?: string
       /**
-       * Disable redirect after successful subscription. 
+       * Disable redirect after successful subscription.
        */
       disableRedirect: boolean = true
   }
@@ -22757,7 +22757,7 @@ To get the user's active subscriptions:
   ```ts
   type listActiveSubscriptions = {
       /**
-       * Reference id of the subscription to list. 
+       * Reference id of the subscription to list.
        */
       referenceId?: string = '123'
   }
@@ -22784,11 +22784,11 @@ To cancel a subscription:
        */
       referenceId?: string = 'org_123'
       /**
-       * The id of the subscription to cancel. 
+       * The id of the subscription to cancel.
        */
       subscriptionId?: string = 'sub_123'
       /**
-       * Return URL to redirect back after successful subscription. 
+       * Return URL to redirect back after successful subscription.
        */
       returnUrl: string = '/account'
   }
@@ -22809,7 +22809,7 @@ If a user changes their mind after canceling a subscription (but before the subs
        */
       referenceId?: string = '123'
       /**
-       * The id of the subscription to restore. 
+       * The id of the subscription to restore.
        */
       subscriptionId?: string = 'sub_123'
   }
@@ -22870,7 +22870,7 @@ subscription: {
                 where: {
                     organizationId: referenceId,
                     userId: user.id
-                }   
+                }
             });
             return org?.role === "owner"
         }
@@ -22968,9 +22968,9 @@ Table Name: `user`
 
 <DatabaseTable
   fields={[
-  { 
-    name: "stripeCustomerId", 
-    type: "string", 
+  {
+    name: "stripeCustomerId",
+    type: "string",
     description: "The Stripe customer ID",
     isOptional: true
   },
@@ -22983,75 +22983,75 @@ Table Name: `subscription`
 
 <DatabaseTable
   fields={[
-  { 
-    name: "id", 
-    type: "string", 
+  {
+    name: "id",
+    type: "string",
     description: "Unique identifier for each subscription",
     isPrimaryKey: true
   },
-  { 
-    name: "plan", 
-    type: "string", 
-    description: "The name of the subscription plan" 
+  {
+    name: "plan",
+    type: "string",
+    description: "The name of the subscription plan"
   },
-  { 
-    name: "referenceId", 
-    type: "string", 
+  {
+    name: "referenceId",
+    type: "string",
     description: "The ID this subscription is associated with (user ID by default)",
     isUnique: true
   },
-  { 
-    name: "stripeCustomerId", 
-    type: "string", 
+  {
+    name: "stripeCustomerId",
+    type: "string",
     description: "The Stripe customer ID",
     isOptional: true
   },
-  { 
-    name: "stripeSubscriptionId", 
-    type: "string", 
+  {
+    name: "stripeSubscriptionId",
+    type: "string",
     description: "The Stripe subscription ID",
     isOptional: true
   },
-  { 
-    name: "status", 
-    type: "string", 
+  {
+    name: "status",
+    type: "string",
     description: "The status of the subscription (active, canceled, etc.)",
     defaultValue: "incomplete"
   },
-  { 
-    name: "periodStart", 
-    type: "Date", 
+  {
+    name: "periodStart",
+    type: "Date",
     description: "Start date of the current billing period",
     isOptional: true
   },
-  { 
-    name: "periodEnd", 
-    type: "Date", 
+  {
+    name: "periodEnd",
+    type: "Date",
     description: "End date of the current billing period",
     isOptional: true
   },
-  { 
-    name: "cancelAtPeriodEnd", 
-    type: "boolean", 
+  {
+    name: "cancelAtPeriodEnd",
+    type: "boolean",
     description: "Whether the subscription will be canceled at the end of the period",
     defaultValue: false,
     isOptional: true
   },
-  { 
-    name: "seats", 
-    type: "number", 
+  {
+    name: "seats",
+    type: "number",
     description: "Number of seats for team plans",
     isOptional: true
   },
-  { 
-    name: "trialStart", 
-    type: "Date", 
+  {
+    name: "trialStart",
+    type: "Date",
     description: "Start date of the trial period",
     isOptional: true
   },
-  { 
-    name: "trialEnd", 
-    type: "Date", 
+  {
+    name: "trialEnd",
+    type: "Date",
     description: "End date of the trial period",
     isOptional: true
   }
@@ -23158,7 +23158,7 @@ authorizeReference: async ({ user, referenceId, action }) => {
             organizationId: referenceId
         }
     });
-    
+
     return member?.role === "owner" || member?.role === "admin";
 }
 ```
@@ -23267,7 +23267,7 @@ URL: /docs/plugins/username
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/plugins/username.mdx
 
 Username plugin
-        
+
 ***
 
 title: Username
@@ -23282,7 +23282,7 @@ The username plugin wraps the email and password authenticator and adds username
   <Step>
     ### Add Plugin to the server
 
-    ```ts title="auth.ts" 
+    ```ts title="auth.ts"
     import { betterAuth } from "better-auth"
     import { username } from "better-auth/plugins"
 
@@ -23354,7 +23354,7 @@ To sign in a user with username, you can use the `signIn.username` function prov
 * `username`: The username of the user.
 * `password`: The password of the user.
 
-```ts title="auth-client.ts" 
+```ts title="auth-client.ts"
 const data = await authClient.signIn.username({
     username: "test",
     password: "password1234",
@@ -23393,15 +23393,15 @@ The plugin requires 2 fields to be added to the user table:
 
 <DatabaseTable
   fields={[
-      { 
-          name: "username", 
-          type: "string", 
+      {
+          name: "username",
+          type: "string",
           description: "The username of the user",
           isUnique: true
       },
-      { 
-          name: "displayUsername", 
-          type: "string", 
+      {
+          name: "displayUsername",
+          type: "string",
           description: "Non normalized username of the user",
           isUnique: true
       },
@@ -23496,7 +23496,7 @@ URL: /docs/reference/contributing
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/reference/contributing.mdx
 
 A concise guide to contributing to BetterAuth
-        
+
 ***
 
 title: Contributing to BetterAuth
@@ -23676,7 +23676,7 @@ URL: /docs/reference/faq
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/reference/faq.mdx
 
 Frequently asked questions about Better Auth.
-        
+
 ***
 
 title: FAQ
@@ -23793,7 +23793,7 @@ URL: /docs/reference/options
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/reference/options.mdx
 
 Better Auth configuration options reference.
-        
+
 ***
 
 title: Options
@@ -24086,7 +24086,7 @@ export const auth = betterAuth({
 		storeSessionInDatabase: true, // Store session in database when secondary storage is provided (default: `false`)
 		preserveSessionInDatabase: false, // Preserve session records in database when deleted from secondary storage (default: `false`)
 		cookieCache: {
-			enabled: true, // Enable caching session in cookie (default: `false`)	
+			enabled: true, // Enable caching session in cookie (default: `false`)
 			maxAge: 300 // 5 minutes
 		}
 	},
@@ -24423,7 +24423,7 @@ URL: /docs/reference/resources
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/reference/resources.mdx
 
 A curated collection of resources to help you learn and master Better Auth.
-        
+
 ***
 
 title: Resources
@@ -24460,7 +24460,7 @@ A curated collection of resources to help you learn and master Better Auth. From
   		href: "https://www.youtube.com/watch?v=Hjs3zM7o7NE",
   		tags: ["review", "showcase"],
   	},
-  	
+
   	{
   		title: "Best authentication framework for next.js",
   		description:
@@ -24491,7 +24491,7 @@ A curated collection of resources to help you learn and master Better Auth. From
   	{
   		title: "Better Auth: Headless Authentication for Your TanStack Start App",
   		description: "<strong>Jack</strong> demonstrates how to implement headless authentication in your TanStack Start application using Better Auth, providing a modern approach to auth.",
-  		href: "https://www.youtube.com/watch?v=Atev8Nxpw7c", 
+  		href: "https://www.youtube.com/watch?v=Atev8Nxpw7c",
   		tags: ["tanstack" ,  "implementation"],
   	},
   	{
@@ -24548,7 +24548,7 @@ URL: /docs/reference/security
 Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/reference/security.mdx
 
 Better Auth security features.
-        
+
 ***
 
 title: Security
@@ -24680,4 +24680,3 @@ Trusted origins also support custom schemes for mobile apps and browser extensio
 ## Reporting Vulnerabilities
 
 If you discover a security vulnerability in Better Auth, please report it to us at [security@better-auth.com](mailto:security@better-auth.com). We address all reports promptly, and credits will be given for validated discoveries.
-
