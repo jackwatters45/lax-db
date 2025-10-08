@@ -18,7 +18,7 @@ declare module 'sst' {
       host: string;
       password: string;
       port: number;
-      type: 'sst.aws.Postgres';
+      type: 'sst.sst.Linkable';
       username: string;
     };
     DatabaseMigrator: {
@@ -35,6 +35,18 @@ declare module 'sst' {
       value: string;
     };
     GoogleAuthClientSecret: {
+      type: 'sst.sst.Secret';
+      value: string;
+    };
+    PlanetScaleHost: {
+      type: 'sst.sst.Secret';
+      value: string;
+    };
+    PlanetScalePassword: {
+      type: 'sst.sst.Secret';
+      value: string;
+    };
+    PlanetScaleUsername: {
       type: 'sst.sst.Secret';
       value: string;
     };
