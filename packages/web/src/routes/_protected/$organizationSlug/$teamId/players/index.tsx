@@ -38,7 +38,7 @@ const GetTeamPlayers = S.Struct({
 
 const getTeamPlayers = createServerFn({ method: 'GET' })
   .middleware([authMiddleware])
-  .validator((data: typeof GetTeamPlayers.Type) =>
+  .inputValidator((data: typeof GetTeamPlayers.Type) =>
     S.decodeSync(GetTeamPlayers)(data),
   )
   .handler(async ({ data }) => {

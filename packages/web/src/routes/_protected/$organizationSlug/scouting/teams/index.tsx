@@ -108,7 +108,7 @@ const mockOpposingTeams = [
 const getOpposingTeams = createServerFn().handler(async () => {
   // TODO: Replace with actual API call
   // const { ScoutingAPI } = await import('@lax-db/core/scouting/index');
-  // const request = getWebRequest();
+  // const request = getRequest();
   // return await ScoutingAPI.getOpposingTeams(request.headers);
 
   return mockOpposingTeams;

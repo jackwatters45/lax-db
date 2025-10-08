@@ -51,7 +51,7 @@ export const AddPlayerWithTeamInputSchema = S.extend(
 
 export const addPlayerToTeamFn = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
-  .validator((data: typeof AddPlayerWithTeamInputSchema.Type) =>
+  .inputValidator((data: typeof AddPlayerWithTeamInputSchema.Type) =>
     S.decodeSync(AddPlayerWithTeamInputSchema)(data),
   )
   .handler(async ({ data }) => {
@@ -142,7 +142,7 @@ export function useAddPlayerToTeam(organizationId: string, teamId: string) {
 // Remove player from team
 export const removePlayerFromTeamFn = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
-  .validator((data: typeof RemovePlayerFromTeamInputSchema.Type) =>
+  .inputValidator((data: typeof RemovePlayerFromTeamInputSchema.Type) =>
     S.decodeSync(RemovePlayerFromTeamInputSchema)(data),
   )
   .handler(async ({ data }) => {
@@ -192,7 +192,7 @@ export function useRemovePlayerFromTeam(
 // Bulk remove players from team
 export const bulkRemovePlayersFromTeamFn = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
-  .validator((data: typeof BulkRemovePlayersFromTeamInputSchema.Type) =>
+  .inputValidator((data: typeof BulkRemovePlayersFromTeamInputSchema.Type) =>
     S.decodeSync(BulkRemovePlayersFromTeamInputSchema)(data),
   )
   .handler(async ({ data }) => {
@@ -258,7 +258,7 @@ const LinkPlayerInputSchema = S.Struct({
 
 export const linkPlayerFn = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
-  .validator((data: typeof LinkPlayerInputSchema.Type) =>
+  .inputValidator((data: typeof LinkPlayerInputSchema.Type) =>
     S.decodeSync(LinkPlayerInputSchema)(data),
   )
   .handler(async ({ data }) => {
@@ -351,7 +351,7 @@ export function useLinkPlayer(organizationId: string, teamId: string) {
 // Add existing player to team (without creating player)
 export const addExistingPlayerToTeamFn = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
-  .validator((data: typeof AddPlayerToTeamInputSchema.Type) =>
+  .inputValidator((data: typeof AddPlayerToTeamInputSchema.Type) =>
     S.decodeSync(AddPlayerToTeamInputSchema)(data),
   )
   .handler(async ({ data }) => {

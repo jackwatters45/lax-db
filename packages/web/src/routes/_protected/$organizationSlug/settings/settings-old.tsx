@@ -27,7 +27,7 @@ import { authMiddleware } from '@/lib/middleware';
 // Server function to delete organization and set new active org
 const deleteOrganization = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
-  .validator((data: { organizationId: string }) => data)
+  .inputValidator((data: { organizationId: string }) => data)
   .handler(async ({ data, context }) => {
     const { auth } = await import('@lax-db/core/auth');
 

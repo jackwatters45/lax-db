@@ -177,11 +177,11 @@ const mockPlayData = {
 
 // Server function for getting play details
 const getPlayDetails = createServerFn({ method: 'GET' })
-  .validator((data: { playId: string }) => data)
+  .inputValidator((data: { playId: string }) => data)
   .handler(async ({ data }) => {
     // TODO: Replace with actual API call
     // const { PlaybookAPI } = await import('@lax-db/core/playbook/index');
-    // const request = getWebRequest();
+    // const request = getRequest();
     // return await PlaybookAPI.getPlayDetails(teamId, data.playId, request.headers);
 
     console.log('Getting play details for:', data.playId);

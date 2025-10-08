@@ -6,10 +6,10 @@ import { authMiddleware } from '@/lib/middleware';
 
 const getDashboardData = createServerFn({ method: 'GET' })
   .middleware([authMiddleware])
-  .validator((data: { organizationSlug: string }) => data)
+  .inputValidator((data: { organizationSlug: string }) => data)
   .handler(async ({ context }) => {
     const { auth } = await import('@lax-db/core/auth');
-    const { getWebRequest } = await import('@tanstack/react-start/server');
+    const { getRequest } = await import('@tanstack/react-start/server');
 
     try {
       if (!context.session?.user) {
@@ -26,7 +26,7 @@ const getDashboardData = createServerFn({ method: 'GET' })
         auth.api.getFullOrganization({ headers }),
       ]);
 
-      const request = getWebRequest();
+      const request = getRequest();
       const cookie = request.headers.get('cookie');
       const match = cookie?.match(/sidebar_state=([^;]+)/);
       const sidebarOpen = match?.[1] !== 'false';

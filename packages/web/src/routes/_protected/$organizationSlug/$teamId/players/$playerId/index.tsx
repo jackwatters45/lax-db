@@ -30,7 +30,7 @@ import { mockPlayerDetails } from './-utils';
 
 // Server function for getting player details
 const getPlayerDetails = createServerFn({ method: 'GET' })
-  .validator((data: { playerId: string }) => data)
+  .inputValidator((data: { playerId: string }) => data)
   .handler(async ({ data }) => {
     console.log('Getting player details for:', data.playerId);
     // TODO: Replace with actual API call

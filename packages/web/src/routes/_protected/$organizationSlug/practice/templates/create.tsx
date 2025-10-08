@@ -97,7 +97,7 @@ type TemplateSubmitData = TemplateFormData & {
 };
 
 const createTemplate = createServerFn({ method: 'POST' })
-  .validator((data: TemplateSubmitData) => data)
+  .inputValidator((data: TemplateSubmitData) => data)
   .handler(async ({ data }) => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
     console.log('Creating template:', data);

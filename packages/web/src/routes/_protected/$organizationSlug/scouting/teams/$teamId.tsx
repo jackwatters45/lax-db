@@ -120,7 +120,7 @@ const mockTeamDetails = {
 
 // Server function for getting team details
 const getOpposingTeamDetails = createServerFn({ method: 'GET' })
-  .validator((data: { teamId: string }) => data)
+  .inputValidator((data: { teamId: string }) => data)
   .handler(async ({ data }) => {
     console.log('Getting team details for:', data.teamId);
     // TODO: Replace with actual API call

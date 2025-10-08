@@ -137,7 +137,7 @@ const mockPracticeData = {
 const getPracticeDashboard = createServerFn().handler(async () => {
   // TODO: Replace with actual API call
   // const { PracticeAPI } = await import('@lax-db/core/practice/index');
-  // const request = getWebRequest();
+  // const request = getRequest();
   // return await PracticeAPI.getPracticeDashboard(teamId, request.headers);
 
   return mockPracticeData;

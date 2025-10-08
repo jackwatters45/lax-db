@@ -30,14 +30,14 @@ const AcceptInvitationSchema = S.Struct({
 type FormData = typeof AcceptInvitationSchema.Type;
 
 const acceptInvitation = createServerFn({ method: 'POST' })
-  .validator((data: typeof AcceptInvitationSchema.Type) =>
+  .inputValidator((data: typeof AcceptInvitationSchema.Type) =>
     S.decodeSync(AcceptInvitationSchema)(data),
   )
   .handler(async ({ data }) => {
     const { OrganizationAPI } = await import('@lax-db/core/organization/index');
-    const { getWebRequest } = await import('@tanstack/react-start/server');
+    const { getRequest } = await import('@tanstack/react-start/server');
 
-    const request = getWebRequest();
+    const request = getRequest();
     return await OrganizationAPI.acceptInvitation(data, request.headers);
   });
 

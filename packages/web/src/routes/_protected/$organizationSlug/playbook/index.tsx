@@ -151,7 +151,7 @@ const mockPlaybookData = {
 const getPlaybookDashboard = createServerFn().handler(async () => {
   // TODO: Replace with actual API call
   // const { PlaybookAPI } = await import('@lax-db/core/playbook/index');
-  // const request = getWebRequest();
+  // const request = getRequest();
   // return await PlaybookAPI.getPlaybookDashboard(teamId, request.headers);
 
   return mockPlaybookData;

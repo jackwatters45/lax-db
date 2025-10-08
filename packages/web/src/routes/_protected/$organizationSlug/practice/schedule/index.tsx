@@ -104,7 +104,7 @@ const mockScheduleData = {
 const getScheduleData = createServerFn().handler(async () => {
   // TODO: Replace with actual API call
   // const { PracticeAPI } = await import('@lax-db/core/practice/schedule');
-  // const request = getWebRequest();
+  // const request = getRequest();
   // return await PracticeAPI.getSchedule(teamId, weekStart, request.headers);
 
   return mockScheduleData;
@@ -149,7 +149,7 @@ function PracticeSchedule() {
 
   const formatTime = (time: string) => {
     const [hours, minutes] = time.split(':');
-    const hour = Number.parseInt(hours!);
+    const hour = Number.parseInt(hours!, 10);
     const ampm = hour >= 12 ? 'PM' : 'AM';
     const displayHour = hour % 12 || 12;
     return `${displayHour}:${minutes} ${ampm}`;

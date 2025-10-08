@@ -4,7 +4,9 @@ import { authMiddleware } from '@/lib/middleware';
 
 const getTeamDashboardData = createServerFn({ method: 'GET' })
   .middleware([authMiddleware])
-  .validator((data: { activeOrganizationId: string; teamId: string }) => data)
+  .inputValidator(
+    (data: { activeOrganizationId: string; teamId: string }) => data,
+  )
   .handler(async ({ data, context }) => {
     const { auth } = await import('@lax-db/core/auth');
 

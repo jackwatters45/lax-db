@@ -42,7 +42,7 @@ const DeleteTeamSchema = S.Struct({
 
 const deleteTeam = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
-  .validator((data: typeof DeleteTeamSchema.Type) =>
+  .inputValidator((data: typeof DeleteTeamSchema.Type) =>
     S.decodeSync(DeleteTeamSchema)(data),
   )
   .handler(async ({ data, context }) => {

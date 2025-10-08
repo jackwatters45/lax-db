@@ -29,7 +29,7 @@ const mockGameRoster = [
 
 // Server functions
 const getGameRoster = createServerFn({ method: 'GET' })
-  .validator((data: { gameId: string }) => data)
+  .inputValidator((data: { gameId: string }) => data)
   .handler(async ({ data }) => {
     console.log('Getting roster for game:', data.gameId);
     // TODO: Replace with actual API
@@ -42,7 +42,7 @@ const getTeamPlayers = createServerFn().handler(async () => {
 });
 
 const updateGameRoster = createServerFn({ method: 'POST' })
-  .validator((data: { gameId: string; roster: RosterPlayer[] }) => data)
+  .inputValidator((data: { gameId: string; roster: RosterPlayer[] }) => data)
   .handler(async ({ data }) => {
     console.log('Updating roster:', data);
     // TODO: Replace with actual API

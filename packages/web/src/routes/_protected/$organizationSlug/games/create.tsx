@@ -28,12 +28,12 @@ import {
 
 // Mock server function for creating games
 const createGame = createServerFn({ method: 'POST' })
-  .validator((data: CreateGameInput) => data)
+  .inputValidator((data: CreateGameInput) => data)
   .handler(async ({ data }) => {
     console.log('Creating game:', data);
     // TODO: Replace with actual API call
     // const { GamesAPI } = await import('@lax-db/core/games/index');
-    // const request = getWebRequest();
+    // const request = getRequest();
     // return await GamesAPI.createGame(data, request.headers);
 
     // Mock delay

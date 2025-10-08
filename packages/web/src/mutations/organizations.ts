@@ -13,7 +13,7 @@ const SwitchActiveOrganizationSchema = S.Struct({
 
 const switchActiveOrganization = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
-  .validator((data: typeof SwitchActiveOrganizationSchema.Type) =>
+  .inputValidator((data: typeof SwitchActiveOrganizationSchema.Type) =>
     S.decodeSync(SwitchActiveOrganizationSchema)(data),
   )
   .handler(async ({ data, context }) => {

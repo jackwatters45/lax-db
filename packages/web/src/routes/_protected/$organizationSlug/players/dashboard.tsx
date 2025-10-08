@@ -175,7 +175,7 @@ const mockPlayers = [
 const getTeamPlayers = createServerFn().handler(async () => {
   // TODO: Replace with actual API call
   // const { PlayerDevelopmentAPI } = await import('@lax-db/core/player-development/index');
-  // const request = getWebRequest();
+  // const request = getRequest();
   // return await PlayerDevelopmentAPI.getTeamPlayers(teamId, request.headers);
 
   return mockPlayers;

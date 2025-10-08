@@ -33,8 +33,8 @@ const SIDEBAR_WIDTH_ICON = '3rem';
 const SIDEBAR_KEYBOARD_SHORTCUT = 'b';
 
 const _getSidebarState = createServerFn({ method: 'GET' }).handler(async () => {
-  const { getWebRequest } = await import('@tanstack/react-start/server');
-  const request = getWebRequest();
+  const { getRequest } = await import('@tanstack/react-start/server');
+  const request = getRequest();
   const cookie = request.headers.get('cookie');
   if (!cookie) return true;
 
@@ -43,7 +43,7 @@ const _getSidebarState = createServerFn({ method: 'GET' }).handler(async () => {
 });
 
 const setSidebarState = createServerFn({ method: 'POST' })
-  .validator((data: { open: boolean }) => data)
+  .inputValidator((data: { open: boolean }) => data)
   .handler(async ({ data }) => {
     const { setResponseHeader } = await import('@tanstack/react-start/server');
     setResponseHeader(

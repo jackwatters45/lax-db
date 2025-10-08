@@ -1,12 +1,13 @@
 import { redirect } from '@tanstack/react-router';
 import { createMiddleware } from '@tanstack/react-start';
-import { getWebRequest } from '@tanstack/react-start/server';
 
 export const authMiddleware = createMiddleware({
   type: 'function',
 }).server(async ({ next }) => {
+  const { getRequest } = await import('@tanstack/react-start/server');
+
   const { auth } = await import('@lax-db/core/auth');
-  const request = getWebRequest();
+  const request = getRequest();
   const { headers } = request;
 
   const session = await auth.api.getSession({ headers });

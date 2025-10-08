@@ -5,12 +5,8 @@ import viteTsConfigPaths from 'vite-tsconfig-paths';
 
 const config = defineConfig({
   plugins: [
-    viteTsConfigPaths({
-      projects: ['./tsconfig.json'],
-    }),
-    tanstackStart({
-      customViteReactPlugin: true,
-    }),
+    viteTsConfigPaths({ projects: ['./tsconfig.json'] }),
+    tanstackStart(),
     viteReact(),
   ],
   css: {
