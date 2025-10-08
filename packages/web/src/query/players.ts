@@ -9,7 +9,7 @@ const GetOrganizationPlayersSchema = S.Struct({
 
 export const getOrganizationPlayers = createServerFn({ method: 'GET' })
   .middleware([authMiddleware])
-  .validator((data: typeof GetOrganizationPlayersSchema.Type) =>
+  .inputValidator((data: typeof GetOrganizationPlayersSchema.Type) =>
     S.decodeSync(GetOrganizationPlayersSchema)(data),
   )
   .handler(async ({ data }) => {

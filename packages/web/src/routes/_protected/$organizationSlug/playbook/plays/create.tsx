@@ -82,11 +82,11 @@ const mockFormData = {
 
 // Server function for creating play
 const createPlay = createServerFn({ method: 'POST' })
-  .validator((data: PlayFormData) => data)
+  .inputValidator((data: PlayFormData) => data)
   .handler(async ({ data }) => {
     // TODO: Replace with actual API call
     // const { PlaybookAPI } = await import('@lax-db/core/playbook/index');
-    // const request = getWebRequest();
+    // const request = getRequest();
     // return await PlaybookAPI.createPlay(teamId, data, request.headers);
 
     console.log('Creating play:', data);

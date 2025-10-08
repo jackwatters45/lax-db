@@ -162,11 +162,11 @@ const mockSessionData = {
 
 // Server function for getting session data
 const getSessionData = createServerFn({ method: 'GET' })
-  .validator((sessionId: string) => sessionId)
+  .inputValidator((sessionId: string) => sessionId)
   .handler(async ({ data: sessionId }) => {
     // TODO: Replace with actual API call
     // const { PracticeAPI } = await import('@lax-db/core/practice/sessions');
-    // const request = getWebRequest();
+    // const request = getRequest();
     // return await PracticeAPI.getSession(teamId, sessionId, request.headers);
 
     console.log('Getting session data for:', sessionId);
@@ -175,7 +175,7 @@ const getSessionData = createServerFn({ method: 'GET' })
 
 // Server function for updating session
 const updateSession = createServerFn({ method: 'POST' })
-  .validator((data: { sessionId: string; updates: any }) => data)
+  .inputValidator((data: { sessionId: string; updates: any }) => data)
   .handler(async ({ data: { sessionId, updates } }) => {
     // TODO: Replace with actual API call
     console.log('Updating session:', sessionId, updates);

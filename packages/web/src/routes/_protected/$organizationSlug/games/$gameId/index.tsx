@@ -58,7 +58,7 @@ const mockGameDetails = {
 
 // Server function for getting game details
 const getGameDetails = createServerFn({ method: 'GET' })
-  .validator((data: { gameId: string }) => data)
+  .inputValidator((data: { gameId: string }) => data)
   .handler(async ({ data }) => {
     console.log('Getting game details for:', data.gameId);
     // TODO: Replace with actual API call

@@ -45,7 +45,9 @@ type FeedbackFormValues = typeof FeedbackSchema.Type;
 // Server function for submitting feedback
 const submitFeedback = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
-  .validator((data: FeedbackFormValues) => S.decodeSync(FeedbackSchema)(data))
+  .inputValidator((data: FeedbackFormValues) =>
+    S.decodeSync(FeedbackSchema)(data),
+  )
   .handler(async ({ data, context: { session } }) => {
     const { FeedbackAPI } = await import('@lax-db/core/feedback/index');
 

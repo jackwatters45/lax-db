@@ -27,7 +27,9 @@ const GetPlayers = S.Struct({
 
 const getPlayers = createServerFn({ method: 'GET' })
   .middleware([authMiddleware])
-  .validator((data: typeof GetPlayers.Type) => S.decodeSync(GetPlayers)(data))
+  .inputValidator((data: typeof GetPlayers.Type) =>
+    S.decodeSync(GetPlayers)(data),
+  )
   .handler(async ({ data }) => {
     const { PlayerAPI } = await import('@lax-db/core/player/index');
     return await PlayerAPI.getAll({ organizationId: data.organizationId });

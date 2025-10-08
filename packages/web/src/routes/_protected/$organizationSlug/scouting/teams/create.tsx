@@ -9,12 +9,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 // Mock server function for creating opposing teams
 const createOpposingTeam = createServerFn({ method: 'POST' })
-  .validator((data: CreateOpposingTeamInput) => data)
+  .inputValidator((data: CreateOpposingTeamInput) => data)
   .handler(async ({ data }) => {
     console.log('Creating opposing team:', data);
     // TODO: Replace with actual API call
     // const { ScoutingAPI } = await import('@lax-db/core/scouting/index');
-    // const request = getWebRequest();
+    // const request = getRequest();
     // return await ScoutingAPI.createOpposingTeam(data, request.headers);
 
     // Mock delay

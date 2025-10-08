@@ -156,7 +156,7 @@ const mockDrillsData = {
 const getDrillsData = createServerFn().handler(async () => {
   // TODO: Replace with actual API call
   // const { DrillAPI } = await import('@lax-db/core/practice/drills');
-  // const request = getWebRequest();
+  // const request = getRequest();
   // return await DrillAPI.getDrills(teamId, filters, request.headers);
 
   return mockDrillsData;

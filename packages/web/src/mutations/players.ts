@@ -25,7 +25,7 @@ export const UpdatePlayerAndTeamInputSchema = S.extend(
 
 export const updatePlayerFn = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
-  .validator((data: typeof UpdatePlayerAndTeamInputSchema.Type) =>
+  .inputValidator((data: typeof UpdatePlayerAndTeamInputSchema.Type) =>
     S.decodeSync(UpdatePlayerAndTeamInputSchema)(data),
   )
   .handler(async ({ data }) => {
@@ -98,7 +98,7 @@ export function useUpdatePlayerBase(queryKey: readonly string[]) {
 // Bulk delete players
 export const bulkDeletePlayersFn = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
-  .validator((data: typeof BulkDeletePlayersInputSchema.Type) =>
+  .inputValidator((data: typeof BulkDeletePlayersInputSchema.Type) =>
     S.decodeSync(BulkDeletePlayersInputSchema)(data),
   )
   .handler(async ({ data }) => {
@@ -139,7 +139,7 @@ export function useBulkDeletePlayersBase(queryKey: readonly string[]) {
 // Delete player
 export const deletePlayerFn = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
-  .validator((data: typeof DeletePlayerInputSchema.Type) =>
+  .inputValidator((data: typeof DeletePlayerInputSchema.Type) =>
     S.decodeSync(DeletePlayerInputSchema)(data),
   )
   .handler(async ({ data }) => {

@@ -43,7 +43,7 @@ type GoalFormValues = typeof goalFormSchema.Type;
 
 // Server function to create a goal
 const createPlayerGoal = createServerFn({ method: 'POST' })
-  .validator(
+  .inputValidator(
     (data: {
       playerId: string;
       title: string;
@@ -66,7 +66,7 @@ const createPlayerGoal = createServerFn({ method: 'POST' })
 
 // Server function to get player info
 const getPlayerInfo = createServerFn({ method: 'GET' })
-  .validator((data: { playerId: string }) => data)
+  .inputValidator((data: { playerId: string }) => data)
   .handler(async ({ data }) => {
     console.log('Getting player info for:', data.playerId);
     // TODO: Replace with actual API call

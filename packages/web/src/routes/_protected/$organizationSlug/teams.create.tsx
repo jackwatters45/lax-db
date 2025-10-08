@@ -32,7 +32,7 @@ const CreateTeamSchema = S.Struct({
 
 const createTeam = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
-  .validator((data: typeof CreateTeamSchema.Type) =>
+  .inputValidator((data: typeof CreateTeamSchema.Type) =>
     S.decodeSync(CreateTeamSchema)(data),
   )
   .handler(async ({ data, context }) => {

@@ -46,7 +46,7 @@ const mockGames = [
 const getTeamGames = createServerFn().handler(async () => {
   // TODO: Replace with actual API call
   // const { GamesAPI } = await import('@lax-db/core/games/index');
-  // const request = getWebRequest();
+  // const request = getRequest();
   // return await GamesAPI.getTeamGames(teamId, request.headers);
 
   return mockGames;

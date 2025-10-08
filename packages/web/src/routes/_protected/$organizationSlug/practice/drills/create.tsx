@@ -81,11 +81,11 @@ const mockFormData = {
 
 // Server function for creating drill
 const createDrill = createServerFn({ method: 'POST' })
-  .validator((data: DrillFormData) => data)
+  .inputValidator((data: DrillFormData) => data)
   .handler(async ({ data }) => {
     // TODO: Replace with actual API call
     // const { DrillAPI } = await import('@lax-db/core/practice/drills');
-    // const request = getWebRequest();
+    // const request = getRequest();
     // return await DrillAPI.createDrill(teamId, data, request.headers);
 
     console.log('Creating drill:', data);

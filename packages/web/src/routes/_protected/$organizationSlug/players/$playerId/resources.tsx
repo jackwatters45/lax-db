@@ -63,7 +63,7 @@ const mockPlayerResources = [
 ];
 
 const getPlayerResources = createServerFn({ method: 'GET' })
-  .validator((data: { playerId: string }) => data)
+  .inputValidator((data: { playerId: string }) => data)
   .handler(async ({ data }) => {
     console.log('Getting player resources for:', data.playerId);
     // TODO: Replace with actual API call

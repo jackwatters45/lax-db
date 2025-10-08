@@ -97,7 +97,7 @@ const mockScoutingData = {
 const getScoutingDashboard = createServerFn().handler(async () => {
   // TODO: Replace with actual API call
   // const { ScoutingAPI } = await import('@lax-db/core/scouting/index');
-  // const request = getWebRequest();
+  // const request = getRequest();
   // return await ScoutingAPI.getDashboardData(request.headers);
 
   return mockScoutingData;
