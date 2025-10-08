@@ -1,9 +1,15 @@
-import { createFileRoute, Navigate } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/(marketing)/')({
-  component: RouteComponent,
-});
+  beforeLoad: async () => {
+    const { getRequest } = await import('@tanstack/react-start/server');
+    const { auth } = await import('@lax-db/core/auth');
+    const request = getRequest();
+    const { headers } = request;
 
-function RouteComponent() {
-  return <Navigate to="/login" />;
-}
+    const session = await auth.api.getSession({ headers });
+
+    if (!session) throw redirect({ to: '/login' });
+    // throw redirect({ to: '/redirect' });
+  },
+});
