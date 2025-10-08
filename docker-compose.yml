@@ -1,47 +1,4 @@
 services:
-  postgres:
-    image: postgres:18.0
-    container_name: laxdb_postgres
-    shm_size: 1g
-    environment:
-      - POSTGRES_USER=laxdb
-      - POSTGRES_PASSWORD=laxdb_password
-      - POSTGRES_DB=laxdb
-    command:
-      [
-        "postgres",
-        "-c",
-        "log_statement=all",
-        "-c",
-        "log_min_duration_statement=0",
-        "-c",
-        "log_line_prefix=%t [%p]: user=%u,db=%d,app=%a ",
-        "-c",
-        "logging_collector=off",
-        "-c",
-        "wal_level=logical",
-        "-c",
-        "max_wal_senders=10",
-        "-c",
-        "max_replication_slots=5",
-        "-c",
-        "hot_standby=on",
-        "-c",
-        "hot_standby_feedback=on",
-      ]
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      # Mount initialization scripts if needed
-      - ./init:/docker-entrypoint-initdb.d
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U laxdb -d laxdb"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
   redis:
     image: redis:7.4-alpine
     container_name: laxdb_redis
@@ -57,7 +14,5 @@ services:
       retries: 5
 
 volumes:
-  postgres_data:
-    driver: local
   redis_data:
     driver: local

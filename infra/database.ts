@@ -1,28 +1,15 @@
-import { isPermanentStage } from './stage';
+import { secret } from './secret';
 import { vpc } from './vpc';
 
-export const database = isPermanentStage
-  ? new sst.aws.Postgres('Database', {
-      vpc,
-      proxy: true,
-      version: '18.0',
-    })
-  : $dev
-    ? new sst.aws.Postgres('Database', {
-        vpc,
-        proxy: true,
-        version: '18.0',
-        dev: {
-          username: 'laxdb',
-          password: 'laxdb_password',
-          database: 'laxdb',
-          port: 5432,
-        },
-      })
-    : sst.aws.Postgres.get('Database', {
-        id: 'lax-db-dev-databaseinstance-tsvdrfux',
-        proxyId: 'lax-db-dev-databaseproxy-bccuvdtd',
-      });
+export const database = new sst.Linkable('Database', {
+  properties: {
+    database: 'postgres',
+    host: secret.PlanetScaleHost.value,
+    username: secret.PlanetScaleUsername.value,
+    password: secret.PlanetScalePassword.value,
+    port: 6432,
+  },
+});
 
 const migrator = new sst.aws.Function('DatabaseMigrator', {
   handler: 'packages/functions/src/drizzle/migrator.handler',

@@ -1,4 +1,4 @@
-import { defineConfig } from 'drizzle-kit';
+import { type Config, defineConfig } from 'drizzle-kit';
 import { Resource } from 'sst';
 
 export default defineConfig({
@@ -6,7 +6,7 @@ export default defineConfig({
   schema: ['./src/**/*.sql.ts', './src/**/*.view.ts'],
   out: './migrations',
   dbCredentials: {
-    ssl: false,
+    ssl: true,
     host: Resource.Database.host,
     port: Resource.Database.port,
     user: Resource.Database.username,
@@ -15,4 +15,4 @@ export default defineConfig({
   },
   verbose: true,
   strict: true,
-});
+}) satisfies Config;
