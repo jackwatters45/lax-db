@@ -72,12 +72,12 @@ export const Route = createRootRouteWithContext<{
 
 function RootComponent() {
   return (
-    <RootDocument>
-      <ThemeProvider defaultTheme="system" storageKey="laxdb-ui-theme">
+    <ThemeProvider defaultTheme="system" storageKey="laxdb-ui-theme">
+      <RootDocument>
         <Outlet />
         <Toaster />
-      </ThemeProvider>
-    </RootDocument>
+      </RootDocument>
+    </ThemeProvider>
   );
 }
 
