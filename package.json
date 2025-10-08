@@ -21,6 +21,7 @@
     "@types/node": "^22.18.8",
     "@types/pg": "^8.15.5",
     "lefthook": "^1.13.6",
+    "prettier": "^3.6.2",
     "turbo": "^2.5.8",
     "typescript": "^5.9.3"
   },

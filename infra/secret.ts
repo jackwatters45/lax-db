@@ -3,6 +3,9 @@ export const secret = {
   GoogleAuthClientId: new sst.Secret('GoogleAuthClientId'),
   BetterAuthSecret: new sst.Secret('BetterAuthSecret'),
   // POLAR_WEBHOOK_SECRET
+  PlanetScaleHost: new sst.Secret('PlanetScaleHost'),
+  PlanetScaleUsername: new sst.Secret('PlanetScaleUsername'),
+  PlanetScalePassword: new sst.Secret('PlanetScalePassword'),
 };
 
 export const allSecrets = Object.values(secret);
