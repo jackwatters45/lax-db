@@ -86,7 +86,7 @@ export function createEditablePlayerColumns({
 
         return (
           <ControlledInput
-            key={`jersey-${player.playerId}`}
+            key={`jersey-${player.publicId}`}
             variant="data"
             type="number"
             value={player.jerseyNumber ?? ''}
@@ -102,7 +102,7 @@ export function createEditablePlayerColumns({
                 }
               }
 
-              handleUpdate(player.playerId, { jerseyNumber: numValue });
+              handleUpdate(player.publicId, { jerseyNumber: numValue });
             }}
             placeholder="#"
           />
@@ -135,9 +135,9 @@ export function createEditablePlayerColumns({
             excludePlayerIds={excludePlayerIds ?? []}
             onSelect={(selectedPlayer) => {
               linkPlayer.mutate({
-                currentPlayerId: player.playerId,
-                existingPlayer: {
-                  id: selectedPlayer.id,
+                currentPlayerId: player.publicId,
+                newPlayerData: {
+                  publicId: selectedPlayer.publicId,
                   name: selectedPlayer.name,
                   email: selectedPlayer.email,
                   phone: selectedPlayer.phone,
@@ -149,7 +149,7 @@ export function createEditablePlayerColumns({
               });
             }}
             onRename={(newName) => {
-              handleUpdate(player.playerId, { name: newName });
+              handleUpdate(player.publicId, { name: newName });
             }}
           />
         );
@@ -175,7 +175,7 @@ export function createEditablePlayerColumns({
           <Select
             value={player.position || ''}
             onValueChange={(value) => {
-              handleUpdate(player.playerId, { position: value });
+              handleUpdate(player.publicId, { position: value });
             }}
           >
             <SelectTrigger variant="data">
@@ -208,7 +208,7 @@ export function createEditablePlayerColumns({
 
         return (
           <ControlledInput
-            key={`email-${player.playerId}`}
+            key={`email-${player.publicId}`}
             variant="data"
             type="email"
             value={player.email || ''}
@@ -223,7 +223,7 @@ export function createEditablePlayerColumns({
                 }
               }
 
-              handleUpdate(player.playerId, { email: emailValue });
+              handleUpdate(player.publicId, { email: emailValue });
             }}
             placeholder="email@example.com"
           />
@@ -249,15 +249,15 @@ export function createEditablePlayerColumns({
             row={row}
             actions={{
               onDelete: () =>
-                mutations.delete.mutate({ playerId: player.playerId }),
+                mutations.delete.mutate({ playerId: player.publicId }),
               onRemove: () =>
-                mutations.remove.mutate({ teamId, playerId: player.playerId }),
+                mutations.remove.mutate({ teamId, playerId: player.publicId }),
             }}
           >
             <RowActionsDropdown>
               <Link
                 to="/$organizationSlug/$teamId/players/$playerId"
-                params={{ organizationSlug, teamId, playerId: player.playerId }}
+                params={{ organizationSlug, teamId, playerId: player.publicId }}
               >
                 <RowActionItem icon={User2}>View</RowActionItem>
               </Link>

@@ -37,7 +37,8 @@ export class DatabaseService extends Context.Tag('DatabaseService')<
 
 // Implementation
 const makeDatabaseService = Effect.gen(function* () {
-  const pool = new Pool({
+  const client = new Pool({
+    ssl: true,
     host: Resource.Database.host,
     port: Resource.Database.port,
     user: Resource.Database.username,
@@ -46,7 +47,7 @@ const makeDatabaseService = Effect.gen(function* () {
   });
 
   const drizzleConfig =
-    process.env.DRIZZLE_LOG === 'true'
+    Resource.DrizzleLog.value === 'true'
       ? {
           logger: {
             logQuery(query: string, params: unknown[]) {
@@ -57,7 +58,7 @@ const makeDatabaseService = Effect.gen(function* () {
         }
       : {};
 
-  const db = drizzle(pool, drizzleConfig);
+  const db = drizzle(client, drizzleConfig);
 
   const transaction = <T>(
     callback: (tx: Transaction) => Promise<T>,

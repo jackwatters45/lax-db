@@ -81,7 +81,10 @@ export function AddPlayerCommand({
                   <>
                     <CommandGroup heading="Existing Players">
                       {allPlayers.map((player) => (
-                        <CommandItem key={player.id} value={player.id}>
+                        <CommandItem
+                          key={player.publicId}
+                          value={player.publicId}
+                        >
                           <div className="flex flex-col">
                             <span>{player.name || 'Unnamed'}</span>
                             {(player.email || player.phone) && (

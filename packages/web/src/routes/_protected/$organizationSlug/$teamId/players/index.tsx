@@ -92,7 +92,7 @@ function PlayersDataTable() {
   );
 
   const excludePlayerIds = useMemo(
-    () => players.map((p) => p.playerId),
+    () => players.map((p) => p.publicId),
     [players],
   );
 
@@ -107,7 +107,7 @@ function PlayersDataTable() {
         <PlayersFilterBar
           organizationId={activeOrganization.id}
           teamId={teamId}
-          excludePlayerIds={players.map((p) => p.playerId)}
+          excludePlayerIds={players.map((p) => p.publicId)}
         />
         <TabsContent value="list">
           <DataTableContent>

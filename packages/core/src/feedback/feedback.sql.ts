@@ -1,8 +1,8 @@
 import { pgTable, text } from 'drizzle-orm/pg-core';
-import { timestamps } from '../drizzle/types';
+import { ids, timestamps } from '../drizzle/types';
 
 export const feedbackTable = pgTable('feedback', {
-  id: text('id').primaryKey(),
+  ...ids,
   topic: text('topic').notNull(),
   rating: text('rating').notNull(),
   feedback: text('feedback').notNull(),
@@ -11,4 +11,5 @@ export const feedbackTable = pgTable('feedback', {
   ...timestamps,
 });
 
-export type Feedback = typeof feedbackTable.$inferSelect;
+type FeedbackInternal = typeof feedbackTable.$inferSelect;
+export type Feedback = Omit<FeedbackInternal, 'id'>;

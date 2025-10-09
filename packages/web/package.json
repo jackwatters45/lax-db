@@ -12,6 +12,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@effect-atom/atom-react": "^0.3.0",
     "@hookform/resolvers": "^5.2.2",
     "@lax-db/core": "*",
     "@polar-sh/better-auth": "^1.1.9",

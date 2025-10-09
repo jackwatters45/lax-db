@@ -15,7 +15,7 @@ export const SendEmailInput = Schema.Struct({
 export type SendEmailInput = typeof SendEmailInput.Type;
 
 export const SendFeedbackEmailInput = Schema.Struct({
-  feedbackId: Schema.String,
+  feedbackId: Schema.Number,
   topic: Schema.String,
   rating: Schema.String,
   feedback: Schema.String,

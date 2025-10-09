@@ -40,7 +40,7 @@ export function PlayerReplaceCombobox({
 
   const filteredPlayers = useMemo(() => {
     const availablePlayers = allPlayers.filter(
-      (player) => !excludePlayerIds.includes(player.id),
+      (player) => !excludePlayerIds.includes(player.publicId),
     );
     return availablePlayers;
   }, [allPlayers, excludePlayerIds]);
@@ -100,7 +100,7 @@ function FilteredPlayerItemsWithGroup() {
   return (
     <SearchComboboxGroup heading="Organization Players">
       {filtered.map((player) => (
-        <SearchComboboxItem key={player.id} item={player}>
+        <SearchComboboxItem key={player.publicId} item={player}>
           {(player) => (
             <div className="flex flex-col">
               <span>{player.name || 'Unnamed'}</span>

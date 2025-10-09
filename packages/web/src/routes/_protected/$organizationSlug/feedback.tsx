@@ -68,7 +68,6 @@ function FeedbackPage() {
   const router = useRouter();
 
   const submitFeedbackMutation = useMutation({
-    mutationKey: ['submitFeedback'],
     mutationFn: (data: FeedbackFormValues) => submitFeedback({ data }),
     onSuccess: () => {
       toast.success('Thank you for your feedback! We appreciate your input.');

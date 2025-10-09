@@ -58,10 +58,10 @@ export function AddPlayerCommand({
     });
   };
 
-  const handleSelectExistingPlayer = (player: { id: string }) => {
+  const handleSelectExistingPlayer = (player: { publicId: string }) => {
     // Just add existing player to team (they already exist in org)
     mutations.addExisting.mutate({
-      playerId: player.id,
+      playerId: player.publicId,
       teamId,
       jerseyNumber: null,
       position: null,
@@ -69,7 +69,7 @@ export function AddPlayerCommand({
   };
 
   const filteredPlayers = allPlayers
-    .filter((player) => !excludePlayerIds.includes(player.id))
+    .filter((player) => !excludePlayerIds.includes(player.publicId))
     .filter((player) => {
       if (!searchQuery.trim()) return true;
       const query = searchQuery.toLowerCase();
@@ -116,8 +116,8 @@ export function AddPlayerCommand({
                     <CommandGroup heading="Existing Players">
                       {filteredPlayers.map((player) => (
                         <CommandItem
-                          key={player.id}
-                          value={player.id}
+                          key={player.publicId}
+                          value={player.publicId}
                           onSelect={() => handleSelect(player)}
                         >
                           <div className="flex flex-col">

@@ -21,7 +21,7 @@ const Route = createFileRoute(
 
 const getPlayerIds = (table: Table<TeamPlayerWithInfo>) => {
   const selectedRows = table.getFilteredSelectedRowModel().rows;
-  return selectedRows.map((row) => row.original.playerId);
+  return selectedRows.map((row) => row.original.publicId);
 };
 
 export function PlayersToolbar() {

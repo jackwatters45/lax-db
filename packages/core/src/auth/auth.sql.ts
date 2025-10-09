@@ -2,6 +2,7 @@ import { index, pgTable, text } from 'drizzle-orm/pg-core';
 import { timestamp } from '../drizzle/types';
 import { userTable } from '../user/user.sql';
 
+// Better Auth
 export const sessionTable = pgTable(
   'session',
   {
@@ -24,6 +25,7 @@ export const sessionTable = pgTable(
   ],
 );
 
+// Better Auth
 export const accountTable = pgTable(
   'account',
   {
@@ -46,6 +48,7 @@ export const accountTable = pgTable(
   (table) => [index('account_user_id_idx').on(table.userId)],
 );
 
+// Better Auth
 export const verificationTable = pgTable(
   'verification',
   {
