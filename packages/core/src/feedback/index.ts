@@ -1,4 +1,4 @@
-import Crypto from 'node:crypto';
+import { isNull } from 'drizzle-orm';
 import { Context, Effect, Layer, Schema } from 'effect';
 import type { ParseError } from 'effect/ParseResult';
 import {
@@ -53,7 +53,6 @@ export const FeedbackServiceLive = Layer.effect(
           const validated = yield* Schema.decode(CreateFeedbackInput)(input);
 
           const newFeedback = {
-            id: Crypto.randomUUID(),
             topic: validated.topic,
             rating: validated.rating,
             feedback: validated.feedback,
@@ -62,12 +61,13 @@ export const FeedbackServiceLive = Layer.effect(
           };
 
           return yield* dbService.transaction(async (tx) => {
-            const [result] = await tx
+            const inserted = await tx
               .insert(feedbackTable)
               .values(newFeedback)
-              .returning();
+              .returning()
+              .then((rows) => rows.at(0));
 
-            if (!result) {
+            if (!inserted) {
               throw new FeedbackError(null, 'Failed to create feedback');
             }
 
@@ -75,12 +75,12 @@ export const FeedbackServiceLive = Layer.effect(
             Effect.runFork(
               Effect.tryPromise(() =>
                 EmailAPI.sendFeedbackNotification({
-                  feedbackId: result.id,
-                  topic: result.topic,
-                  rating: result.rating,
-                  feedback: result.feedback,
-                  userEmail: result.userEmail || undefined,
-                  userId: result.userId || undefined,
+                  feedbackId: inserted.id,
+                  topic: inserted.topic,
+                  rating: inserted.rating,
+                  feedback: inserted.feedback,
+                  userEmail: inserted.userEmail || undefined,
+                  userId: inserted.userId || undefined,
                 }),
               ).pipe(
                 Effect.mapError((cause) => {
@@ -90,9 +90,29 @@ export const FeedbackServiceLive = Layer.effect(
                   );
                   return new FeedbackError(cause, 'Email notification failed');
                 }),
-                Effect.catchAll(() => Effect.succeed(void 0)), // Don't fail the whole operation if email fails
+                Effect.catchAll(() => Effect.succeed(void 0)),
               ),
             );
+
+            const result = await tx
+              .select({
+                publicId: feedbackTable.publicId,
+                topic: feedbackTable.topic,
+                rating: feedbackTable.rating,
+                feedback: feedbackTable.feedback,
+                userId: feedbackTable.userId,
+                userEmail: feedbackTable.userEmail,
+                createdAt: feedbackTable.createdAt,
+                updatedAt: feedbackTable.updatedAt,
+                deletedAt: feedbackTable.deletedAt,
+              })
+              .from(feedbackTable)
+              .where(isNull(feedbackTable.deletedAt))
+              .then((rows) => rows.at(0));
+
+            if (!result) {
+              throw new FeedbackError(null, 'Failed to retrieve feedback');
+            }
 
             return result;
           });

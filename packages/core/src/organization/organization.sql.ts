@@ -2,6 +2,7 @@ import { index, pgTable, text } from 'drizzle-orm/pg-core';
 import { timestamp } from '../drizzle/types';
 import { userTable } from '../user/user.sql';
 
+// Better Auth
 export const organizationTable = pgTable(
   'organization',
   {
@@ -15,6 +16,7 @@ export const organizationTable = pgTable(
   (table) => [index('organization_slug_idx').on(table.slug)],
 );
 
+// Better Auth
 export const memberTable = pgTable(
   'member',
   {
@@ -34,6 +36,7 @@ export const memberTable = pgTable(
   ],
 );
 
+// Better Auth
 export const invitationTable = pgTable(
   'invitation',
   {

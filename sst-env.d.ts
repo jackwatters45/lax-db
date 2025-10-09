@@ -25,6 +25,10 @@ declare module 'sst' {
       name: string;
       type: 'sst.aws.Function';
     };
+    DrizzleLog: {
+      type: 'sst.sst.Secret';
+      value: string;
+    };
     Email: {
       configSet: string;
       sender: string;

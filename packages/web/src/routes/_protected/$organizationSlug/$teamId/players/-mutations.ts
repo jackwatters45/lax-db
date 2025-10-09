@@ -75,7 +75,7 @@ export const addPlayerToTeamFn = createServerFn({ method: 'POST' })
 
         yield* Effect.promise(() =>
           PlayerAPI.addPlayerToTeam({
-            playerId: newPlayer.id,
+            playerId: newPlayer.publicId,
             teamId: data.teamId,
             jerseyNumber: data.jerseyNumber,
             position: data.position,
@@ -101,12 +101,9 @@ export function useAddPlayerToTeam(organizationId: string, teamId: string) {
 
       const previousPlayers =
         ctx.client.getQueryData<TeamPlayerWithInfo[]>(queryKey);
-
-      const tempId = `temp-${Date.now()}`;
       const optimisticPlayer: TeamPlayerWithInfo = {
-        id: tempId,
+        publicId: `temp-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
         organizationId: variables.organizationId,
-        playerId: tempId,
         name: variables.name,
         email: variables.email || null,
         phone: variables.phone || null,
@@ -167,7 +164,7 @@ export function useRemovePlayerFromTeam(
         ctx.client.getQueryData<TeamPlayerWithInfo[]>(queryKey);
 
       ctx.client.setQueryData<TeamPlayerWithInfo[]>(queryKey, (old = []) =>
-        old.filter((p) => p.playerId !== variables.playerId),
+        old.filter((p) => p.publicId !== variables.playerId),
       );
 
       return { previousPlayers };
@@ -217,7 +214,7 @@ export function useBulkRemovePlayersFromTeam(
         ctx.client.getQueryData<TeamPlayerWithInfo[]>(queryKey);
 
       ctx.client.setQueryData<TeamPlayerWithInfo[]>(queryKey, (old = []) =>
-        old.filter((p) => !variables.playerIds.includes(p.playerId)),
+        old.filter((p) => !variables.playerIds.includes(p.publicId)),
       );
 
       return { previousPlayers };
@@ -248,18 +245,40 @@ export const useDeletePlayer = (organizationId: string, teamId: string) =>
   useDeletePlayerBase(getTeamPlayersQK(organizationId, teamId));
 
 // Link existing player to team (replace current player)
-const LinkPlayerInputSchema = S.Struct({
+const LinkPlayerServerInputSchema = S.Struct({
   currentPlayerId: S.String,
   newPlayerId: S.String,
+  newPlayerData: S.Struct({
+    publicId: S.String,
+    name: S.NullOr(S.String),
+    email: S.NullOr(S.String),
+    phone: S.NullOr(S.String),
+    dateOfBirth: S.NullOr(S.String),
+    organizationId: S.String,
+  }),
   teamId: S.String,
+  jerseyNumber: S.NullOr(S.Number),
+  position: S.NullOr(S.String),
+});
+
+export const LinkPlayerInputSchema = S.Struct({
+  currentPlayerId: S.String,
+  newPlayerData: S.Struct({
+    publicId: S.String,
+    name: S.NullOr(S.String),
+    email: S.NullOr(S.String),
+    phone: S.NullOr(S.String),
+    dateOfBirth: S.NullOr(S.String),
+    organizationId: S.String,
+  }),
   jerseyNumber: S.NullOr(S.Number),
   position: S.NullOr(S.String),
 });
 
 export const linkPlayerFn = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
-  .inputValidator((data: typeof LinkPlayerInputSchema.Type) =>
-    S.decodeSync(LinkPlayerInputSchema)(data),
+  .inputValidator((data: typeof LinkPlayerServerInputSchema.Type) =>
+    S.decodeSync(LinkPlayerServerInputSchema)(data),
   )
   .handler(async ({ data }) => {
     const { PlayerAPI } = await import('@lax-db/core/player/index');
@@ -271,38 +290,26 @@ export const linkPlayerFn = createServerFn({ method: 'POST' })
     });
 
     // Add new player to team
-    return await PlayerAPI.addPlayerToTeam({
-      playerId: data.newPlayerId,
+    await PlayerAPI.addPlayerToTeam({
+      playerId: data.newPlayerData.publicId,
       teamId: data.teamId,
       jerseyNumber: data.jerseyNumber,
       position: data.position,
     });
+
+    return data.newPlayerData;
   });
 
 export function useLinkPlayer(organizationId: string, teamId: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: {
-      currentPlayerId: string;
-      existingPlayer: {
-        id: string;
-        name: string | null;
-        email: string | null;
-        phone: string | null;
-        dateOfBirth: string | null;
-        organizationId: string;
-      };
-      jerseyNumber: number | null;
-      position: string | null;
-    }) =>
+    mutationFn: (data: typeof LinkPlayerInputSchema.Type) =>
       linkPlayerFn({
         data: {
-          currentPlayerId: data.currentPlayerId,
-          newPlayerId: data.existingPlayer.id,
+          ...data,
+          newPlayerId: data.newPlayerData.publicId,
           teamId,
-          jerseyNumber: data.jerseyNumber,
-          position: data.position,
         },
       }),
     onMutate: async (variables, ctx) => {
@@ -314,16 +321,15 @@ export function useLinkPlayer(organizationId: string, teamId: string) {
 
       ctx.client.setQueryData<TeamPlayerWithInfo[]>(queryKey, (old = []) =>
         old.map((player) =>
-          player.playerId === variables.currentPlayerId
+          player.publicId === variables.currentPlayerId
             ? {
                 ...player,
-                id: variables.existingPlayer.id,
-                playerId: variables.existingPlayer.id,
-                name: variables.existingPlayer.name,
-                email: variables.existingPlayer.email,
-                phone: variables.existingPlayer.phone,
-                dateOfBirth: variables.existingPlayer.dateOfBirth,
-                organizationId: variables.existingPlayer.organizationId,
+                publicId: variables.newPlayerData.publicId,
+                name: variables.newPlayerData.name,
+                email: variables.newPlayerData.email,
+                phone: variables.newPlayerData.phone,
+                dateOfBirth: variables.newPlayerData.dateOfBirth,
+                organizationId: variables.newPlayerData.organizationId,
               }
             : player,
         ),

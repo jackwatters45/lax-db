@@ -1,6 +1,7 @@
 import { boolean, index, pgTable, text } from 'drizzle-orm/pg-core';
 import { timestamp, timestamps } from '../drizzle/types';
 
+// Better Auth
 export const userTable = pgTable(
   'user',
   {

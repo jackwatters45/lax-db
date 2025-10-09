@@ -1,8 +1,15 @@
-import { timestamp as pgTimestamp, uuid } from 'drizzle-orm/pg-core';
+import { timestamp as pgTimestamp, serial, varchar } from 'drizzle-orm/pg-core';
+import { nanoid } from 'nanoid';
 
-export const id = {
+export const ids = {
   get id() {
-    return uuid('id').primaryKey();
+    return serial('id').primaryKey();
+  },
+  get publicId() {
+    return varchar('public_id', { length: 12 })
+      .unique()
+      .notNull()
+      .$defaultFn(() => nanoid(12));
   },
 };
 

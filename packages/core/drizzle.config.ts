@@ -6,7 +6,7 @@ export default defineConfig({
   schema: ['./src/**/*.sql.ts', './src/**/*.view.ts'],
   out: './migrations',
   dbCredentials: {
-    ssl: true,
+    ssl: 'require',
     host: Resource.Database.host,
     port: Resource.Database.port,
     user: Resource.Database.username,

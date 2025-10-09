@@ -3,6 +3,7 @@ import { timestamp } from '../drizzle/types';
 import { organizationTable } from '../organization/organization.sql';
 import { userTable } from '../user/user.sql';
 
+// Better Auth
 export const teamTable = pgTable(
   'team',
   {
@@ -23,6 +24,7 @@ export const teamTable = pgTable(
   ],
 );
 
+// Better Auth
 export const teamMemberTable = pgTable(
   'team_member',
   {

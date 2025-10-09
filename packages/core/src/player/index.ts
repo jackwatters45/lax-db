@@ -1,4 +1,4 @@
-import { and, eq, inArray } from 'drizzle-orm';
+import { and, eq, inArray, isNull } from 'drizzle-orm';
 import { Context, Effect, Layer, Runtime, Schema as S } from 'effect';
 import type { ParseError } from 'effect/ParseResult';
 import { DatabaseError, DatabaseLive, DatabaseService } from '../drizzle';
@@ -65,10 +65,10 @@ export class PlayerService extends Context.Tag('PlayerService')<
     ) => Effect.Effect<TeamPlayer, ParseError | PlayerError | DatabaseError>;
     readonly removePlayerFromTeam: (
       input: RemovePlayerFromTeamInput,
-    ) => Effect.Effect<void, DatabaseError | ParseError>;
+    ) => Effect.Effect<void, DatabaseError | ParseError | PlayerError>;
     readonly bulkRemovePlayersFromTeam: (
       input: BulkRemovePlayersFromTeamInput,
-    ) => Effect.Effect<void, DatabaseError | ParseError>;
+    ) => Effect.Effect<void, DatabaseError | ParseError | PlayerError>;
     readonly deletePlayer: (
       input: DeletePlayerInput,
     ) => Effect.Effect<void, DatabaseError | ParseError>;
@@ -91,10 +91,24 @@ export const PlayerServiceLive = Layer.effect(
           const result = yield* Effect.tryPromise({
             try: () =>
               dbService.db
-                .select()
+                .select({
+                  publicId: playerTable.publicId,
+                  organizationId: playerTable.organizationId,
+                  userId: playerTable.userId,
+                  name: playerTable.name,
+                  email: playerTable.email,
+                  phone: playerTable.phone,
+                  dateOfBirth: playerTable.dateOfBirth,
+                  createdAt: playerTable.createdAt,
+                  updatedAt: playerTable.updatedAt,
+                  deletedAt: playerTable.deletedAt,
+                })
                 .from(playerTable)
                 .where(
-                  eq(playerTable.organizationId, validated.organizationId),
+                  and(
+                    eq(playerTable.organizationId, validated.organizationId),
+                    isNull(playerTable.deletedAt),
+                  ),
                 ),
             catch: (error) =>
               new DatabaseError(error, 'Failed to get all players'),
@@ -107,14 +121,11 @@ export const PlayerServiceLive = Layer.effect(
         Effect.gen(function* () {
           const validated = yield* S.decode(CreatePlayerInputSchema)(input);
 
-          const id = crypto.randomUUID();
-
           const result = yield* Effect.tryPromise({
             try: () =>
               dbService.db
                 .insert(playerTable)
                 .values({
-                  id,
                   organizationId: validated.organizationId,
                   userId: validated.userId || null,
                   name: validated.name,
@@ -122,18 +133,30 @@ export const PlayerServiceLive = Layer.effect(
                   phone: validated.phone || null,
                   dateOfBirth: validated.dateOfBirth || null,
                 })
-                .returning(),
+                .returning({
+                  publicId: playerTable.publicId,
+                  organizationId: playerTable.organizationId,
+                  userId: playerTable.userId,
+                  name: playerTable.name,
+                  email: playerTable.email,
+                  phone: playerTable.phone,
+                  dateOfBirth: playerTable.dateOfBirth,
+                  createdAt: playerTable.createdAt,
+                  updatedAt: playerTable.updatedAt,
+                  deletedAt: playerTable.deletedAt,
+                })
+                .then((rows) => rows.at(0)),
             catch: (error) =>
               new DatabaseError(error, 'Failed to create player'),
           });
 
-          if (!result[0]) {
+          if (!result) {
             return yield* Effect.fail(
               new PlayerError('Insert failed', 'Failed to create player'),
             );
           }
 
-          return result[0];
+          return result;
         }),
 
       getTeamPlayers: (teamId: string) =>
@@ -141,8 +164,7 @@ export const PlayerServiceLive = Layer.effect(
           try: () =>
             dbService.db
               .select({
-                // Player fields
-                id: playerTable.id,
+                publicId: playerTable.publicId,
                 organizationId: playerTable.organizationId,
                 userId: playerTable.userId,
                 name: playerTable.name,
@@ -152,9 +174,7 @@ export const PlayerServiceLive = Layer.effect(
                 createdAt: playerTable.createdAt,
                 updatedAt: playerTable.updatedAt,
                 deletedAt: playerTable.deletedAt,
-                // TeamPlayer fields
                 teamId: teamPlayerTable.teamId,
-                playerId: teamPlayerTable.playerId,
                 jerseyNumber: teamPlayerTable.jerseyNumber,
                 position: teamPlayerTable.position,
               })
@@ -163,7 +183,12 @@ export const PlayerServiceLive = Layer.effect(
                 teamPlayerTable,
                 eq(playerTable.id, teamPlayerTable.playerId),
               )
-              .where(eq(teamPlayerTable.teamId, teamId)),
+              .where(
+                and(
+                  eq(teamPlayerTable.teamId, teamId),
+                  isNull(playerTable.deletedAt),
+                ),
+              ),
           catch: (error) =>
             new DatabaseError(error, 'Failed to get team players'),
         }),
@@ -178,25 +203,63 @@ export const PlayerServiceLive = Layer.effect(
               dbService.db
                 .update(playerTable)
                 .set(updateData)
-                .where(eq(playerTable.id, playerId))
-                .returning(),
+                .where(
+                  and(
+                    eq(playerTable.publicId, playerId),
+                    isNull(playerTable.deletedAt),
+                  ),
+                )
+                .returning({
+                  publicId: playerTable.publicId,
+                  organizationId: playerTable.organizationId,
+                  userId: playerTable.userId,
+                  name: playerTable.name,
+                  email: playerTable.email,
+                  phone: playerTable.phone,
+                  dateOfBirth: playerTable.dateOfBirth,
+                  createdAt: playerTable.createdAt,
+                  updatedAt: playerTable.updatedAt,
+                  deletedAt: playerTable.deletedAt,
+                })
+                .then((rows) => rows.at(0)),
             catch: (error) =>
               new DatabaseError(error, 'Failed to update player'),
           });
 
-          if (!result[0]) {
+          if (!result) {
             return yield* Effect.fail(
               new PlayerError('Update failed', 'Failed to update player'),
             );
           }
 
-          return result[0];
+          return result;
         }),
 
       updateTeamPlayer: (input: UpdateTeamPlayerInput) =>
         Effect.gen(function* () {
           const validated = yield* S.decode(UpdateTeamPlayerInputSchema)(input);
           const { teamId, playerId, ...updateData } = validated;
+
+          const player = yield* Effect.tryPromise({
+            try: () =>
+              dbService.db
+                .select({ id: playerTable.id })
+                .from(playerTable)
+                .where(
+                  and(
+                    eq(playerTable.publicId, playerId),
+                    isNull(playerTable.deletedAt),
+                  ),
+                )
+                .then((rows) => rows.at(0)),
+            catch: (error) => new DatabaseError(error, 'Failed to find player'),
+          });
+
+          if (!player) {
+            return yield* Effect.fail(
+              new PlayerError('Not found', 'Player not found'),
+            );
+          }
 
           const result = yield* Effect.tryPromise({
             try: () =>
@@ -206,36 +269,56 @@ export const PlayerServiceLive = Layer.effect(
                 .where(
                   and(
                     eq(teamPlayerTable.teamId, teamId),
-                    eq(teamPlayerTable.playerId, playerId),
+                    eq(teamPlayerTable.playerId, player.id),
                   ),
                 )
-                .returning(),
+                .returning()
+                .then((rows) => rows.at(0)),
             catch: (error) =>
               new DatabaseError(error, 'Failed to update team player'),
           });
 
-          if (!result[0]) {
+          if (!result) {
             return yield* Effect.fail(
               new PlayerError('Update failed', 'Failed to update team player'),
             );
           }
 
-          return result[0];
+          return result;
         }),
 
       addPlayerToTeam: (input: AddPlayerToTeamInput) =>
         Effect.gen(function* () {
           const validated = yield* S.decode(AddPlayerToTeamInputSchema)(input);
-          const id = crypto.randomUUID();
+
+          const player = yield* Effect.tryPromise({
+            try: () =>
+              dbService.db
+                .select({ id: playerTable.id })
+                .from(playerTable)
+                .where(
+                  and(
+                    eq(playerTable.publicId, validated.playerId),
+                    isNull(playerTable.deletedAt),
+                  ),
+                )
+                .then((rows) => rows.at(0)),
+            catch: (error) => new DatabaseError(error, 'Failed to find player'),
+          });
+
+          if (!player) {
+            return yield* Effect.fail(
+              new PlayerError('Not found', 'Player not found'),
+            );
+          }
 
           const result = yield* Effect.tryPromise({
             try: () =>
               dbService.db
                 .insert(teamPlayerTable)
                 .values({
-                  id,
                   teamId: validated.teamId,
-                  playerId: validated.playerId,
+                  playerId: player.id,
                   jerseyNumber: validated.jerseyNumber || null,
                   position: validated.position || null,
                 })
@@ -258,6 +341,28 @@ export const PlayerServiceLive = Layer.effect(
           const validated = yield* S.decode(RemovePlayerFromTeamInputSchema)(
             input,
           );
+
+          const player = yield* Effect.tryPromise({
+            try: () =>
+              dbService.db
+                .select({ id: playerTable.id })
+                .from(playerTable)
+                .where(
+                  and(
+                    eq(playerTable.publicId, validated.playerId),
+                    isNull(playerTable.deletedAt),
+                  ),
+                )
+                .then((rows) => rows.at(0)),
+            catch: (error) => new DatabaseError(error, 'Failed to find player'),
+          });
+
+          if (!player) {
+            return yield* Effect.fail(
+              new PlayerError('Not found', 'Player not found'),
+            );
+          }
+
           yield* Effect.tryPromise({
             try: () =>
               dbService.db
@@ -265,7 +370,7 @@ export const PlayerServiceLive = Layer.effect(
                 .where(
                   and(
                     eq(teamPlayerTable.teamId, validated.teamId),
-                    eq(teamPlayerTable.playerId, validated.playerId),
+                    eq(teamPlayerTable.playerId, player.id),
                   ),
                 ),
             catch: (error) =>
@@ -278,6 +383,24 @@ export const PlayerServiceLive = Layer.effect(
           const validated = yield* S.decode(
             BulkRemovePlayersFromTeamInputSchema,
           )(input);
+
+          const players = yield* Effect.tryPromise({
+            try: () =>
+              dbService.db
+                .select({ id: playerTable.id })
+                .from(playerTable)
+                .where(
+                  and(
+                    inArray(playerTable.publicId, validated.playerIds),
+                    isNull(playerTable.deletedAt),
+                  ),
+                ),
+            catch: (error) =>
+              new DatabaseError(error, 'Failed to find players'),
+          });
+
+          const playerIds = players.map((p) => p.id);
+
           yield* Effect.tryPromise({
             try: () =>
               dbService.db
@@ -285,7 +408,7 @@ export const PlayerServiceLive = Layer.effect(
                 .where(
                   and(
                     eq(teamPlayerTable.teamId, validated.teamId),
-                    inArray(teamPlayerTable.playerId, validated.playerIds),
+                    inArray(teamPlayerTable.playerId, playerIds),
                   ),
                 ),
             catch: (error) =>
@@ -303,7 +426,7 @@ export const PlayerServiceLive = Layer.effect(
             try: () =>
               dbService.db
                 .delete(playerTable)
-                .where(eq(playerTable.id, validated.playerId)),
+                .where(eq(playerTable.publicId, validated.playerId)),
             catch: (error) =>
               new DatabaseError(error, 'Failed to delete player'),
           });
@@ -318,7 +441,7 @@ export const PlayerServiceLive = Layer.effect(
             try: () =>
               dbService.db
                 .delete(playerTable)
-                .where(inArray(playerTable.id, validated.playerIds)),
+                .where(inArray(playerTable.publicId, validated.playerIds)),
             catch: (error) =>
               new DatabaseError(error, 'Failed to bulk delete players'),
           });

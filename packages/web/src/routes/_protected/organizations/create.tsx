@@ -22,7 +22,7 @@ import { CreateOrganizationSchema } from '@/lib/schema';
 
 const createOrganization = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
-  .validator((data: typeof CreateOrganizationSchema.Type) =>
+  .inputValidator((data: typeof CreateOrganizationSchema.Type) =>
     S.decodeSync(CreateOrganizationSchema)(data),
   )
   .handler(async ({ data, context }) => {

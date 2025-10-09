@@ -79,7 +79,7 @@ export function useUpdatePlayerBase(queryKey: readonly string[]) {
 
       ctx.client.setQueryData<TeamPlayerWithInfo[]>(queryKey, (old = []) =>
         old.map((player) =>
-          player.playerId === variables.playerId
+          player.publicId === variables.playerId
             ? { ...player, ...variables }
             : player,
         ),
@@ -119,7 +119,7 @@ export function useBulkDeletePlayersBase(queryKey: readonly string[]) {
         ctx.client.getQueryData<TeamPlayerWithInfo[]>(queryKey);
 
       ctx.client.setQueryData<TeamPlayerWithInfo[]>(queryKey, (old = []) =>
-        old.filter((p) => !variables.playerIds.includes(p.playerId)),
+        old.filter((p) => !variables.playerIds.includes(p.publicId)),
       );
 
       return { previousPlayers };
@@ -160,7 +160,7 @@ export function useDeletePlayerBase(queryKey: readonly string[]) {
         ctx.client.getQueryData<TeamPlayerWithInfo[]>(queryKey);
 
       ctx.client.setQueryData<TeamPlayerWithInfo[]>(queryKey, (old = []) =>
-        old.filter((p) => p.playerId !== variables.playerId),
+        old.filter((p) => p.publicId !== variables.playerId),
       );
 
       return { previousPlayers };

@@ -1,5 +1,5 @@
 import { index, integer, pgTable, text } from 'drizzle-orm/pg-core';
-import { timestamps } from '../drizzle/types';
+import { ids, timestamps } from '../drizzle/types';
 import { organizationTable } from '../organization/organization.sql';
 import { teamTable } from '../team/team.sql';
 import { userTable } from '../user/user.sql';
@@ -7,7 +7,7 @@ import { userTable } from '../user/user.sql';
 export const playerTable = pgTable(
   'player',
   {
-    id: text('id').primaryKey(),
+    ...ids,
     organizationId: text('organization_id')
       .notNull()
       .references(() => organizationTable.id, { onDelete: 'cascade' }),
@@ -27,16 +27,17 @@ export const playerTable = pgTable(
   ],
 );
 
-export type Player = typeof playerTable.$inferSelect;
+type PlayerInternal = typeof playerTable.$inferSelect;
+export type Player = Omit<PlayerInternal, 'id'>;
 
 export const teamPlayerTable = pgTable(
   'team_player',
   {
-    id: text('id').primaryKey(),
+    ...ids,
     teamId: text('team_id')
       .notNull()
       .references(() => teamTable.id, { onDelete: 'cascade' }),
-    playerId: text('player_id')
+    playerId: integer('player_id')
       .notNull()
       .references(() => playerTable.id, { onDelete: 'cascade' }),
     jerseyNumber: integer('jersey_number'),
@@ -50,4 +51,5 @@ export const teamPlayerTable = pgTable(
   ],
 );
 
-export type TeamPlayer = typeof teamPlayerTable.$inferSelect;
+type TeamPlayerInternal = typeof teamPlayerTable.$inferSelect;
+export type TeamPlayer = Omit<TeamPlayerInternal, 'id' | 'playerId'>;
