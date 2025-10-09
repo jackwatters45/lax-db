@@ -1,5 +1,5 @@
 import type { Team, TeamMember } from 'better-auth/plugins';
-import { Console, Context, Effect, Layer, Runtime, Schema } from 'effect';
+import { Context, Effect, Layer, Runtime, Schema } from 'effect';
 import type { ParseError } from 'effect/ParseResult';
 import { auth } from '../auth';
 
@@ -9,6 +9,13 @@ export const CreateTeamInput = Schema.Struct({
   description: Schema.optional(Schema.String),
 });
 type CreateTeamInput = typeof CreateTeamInput.Type;
+
+export const UpdateTeamInput = Schema.Struct({
+  teamId: Schema.String,
+  name: Schema.String,
+  description: Schema.optional(Schema.String),
+});
+type UpdateTeamInput = typeof UpdateTeamInput.Type;
 
 export const DeleteTeamInput = Schema.Struct({
   teamId: Schema.String,
@@ -50,6 +57,10 @@ export class TeamsService extends Context.Tag('TeamsService')<
   {
     readonly createTeam: (
       input: CreateTeamInput,
+      headers: Headers,
+    ) => Effect.Effect<Team, ParseError | TeamsError>;
+    readonly updateTeam: (
+      input: UpdateTeamInput,
       headers: Headers,
     ) => Effect.Effect<Team, ParseError | TeamsError>;
     readonly deleteTeam: (
@@ -120,6 +131,36 @@ export const TeamsServiceLive = Layer.succeed(TeamsService, {
       return result;
     }),
 
+  updateTeam: (input, headers) =>
+    Effect.gen(function* () {
+      const validated = yield* Schema.decode(UpdateTeamInput)(input);
+
+      const result = yield* Effect.tryPromise(() => {
+        return auth.api.updateTeam({
+          headers,
+          body: {
+            teamId: validated.teamId,
+            data: {
+              name: validated.name,
+            },
+          },
+        });
+      }).pipe(
+        Effect.mapError((cause) => {
+          console.error('Update team error details:', cause);
+          return new TeamsError(cause, 'Failed to update team');
+        }),
+      );
+
+      if (!result) {
+        return yield* Effect.fail(
+          new TeamsError(null, 'Failed to update team'),
+        );
+      }
+
+      return result;
+    }),
+
   deleteTeam: (input, headers) =>
     Effect.gen(function* () {
       const validated = yield* Schema.decode(DeleteTeamInput)(input);
@@ -162,8 +203,6 @@ export const TeamsServiceLive = Layer.succeed(TeamsService, {
         }),
         Effect.orElse(() => Effect.succeed([])), // Return empty array on error
       );
-
-      yield* Console.log({ result });
 
       return (result || []) as TeamMember[];
     }),
@@ -215,6 +254,16 @@ export const TeamsAPI = {
     const effect = Effect.gen(function* () {
       const service = yield* TeamsService;
       return yield* service.createTeam(input, headers);
+    });
+    return await Runtime.runPromise(runtime)(
+      Effect.provide(effect, TeamsServiceLive),
+    );
+  },
+
+  async updateTeam(input: UpdateTeamInput, headers: Headers): Promise<Team> {
+    const effect = Effect.gen(function* () {
+      const service = yield* TeamsService;
+      return yield* service.updateTeam(input, headers);
     });
     return await Runtime.runPromise(runtime)(
       Effect.provide(effect, TeamsServiceLive),

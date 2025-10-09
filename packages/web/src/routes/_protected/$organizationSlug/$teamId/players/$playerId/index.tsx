@@ -1,13 +1,8 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { PageBody, PageContainer } from '@/components/layout/page-content';
+import { TeamBreadcrumbSwitcher } from '@/components/nav/team-breadcrumb-switcher';
 import {
-  BreadcrumbDropdown,
-  BreadcrumbDropdownContent,
-  BreadcrumbDropdownItem,
-  BreadcrumbDropdownLabel,
-  BreadcrumbDropdownSeparator,
-  BreadcrumbDropdownTrigger,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbSeparator,
@@ -19,7 +14,6 @@ import { playerInfo } from './-data-2';
 import {
   ActiveGoals,
   AssignedResources,
-  ContactInformation,
   PlayerOverview,
   QuickActions,
   RecentNotes,
@@ -81,9 +75,9 @@ function RouteComponent() {
             canEdit={permissions.canEdit}
           />
           <div className="space-y-4">
-            {permissions.canViewSensitive && (
-              <ContactInformation player={player} />
-            )}
+            {/*{permissions.canViewSensitive && (
+              <ContactInfo contactInfo={contactInfo} />
+            )}*/}
             <PlayerOverview player={player} />
             <QuickActions
               playerId={player.id}
@@ -139,37 +133,24 @@ function Header() {
         </BreadcrumbLink>
       </BreadcrumbItem>
       <BreadcrumbSeparator />
-      <BreadcrumbItem>
-        <BreadcrumbDropdown>
-          <BreadcrumbLink asChild>
-            <Link
-              to="/$organizationSlug/$teamId"
-              params={{ organizationSlug, teamId: activeTeam.id }}
-            >
-              {activeTeam.name}
-            </Link>
-          </BreadcrumbLink>
-          <BreadcrumbDropdownTrigger />
-          <BreadcrumbDropdownContent>
-            <BreadcrumbDropdownLabel>Switch Team</BreadcrumbDropdownLabel>
-            <BreadcrumbDropdownSeparator />
-            {teams.map((team) => (
-              <BreadcrumbDropdownItem asChild key={team.id}>
-                <Link
-                  to="/$organizationSlug/$teamId/players/$playerId"
-                  params={{
-                    organizationSlug,
-                    teamId: team.id,
-                    playerId: player.id,
-                  }}
-                >
-                  {team.name}
-                </Link>
-              </BreadcrumbDropdownItem>
-            ))}
-          </BreadcrumbDropdownContent>
-        </BreadcrumbDropdown>
-      </BreadcrumbItem>
+      <TeamBreadcrumbSwitcher
+        activeTeam={activeTeam}
+        teams={teams}
+        organizationSlug={organizationSlug}
+      >
+        {({ team }) => (
+          <Link
+            to="/$organizationSlug/$teamId/players/$playerId"
+            params={{
+              organizationSlug,
+              teamId: team.id,
+              playerId: player.id,
+            }}
+          >
+            {team.name}
+          </Link>
+        )}
+      </TeamBreadcrumbSwitcher>
       <BreadcrumbSeparator />
       <BreadcrumbItem>
         <BreadcrumbLink title="Players" asChild>

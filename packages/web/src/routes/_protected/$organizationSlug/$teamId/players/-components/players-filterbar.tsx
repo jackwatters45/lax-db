@@ -12,6 +12,7 @@ import {
 } from '@/components/data-table/data-table-filterbar';
 import { useDataTable } from '@/components/data-table/use-data-table';
 import { Button } from '@/components/ui/button';
+import { ButtonGroup } from '@/components/ui/button-group';
 import { POSITION_SELECT_FIELDS } from '@/lib/constants';
 import { AddPlayerCommand } from './add-player-command';
 
@@ -43,18 +44,24 @@ export function PlayersFilterBar({
           <FilterClear />
         </FilterGroup>
         <FilterActions>
-          <FilterBarDisplayTypeToggle />
-          <FilterBarViewOptions />
-          <AddPlayerCommand
-            organizationId={organizationId}
-            teamId={teamId}
-            excludePlayerIds={excludePlayerIds}
-          >
-            <Button size="sm">
-              <Plus className="size-4" />
-              <span className="hidden lg:block">Add Player</span>
-            </Button>
-          </AddPlayerCommand>
+          <ButtonGroup>
+            <FilterBarDisplayTypeToggle />
+          </ButtonGroup>
+          <ButtonGroup>
+            <FilterBarViewOptions />
+          </ButtonGroup>
+          <ButtonGroup>
+            <AddPlayerCommand
+              organizationId={organizationId}
+              teamId={teamId}
+              excludePlayerIds={excludePlayerIds}
+            >
+              <Button size="sm">
+                <Plus className="size-4" />
+                <span className="hidden lg:block">Add Player</span>
+              </Button>
+            </AddPlayerCommand>
+          </ButtonGroup>
         </FilterActions>
       </FilterBar>
     </FilterBarProvider>

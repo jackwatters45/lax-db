@@ -42,7 +42,7 @@ export class OrganizationService extends Context.Tag('OrganizationService')<
     readonly createOrganization: (
       input: CreateOrganizationInput,
       headers: Headers,
-    ) => Effect.Effect<void, ParseError | OrganizationError>;
+    ) => Effect.Effect<{ teamId: string }, ParseError | OrganizationError>;
     readonly acceptInvitation: (
       input: AcceptInvitationInput,
       headers: Headers,
@@ -126,6 +126,35 @@ export const OrganizationServiceLive = Layer.effect(
               );
             }),
           );
+
+          const teams = yield* Effect.tryPromise(() =>
+            auth.api.listOrganizationTeams({
+              headers,
+              query: {
+                organizationId,
+              },
+            }),
+          ).pipe(
+            Effect.mapError((cause) => {
+              console.error('Failed to get default team:', cause);
+              return new OrganizationError(
+                cause,
+                'Organization created but failed to get default team',
+              );
+            }),
+          );
+
+          const team = teams.find((t) => t.organizationId === organizationId);
+          if (!team) {
+            return yield* Effect.fail(
+              new OrganizationError(
+                'No default team found',
+                'Organization created but no default team found',
+              ),
+            );
+          }
+
+          return { teamId: team.id };
         }),
 
       acceptInvitation: (input, headers) =>
@@ -285,7 +314,10 @@ const runtime = Runtime.defaultRuntime;
 
 // Simple async API - no Effect boilerplate needed
 export const OrganizationAPI = {
-  async createOrganization(input: CreateOrganizationInput, headers: Headers) {
+  async createOrganization(
+    input: CreateOrganizationInput,
+    headers: Headers,
+  ): Promise<{ teamId: string }> {
     const effect = Effect.gen(function* () {
       const service = yield* OrganizationService;
       return yield* service.createOrganization(input, headers);

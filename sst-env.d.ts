@@ -3,8 +3,9 @@
 /* eslint-disable */
 /* deno-fmt-ignore-file */
 
-declare module 'sst' {
+declare module "sst" {
   export interface Resource {
+<<<<<<< HEAD
     BetterAuthSecret: {
       type: 'sst.sst.Secret';
       value: string;
@@ -69,9 +70,75 @@ declare module 'sst' {
       type: 'sst.aws.TanstackStart';
       url: string;
     };
+=======
+    "BetterAuthSecret": {
+      "type": "sst.sst.Secret"
+      "value": string
+    }
+    "Bucket": {
+      "name": string
+      "type": "sst.aws.Bucket"
+    }
+    "Database": {
+      "database": string
+      "host": string
+      "password": string
+      "port": number
+      "type": "sst.sst.Linkable"
+      "username": string
+    }
+    "DatabaseMigrator": {
+      "name": string
+      "type": "sst.aws.Function"
+    }
+    "DrizzleLog": {
+      "type": "sst.sst.Secret"
+      "value": string
+    }
+    "Email": {
+      "configSet": string
+      "sender": string
+      "type": "sst.aws.Email"
+    }
+    "GoogleAuthClientId": {
+      "type": "sst.sst.Secret"
+      "value": string
+    }
+    "GoogleAuthClientSecret": {
+      "type": "sst.sst.Secret"
+      "value": string
+    }
+    "PlanetScaleHost": {
+      "type": "sst.sst.Secret"
+      "value": string
+    }
+    "PlanetScalePassword": {
+      "type": "sst.sst.Secret"
+      "value": string
+    }
+    "PlanetScaleUsername": {
+      "type": "sst.sst.Secret"
+      "value": string
+    }
+    "Redis": {
+      "host": string
+      "password": string
+      "port": number
+      "type": "sst.aws.Redis"
+      "username": string
+    }
+    "Vpc": {
+      "bastion": string
+      "type": "sst.aws.Vpc"
+    }
+    "Web": {
+      "type": "sst.aws.TanstackStart"
+      "url": string
+    }
+>>>>>>> a159e1e (total wip)
   }
 }
 /// <reference path="sst-env.d.ts" />
 
-import 'sst';
-export {};
+import "sst"
+export {}

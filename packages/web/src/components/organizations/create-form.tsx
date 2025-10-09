@@ -61,12 +61,11 @@ export function CreateOrganizationForm({
   const createOrgMutation = useMutation({
     mutationKey: ['createOrganization'],
     mutationFn: (data: FormData) => createOrganization({ data }),
-    onSuccess: async (_, variables) => {
-      toast.success(`Organization "${variables.name}" created successfully!`);
+    onSuccess: async (result, variables) => {
       await router.invalidate();
       router.navigate({
-        to: '/$organizationSlug',
-        params: { organizationSlug: variables.slug },
+        to: '/$organizationSlug/$teamId/setup',
+        params: { organizationSlug: variables.slug, teamId: result.teamId },
       });
     },
     onError: (error, variables) => {
