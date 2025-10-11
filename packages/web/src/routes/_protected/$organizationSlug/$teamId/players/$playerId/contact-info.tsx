@@ -1,47 +1,70 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { createServerFn } from '@tanstack/react-start';
+import { Pencil } from 'lucide-react';
+import { useState } from 'react';
 import { PageBody, PageContainer } from '@/components/layout/page-content';
 import { TeamBreadcrumbSwitcher } from '@/components/nav/team-breadcrumb-switcher';
+import {
+  ContactInfoEdit,
+  ContactInfoView,
+} from '@/components/players/contact-info';
 import {
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PlayerHeader } from './-components/player-header';
-import { mockPlayerDetails } from './-utils';
-
-// Server function for getting player details
-const getPlayerDetails = createServerFn({ method: 'GET' })
-  .inputValidator((data: { playerId: string }) => data)
-  .handler(async ({ data }) => {
-    console.log('Getting player details for:', data.playerId);
-    // TODO: Replace with actual API call
-    // const { PlayerDevelopmentAPI } = await import('@lax-db/core/player-development/index');
-    // return await PlayerDevelopmentAPI.getPlayerProfile(data.playerId, headers);
-
-    return mockPlayerDetails;
-  });
+import { contactInfo } from './-data-2';
 
 export const Route = createFileRoute(
-  '/_protected/$organizationSlug/$teamId/players/$playerId/edit',
+  '/_protected/$organizationSlug/$teamId/players/$playerId/contact-info',
 )({
-  component: RouteComponent,
-  loader: async ({ params }) => {
-    const player = await getPlayerDetails({
-      data: { playerId: params.playerId },
-    });
-
-    return { player };
+  component: ContactInfo,
+  loader: async () => {
+    return { contactInfo };
   },
 });
 
-function RouteComponent() {
+// TODO: update edit version
+// TODO: backend
+function ContactInfo() {
+  const { contactInfo } = Route.useLoaderData();
+
+  const [isEditing, setIsEditing] = useState(false);
+
   return (
     <>
       <Header />
       <PageBody>
         <PageContainer>
-          <div />
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 h-16">
+              <CardTitle>Contact Information</CardTitle>
+              {!isEditing && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setIsEditing(true)}
+                >
+                  <Pencil className="h-4 w-4" />
+                </Button>
+              )}
+            </CardHeader>
+            <CardContent>
+              {isEditing ? (
+                <ContactInfoEdit
+                  contactInfo={contactInfo}
+                  setIsEditing={setIsEditing}
+                />
+              ) : (
+                <ContactInfoView
+                  contactInfo={contactInfo}
+                  setIsEditing={setIsEditing}
+                />
+              )}
+            </CardContent>
+          </Card>
         </PageContainer>
       </PageBody>
     </>
@@ -51,13 +74,13 @@ function RouteComponent() {
 function Header() {
   const { organizationSlug } = Route.useParams();
   const { activeTeam, teams } = Route.useRouteContext();
-  const { player } = Route.useLoaderData();
+  const { contactInfo } = Route.useLoaderData();
 
   return (
     <PlayerHeader
       organizationSlug={organizationSlug}
       teamId={activeTeam.id}
-      playerId={player.id}
+      playerId={contactInfo.id}
     >
       <BreadcrumbItem>
         <BreadcrumbLink className="max-w-full truncate" title="Teams" asChild>
@@ -74,11 +97,11 @@ function Header() {
       >
         {({ team }) => (
           <Link
-            to="/$organizationSlug/$teamId/players/$playerId/edit"
+            to="/$organizationSlug/$teamId/players/$playerId/contact-info"
             params={{
               organizationSlug,
-              teamId: team.id,
-              playerId: player.id,
+              teamId: activeTeam.id,
+              playerId: contactInfo.id,
             }}
           >
             {team.name}
@@ -98,31 +121,30 @@ function Header() {
       </BreadcrumbItem>
       <BreadcrumbSeparator />
       <BreadcrumbItem>
-        <BreadcrumbLink title={player.name} asChild>
+        <BreadcrumbLink title={contactInfo.name!} asChild>
           <Link
             to="/$organizationSlug/$teamId/players/$playerId"
             params={{
               organizationSlug,
               teamId: activeTeam.id,
-              playerId: player.id,
+              playerId: contactInfo.id,
             }}
           >
-            {player.name}
+            {contactInfo.name}
           </Link>
         </BreadcrumbLink>
       </BreadcrumbItem>
-      <BreadcrumbSeparator />
       <BreadcrumbItem>
-        <BreadcrumbLink title="Edit" asChild>
+        <BreadcrumbLink title={'Contact Info'} asChild>
           <Link
-            to="/$organizationSlug/$teamId/players/$playerId/edit"
+            to="/$organizationSlug/$teamId/players/$playerId/contact-info"
             params={{
               organizationSlug,
               teamId: activeTeam.id,
-              playerId: player.id,
+              playerId: contactInfo.id,
             }}
           >
-            Edit
+            Contact Info
           </Link>
         </BreadcrumbLink>
       </BreadcrumbItem>

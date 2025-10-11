@@ -77,7 +77,9 @@ function FilterGroup({ children, className }: FilterGroupProps) {
 
 function FilterActions({ children, className }: FilterGroupProps) {
   return (
-    <div className={cn('flex items-center gap-2', className)}>{children}</div>
+    <ButtonGroup className={cn('flex items-center gap-2', className)}>
+      {children}
+    </ButtonGroup>
   );
 }
 
@@ -86,57 +88,51 @@ function FilterBarViewOptions() {
   const columns = table.getAllColumns();
 
   return (
-    <div>
-      <div className="flex justify-center">
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              size="sm"
-              className="ml-auto flex h-7 gap-x-2 text-sm sm:text-xs"
-            >
-              <RiEqualizer2Line className="size-4" aria-hidden="true" />
-              View
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent
-            align="end"
-            sideOffset={7}
-            className="z-50 w-fit space-y-2"
-          >
-            <Label className="font-semibold">Display Properties</Label>
-            <div className="mt-2 flex flex-col space-y-2">
-              {columns.map((column) => {
-                if (!column.getCanHide()) return null;
-                const label =
-                  (column.columnDef.meta?.displayName as string) || column.id;
-                return (
-                  <div
-                    key={column.id}
-                    className="flex items-center gap-2 overflow-y-auto rounded-sm text-sm hover:bg-accent hover:text-accent-foreground"
-                  >
-                    <Checkbox
-                      id={column.id}
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) =>
-                        column.toggleVisibility(!!value)
-                      }
-                      aria-label={`Toggle ${label} column visibility`}
-                    />
-                    <Label
-                      htmlFor={column.id}
-                      className="cursor-pointer font-normal text-sm"
-                    >
-                      {label}
-                    </Label>
-                  </div>
-                );
-              })}
-            </div>
-          </PopoverContent>
-        </Popover>
-      </div>
-    </div>
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          size="sm"
+          // className="ml-auto flex h-7 gap-x-2 text-sm sm:text-xs"
+        >
+          <RiEqualizer2Line className="size-4" aria-hidden="true" />
+          View
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent
+        align="end"
+        sideOffset={7}
+        className="z-50 w-fit space-y-2"
+      >
+        <Label className="font-semibold">Display Properties</Label>
+        <div className="mt-2 flex flex-col space-y-2">
+          {columns.map((column) => {
+            if (!column.getCanHide()) return null;
+            const label =
+              (column.columnDef.meta?.displayName as string) || column.id;
+            return (
+              <div
+                key={column.id}
+                className="flex items-center gap-2 overflow-y-auto rounded-sm text-sm hover:bg-accent hover:text-accent-foreground"
+              >
+                <Checkbox
+                  id={column.id}
+                  checked={column.getIsVisible()}
+                  onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                  aria-label={`Toggle ${label} column visibility`}
+                />
+                <Label
+                  htmlFor={column.id}
+                  className="cursor-pointer font-normal text-sm"
+                >
+                  {label}
+                </Label>
+              </div>
+            );
+          })}
+        </div>
+      </PopoverContent>
+    </Popover>
   );
 }
 
@@ -167,6 +163,7 @@ function FilterBarDisplayTypeToggle() {
   );
 }
 
+import { ButtonGroup } from '../ui/button-group';
 // re-export data-table-filters
 import {
   FilterCheckbox,

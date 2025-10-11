@@ -14,6 +14,7 @@ const getSessionAndOrg = createServerFn({ method: 'GET' })
         headers: context.headers,
       });
     } catch (error) {
+      console.log('ERRRRR');
       console.error(error);
     }
 

@@ -51,9 +51,16 @@ export function PlayerSubNav({
       </NavbarItem>
       <NavbarItem asChild>
         <Link
+          to="/$organizationSlug/$teamId/players/$playerId/contact-info"
+          params={{ organizationSlug, teamId, playerId }}
+        >
+          Contact Info
+        </Link>
+      </NavbarItem>
+      <NavbarItem asChild>
+        <Link
           to="/$organizationSlug/$teamId/players/$playerId/edit"
           params={{ organizationSlug, teamId, playerId }}
-          activeOptions={{ exact: true }}
         >
           Edit
         </Link>
