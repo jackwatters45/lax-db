@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "@lax-db/core": "*",
-    "sst": "^3.17.14"
+    "drizzle-orm": "^0.44.6"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.152"
