@@ -1,8 +1,8 @@
 {
-  "extends": "@tsconfig/node22/tsconfig.json",
-  "exclude": ["packages"],
+  "extends": "@tsconfig/bun",
   "compilerOptions": {
-    "module": "ES2022",
-    "moduleResolution": "Bundler"
+    "forceConsistentCasingInFileNames": true,
+    "noUncheckedIndexedAccess": true,
+    "plugins": [{ "name": "@effect/language-service" }]
   }
 }
