@@ -8,8 +8,7 @@
     "typecheck": "sst shell -- tsc --noEmit"
   },
   "devDependencies": {
-    "@vitest/ui": "^3.2.4",
-    "vitest": "^2.1.9"
+    "@vitest/ui": "^3.2.4"
   },
   "dependencies": {
     "@lax-db/core": "*",
