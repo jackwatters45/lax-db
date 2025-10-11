@@ -13,3 +13,5 @@ export const feedbackTable = pgTable('feedback', {
 
 type FeedbackInternal = typeof feedbackTable.$inferSelect;
 export type Feedback = Omit<FeedbackInternal, 'id'>;
+
+export type FeedbackInster = typeof feedbackTable.$inferSelect;

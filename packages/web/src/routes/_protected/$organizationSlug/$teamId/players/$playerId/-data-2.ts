@@ -1,4 +1,4 @@
-import type { PlayerWithContactInfoNonNullable } from '@lax-db/core/player/contact-info';
+import type { PlayerWithContactInfoNonNullable } from '@lax-db/core/player/contact-info/index';
 
 // TODO: need to move this to props
 export const playerInfo = {
@@ -15,7 +15,7 @@ export const playerInfo = {
 export type PlayerInfoType = typeof playerInfo;
 
 export const contactInfo: PlayerWithContactInfoNonNullable = {
-  id: '1',
+  playerId: '1',
   name: 'Jack Watters',
   email: 'jack.watters@example.com',
   // contact info

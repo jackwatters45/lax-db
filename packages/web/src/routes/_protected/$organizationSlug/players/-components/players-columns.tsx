@@ -29,10 +29,6 @@ import {
 import { POSITION_SELECT_FIELDS } from '@/lib/constants';
 import { usePlayerMutations, useUpdatePlayer } from '../-mutations';
 
-// import { usePlayerMutations } from '../-mutations';
-
-// import { PlayerReplaceCombobox } from './player-replace-combobox';
-
 const columnHelper = createColumnHelper<TeamPlayerWithInfo>();
 
 type EditablePlayerColumnsProps = {
@@ -126,7 +122,7 @@ export function createEditablePlayerColumns({
       },
       cell: ({ row }) => {
         const player = row.original;
-        const { mutation } = useUpdatePlayer(organizationId);
+        const { mutation: _ } = useUpdatePlayer(organizationId);
 
         return (
           <ControlledInput

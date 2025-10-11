@@ -1,4 +1,4 @@
-import { OrganizationIdSchema } from '@lax-db/core/player/player.schema';
+import { OrganizationIdSchema } from '@lax-db/core/schema';
 import { useMutation } from '@tanstack/react-query';
 import type { useRouter } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
@@ -8,7 +8,7 @@ import { authMiddleware } from '@/lib/middleware';
 
 // Mutation to switch organization
 const SwitchActiveOrganizationSchema = S.Struct({
-  organizationId: OrganizationIdSchema,
+  ...OrganizationIdSchema,
 });
 
 const switchActiveOrganization = createServerFn({ method: 'POST' })

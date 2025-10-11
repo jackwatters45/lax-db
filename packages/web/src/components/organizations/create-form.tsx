@@ -1,8 +1,10 @@
 import { effectTsResolver } from '@hookform/resolvers/effect-ts';
+import { OrganizationService } from '@lax-db/core/organization/index';
+import { RuntimeServer } from '@lax-db/core/runtime.server';
 import { useMutation } from '@tanstack/react-query';
 import { Link, useCanGoBack, useRouter } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
-import { Schema as S } from 'effect';
+import { Effect, Schema as S } from 'effect';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { PageContainer } from '@/components/layout/page-content';
@@ -26,11 +28,17 @@ const createOrganization = createServerFn({ method: 'POST' })
   .inputValidator((data: typeof CreateOrganizationSchema.Type) =>
     S.decodeSync(CreateOrganizationSchema)(data),
   )
-  .handler(async ({ data, context }) => {
-    const { OrganizationAPI } = await import('@lax-db/core/organization/index');
-
-    return await OrganizationAPI.createOrganization(data, context.headers);
-  });
+  .handler(async ({ data, context }) =>
+    RuntimeServer.runPromise(
+      Effect.gen(function* () {
+        const organizationService = yield* OrganizationService;
+        return yield* organizationService.createOrganization(
+          data,
+          context.headers,
+        );
+      }),
+    ),
+  );
 
 type FormData = typeof CreateOrganizationSchema.Type;
 
@@ -59,7 +67,6 @@ export function CreateOrganizationForm({
   });
 
   const createOrgMutation = useMutation({
-    mutationKey: ['createOrganization'],
     mutationFn: (data: FormData) => createOrganization({ data }),
     onSuccess: async (result, variables) => {
       await router.invalidate();

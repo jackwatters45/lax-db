@@ -10,6 +10,6 @@ export const Route = createFileRoute('/(marketing)/')({
     const session = await auth.api.getSession({ headers });
 
     if (!session) throw redirect({ to: '/login' });
-    // throw redirect({ to: '/redirect' });
+    throw redirect({ to: '/redirect' });
   },
 });

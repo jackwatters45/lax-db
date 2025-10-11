@@ -1,4 +1,7 @@
-import { TeamIdSchema } from '@lax-db/core/player/player.schema';
+import { OrganizationService } from '@lax-db/core/organization/index';
+import { RuntimeServer } from '@lax-db/core/runtime.server';
+import { TeamIdSchema } from '@lax-db/core/schema';
+import { TeamService } from '@lax-db/core/team/index';
 import {
   createFileRoute,
   Link,
@@ -7,7 +10,7 @@ import {
 } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import type { Team, TeamMember } from 'better-auth/plugins';
-import { Schema as S } from 'effect';
+import { Effect, Schema as S } from 'effect';
 import { ArrowRight, Plus, Trash2, Users } from 'lucide-react';
 import { toast } from 'sonner';
 import { DashboardHeader } from '@/components/sidebar/dashboard-header';
@@ -30,14 +33,19 @@ import { authMiddleware } from '@/lib/middleware';
 
 const getUserOrganizationContext = createServerFn()
   .middleware([authMiddleware])
-  .handler(async ({ context }) => {
-    const { OrganizationAPI } = await import('@lax-db/core/organization/index');
-
-    return await OrganizationAPI.getUserOrganizationContext(context.headers);
-  });
+  .handler(async ({ context }) =>
+    RuntimeServer.runPromise(
+      Effect.gen(function* () {
+        const organizationService = yield* OrganizationService;
+        return yield* organizationService.getUserOrganizationContext(
+          context.headers,
+        );
+      }),
+    ),
+  );
 
 const DeleteTeamSchema = S.Struct({
-  teamId: TeamIdSchema,
+  ...TeamIdSchema,
 });
 
 const deleteTeam = createServerFn({ method: 'POST' })
@@ -45,11 +53,14 @@ const deleteTeam = createServerFn({ method: 'POST' })
   .inputValidator((data: typeof DeleteTeamSchema.Type) =>
     S.decodeSync(DeleteTeamSchema)(data),
   )
-  .handler(async ({ data, context }) => {
-    const { TeamsAPI } = await import('@lax-db/core/team/index');
-
-    return await TeamsAPI.deleteTeam(data, context.headers);
-  });
+  .handler(async ({ data, context }) =>
+    RuntimeServer.runPromise(
+      Effect.gen(function* () {
+        const teamService = yield* TeamService;
+        return yield* teamService.deleteTeam(data, context.headers);
+      }),
+    ),
+  );
 
 export const Route = createFileRoute('/_protected/$organizationSlug/')({
   component: TeamsOverviewPage,

@@ -1,20 +1,23 @@
-import type { TeamPlayerWithInfo } from '@lax-db/core/player/index';
 import {
-  AddPlayerToTeamInputSchema,
-  BulkRemovePlayersFromTeamInputSchema,
-  CreatePlayerInputSchema,
-  DeletePlayerInputSchema,
-  RemovePlayerFromTeamInputSchema,
+  PlayerService,
+  type TeamPlayerWithInfo,
+} from '@lax-db/core/player/index';
+import {
+  AddNewPlayerToTeamInput,
+  AddPlayerToTeamInput,
+  BulkRemovePlayersFromTeamInput,
+  CreatePlayerInput,
+  RemovePlayerFromTeamInput,
 } from '@lax-db/core/player/player.schema';
-import type { PartialNullable } from '@lax-db/core/types';
+import { RuntimeServer } from '@lax-db/core/runtime.server';
+import type { PartialNullable } from '@lax-db/core/type';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createServerFn } from '@tanstack/react-start';
-import { Schema as S } from 'effect';
+import { Effect, Schema as S } from 'effect';
 import { toast } from 'sonner';
 import { authMiddleware } from '@/lib/middleware';
 import {
   getTeamPlayersQK,
-  type UpdatePlayerAndTeamInputSchema,
   useBulkDeletePlayersBase,
   useDeletePlayerBase,
   useUpdatePlayerBase,
@@ -44,57 +47,38 @@ const useUpdatePlayer = (organizationId: string, teamId: string) => {
 };
 
 // Add player to team
-export const AddPlayerWithTeamInputSchema = S.extend(
-  CreatePlayerInputSchema,
-  AddPlayerToTeamInputSchema.omit('playerId'),
+export const AddNewPlayerWithTeamInput = S.extend(
+  CreatePlayerInput,
+  AddNewPlayerToTeamInput,
 );
 
-export const addPlayerToTeamFn = createServerFn({ method: 'POST' })
+export const addNewPlayerToTeamFn = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
-  .inputValidator((data: typeof AddPlayerWithTeamInputSchema.Type) =>
-    S.decodeSync(AddPlayerWithTeamInputSchema)(data),
+  .inputValidator((data: typeof AddNewPlayerWithTeamInput.Type) =>
+    S.decodeSync(AddNewPlayerWithTeamInput)(data),
   )
-  .handler(async ({ data }) => {
-    const { PlayerAPI } = await import('@lax-db/core/player/index');
-    const { Effect, Runtime } = await import('effect');
-
-    const runtime = Runtime.defaultRuntime;
-
-    const player = await Runtime.runPromise(runtime)(
+  .handler(async ({ data }) =>
+    RuntimeServer.runPromise(
       Effect.gen(function* () {
-        const newPlayer = yield* Effect.promise(() =>
-          PlayerAPI.create({
-            organizationId: data.organizationId,
-            name: data.name,
-            email: data.email,
-            phone: data.phone,
-            dateOfBirth: data.dateOfBirth,
-            userId: data.userId,
-          }),
-        );
-
-        yield* Effect.promise(() =>
-          PlayerAPI.addPlayerToTeam({
-            playerId: newPlayer.publicId,
-            teamId: data.teamId,
-            jerseyNumber: data.jerseyNumber,
-            position: data.position,
-          }),
-        );
-
-        return newPlayer;
+        const playerService = yield* PlayerService;
+        return yield* playerService.create({
+          organizationId: data.organizationId,
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          dateOfBirth: data.dateOfBirth,
+          userId: data.userId,
+        });
       }),
-    );
+    ),
+  );
 
-    return player;
-  });
-
-export function useAddPlayerToTeam(organizationId: string, teamId: string) {
+export function useAddNewPlayerToTeam(organizationId: string, teamId: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: typeof AddPlayerWithTeamInputSchema.Type) =>
-      addPlayerToTeamFn({ data }),
+    mutationFn: (data: typeof AddNewPlayerWithTeamInput.Type) =>
+      addNewPlayerToTeamFn({ data }),
     onMutate: async (variables, ctx) => {
       const queryKey = getTeamPlayersQK(organizationId, teamId);
       await ctx.client.cancelQueries({ queryKey });
@@ -139,13 +123,17 @@ export function useAddPlayerToTeam(organizationId: string, teamId: string) {
 // Remove player from team
 export const removePlayerFromTeamFn = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
-  .inputValidator((data: typeof RemovePlayerFromTeamInputSchema.Type) =>
-    S.decodeSync(RemovePlayerFromTeamInputSchema)(data),
+  .inputValidator((data: typeof RemovePlayerFromTeamInput.Type) =>
+    S.decodeSync(RemovePlayerFromTeamInput)(data),
   )
-  .handler(async ({ data }) => {
-    const { PlayerAPI } = await import('@lax-db/core/player/index');
-    await PlayerAPI.removePlayerFromTeam(data);
-  });
+  .handler(async ({ data }) =>
+    RuntimeServer.runPromise(
+      Effect.gen(function* () {
+        const playerService = yield* PlayerService;
+        return yield* playerService.removePlayerFromTeam(data);
+      }),
+    ),
+  );
 
 export function useRemovePlayerFromTeam(
   organizationId: string,
@@ -154,7 +142,7 @@ export function useRemovePlayerFromTeam(
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: typeof RemovePlayerFromTeamInputSchema.Type) =>
+    mutationFn: (data: typeof RemovePlayerFromTeamInput.Type) =>
       removePlayerFromTeamFn({ data }),
     onMutate: async (variables, ctx) => {
       const queryKey = getTeamPlayersQK(organizationId, teamId);
@@ -189,13 +177,17 @@ export function useRemovePlayerFromTeam(
 // Bulk remove players from team
 export const bulkRemovePlayersFromTeamFn = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
-  .inputValidator((data: typeof BulkRemovePlayersFromTeamInputSchema.Type) =>
-    S.decodeSync(BulkRemovePlayersFromTeamInputSchema)(data),
+  .inputValidator((data: typeof BulkRemovePlayersFromTeamInput.Type) =>
+    S.decodeSync(BulkRemovePlayersFromTeamInput)(data),
   )
-  .handler(async ({ data }) => {
-    const { PlayerAPI } = await import('@lax-db/core/player/index');
-    await PlayerAPI.bulkRemovePlayersFromTeam(data);
-  });
+  .handler(async ({ data }) =>
+    RuntimeServer.runPromise(
+      Effect.gen(function* () {
+        const playerService = yield* PlayerService;
+        return yield* playerService.bulkRemovePlayersFromTeam(data);
+      }),
+    ),
+  );
 
 export function useBulkRemovePlayersFromTeam(
   organizationId: string,
@@ -204,7 +196,7 @@ export function useBulkRemovePlayersFromTeam(
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: typeof BulkRemovePlayersFromTeamInputSchema.Type) =>
+    mutationFn: (data: typeof BulkRemovePlayersFromTeamInput.Type) =>
       bulkRemovePlayersFromTeamFn({ data }),
     onMutate: async (variables, ctx) => {
       const queryKey = getTeamPlayersQK(organizationId, teamId);
@@ -280,25 +272,27 @@ export const linkPlayerFn = createServerFn({ method: 'POST' })
   .inputValidator((data: typeof LinkPlayerServerInputSchema.Type) =>
     S.decodeSync(LinkPlayerServerInputSchema)(data),
   )
-  .handler(async ({ data }) => {
-    const { PlayerAPI } = await import('@lax-db/core/player/index');
+  .handler(async ({ data }) =>
+    RuntimeServer.runPromise(
+      Effect.gen(function* () {
+        const playerService = yield* PlayerService;
 
-    // Remove current player from team
-    await PlayerAPI.removePlayerFromTeam({
-      teamId: data.teamId,
-      playerId: data.currentPlayerId,
-    });
+        yield* playerService.removePlayerFromTeam({
+          teamId: data.teamId,
+          playerId: data.currentPlayerId,
+        });
 
-    // Add new player to team
-    await PlayerAPI.addPlayerToTeam({
-      playerId: data.newPlayerData.publicId,
-      teamId: data.teamId,
-      jerseyNumber: data.jerseyNumber,
-      position: data.position,
-    });
+        yield* playerService.addPlayerToTeam({
+          playerId: data.newPlayerData.publicId,
+          teamId: data.teamId,
+          jerseyNumber: data.jerseyNumber,
+          position: data.position,
+        });
 
-    return data.newPlayerData;
-  });
+        return data.newPlayerData;
+      }),
+    ),
+  );
 
 export function useLinkPlayer(organizationId: string, teamId: string) {
   const queryClient = useQueryClient();
@@ -357,13 +351,17 @@ export function useLinkPlayer(organizationId: string, teamId: string) {
 // Add existing player to team (without creating player)
 export const addExistingPlayerToTeamFn = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
-  .inputValidator((data: typeof AddPlayerToTeamInputSchema.Type) =>
-    S.decodeSync(AddPlayerToTeamInputSchema)(data),
+  .inputValidator((data: typeof AddPlayerToTeamInput.Type) =>
+    S.decodeSync(AddPlayerToTeamInput)(data),
   )
-  .handler(async ({ data }) => {
-    const { PlayerAPI } = await import('@lax-db/core/player/index');
-    return await PlayerAPI.addPlayerToTeam(data);
-  });
+  .handler(async ({ data }) =>
+    RuntimeServer.runPromise(
+      Effect.gen(function* () {
+        const playerService = yield* PlayerService;
+        return yield* playerService.addPlayerToTeam(data);
+      }),
+    ),
+  );
 
 export function useAddExistingPlayerToTeam(
   organizationId: string,
@@ -372,7 +370,7 @@ export function useAddExistingPlayerToTeam(
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: typeof AddPlayerToTeamInputSchema.Type) =>
+    mutationFn: (data: typeof AddPlayerToTeamInput.Type) =>
       addExistingPlayerToTeamFn({ data }),
     onError: () => {
       toast.error('Failed to add existing player to team');
@@ -389,7 +387,7 @@ export function useAddExistingPlayerToTeam(
 export function usePlayerMutations(organizationId: string, teamId: string) {
   const addExisting = useAddExistingPlayerToTeam(organizationId, teamId);
   const update = useUpdatePlayer(organizationId, teamId);
-  const add = useAddPlayerToTeam(organizationId, teamId);
+  const add = useAddNewPlayerToTeam(organizationId, teamId);
   const link = useLinkPlayer(organizationId, teamId);
   const remove = useRemovePlayerFromTeam(organizationId, teamId);
   const deletePlayer = useDeletePlayer(organizationId, teamId);
@@ -407,10 +405,3 @@ export function usePlayerMutations(organizationId: string, teamId: string) {
     bulkRemove,
   };
 }
-
-// Re-export schemas
-export {
-  DeletePlayerInputSchema,
-  RemovePlayerFromTeamInputSchema,
-  type UpdatePlayerAndTeamInputSchema as UpdatePlayerInputSchema,
-};

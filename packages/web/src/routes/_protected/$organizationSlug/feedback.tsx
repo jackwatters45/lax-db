@@ -1,9 +1,11 @@
 import { effectTsResolver } from '@hookform/resolvers/effect-ts';
-import { RATING_ENUM, TOPIC_ENUM } from '@lax-db/core/feedback/types';
+import { RATING_ENUM, TOPIC_ENUM } from '@lax-db/core/feedback/feedback.schema';
+import { FeedbackService } from '@lax-db/core/feedback/index';
+import { RuntimeServer } from '@lax-db/core/runtime.server';
 import { useMutation } from '@tanstack/react-query';
 import { createFileRoute, Link, useRouter } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
-import { Schema as S } from 'effect';
+import { Effect, Schema as S } from 'effect';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { PageBody } from '@/components/layout/page-content';
@@ -48,17 +50,21 @@ const submitFeedback = createServerFn({ method: 'POST' })
   .inputValidator((data: FeedbackFormValues) =>
     S.decodeSync(FeedbackSchema)(data),
   )
-  .handler(async ({ data, context: { session } }) => {
-    const { FeedbackAPI } = await import('@lax-db/core/feedback/index');
+  .handler(async ({ data, context: { session } }) =>
+    RuntimeServer.runPromise(
+      Effect.gen(function* () {
+        const feedbackService = yield* FeedbackService;
 
-    const feedbackData = {
-      ...data,
-      userId: session?.user?.id,
-      userEmail: session?.user?.email,
-    };
+        const feedbackData = {
+          ...data,
+          userId: session?.user?.id,
+          userEmail: session?.user?.email,
+        };
 
-    return await FeedbackAPI.createFeedback(feedbackData);
-  });
+        return yield* feedbackService.create(feedbackData);
+      }),
+    ),
+  );
 
 export const Route = createFileRoute('/_protected/$organizationSlug/feedback')({
   component: FeedbackPage,

@@ -39,7 +39,7 @@ function ContactInfo() {
       <PageBody>
         <PageContainer>
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 h-16">
+            <CardHeader className="flex h-16 flex-row items-center justify-between space-y-0">
               <CardTitle>Contact Information</CardTitle>
               {!isEditing && (
                 <Button
@@ -80,7 +80,7 @@ function Header() {
     <PlayerHeader
       organizationSlug={organizationSlug}
       teamId={activeTeam.id}
-      playerId={contactInfo.id}
+      playerId={contactInfo.playerId}
     >
       <BreadcrumbItem>
         <BreadcrumbLink className="max-w-full truncate" title="Teams" asChild>
@@ -101,7 +101,7 @@ function Header() {
             params={{
               organizationSlug,
               teamId: activeTeam.id,
-              playerId: contactInfo.id,
+              playerId: contactInfo.playerId,
             }}
           >
             {team.name}
@@ -127,7 +127,7 @@ function Header() {
             params={{
               organizationSlug,
               teamId: activeTeam.id,
-              playerId: contactInfo.id,
+              playerId: contactInfo.playerId,
             }}
           >
             {contactInfo.name}
@@ -141,7 +141,7 @@ function Header() {
             params={{
               organizationSlug,
               teamId: activeTeam.id,
-              playerId: contactInfo.id,
+              playerId: contactInfo.playerId,
             }}
           >
             Contact Info

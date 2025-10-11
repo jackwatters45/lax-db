@@ -1,10 +1,12 @@
-import { OrganizationIdSchema } from '@lax-db/core/player/player.schema';
+import { PlayerService } from '@lax-db/core/player/index';
+import { RuntimeServer } from '@lax-db/core/runtime.server';
+import { OrganizationIdSchema } from '@lax-db/core/schema';
 import { createServerFn } from '@tanstack/react-start';
-import { Schema as S } from 'effect';
+import { Effect, Schema as S } from 'effect';
 import { authMiddleware } from '@/lib/middleware';
 
 const GetOrganizationPlayersSchema = S.Struct({
-  organizationId: OrganizationIdSchema,
+  ...OrganizationIdSchema,
 });
 
 export const getOrganizationPlayers = createServerFn({ method: 'GET' })
@@ -12,7 +14,11 @@ export const getOrganizationPlayers = createServerFn({ method: 'GET' })
   .inputValidator((data: typeof GetOrganizationPlayersSchema.Type) =>
     S.decodeSync(GetOrganizationPlayersSchema)(data),
   )
-  .handler(async ({ data }) => {
-    const { PlayerAPI } = await import('@lax-db/core/player/index');
-    return await PlayerAPI.getAll({ organizationId: data.organizationId });
-  });
+  .handler(async ({ data }) =>
+    RuntimeServer.runPromise(
+      Effect.gen(function* () {
+        const playerService = yield* PlayerService;
+        return yield* playerService.getAll(data);
+      }),
+    ),
+  );

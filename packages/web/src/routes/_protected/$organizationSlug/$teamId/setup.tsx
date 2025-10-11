@@ -1,9 +1,12 @@
 import { effectTsResolver } from '@hookform/resolvers/effect-ts';
+import { OrganizationService } from '@lax-db/core/organization/index';
+import { RuntimeServer } from '@lax-db/core/runtime.server';
+import { TeamService } from '@lax-db/core/team/index';
 import { useMutation } from '@tanstack/react-query';
 import { createFileRoute, Link, useRouter } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import type { Team } from 'better-auth/plugins';
-import { Schema as S } from 'effect';
+import { Effect, Schema as S } from 'effect';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { DashboardHeader } from '@/components/sidebar/dashboard-header';
@@ -37,18 +40,27 @@ const updateTeam = createServerFn({ method: 'POST' })
   .inputValidator((data: typeof UpdateTeamSchema.Type) =>
     S.decodeSync(UpdateTeamSchema)(data),
   )
-  .handler(async ({ data, context }) => {
-    const { TeamsAPI } = await import('@lax-db/core/team/index');
-    return await TeamsAPI.updateTeam(data, context.headers);
-  });
+  .handler(async ({ data, context }) =>
+    RuntimeServer.runPromise(
+      Effect.gen(function* () {
+        const teamService = yield* TeamService;
+        return yield* teamService.updateTeam(data, context.headers);
+      }),
+    ),
+  );
 
 const getUserOrganizationContext = createServerFn()
   .middleware([authMiddleware])
-  .handler(async ({ context }) => {
-    const { OrganizationAPI } = await import('@lax-db/core/organization/index');
-
-    return await OrganizationAPI.getUserOrganizationContext(context.headers);
-  });
+  .handler(async ({ context }) =>
+    RuntimeServer.runPromise(
+      Effect.gen(function* () {
+        const organiationService = yield* OrganizationService;
+        return yield* organiationService.getUserOrganizationContext(
+          context.headers,
+        );
+      }),
+    ),
+  );
 
 const formSchema = S.Struct({
   name: S.String.pipe(

@@ -1,6 +1,7 @@
 {
   "extends": "../../tsconfig.json",
   "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules", "../core"],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "baseUrl": ".",

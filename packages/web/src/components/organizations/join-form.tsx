@@ -1,8 +1,11 @@
 import { effectTsResolver } from '@hookform/resolvers/effect-ts';
+import { OrganizationService } from '@lax-db/core/organization/index';
+import { RuntimeServer } from '@lax-db/core/runtime.server';
 import { useMutation } from '@tanstack/react-query';
 import { Link, useCanGoBack, useRouter } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
-import { Schema as S } from 'effect';
+import { getRequest } from '@tanstack/react-start/server';
+import { Effect, Schema as S } from 'effect';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -33,13 +36,27 @@ const acceptInvitation = createServerFn({ method: 'POST' })
   .inputValidator((data: typeof AcceptInvitationSchema.Type) =>
     S.decodeSync(AcceptInvitationSchema)(data),
   )
-  .handler(async ({ data }) => {
-    const { OrganizationAPI } = await import('@lax-db/core/organization/index');
-    const { getRequest } = await import('@tanstack/react-start/server');
+  .handler(
+    async ({ data }) =>
+      RuntimeServer.runPromise(
+        Effect.gen(function* () {
+          const organizationService = yield* OrganizationService;
+          const request = getRequest();
 
-    const request = getRequest();
-    return await OrganizationAPI.acceptInvitation(data, request.headers);
-  });
+          return yield* organizationService.acceptInvitation(
+            data,
+            request.headers,
+          );
+        }),
+      ),
+    //   {
+    //   const { OrganizationAPI } = await import('@lax-db/core/organization/index');
+    //   const { getRequest } = await import('@tanstack/react-start/server');
+
+    //   const request = getRequest();
+    //   return await OrganizationAPI.acceptInvitation(data, request.headers);
+    // }
+  );
 
 export function JoinOrganizationForm({
   organizationSlug,

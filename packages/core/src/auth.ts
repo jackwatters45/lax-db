@@ -1,5 +1,6 @@
-import { db } from '@lax-db/core/drizzle/index';
 // import { Polar } from '@polar-sh/sdk';
+
+import { PgDrizzle } from '@effect/sql-drizzle/Pg';
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import {
@@ -9,7 +10,7 @@ import {
   organization,
 } from 'better-auth/plugins';
 import { reactStartCookies } from 'better-auth/react-start';
-import { Effect, Runtime } from 'effect';
+import { Effect } from 'effect';
 import { Resource } from 'sst';
 import * as authSchema from './auth/auth.sql';
 import {
@@ -20,13 +21,14 @@ import {
   parent,
   player,
 } from './auth/permissions';
-import { OrganizationAPI } from './organization';
+import { OrganizationService } from './organization';
 import {
   invitationTable,
   memberTable,
   organizationTable,
 } from './organization/organization.sql';
-import { RedisLive, RedisService } from './redis';
+import { RedisService } from './redis';
+import { RuntimeServer } from './runtime.server';
 import { teamMemberTable, teamTable } from './team/team.sql';
 import { userTable } from './user/user.sql';
 
@@ -38,8 +40,11 @@ import { userTable } from './user/user.sql';
 //   server: 'sandbox',
 // });
 
-// Create a runtime with Redis layer
-const runtime = Runtime.defaultRuntime;
+const db = RuntimeServer.runPromise(
+  Effect.gen(function* () {
+    return yield* PgDrizzle;
+  }),
+);
 
 export const auth = betterAuth({
   appName: 'Goalbound',
@@ -86,13 +91,7 @@ export const auth = betterAuth({
         return yield* redis.get(key);
       });
 
-      try {
-        return await Runtime.runPromise(runtime)(
-          Effect.provide(effect, RedisLive),
-        );
-      } catch {
-        return null;
-      }
+      return await RuntimeServer.runPromise(effect);
     },
     set: async (key, value, ttl) => {
       const effect = Effect.gen(function* () {
@@ -100,7 +99,7 @@ export const auth = betterAuth({
         return yield* redis.set(key, value, ttl);
       });
 
-      await Runtime.runPromise(runtime)(Effect.provide(effect, RedisLive));
+      return await RuntimeServer.runPromise(effect);
     },
     delete: async (key) => {
       const effect = Effect.gen(function* () {
@@ -108,16 +107,18 @@ export const auth = betterAuth({
         return yield* redis.delete(key);
       });
 
-      await Runtime.runPromise(runtime)(Effect.provide(effect, RedisLive));
+      return await RuntimeServer.runPromise(effect);
     },
   },
   databaseHooks: {
     session: {
       create: {
         before: async (session) => {
-          const organizationId = await OrganizationAPI.getActiveOrganizationId(
-            session.userId,
-          );
+          const effect = Effect.gen(function* () {
+            const organization = yield* OrganizationService;
+            return yield* organization.getActiveOrganizationId(session.userId);
+          });
+          const organizationId = await RuntimeServer.runPromise(effect);
           return {
             data: {
               ...session,

@@ -1,8 +1,10 @@
-import { TeamIdSchema } from '@lax-db/core/player/player.schema';
+import { PlayerService } from '@lax-db/core/player/index';
+import { RuntimeServer } from '@lax-db/core/runtime.server';
+import { TeamIdSchema } from '@lax-db/core/schema';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
-import { Schema as S } from 'effect';
+import { Effect, Schema as S } from 'effect';
 import { useMemo } from 'react';
 import {
   DataTableBody,
@@ -33,7 +35,7 @@ import { PlayersFilterBar } from './-components/players-filterbar';
 import { PlayersToolbar } from './-components/players-toolbar';
 
 const GetTeamPlayers = S.Struct({
-  teamId: TeamIdSchema,
+  ...TeamIdSchema,
 });
 
 const getTeamPlayers = createServerFn({ method: 'GET' })
@@ -41,10 +43,14 @@ const getTeamPlayers = createServerFn({ method: 'GET' })
   .inputValidator((data: typeof GetTeamPlayers.Type) =>
     S.decodeSync(GetTeamPlayers)(data),
   )
-  .handler(async ({ data }) => {
-    const { PlayerAPI } = await import('@lax-db/core/player/index');
-    return await PlayerAPI.getTeamPlayers(data.teamId);
-  });
+  .handler(async ({ data }) =>
+    RuntimeServer.runPromise(
+      Effect.gen(function* () {
+        const playerService = yield* PlayerService;
+        return yield* playerService.getTeamPlayers(data);
+      }),
+    ),
+  );
 
 // TODO: more of a replace than an update - make sure updates add user options + exclude ids or something...
 export const Route = createFileRoute(
