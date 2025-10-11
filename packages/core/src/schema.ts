@@ -1,11 +1,60 @@
 import { Schema as S } from 'effect';
 
+// Drizzle Schemas
+export const SerialSchema = S.Number.pipe(
+  S.int({ message: () => 'ID must be a whole number' }),
+  S.greaterThanOrEqualTo(0, {
+    message: () => 'ID must be 0 or greater',
+  }),
+);
+export const NanoidSchema = S.String.pipe(
+  S.length(12),
+  S.pattern(/^[A-Za-z0-9_-]{12}$/, {
+    message: () => 'Invalid nanoid format',
+  }),
+);
+
+export const IdsSchema = {
+  id: SerialSchema,
+  publicId: NanoidSchema,
+};
+
+export const CreatedAtSchema = S.DateFromSelf;
+export const UpdatedAtSchema = S.NullOr(S.DateFromSelf);
+export const DeletedAtSchema = S.NullOr(S.DateFromSelf);
+
+export const TimestampsSchema = {
+  createdAt: CreatedAtSchema,
+  updatedAt: UpdatedAtSchema,
+  deletedAt: DeletedAtSchema,
+};
+
+// Better Auth Schema
 export const Base64IdSchema = (msg?: string) =>
   S.String.pipe(
     S.pattern(/^[a-zA-Z0-9]{32}$/, {
       message: () => msg ?? 'Invalid Base64 ID format',
     }),
   );
+
+// Common Schemas
+export const PlayerIdSchema = {
+  playerId: S.UUID.pipe(
+    S.minLength(1, { message: () => 'Player ID is required' }),
+  ),
+};
+
+export const OrganizationSlugSchema = {
+  organizationSlug: S.String.pipe(
+    S.minLength(1, { message: () => 'Organization slug is required' }),
+  ),
+};
+
+export const TeamIdSchema = { teamId: Base64IdSchema('Team ID is required') };
+
+export const OrganizationIdSchema = {
+  organizationId: Base64IdSchema('Organization ID is required'),
+};
 
 export const JerseyNumberSchema = S.Number.pipe(
   S.int({ message: () => 'Jersey number must be a whole number' }),
@@ -16,7 +65,6 @@ export const JerseyNumberSchema = S.Number.pipe(
     message: () => 'Jersey number must be 1000 or less',
   }),
 );
-
 export const NullableJerseyNumberSchema = S.NullOr(JerseyNumberSchema);
 
 export const EmailSchema = S.String.pipe(
@@ -24,7 +72,6 @@ export const EmailSchema = S.String.pipe(
     message: () => 'Please enter a valid email address',
   }),
 );
-
 export const NullableEmailSchema = S.NullOr(S.String);
 
 export const PlayerNameSchema = S.String.pipe(
@@ -36,5 +83,4 @@ export const PlayerNameSchema = S.String.pipe(
   }),
   S.trimmed(),
 );
-
 export const NullablePlayerNameSchema = S.NullOr(PlayerNameSchema);

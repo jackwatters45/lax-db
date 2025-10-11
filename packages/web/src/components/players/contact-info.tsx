@@ -1,4 +1,4 @@
-import type { PlayerWithContactInfoNonNullable } from '@lax-db/core/player/contact-info';
+import type { PlayerWithContactInfoNonNullable } from '@lax-db/core/player/contact-info/index';
 import { ArrowUpRightIcon, UserPen } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import {

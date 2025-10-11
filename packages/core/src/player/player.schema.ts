@@ -1,87 +1,99 @@
 import { Schema as S } from 'effect';
 import {
-  Base64IdSchema,
   JerseyNumberSchema as BaseJerseyNumberSchema,
   EmailSchema,
   NullablePlayerNameSchema,
+  OrganizationIdSchema,
+  PlayerIdSchema,
   PlayerNameSchema,
+  TeamIdSchema,
 } from '../schema';
-
-export const PlayerIdSchema = S.UUID.pipe(
-  S.minLength(1, { message: () => 'Player ID is required' }),
-);
-
-// TODO: move these..
-export const TeamIdSchema = Base64IdSchema('Team ID is required');
-
-export const OrganizationIdSchema = Base64IdSchema(
-  'Organization ID is required',
-);
 
 export const JerseyNumberSchema = S.NullOr(BaseJerseyNumberSchema);
 
 export const PositionSchema = S.NullOr(S.String);
 
-export const GetAllPlayersInputSchema = S.Struct({
-  organizationId: OrganizationIdSchema,
-});
-export type GetAllPlayersInput = typeof GetAllPlayersInputSchema.Type;
+export class GetAllPlayersInput extends S.Class<GetAllPlayersInput>(
+  'GetAllPlayersInput',
+)({
+  ...OrganizationIdSchema,
+}) {}
 
-export const CreatePlayerInputSchema = S.Struct({
-  organizationId: OrganizationIdSchema,
+export class CreatePlayerInput extends S.Class<CreatePlayerInput>(
+  'CreatePlayerInput',
+)({
+  ...OrganizationIdSchema,
   name: PlayerNameSchema,
   email: S.NullOr(EmailSchema),
   phone: S.NullOr(S.String),
   dateOfBirth: S.NullOr(S.String),
   userId: S.NullOr(S.String),
-});
-export type CreatePlayerInput = typeof CreatePlayerInputSchema.Type;
+}) {}
 
-export const UpdatePlayerInputSchema = S.Struct({
-  playerId: PlayerIdSchema,
+export class GetTeamPlayersInput extends S.Class<GetTeamPlayersInput>(
+  'GetTeamPlayersInput',
+)({
+  ...TeamIdSchema,
+}) {}
+
+export class UpdatePlayerInput extends S.Class<UpdatePlayerInput>(
+  'UpdatePlayerInput',
+)({
+  ...PlayerIdSchema,
   name: S.optional(NullablePlayerNameSchema),
   email: S.optional(S.NullOr(EmailSchema)),
   phone: S.optional(S.NullOr(S.String)),
   dateOfBirth: S.optional(S.NullOr(S.String)),
-});
-export type UpdatePlayerInput = typeof UpdatePlayerInputSchema.Type;
+}) {}
 
-export const UpdateTeamPlayerInputSchema = S.Struct({
-  teamId: TeamIdSchema,
-  playerId: PlayerIdSchema,
+export class UpdateTeamPlayerInput extends S.Class<UpdateTeamPlayerInput>(
+  'UpdateTeamPlayerInput',
+)({
+  ...TeamIdSchema,
+  ...PlayerIdSchema,
   jerseyNumber: S.optional(JerseyNumberSchema),
   position: S.optional(PositionSchema),
-});
-export type UpdateTeamPlayerInput = typeof UpdateTeamPlayerInputSchema.Type;
+}) {}
 
-export const AddPlayerToTeamInputSchema = S.Struct({
-  playerId: PlayerIdSchema,
-  teamId: TeamIdSchema,
+export class AddNewPlayerToTeamInput extends S.Class<AddNewPlayerToTeamInput>(
+  'AddNewPlayerToTeamInput',
+)({
+  ...TeamIdSchema,
   jerseyNumber: JerseyNumberSchema,
   position: PositionSchema,
-});
-export type AddPlayerToTeamInput = typeof AddPlayerToTeamInputSchema.Type;
+}) {}
 
-export const RemovePlayerFromTeamInputSchema = S.Struct({
+export class AddPlayerToTeamInput extends S.Class<AddPlayerToTeamInput>(
+  'AddPlayerToTeamInput',
+)({
+  ...PlayerIdSchema,
+  ...TeamIdSchema,
+  jerseyNumber: JerseyNumberSchema,
+  position: PositionSchema,
+}) {}
+
+export class RemovePlayerFromTeamInput extends S.Class<RemovePlayerFromTeamInput>(
+  'RemovePlayerFromTeamInput',
+)({
   teamId: S.String,
   playerId: S.String,
-});
-export type RemovePlayerFromTeamInput =
-  typeof RemovePlayerFromTeamInputSchema.Type;
+}) {}
 
-export const DeletePlayerInputSchema = S.Struct({
+export class DeletePlayerInput extends S.Class<DeletePlayerInput>(
+  'DeletePlayerInput',
+)({
   playerId: S.String,
-});
-export type DeletePlayerInput = typeof DeletePlayerInputSchema.Type;
+}) {}
 
-export const BulkRemovePlayersFromTeamInputSchema = S.Struct({
+export class BulkRemovePlayersFromTeamInput extends S.Class<BulkRemovePlayersFromTeamInput>(
+  'BulkRemovePlayersFromTeamInput',
+)({
   teamId: S.String,
   playerIds: S.Array(S.String),
-});
-export type BulkRemovePlayersFromTeamInput =
-  typeof BulkRemovePlayersFromTeamInputSchema.Type;
+}) {}
 
-export const BulkDeletePlayersInputSchema = S.Struct({
+export class BulkDeletePlayersInput extends S.Class<BulkDeletePlayersInput>(
+  'BulkDeletePlayersInput',
+)({
   playerIds: S.Array(S.String),
-});
-export type BulkDeletePlayersInput = typeof BulkDeletePlayersInputSchema.Type;
+}) {}

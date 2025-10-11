@@ -1,13 +1,17 @@
-import type { TeamPlayerWithInfo } from '@lax-db/core/player/index';
 import {
-  BulkDeletePlayersInputSchema,
-  DeletePlayerInputSchema,
-  UpdatePlayerInputSchema,
-  UpdateTeamPlayerInputSchema,
+  PlayerService,
+  type TeamPlayerWithInfo,
+} from '@lax-db/core/player/index';
+import {
+  BulkDeletePlayersInput,
+  DeletePlayerInput,
+  UpdatePlayerInput,
+  UpdateTeamPlayerInput,
 } from '@lax-db/core/player/player.schema';
+import { RuntimeServer } from '@lax-db/core/runtime.server';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createServerFn } from '@tanstack/react-start';
-import { Schema as S } from 'effect';
+import { Effect, Schema as S } from 'effect';
 import { toast } from 'sonner';
 import { authMiddleware } from '@/lib/middleware';
 
@@ -18,44 +22,35 @@ export const getOrgPlayersQK = (organizationId: string) =>
   [organizationId, 'players'] as const;
 
 // Update player
-export const UpdatePlayerAndTeamInputSchema = S.extend(
-  UpdatePlayerInputSchema,
-  UpdateTeamPlayerInputSchema,
+export const UpdatePlayerAndTeamInput = S.extend(
+  UpdatePlayerInput,
+  UpdateTeamPlayerInput,
 );
 
 export const updatePlayerFn = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
-  .inputValidator((data: typeof UpdatePlayerAndTeamInputSchema.Type) =>
-    S.decodeSync(UpdatePlayerAndTeamInputSchema)(data),
+  .inputValidator((data: typeof UpdatePlayerAndTeamInput.Type) =>
+    S.decodeSync(UpdatePlayerAndTeamInput)(data),
   )
-  .handler(async ({ data }) => {
-    const { PlayerAPI } = await import('@lax-db/core/player/index');
-    const { Effect, Runtime } = await import('effect');
-
-    const { teamId, jerseyNumber, position, ...playerFields } = data;
-
-    const runtime = Runtime.defaultRuntime;
-
-    await Runtime.runPromise(runtime)(
+  .handler(async ({ data }) =>
+    RuntimeServer.runPromise(
       Effect.gen(function* () {
+        const playerService = yield* PlayerService;
         const updates = [];
+        const { teamId, jerseyNumber, position, ...playerFields } = data;
 
         if (Object.keys(playerFields).length > 1) {
-          updates.push(
-            Effect.promise(() => PlayerAPI.updatePlayer(playerFields)),
-          );
+          updates.push(playerService.updatePlayer(playerFields));
         }
 
         if (jerseyNumber !== undefined || position !== undefined) {
           updates.push(
-            Effect.promise(() =>
-              PlayerAPI.updateTeamPlayer({
-                teamId,
-                playerId: data.playerId,
-                jerseyNumber,
-                position,
-              }),
-            ),
+            playerService.updateTeamPlayer({
+              teamId,
+              playerId: data.playerId,
+              jerseyNumber,
+              position,
+            }),
           );
         }
 
@@ -63,14 +58,14 @@ export const updatePlayerFn = createServerFn({ method: 'POST' })
           yield* Effect.all(updates, { concurrency: 'unbounded' });
         }
       }),
-    );
-  });
+    ),
+  );
 
 export function useUpdatePlayerBase(queryKey: readonly string[]) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: typeof UpdatePlayerAndTeamInputSchema.Type) =>
+    mutationFn: (data: typeof UpdatePlayerAndTeamInput.Type) =>
       updatePlayerFn({ data }),
     onMutate: async (variables, ctx) => {
       await ctx.client.cancelQueries({ queryKey });
@@ -98,19 +93,23 @@ export function useUpdatePlayerBase(queryKey: readonly string[]) {
 // Bulk delete players
 export const bulkDeletePlayersFn = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
-  .inputValidator((data: typeof BulkDeletePlayersInputSchema.Type) =>
-    S.decodeSync(BulkDeletePlayersInputSchema)(data),
+  .inputValidator((data: typeof BulkDeletePlayersInput.Type) =>
+    S.decodeSync(BulkDeletePlayersInput)(data),
   )
-  .handler(async ({ data }) => {
-    const { PlayerAPI } = await import('@lax-db/core/player/index');
-    await PlayerAPI.bulkDeletePlayers(data);
-  });
+  .handler(async ({ data }) =>
+    RuntimeServer.runPromise(
+      Effect.gen(function* () {
+        const playerService = yield* PlayerService;
+        return yield* playerService.bulkDeletePlayers(data);
+      }),
+    ),
+  );
 
 export function useBulkDeletePlayersBase(queryKey: readonly string[]) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: typeof BulkDeletePlayersInputSchema.Type) =>
+    mutationFn: (data: typeof BulkDeletePlayersInput.Type) =>
       bulkDeletePlayersFn({ data }),
     onMutate: async (variables, ctx) => {
       await ctx.client.cancelQueries({ queryKey });
@@ -139,19 +138,23 @@ export function useBulkDeletePlayersBase(queryKey: readonly string[]) {
 // Delete player
 export const deletePlayerFn = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
-  .inputValidator((data: typeof DeletePlayerInputSchema.Type) =>
-    S.decodeSync(DeletePlayerInputSchema)(data),
+  .inputValidator((data: typeof DeletePlayerInput.Type) =>
+    S.decodeSync(DeletePlayerInput)(data),
   )
-  .handler(async ({ data }) => {
-    const { PlayerAPI } = await import('@lax-db/core/player/index');
-    await PlayerAPI.deletePlayer(data);
-  });
+  .handler(async ({ data }) =>
+    RuntimeServer.runPromise(
+      Effect.gen(function* () {
+        const playerService = yield* PlayerService;
+        return yield* playerService.deletePlayer(data);
+      }),
+    ),
+  );
 
 export function useDeletePlayerBase(queryKey: readonly string[]) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: typeof DeletePlayerInputSchema.Type) =>
+    mutationFn: (data: typeof DeletePlayerInput.Type) =>
       deletePlayerFn({ data }),
     onMutate: async (variables, ctx) => {
       await ctx.client.cancelQueries({ queryKey });

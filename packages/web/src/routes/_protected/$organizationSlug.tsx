@@ -1,12 +1,20 @@
+import { OrganizationSlugSchema } from '@lax-db/core/schema';
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
+import { Schema as S } from 'effect';
 import { AppSidebar } from '@/components/sidebar/app-sidebar';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { authMiddleware } from '@/lib/middleware';
 
+const GetDashboardDataSchema = S.Struct({
+  ...OrganizationSlugSchema,
+});
+
 const getDashboardData = createServerFn({ method: 'GET' })
   .middleware([authMiddleware])
-  .inputValidator((data: { organizationSlug: string }) => data)
+  .inputValidator((data: typeof GetDashboardDataSchema.Type) =>
+    S.decodeSync(GetDashboardDataSchema)(data),
+  )
   .handler(async ({ context }) => {
     const { auth } = await import('@lax-db/core/auth');
     const { getRequest } = await import('@tanstack/react-start/server');

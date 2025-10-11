@@ -1,4 +1,4 @@
-import { TeamIdSchema } from '@lax-db/core/player/player.schema';
+import { TeamIdSchema } from '@lax-db/core/schema';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { Schema as S } from 'effect';
@@ -24,7 +24,7 @@ import { authMiddleware } from '@/lib/middleware';
 import { TeamHeader } from './-components/team-header';
 
 const GetTeamDataSchema = S.Struct({
-  teamId: TeamIdSchema,
+  ...TeamIdSchema,
 });
 
 const getTeamData = createServerFn({ method: 'GET' })

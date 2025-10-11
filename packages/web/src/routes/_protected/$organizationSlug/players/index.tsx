@@ -1,8 +1,10 @@
-import { OrganizationIdSchema } from '@lax-db/core/player/player.schema';
+import { PlayerService } from '@lax-db/core/player/index';
+import { RuntimeServer } from '@lax-db/core/runtime.server';
+import { OrganizationIdSchema } from '@lax-db/core/schema';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
-import { Schema as S } from 'effect';
+import { Effect, Schema as S } from 'effect';
 import { useMemo } from 'react';
 import {
   DataTableBody,
@@ -22,7 +24,7 @@ import { PlayersHeader } from './-components/players-header';
 import { PlayersToolbar } from './-components/players-toolbar';
 
 const GetPlayers = S.Struct({
-  organizationId: OrganizationIdSchema,
+  ...OrganizationIdSchema,
 });
 
 const getPlayers = createServerFn({ method: 'GET' })
@@ -30,10 +32,14 @@ const getPlayers = createServerFn({ method: 'GET' })
   .inputValidator((data: typeof GetPlayers.Type) =>
     S.decodeSync(GetPlayers)(data),
   )
-  .handler(async ({ data }) => {
-    const { PlayerAPI } = await import('@lax-db/core/player/index');
-    return await PlayerAPI.getAll({ organizationId: data.organizationId });
-  });
+  .handler(async ({ data }) =>
+    RuntimeServer.runPromise(
+      Effect.gen(function* () {
+        const playerService = yield* PlayerService;
+        return yield* playerService.getAll(data);
+      }),
+    ),
+  );
 
 export const Route = createFileRoute('/_protected/$organizationSlug/players/')({
   component: RouteComponent,
