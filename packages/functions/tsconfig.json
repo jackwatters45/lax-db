@@ -1,8 +1,10 @@
 {
-  "extends": "@tsconfig/node22/tsconfig.json",
+  "extends": "../../tsconfig.json",
+  "include": ["**/*.ts", "**/*.tsx"],
   "compilerOptions": {
-    "module": "ESNext",
-    "moduleResolution": "Bundler"
-  },
-  "include": ["src/**/*.ts", "sst-env.d.ts"]
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  }
 }

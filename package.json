@@ -16,16 +16,16 @@
     "@biomejs/biome": "^2.2.5",
     "@changesets/changelog-github": "^0.5.1",
     "@changesets/cli": "^2.29.7",
-    "@tsconfig/node22": "^22.0.2",
-    "@types/bun": "^1.2.23",
-    "@types/node": "^22.18.8",
-    "@types/pg": "^8.15.5",
+    "@tsconfig/bun": "^1.0.9",
+    "@types/bun": "latest",
     "lefthook": "^1.13.6",
     "prettier": "^3.6.2",
     "turbo": "^2.5.8",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "latest"
   },
   "dependencies": {
+    "effect": "latest",
     "sst": "^3.17.14"
   },
   "overrides": {

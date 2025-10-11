@@ -1,10 +1,9 @@
 {
-  "extends": "@tsconfig/node22/tsconfig.json",
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "module": "ES2022",
-    "moduleResolution": "bundler",
-    "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
-    "plugins": [{ "name": "@effect/language-service" }]
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   }
 }

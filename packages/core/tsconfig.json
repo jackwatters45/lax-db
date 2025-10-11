@@ -1,9 +1,10 @@
 {
-  "extends": "@tsconfig/node22/tsconfig.json",
+  "extends": "../../tsconfig.json",
+  "include": ["**/*.ts", "**/*.tsx"],
   "compilerOptions": {
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "noUncheckedIndexedAccess": true,
-    "plugins": [{ "name": "@effect/language-service" }]
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   }
 }
