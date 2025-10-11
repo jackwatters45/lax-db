@@ -6,7 +6,9 @@ export const secret = {
   PlanetScaleHost: new sst.Secret('PlanetScaleHost'),
   PlanetScaleUsername: new sst.Secret('PlanetScaleUsername'),
   PlanetScalePassword: new sst.Secret('PlanetScalePassword'),
+  //
   DrizzleLog: new sst.Secret('DrizzleLog', 'false'),
+  DefaultAwsRegion: new sst.Secret('DefaultAwsRegion', 'us-west-2'),
 };
 
 export const allSecrets = Object.values(secret);
