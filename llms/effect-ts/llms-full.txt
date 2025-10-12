@@ -33376,7 +33376,7 @@ Literals can be of the following types:
 import { Schema } from "effect"
 
 // Define various literal schemas
-Schema.Null // Same as SchemaLiteral(null)
+Schema.Null // Same as Schema.Literal(null)
 Schema.Literal("a") // string literal
 Schema.Literal(1) // number literal
 Schema.Literal(true) // boolean literal
@@ -35920,7 +35920,7 @@ class Category extends Schema.Class<Category>("Category")({
 }) {}
 ```
 
-This error occurs because the explicit annotation `Schemasuspend((): SchemaSchema<Category> => Category` is no longer sufficient and needs to be adjusted by explicitly adding the `Encoded` type:
+This error occurs because the explicit annotation `Schema.suspend((): SchemaSchema<Category> => Category` is no longer sufficient and needs to be adjusted by explicitly adding the `Encoded` type:
 
 **Example** (Adjusting the Schema with Explicit `Encoded` Type)
 

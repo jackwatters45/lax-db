@@ -9120,7 +9120,7 @@ const productSearchSchema = SchemastandardSchemaV1(
         decoding: () => '',
       }),
     ),
-    sort: SchemaLiteral('newest', 'oldest', 'price').pipe(
+    sort: Schema.Literal('newest', 'oldest', 'price').pipe(
       Schemaoptional,
       SchemawithDefaults({
         constructor: () => 'newest' as const,
