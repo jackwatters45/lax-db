@@ -1,7 +1,6 @@
 import { SESv2Client, SendEmailCommand } from '@aws-sdk/client-sesv2';
 import { Effect, Schema } from 'effect';
 import { Resource } from 'sst';
-import { DEFAULT_AWS_REGION } from '../constant';
 import { EmailError } from './email.error';
 import { SendEmailInput, SendFeedbackEmailInput } from './email.schema';
 
@@ -15,7 +14,7 @@ export class EmailService extends Effect.Service<EmailService>()(
             const validated = yield* Schema.decode(SendEmailInput)(input);
 
             const sesClient = new SESv2Client({
-              region: DEFAULT_AWS_REGION,
+              region: Resource.DefaultAwsRegion.value,
             });
 
             const defaultFrom = Resource.Email.sender;
