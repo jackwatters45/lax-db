@@ -1,58 +1,86 @@
+import { AuthService } from '@lax-db/core/auth';
+import { OrganizationError } from '@lax-db/core/organization/organization.error';
+import { RuntimeServer } from '@lax-db/core/runtime.server';
 import { OrganizationSlugSchema } from '@lax-db/core/schema';
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
-import { Schema as S } from 'effect';
+import { getRequestHeader } from '@tanstack/react-start/server';
+import { Console, Effect, Schema } from 'effect';
 import { AppSidebar } from '@/components/sidebar/app-sidebar';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { authMiddleware } from '@/lib/middleware';
 
-const GetDashboardDataSchema = S.Struct({
+const GetDashboardDataSchema = Schema.Struct({
   ...OrganizationSlugSchema,
 });
 
 const getDashboardData = createServerFn({ method: 'GET' })
   .middleware([authMiddleware])
   .inputValidator((data: typeof GetDashboardDataSchema.Type) =>
-    S.decodeSync(GetDashboardDataSchema)(data),
+    Schema.decodeSync(GetDashboardDataSchema)(data),
   )
-  .handler(async ({ context }) => {
-    const { auth } = await import('@lax-db/core/auth');
-    const { getRequest } = await import('@tanstack/react-start/server');
+  .handler(async ({ context }) =>
+    RuntimeServer.runPromise(
+      Effect.gen(function* () {
+        const auth = yield* AuthService;
 
-    try {
-      if (!context.session?.user) {
-        return {
-          organizations: [],
-          activeOrganization: null,
-          sidebarOpen: true,
-        };
-      }
+        try {
+          if (!context.session?.user) {
+            return {
+              organizations: [],
+              activeOrganization: null,
+              sidebarOpen: true,
+            };
+          }
 
-      const headers = context.headers;
-      const [organizations, activeOrganization] = await Promise.all([
-        auth.api.listOrganizations({ headers }),
-        auth.api.getFullOrganization({ headers }),
-      ]);
+          const headers = context.headers;
 
-      const request = getRequest();
-      const cookie = request.headers.get('cookie');
-      const match = cookie?.match(/sidebar_state=([^;]+)/);
-      const sidebarOpen = match?.[1] !== 'false';
+          const [organizations, activeOrganization] = yield* Effect.all(
+            [
+              Effect.tryPromise(() =>
+                auth.auth().api.listOrganizationTeams({ headers }),
+              ).pipe(
+                Effect.mapError(
+                  () =>
+                    new OrganizationError({
+                      customMessage: 'Failed to get teams',
+                    }),
+                ),
+              ),
+              Effect.tryPromise(() =>
+                auth.auth().api.getFullOrganization({ headers }),
+              ).pipe(
+                Effect.mapError(
+                  () =>
+                    new OrganizationError({
+                      customMessage: 'Failed to get active organization',
+                    }),
+                ),
+              ),
+            ],
+            { concurrency: 'unbounded' },
+          );
 
-      return {
-        organizations,
-        activeOrganization,
-        sidebarOpen,
-      };
-    } catch (error) {
-      console.error('Dashboard data error:', error);
-      return {
-        organizations: [],
-        activeOrganization: null,
-        sidebarOpen: true,
-      };
-    }
-  });
+          const cookie = getRequestHeader('Cookie');
+          const match = cookie?.match(/sidebar_state=([^;]+)/);
+          const sidebarOpen = match?.[1] !== 'false';
+
+          return {
+            organizations,
+            activeOrganization,
+            sidebarOpen,
+          };
+        } catch (error) {
+          yield* Console.error('Dashboard data error:', error);
+          return {
+            organizations: [],
+            activeOrganization: null,
+            sidebarOpen: true,
+          };
+        }
+      }),
+    ),
+  );
 
 export const Route = createFileRoute('/_protected/$organizationSlug')({
   beforeLoad: async ({ location, params }) => {

@@ -1,12 +1,11 @@
 import { effectTsResolver } from '@hookform/resolvers/effect-ts';
-import { OrganizationService } from '@lax-db/core/organization/index';
 import { RuntimeServer } from '@lax-db/core/runtime.server';
 import { TeamService } from '@lax-db/core/team/index';
 import { useMutation } from '@tanstack/react-query';
 import { createFileRoute, Link, useRouter } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import type { Team } from 'better-auth/plugins';
-import { Effect, Schema as S } from 'effect';
+import { Effect, Schema } from 'effect';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { DashboardHeader } from '@/components/sidebar/dashboard-header';
@@ -28,17 +27,18 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { authMiddleware } from '@/lib/middleware';
+import { getUserOrganizationContext } from '@/query/organizations';
 
-const UpdateTeamSchema = S.Struct({
-  teamId: S.String,
-  name: S.String,
-  description: S.String.pipe(S.optional),
+const UpdateTeamSchema = Schema.Struct({
+  teamId: Schema.String,
+  name: Schema.String,
+  description: Schema.String.pipe(Schema.optional),
 });
 
 const updateTeam = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
   .inputValidator((data: typeof UpdateTeamSchema.Type) =>
-    S.decodeSync(UpdateTeamSchema)(data),
+    Schema.decodeSync(UpdateTeamSchema)(data),
   )
   .handler(async ({ data, context }) =>
     RuntimeServer.runPromise(
@@ -49,32 +49,19 @@ const updateTeam = createServerFn({ method: 'POST' })
     ),
   );
 
-const getUserOrganizationContext = createServerFn()
-  .middleware([authMiddleware])
-  .handler(async ({ context }) =>
-    RuntimeServer.runPromise(
-      Effect.gen(function* () {
-        const organiationService = yield* OrganizationService;
-        return yield* organiationService.getUserOrganizationContext(
-          context.headers,
-        );
-      }),
-    ),
-  );
-
-const formSchema = S.Struct({
-  name: S.String.pipe(
-    S.minLength(1, { message: () => 'Team name is required' }),
-    S.minLength(2, {
+const formSchema = Schema.Struct({
+  name: Schema.String.pipe(
+    Schema.minLength(1, { message: () => 'Team name is required' }),
+    Schema.minLength(2, {
       message: () => 'Team name must be at least 2 characters',
     }),
-    S.maxLength(100, {
+    Schema.maxLength(100, {
       message: () => 'Team name must be less than 100 characters',
     }),
   ),
-  description: S.optional(
-    S.String.pipe(
-      S.maxLength(500, {
+  description: Schema.optional(
+    Schema.String.pipe(
+      Schema.maxLength(500, {
         message: () => 'Description must be less than 500 characters',
       }),
     ),
@@ -98,7 +85,7 @@ function SetupTeamPage() {
   const { teams } = Route.useLoaderData();
   const router = useRouter();
 
-  const team = teams.find((t: Team) => t.id === teamId);
+  const team = teams?.find((t: Team) => t.id === teamId);
 
   const form = useForm<FormData>({
     resolver: effectTsResolver(formSchema),

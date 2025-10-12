@@ -4,7 +4,7 @@ import { TeamService } from '@lax-db/core/team/index';
 import { useMutation } from '@tanstack/react-query';
 import { createFileRoute, Link, useRouter } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
-import { Effect, Schema as S, Schema } from 'effect';
+import { Effect, Schema } from 'effect';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { DashboardHeader } from '@/components/sidebar/dashboard-header';
@@ -27,15 +27,15 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { authMiddleware } from '@/lib/middleware';
 
-const CreateTeamSchema = S.Struct({
-  name: S.String,
-  description: S.String.pipe(S.optional),
+const CreateTeamSchema = Schema.Struct({
+  name: Schema.String,
+  description: Schema.String.pipe(Schema.optional),
 });
 
 const createTeam = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
   .inputValidator((data: typeof CreateTeamSchema.Type) =>
-    S.decodeSync(CreateTeamSchema)(data),
+    Schema.decodeSync(CreateTeamSchema)(data),
   )
   .handler(async ({ data, context }) =>
     RuntimeServer.runPromise(

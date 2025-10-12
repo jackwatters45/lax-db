@@ -1,5 +1,5 @@
-import { RedisClient } from 'bun';
 import { Effect, Schema } from 'effect';
+import { Redis, type RedisOptions } from 'ioredis';
 import { Resource } from 'sst';
 
 export class RedisError extends Schema.TaggedError<RedisError>()(
@@ -11,20 +11,25 @@ export class RedisService extends Effect.Service<RedisService>()(
   'RedisService',
   {
     effect: Effect.gen(function* () {
-      const redisConfig: Bun.RedisOptions = {
-        tls: Resource.Redis.host !== 'localhost',
+      const redisConfig: RedisOptions & { host: string; port: number } = {
+        host: Resource.Redis.host,
+        port: Resource.Redis.port,
+        username: Resource.Redis.username,
+        password: Resource.Redis.password,
       };
 
-      const client = new RedisClient(
-        `redis://${Resource.Redis.username}:${Resource.Redis.password}@${Resource.Redis.host}:${Resource.Redis.port}`,
-        redisConfig,
-      );
+      if (Resource.Redis.host !== 'localhost') {
+        redisConfig.tls = { checkServerIdentity: () => undefined };
+      }
+
+      // Create Redis client
+      const client = new Redis(redisConfig);
 
       return {
         get: (key: string) =>
           Effect.gen(function* () {
             return yield* Effect.tryPromise(() => client.get(key)).pipe(
-              Effect.tapError((err) => Effect.logError(err)),
+              Effect.tapError(Effect.logError),
               Effect.mapError(
                 () => new RedisError(`Failed to get key: ${key}`),
               ),
@@ -59,7 +64,7 @@ export class RedisService extends Effect.Service<RedisService>()(
         disconnect: () =>
           Effect.gen(function* () {
             return yield* Effect.try({
-              try: () => client.close(),
+              try: () => client.disconnect(),
               catch: () => new RedisError('Failed to disconnect Redis'),
             });
           }),

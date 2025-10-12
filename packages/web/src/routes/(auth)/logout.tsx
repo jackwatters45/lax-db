@@ -1,15 +1,11 @@
 import { createFileRoute, redirect } from '@tanstack/react-router';
+import { getSession, logout } from '@/query/auth';
 
 export const Route = createFileRoute('/(auth)/logout')({
   beforeLoad: async () => {
-    const { auth } = await import('@lax-db/core/auth');
-    const { getRequest } = await import('@tanstack/react-start/server');
-
-    const request = getRequest();
-    const { headers } = request;
-    const session = await auth.api.getSession({ headers });
+    const session = await getSession();
     if (!session) throw redirect({ to: '/login' });
-    await auth.api.signOut({ headers });
+    await logout();
     throw redirect({ to: '/' });
   },
 });

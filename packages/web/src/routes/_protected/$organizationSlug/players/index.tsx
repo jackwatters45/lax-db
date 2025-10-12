@@ -4,7 +4,7 @@ import { OrganizationIdSchema } from '@lax-db/core/schema';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
-import { Effect, Schema as S } from 'effect';
+import { Effect, Schema } from 'effect';
 import { useMemo } from 'react';
 import {
   DataTableBody,
@@ -23,14 +23,14 @@ import { PlayersFilterBar } from './-components/players-filterbar';
 import { PlayersHeader } from './-components/players-header';
 import { PlayersToolbar } from './-components/players-toolbar';
 
-const GetPlayers = S.Struct({
+const GetPlayers = Schema.Struct({
   ...OrganizationIdSchema,
 });
 
 const getPlayers = createServerFn({ method: 'GET' })
   .middleware([authMiddleware])
   .inputValidator((data: typeof GetPlayers.Type) =>
-    S.decodeSync(GetPlayers)(data),
+    Schema.decodeSync(GetPlayers)(data),
   )
   .handler(async ({ data }) =>
     RuntimeServer.runPromise(

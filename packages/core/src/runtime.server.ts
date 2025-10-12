@@ -1,18 +1,16 @@
 import { Layer, ManagedRuntime } from 'effect';
-import { DatabaseLive } from './drizzle';
-import { FeedbackService } from './feedback';
-import { GameService } from './game';
-import { OrganizationService } from './organization';
-import { PlayerService } from './player';
-import { PlayerContactInfoService } from './player/contact-info/index';
-import { RedisService } from './redis';
-import { SeasonService } from './season';
-import { TeamService } from './team';
-import { UserService } from './user';
+import { AuthService } from './auth';
+import { FeedbackService } from './feedback/feedback.service';
+import { GameService } from './game/game.service';
+import { OrganizationService } from './organization/organization.service';
+import { PlayerContactInfoService } from './player/contact-info/contact-info.service';
+import { PlayerService } from './player/player.service';
+import { SeasonService } from './season/season.service';
+import { TeamService } from './team/team.service';
+import { UserService } from './user/user.service';
 
 const MainLayer = Layer.mergeAll(
-  RedisService.Default,
-  DatabaseLive,
+  AuthService.Default,
   OrganizationService.Default,
   TeamService.Default,
   SeasonService.Default,

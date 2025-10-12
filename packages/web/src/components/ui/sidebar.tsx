@@ -32,16 +32,6 @@ const SIDEBAR_WIDTH_MOBILE = '18rem';
 const SIDEBAR_WIDTH_ICON = '3rem';
 const SIDEBAR_KEYBOARD_SHORTCUT = 'b';
 
-const _getSidebarState = createServerFn({ method: 'GET' }).handler(async () => {
-  const { getRequest } = await import('@tanstack/react-start/server');
-  const request = getRequest();
-  const cookie = request.headers.get('cookie');
-  if (!cookie) return true;
-
-  const match = cookie.match(new RegExp(`${SIDEBAR_COOKIE_NAME}=([^;]+)`));
-  return match?.[1] !== 'false';
-});
-
 const setSidebarState = createServerFn({ method: 'POST' })
   .inputValidator((data: { open: boolean }) => data)
   .handler(async ({ data }) => {

@@ -1,11 +1,11 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { Schema as S } from 'effect';
+import { Schema } from 'effect';
 import { GalleryVerticalEnd } from 'lucide-react';
 import { LoginForm } from '@/components/auth/login-form';
 
-const loginSearchSchema = S.standardSchemaV1(
-  S.Struct({
-    redirectUrl: S.optional(S.String),
+const loginSearchSchema = Schema.standardSchemaV1(
+  Schema.Struct({
+    redirectUrl: Schema.optional(Schema.String),
   }),
 );
 

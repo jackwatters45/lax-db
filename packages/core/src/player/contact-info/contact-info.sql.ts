@@ -1,5 +1,5 @@
 import { index, integer, pgTable, text } from 'drizzle-orm/pg-core';
-import { ids, timestamps } from '../../drizzle/types';
+import { ids, timestamps } from '../../drizzle';
 import { playerTable } from '../player.sql';
 
 export const playerContactInfoTable = pgTable(

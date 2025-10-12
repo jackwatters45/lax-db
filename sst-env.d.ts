@@ -25,6 +25,10 @@ declare module 'sst' {
       name: string;
       type: 'sst.aws.Function';
     };
+    DefaultAwsRegion: {
+      type: 'sst.sst.Secret';
+      value: string;
+    };
     DrizzleLog: {
       type: 'sst.sst.Secret';
       value: string;

@@ -1,4 +1,4 @@
-import { Schema as S } from 'effect';
+import { Schema } from 'effect';
 import {
   JerseyNumberSchema as BaseJerseyNumberSchema,
   EmailSchema,
@@ -9,53 +9,53 @@ import {
   TeamIdSchema,
 } from '../schema';
 
-export const JerseyNumberSchema = S.NullOr(BaseJerseyNumberSchema);
+export const JerseyNumberSchema = Schema.NullOr(BaseJerseyNumberSchema);
 
-export const PositionSchema = S.NullOr(S.String);
+export const PositionSchema = Schema.NullOr(Schema.String);
 
-export class GetAllPlayersInput extends S.Class<GetAllPlayersInput>(
+export class GetAllPlayersInput extends Schema.Class<GetAllPlayersInput>(
   'GetAllPlayersInput',
 )({
   ...OrganizationIdSchema,
 }) {}
 
-export class CreatePlayerInput extends S.Class<CreatePlayerInput>(
+export class CreatePlayerInput extends Schema.Class<CreatePlayerInput>(
   'CreatePlayerInput',
 )({
   ...OrganizationIdSchema,
   name: PlayerNameSchema,
-  email: S.NullOr(EmailSchema),
-  phone: S.NullOr(S.String),
-  dateOfBirth: S.NullOr(S.String),
-  userId: S.NullOr(S.String),
+  email: Schema.NullOr(EmailSchema),
+  phone: Schema.NullOr(Schema.String),
+  dateOfBirth: Schema.NullOr(Schema.String),
+  userId: Schema.NullOr(Schema.String),
 }) {}
 
-export class GetTeamPlayersInput extends S.Class<GetTeamPlayersInput>(
+export class GetTeamPlayersInput extends Schema.Class<GetTeamPlayersInput>(
   'GetTeamPlayersInput',
 )({
   ...TeamIdSchema,
 }) {}
 
-export class UpdatePlayerInput extends S.Class<UpdatePlayerInput>(
+export class UpdatePlayerInput extends Schema.Class<UpdatePlayerInput>(
   'UpdatePlayerInput',
 )({
   ...PlayerIdSchema,
-  name: S.optional(NullablePlayerNameSchema),
-  email: S.optional(S.NullOr(EmailSchema)),
-  phone: S.optional(S.NullOr(S.String)),
-  dateOfBirth: S.optional(S.NullOr(S.String)),
+  name: Schema.optional(NullablePlayerNameSchema),
+  email: Schema.optional(Schema.NullOr(EmailSchema)),
+  phone: Schema.optional(Schema.NullOr(Schema.String)),
+  dateOfBirth: Schema.optional(Schema.NullOr(Schema.String)),
 }) {}
 
-export class UpdateTeamPlayerInput extends S.Class<UpdateTeamPlayerInput>(
+export class UpdateTeamPlayerInput extends Schema.Class<UpdateTeamPlayerInput>(
   'UpdateTeamPlayerInput',
 )({
   ...TeamIdSchema,
   ...PlayerIdSchema,
-  jerseyNumber: S.optional(JerseyNumberSchema),
-  position: S.optional(PositionSchema),
+  jerseyNumber: Schema.optional(JerseyNumberSchema),
+  position: Schema.optional(PositionSchema),
 }) {}
 
-export class AddNewPlayerToTeamInput extends S.Class<AddNewPlayerToTeamInput>(
+export class AddNewPlayerToTeamInput extends Schema.Class<AddNewPlayerToTeamInput>(
   'AddNewPlayerToTeamInput',
 )({
   ...TeamIdSchema,
@@ -63,7 +63,7 @@ export class AddNewPlayerToTeamInput extends S.Class<AddNewPlayerToTeamInput>(
   position: PositionSchema,
 }) {}
 
-export class AddPlayerToTeamInput extends S.Class<AddPlayerToTeamInput>(
+export class AddPlayerToTeamInput extends Schema.Class<AddPlayerToTeamInput>(
   'AddPlayerToTeamInput',
 )({
   ...PlayerIdSchema,
@@ -72,28 +72,28 @@ export class AddPlayerToTeamInput extends S.Class<AddPlayerToTeamInput>(
   position: PositionSchema,
 }) {}
 
-export class RemovePlayerFromTeamInput extends S.Class<RemovePlayerFromTeamInput>(
+export class RemovePlayerFromTeamInput extends Schema.Class<RemovePlayerFromTeamInput>(
   'RemovePlayerFromTeamInput',
 )({
-  teamId: S.String,
-  playerId: S.String,
+  teamId: Schema.String,
+  playerId: Schema.String,
 }) {}
 
-export class DeletePlayerInput extends S.Class<DeletePlayerInput>(
+export class DeletePlayerInput extends Schema.Class<DeletePlayerInput>(
   'DeletePlayerInput',
 )({
-  playerId: S.String,
+  playerId: Schema.String,
 }) {}
 
-export class BulkRemovePlayersFromTeamInput extends S.Class<BulkRemovePlayersFromTeamInput>(
+export class BulkRemovePlayersFromTeamInput extends Schema.Class<BulkRemovePlayersFromTeamInput>(
   'BulkRemovePlayersFromTeamInput',
 )({
-  teamId: S.String,
-  playerIds: S.Array(S.String),
+  teamId: Schema.String,
+  playerIds: Schema.Array(Schema.String),
 }) {}
 
-export class BulkDeletePlayersInput extends S.Class<BulkDeletePlayersInput>(
+export class BulkDeletePlayersInput extends Schema.Class<BulkDeletePlayersInput>(
   'BulkDeletePlayersInput',
 )({
-  playerIds: S.Array(S.String),
+  playerIds: Schema.Array(Schema.String),
 }) {}

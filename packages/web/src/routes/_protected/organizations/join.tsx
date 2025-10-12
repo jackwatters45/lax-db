@@ -5,7 +5,7 @@ import { useMutation } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { getRequest } from '@tanstack/react-start/server';
-import { Effect, Schema as S } from 'effect';
+import { Effect, Schema } from 'effect';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -21,10 +21,10 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 
-const AcceptInvitationSchema = S.Struct({
-  invitationId: S.String.pipe(
-    S.minLength(1, { message: () => 'Invitation code is required' }),
-    S.minLength(10, {
+const AcceptInvitationSchema = Schema.Struct({
+  invitationId: Schema.String.pipe(
+    Schema.minLength(1, { message: () => 'Invitation code is required' }),
+    Schema.minLength(10, {
       message: () => 'Invitation code must be at least 10 characters',
     }),
   ),
@@ -33,7 +33,7 @@ type FormData = typeof AcceptInvitationSchema.Type;
 
 const acceptInvitation = createServerFn({ method: 'POST' })
   .inputValidator((data: typeof AcceptInvitationSchema.Type) =>
-    S.decodeSync(AcceptInvitationSchema)(data),
+    Schema.decodeSync(AcceptInvitationSchema)(data),
   )
   .handler(async ({ data }) =>
     RuntimeServer.runPromise(

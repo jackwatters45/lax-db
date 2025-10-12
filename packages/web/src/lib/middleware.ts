@@ -1,34 +1,42 @@
+import { AuthService } from '@lax-db/core/auth';
+import { RuntimeServer } from '@lax-db/core/runtime.server';
 import { redirect } from '@tanstack/react-router';
 import { createMiddleware } from '@tanstack/react-start';
+import { getRequest } from '@tanstack/react-start/server';
+import { Effect } from 'effect';
 
 export const authMiddleware = createMiddleware({
   type: 'function',
-}).server(async ({ next }) => {
-  const { getRequest } = await import('@tanstack/react-start/server');
+}).server(async ({ next }) =>
+  RuntimeServer.runPromise(
+    Effect.gen(function* () {
+      const auth = yield* AuthService;
+      const request = getRequest();
+      const { headers } = request;
 
-  const { auth } = await import('@lax-db/core/auth');
-  const request = getRequest();
-  const { headers } = request;
+      const session = yield* Effect.promise(() =>
+        auth.auth().api.getSession({ headers }),
+      );
 
-  const session = await auth.api.getSession({ headers });
+      if (!session) {
+        const url = new URL(request.url);
+        throw redirect({
+          to: '/login',
+          search: {
+            redirectUrl: url.pathname,
+          },
+        });
+      }
 
-  if (!session) {
-    const url = new URL(request.url);
-    throw redirect({
-      to: '/login',
-      search: {
-        redirectUrl: url.pathname,
-      },
-    });
-  }
-
-  return next({
-    context: {
-      session,
-      headers,
-    },
-  });
-});
+      return next({
+        context: {
+          session,
+          headers,
+        },
+      });
+    }),
+  ),
+);
 
 const preLogMiddleware = createMiddleware({ type: 'function' })
   .client(async (ctx) => {
