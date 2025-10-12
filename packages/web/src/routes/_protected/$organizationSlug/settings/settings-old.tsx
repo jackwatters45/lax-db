@@ -1,7 +1,9 @@
 import { effectTsResolver } from '@hookform/resolvers/effect-ts';
+import { AuthService } from '@lax-db/core/auth';
+import { RuntimeServer } from '@lax-db/core/runtime.server';
 import { createFileRoute } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
-import { Schema } from 'effect';
+import { Effect, Schema } from 'effect';
 import { AlertTriangle, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -28,81 +30,100 @@ import { authMiddleware } from '@/lib/middleware';
 const deleteOrganization = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
   .inputValidator((data: { organizationId: string }) => data)
-  .handler(async ({ data, context }) => {
-    const { auth } = await import('@lax-db/core/auth');
+  .handler(async ({ data, context }) =>
+    RuntimeServer.runPromise(
+      Effect.gen(function* () {
+        const auth = yield* AuthService;
 
-    const headers = context.headers;
-    try {
-      // Get user's organizations before deleting
-      const organizationsResult = await auth.api.listOrganizations({ headers });
+        const headers = context.headers;
 
-      // Check if this is the last organization
-      if (organizationsResult.length <= 1) {
-        return {
-          success: false,
-          error:
-            'Cannot delete your last organization. You must have at least one organization.',
-        };
-      }
+        try {
+          // Get user's organizations before deleting
+          const organizationsResult = yield* Effect.tryPromise(() =>
+            auth.auth().api.listOrganizations({ headers }),
+          );
 
-      // Delete the organization
-      await auth.api.deleteOrganization({
-        body: { organizationId: data.organizationId },
-        headers,
-      });
+          // Check if this is the last organization
+          if (organizationsResult.length <= 1) {
+            return {
+              success: false,
+              error:
+                'Cannot delete your last organization. You must have at least one organization.',
+            };
+          }
 
-      // Find remaining organizations (excluding the one we just deleted)
-      const remainingOrgs = organizationsResult.filter(
-        (org) => org.id !== data.organizationId,
-      );
+          // Delete the organization
+          yield* Effect.tryPromise(() =>
+            auth.auth().api.deleteOrganization({
+              body: { organizationId: data.organizationId },
+              headers,
+            }),
+          );
 
-      // Set the first remaining organization as active
-      if (remainingOrgs && remainingOrgs.length > 0) {
-        await auth.api.setActiveOrganization({
-          body: { organizationId: remainingOrgs[0]?.id },
-          headers,
-        });
-      }
+          // Find remaining organizations (excluding the one we just deleted)
+          const remainingOrgs = organizationsResult.filter(
+            (org) => org.id !== data.organizationId,
+          );
 
-      return { success: true, redirectPath: '/teams' };
-    } catch (error) {
-      console.error('Error deleting organization:', error);
-      return {
-        success: false,
-        error:
-          error instanceof Error
-            ? error.message
-            : 'Failed to delete organization',
-      };
-    }
-  });
+          // Set the first remaining organization as active
+          if (remainingOrgs && remainingOrgs.length > 0) {
+            yield* Effect.tryPromise(() =>
+              auth.auth().api.setActiveOrganization({
+                body: { organizationId: remainingOrgs[0]?.id },
+                headers,
+              }),
+            );
+          }
+
+          return { success: true, redirectPath: '/teams' };
+        } catch (error) {
+          console.error('Error deleting organization:', error);
+          return {
+            success: false,
+            error:
+              error instanceof Error
+                ? error.message
+                : 'Failed to delete organization',
+          };
+        }
+      }),
+    ),
+  );
 
 // Server function to get dashboard data including organization count
 const getDashboardData = createServerFn()
   .middleware([authMiddleware])
-  .handler(async ({ context }) => {
-    const { auth } = await import('@lax-db/core/auth');
+  .handler(async ({ context }) =>
+    RuntimeServer.runPromise(
+      Effect.gen(function* () {
+        const auth = yield* AuthService;
 
-    try {
-      const [organization, organizations] = await Promise.all([
-        auth.api.getFullOrganization({ headers: context.headers }),
-        auth.api.listOrganizations({ headers: context.headers }),
-      ]);
+        try {
+          const [organization, organizations] = yield* Effect.all([
+            Effect.tryPromise(() =>
+              auth.auth().api.getFullOrganization({ headers: context.headers }),
+            ),
+            Effect.tryPromise(() =>
+              auth.auth().api.listOrganizations({ headers: context.headers }),
+            ),
+          ]);
 
-      return {
-        organization,
-        canDeleteOrganization: organizations.length > 1,
-        organizationCount: organizations.length,
-      };
-    } catch (error) {
-      console.error('Error getting dashboard data:', error);
-      return {
-        organization: null,
-        canDeleteOrganization: false,
-        organizationCount: 0,
-      };
-    }
-  });
+          return {
+            organization,
+            canDeleteOrganization: organizations.length > 1,
+            organizationCount: organizations.length,
+          };
+        } catch (error) {
+          console.error('Error getting dashboard data:', error);
+          return {
+            organization: null,
+            canDeleteOrganization: false,
+            organizationCount: 0,
+          };
+        }
+      }),
+    ),
+  );
 
 export const Route = createFileRoute(
   '/_protected/$organizationSlug/settings/settings-old',

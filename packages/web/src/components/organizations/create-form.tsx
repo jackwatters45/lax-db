@@ -4,7 +4,7 @@ import { RuntimeServer } from '@lax-db/core/runtime.server';
 import { useMutation } from '@tanstack/react-query';
 import { Link, useCanGoBack, useRouter } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
-import { Effect, Schema as S } from 'effect';
+import { Effect, Schema } from 'effect';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { PageContainer } from '@/components/layout/page-content';
@@ -26,7 +26,7 @@ import { CreateOrganizationSchema } from '@/lib/schema';
 const createOrganization = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
   .inputValidator((data: typeof CreateOrganizationSchema.Type) =>
-    S.decodeSync(CreateOrganizationSchema)(data),
+    Schema.decodeSync(CreateOrganizationSchema)(data),
   )
   .handler(async ({ data, context }) =>
     RuntimeServer.runPromise(

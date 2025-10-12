@@ -1,15 +1,15 @@
-import { Schema as S } from 'effect';
+import { Schema } from 'effect';
 
 // Drizzle Schemas
-export const SerialSchema = S.Number.pipe(
-  S.int({ message: () => 'ID must be a whole number' }),
-  S.greaterThanOrEqualTo(0, {
+export const SerialSchema = Schema.Number.pipe(
+  Schema.int({ message: () => 'ID must be a whole number' }),
+  Schema.greaterThanOrEqualTo(0, {
     message: () => 'ID must be 0 or greater',
   }),
 );
-export const NanoidSchema = S.String.pipe(
-  S.length(12),
-  S.pattern(/^[A-Za-z0-9_-]{12}$/, {
+export const NanoidSchema = Schema.String.pipe(
+  Schema.length(12),
+  Schema.pattern(/^[A-Za-z0-9_-]{12}$/, {
     message: () => 'Invalid nanoid format',
   }),
 );
@@ -19,9 +19,9 @@ export const IdsSchema = {
   publicId: NanoidSchema,
 };
 
-export const CreatedAtSchema = S.DateFromSelf;
-export const UpdatedAtSchema = S.NullOr(S.DateFromSelf);
-export const DeletedAtSchema = S.NullOr(S.DateFromSelf);
+export const CreatedAtSchema = Schema.DateFromSelf;
+export const UpdatedAtSchema = Schema.NullOr(Schema.DateFromSelf);
+export const DeletedAtSchema = Schema.NullOr(Schema.DateFromSelf);
 
 export const TimestampsSchema = {
   createdAt: CreatedAtSchema,
@@ -31,56 +31,58 @@ export const TimestampsSchema = {
 
 // Better Auth Schema
 export const Base64IdSchema = (msg?: string) =>
-  S.String.pipe(
-    S.pattern(/^[a-zA-Z0-9]{32}$/, {
+  Schema.String.pipe(
+    Schema.pattern(/^[a-zA-Z0-9]{32}$/, {
       message: () => msg ?? 'Invalid Base64 ID format',
     }),
   );
 
 // Common Schemas
 export const PlayerIdSchema = {
-  playerId: S.UUID.pipe(
-    S.minLength(1, { message: () => 'Player ID is required' }),
+  playerId: Schema.UUID.pipe(
+    Schema.minLength(1, { message: () => 'Player ID is required' }),
   ),
 };
 
 export const OrganizationSlugSchema = {
-  organizationSlug: S.String.pipe(
-    S.minLength(1, { message: () => 'Organization slug is required' }),
+  organizationSlug: Schema.String.pipe(
+    Schema.minLength(1, { message: () => 'Organization slug is required' }),
   ),
 };
 
-export const TeamIdSchema = { teamId: Base64IdSchema('Team ID is required') };
+const TeamId = Base64IdSchema('Team ID is required');
+export const TeamIdSchema = { teamId: TeamId };
+export const NullableTeamIdSchema = { teamId: Schema.NullOr(TeamId) };
 
 export const OrganizationIdSchema = {
   organizationId: Base64IdSchema('Organization ID is required'),
 };
 
-export const JerseyNumberSchema = S.Number.pipe(
-  S.int({ message: () => 'Jersey number must be a whole number' }),
-  S.greaterThanOrEqualTo(0, {
+export const JerseyNumberSchema = Schema.Number.pipe(
+  Schema.int({ message: () => 'Jersey number must be a whole number' }),
+  Schema.greaterThanOrEqualTo(0, {
     message: () => 'Jersey number must be 0 or greater',
   }),
-  S.lessThanOrEqualTo(1000, {
+  Schema.lessThanOrEqualTo(1000, {
     message: () => 'Jersey number must be 1000 or less',
   }),
 );
-export const NullableJerseyNumberSchema = S.NullOr(JerseyNumberSchema);
+export const NullableJerseyNumberSchema = Schema.NullOr(JerseyNumberSchema);
 
-export const EmailSchema = S.String.pipe(
-  S.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, {
+export const EmailSchema = Schema.String.pipe(
+  Schema.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, {
     message: () => 'Please enter a valid email address',
   }),
 );
-export const NullableEmailSchema = S.NullOr(S.String);
+export const NullableEmailSchema = Schema.NullOr(Schema.String);
 
-export const PlayerNameSchema = S.String.pipe(
-  S.minLength(1, {
+export const PlayerNameSchema = Schema.String.pipe(
+  Schema.minLength(1, {
     message: () => 'Player name must be at least 1 character',
   }),
-  S.maxLength(100, {
+  Schema.maxLength(100, {
     message: () => 'Player name must be 100 characters or less',
   }),
-  S.trimmed(),
+  Schema.trimmed(),
 );
-export const NullablePlayerNameSchema = S.NullOr(PlayerNameSchema);
+export const NullablePlayerNameSchema = Schema.NullOr(PlayerNameSchema);

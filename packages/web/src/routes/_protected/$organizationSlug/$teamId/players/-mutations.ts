@@ -10,10 +10,9 @@ import {
   RemovePlayerFromTeamInput,
 } from '@lax-db/core/player/player.schema';
 import { RuntimeServer } from '@lax-db/core/runtime.server';
-import type { PartialNullable } from '@lax-db/core/type';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createServerFn } from '@tanstack/react-start';
-import { Effect, Schema as S } from 'effect';
+import { Effect, Schema } from 'effect';
 import { toast } from 'sonner';
 import { authMiddleware } from '@/lib/middleware';
 import {
@@ -31,10 +30,13 @@ const useUpdatePlayer = (organizationId: string, teamId: string) => {
 
   const handleUpdate = (
     playerId: string,
-    updates: PartialNullable<TeamPlayerWithInfo>,
+    updates: Partial<TeamPlayerWithInfo>,
   ) => {
+    const { jerseyNumber, ...rest } = updates;
+
     mutation.mutate({
-      ...updates,
+      ...rest,
+      ...(jerseyNumber !== undefined && { jerseyNumber }),
       playerId,
       teamId,
     });
@@ -47,7 +49,7 @@ const useUpdatePlayer = (organizationId: string, teamId: string) => {
 };
 
 // Add player to team
-export const AddNewPlayerWithTeamInput = S.extend(
+export const AddNewPlayerWithTeamInput = Schema.extend(
   CreatePlayerInput,
   AddNewPlayerToTeamInput,
 );
@@ -55,7 +57,7 @@ export const AddNewPlayerWithTeamInput = S.extend(
 export const addNewPlayerToTeamFn = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
   .inputValidator((data: typeof AddNewPlayerWithTeamInput.Type) =>
-    S.decodeSync(AddNewPlayerWithTeamInput)(data),
+    Schema.decodeSync(AddNewPlayerWithTeamInput)(data),
   )
   .handler(async ({ data }) =>
     RuntimeServer.runPromise(
@@ -124,7 +126,7 @@ export function useAddNewPlayerToTeam(organizationId: string, teamId: string) {
 export const removePlayerFromTeamFn = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
   .inputValidator((data: typeof RemovePlayerFromTeamInput.Type) =>
-    S.decodeSync(RemovePlayerFromTeamInput)(data),
+    Schema.decodeSync(RemovePlayerFromTeamInput)(data),
   )
   .handler(async ({ data }) =>
     RuntimeServer.runPromise(
@@ -178,7 +180,7 @@ export function useRemovePlayerFromTeam(
 export const bulkRemovePlayersFromTeamFn = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
   .inputValidator((data: typeof BulkRemovePlayersFromTeamInput.Type) =>
-    S.decodeSync(BulkRemovePlayersFromTeamInput)(data),
+    Schema.decodeSync(BulkRemovePlayersFromTeamInput)(data),
   )
   .handler(async ({ data }) =>
     RuntimeServer.runPromise(
@@ -237,40 +239,40 @@ export const useDeletePlayer = (organizationId: string, teamId: string) =>
   useDeletePlayerBase(getTeamPlayersQK(organizationId, teamId));
 
 // Link existing player to team (replace current player)
-const LinkPlayerServerInputSchema = S.Struct({
-  currentPlayerId: S.String,
-  newPlayerId: S.String,
-  newPlayerData: S.Struct({
-    publicId: S.String,
-    name: S.NullOr(S.String),
-    email: S.NullOr(S.String),
-    phone: S.NullOr(S.String),
-    dateOfBirth: S.NullOr(S.String),
-    organizationId: S.String,
+const LinkPlayerServerInputSchema = Schema.Struct({
+  currentPlayerId: Schema.String,
+  newPlayerId: Schema.String,
+  newPlayerData: Schema.Struct({
+    publicId: Schema.String,
+    name: Schema.NullOr(Schema.String),
+    email: Schema.NullOr(Schema.String),
+    phone: Schema.NullOr(Schema.String),
+    dateOfBirth: Schema.NullOr(Schema.String),
+    organizationId: Schema.String,
   }),
-  teamId: S.String,
-  jerseyNumber: S.NullOr(S.Number),
-  position: S.NullOr(S.String),
+  teamId: Schema.String,
+  jerseyNumber: Schema.NullOr(Schema.Number),
+  position: Schema.NullOr(Schema.String),
 });
 
-export const LinkPlayerInputSchema = S.Struct({
-  currentPlayerId: S.String,
-  newPlayerData: S.Struct({
-    publicId: S.String,
-    name: S.NullOr(S.String),
-    email: S.NullOr(S.String),
-    phone: S.NullOr(S.String),
-    dateOfBirth: S.NullOr(S.String),
-    organizationId: S.String,
+export const LinkPlayerInputSchema = Schema.Struct({
+  currentPlayerId: Schema.String,
+  newPlayerData: Schema.Struct({
+    publicId: Schema.String,
+    name: Schema.NullOr(Schema.String),
+    email: Schema.NullOr(Schema.String),
+    phone: Schema.NullOr(Schema.String),
+    dateOfBirth: Schema.NullOr(Schema.String),
+    organizationId: Schema.String,
   }),
-  jerseyNumber: S.NullOr(S.Number),
-  position: S.NullOr(S.String),
+  jerseyNumber: Schema.NullOr(Schema.Number),
+  position: Schema.NullOr(Schema.String),
 });
 
 export const linkPlayerFn = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
   .inputValidator((data: typeof LinkPlayerServerInputSchema.Type) =>
-    S.decodeSync(LinkPlayerServerInputSchema)(data),
+    Schema.decodeSync(LinkPlayerServerInputSchema)(data),
   )
   .handler(async ({ data }) =>
     RuntimeServer.runPromise(
@@ -352,7 +354,7 @@ export function useLinkPlayer(organizationId: string, teamId: string) {
 export const addExistingPlayerToTeamFn = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
   .inputValidator((data: typeof AddPlayerToTeamInput.Type) =>
-    S.decodeSync(AddPlayerToTeamInput)(data),
+    Schema.decodeSync(AddPlayerToTeamInput)(data),
   )
   .handler(async ({ data }) =>
     RuntimeServer.runPromise(

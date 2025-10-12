@@ -1,36 +1,41 @@
-import { auth } from '@lax-db/core/auth';
+import { AuthService } from '@lax-db/core/auth';
+import { RuntimeServer } from '@lax-db/core/runtime.server';
 import { createFileRoute, redirect } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import type { Organization } from 'better-auth/plugins';
+import { Array as Arr, Effect } from 'effect';
 import { authMiddleware } from '@/lib/middleware';
 
 const getSessionAndOrg = createServerFn({ method: 'GET' })
   .middleware([authMiddleware])
-  .handler(async ({ context }) => {
-    let activeOrganization: Organization | undefined | null;
+  .handler(async ({ context }) =>
+    RuntimeServer.runPromise(
+      Effect.gen(function* () {
+        const auth = yield* AuthService;
+        let activeOrganization: Organization | undefined | null;
 
-    try {
-      activeOrganization = await auth.api.getFullOrganization({
-        headers: context.headers,
-      });
-    } catch (error) {
-      console.error(error);
-    }
+        activeOrganization = yield* Effect.promise(() =>
+          auth.auth().api.getFullOrganization({
+            headers: context.headers,
+          }),
+        );
 
-    if (!activeOrganization) {
-      const orgs = await auth.api.listOrganizations({
-        headers: context.headers,
-      });
+        if (!activeOrganization) {
+          activeOrganization = yield* Effect.promise(() =>
+            auth.auth().api.listOrganizations({
+              headers: context.headers,
+            }),
+          ).pipe(Effect.flatMap(Arr.head));
+        }
 
-      activeOrganization = orgs.at(0);
-    }
-
-    return {
-      user: context.session.user,
-      session: context.session.session,
-      activeOrganization,
-    };
-  });
+        return {
+          user: context.session.user,
+          session: context.session.session,
+          activeOrganization,
+        };
+      }),
+    ),
+  );
 
 export const Route = createFileRoute('/_protected')({
   beforeLoad: async ({ location }) => {

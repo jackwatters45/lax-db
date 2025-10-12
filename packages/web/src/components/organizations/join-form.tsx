@@ -4,8 +4,8 @@ import { RuntimeServer } from '@lax-db/core/runtime.server';
 import { useMutation } from '@tanstack/react-query';
 import { Link, useCanGoBack, useRouter } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
-import { getRequest } from '@tanstack/react-start/server';
-import { Effect, Schema as S } from 'effect';
+import { getRequestHeaders } from '@tanstack/react-start/server';
+import { Effect, Schema } from 'effect';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -22,10 +22,10 @@ import {
 import { Input } from '@/components/ui/input';
 import { PageContainer } from '../layout/page-content';
 
-const AcceptInvitationSchema = S.Struct({
-  invitationId: S.String.pipe(
-    S.minLength(1, { message: () => 'Invitation code is required' }),
-    S.minLength(10, {
+const AcceptInvitationSchema = Schema.Struct({
+  invitationId: Schema.String.pipe(
+    Schema.minLength(1, { message: () => 'Invitation code is required' }),
+    Schema.minLength(10, {
       message: () => 'Invitation code must be at least 10 characters',
     }),
   ),
@@ -34,28 +34,17 @@ type FormData = typeof AcceptInvitationSchema.Type;
 
 const acceptInvitation = createServerFn({ method: 'POST' })
   .inputValidator((data: typeof AcceptInvitationSchema.Type) =>
-    S.decodeSync(AcceptInvitationSchema)(data),
+    Schema.decodeSync(AcceptInvitationSchema)(data),
   )
-  .handler(
-    async ({ data }) =>
-      RuntimeServer.runPromise(
-        Effect.gen(function* () {
-          const organizationService = yield* OrganizationService;
-          const request = getRequest();
+  .handler(async ({ data }) =>
+    RuntimeServer.runPromise(
+      Effect.gen(function* () {
+        const organizationService = yield* OrganizationService;
+        const headers = getRequestHeaders();
 
-          return yield* organizationService.acceptInvitation(
-            data,
-            request.headers,
-          );
-        }),
-      ),
-    //   {
-    //   const { OrganizationAPI } = await import('@lax-db/core/organization/index');
-    //   const { getRequest } = await import('@tanstack/react-start/server');
-
-    //   const request = getRequest();
-    //   return await OrganizationAPI.acceptInvitation(data, request.headers);
-    // }
+        return yield* organizationService.acceptInvitation(data, headers);
+      }),
+    ),
   );
 
 export function JoinOrganizationForm({

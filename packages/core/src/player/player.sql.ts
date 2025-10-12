@@ -1,5 +1,5 @@
 import { index, integer, pgTable, text } from 'drizzle-orm/pg-core';
-import { ids, timestamps } from '../drizzle/types';
+import { ids, timestamps } from '../drizzle';
 import { organizationTable } from '../organization/organization.sql';
 import { teamTable } from '../team/team.sql';
 import { userTable } from '../user/user.sql';
@@ -29,6 +29,8 @@ export const playerTable = pgTable(
 
 type PlayerInternal = typeof playerTable.$inferSelect;
 export type Player = Omit<PlayerInternal, 'id'>;
+
+export type PlayerInsert = typeof playerTable.$inferInsert;
 
 export const teamPlayerTable = pgTable(
   'team_player',

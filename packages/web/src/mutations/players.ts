@@ -5,13 +5,19 @@ import {
 import {
   BulkDeletePlayersInput,
   DeletePlayerInput,
-  UpdatePlayerInput,
-  UpdateTeamPlayerInput,
+  PositionSchema,
 } from '@lax-db/core/player/player.schema';
 import { RuntimeServer } from '@lax-db/core/runtime.server';
+import {
+  EmailSchema,
+  NullableJerseyNumberSchema,
+  NullablePlayerNameSchema,
+  PlayerIdSchema,
+  TeamIdSchema,
+} from '@lax-db/core/schema';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createServerFn } from '@tanstack/react-start';
-import { Effect, Schema as S } from 'effect';
+import { Effect, Schema } from 'effect';
 import { toast } from 'sonner';
 import { authMiddleware } from '@/lib/middleware';
 
@@ -21,16 +27,23 @@ export const getTeamPlayersQK = (organizationId: string, teamId: string) =>
 export const getOrgPlayersQK = (organizationId: string) =>
   [organizationId, 'players'] as const;
 
-// Update player
-export const UpdatePlayerAndTeamInput = S.extend(
-  UpdatePlayerInput,
-  UpdateTeamPlayerInput,
-);
+export class UpdatePlayerAndTeamInput extends Schema.Class<UpdatePlayerAndTeamInput>(
+  'UpdatePlayerAndTeamInput',
+)({
+  ...PlayerIdSchema,
+  ...TeamIdSchema,
+  name: Schema.optional(NullablePlayerNameSchema),
+  email: Schema.optional(Schema.NullOr(EmailSchema)),
+  phone: Schema.optional(Schema.NullOr(Schema.String)),
+  dateOfBirth: Schema.optional(Schema.NullOr(Schema.String)),
+  jerseyNumber: Schema.optional(NullableJerseyNumberSchema),
+  position: Schema.optional(PositionSchema),
+}) {}
 
 export const updatePlayerFn = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
   .inputValidator((data: typeof UpdatePlayerAndTeamInput.Type) =>
-    S.decodeSync(UpdatePlayerAndTeamInput)(data),
+    Schema.decodeSync(UpdatePlayerAndTeamInput)(data),
   )
   .handler(async ({ data }) =>
     RuntimeServer.runPromise(
@@ -94,7 +107,7 @@ export function useUpdatePlayerBase(queryKey: readonly string[]) {
 export const bulkDeletePlayersFn = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
   .inputValidator((data: typeof BulkDeletePlayersInput.Type) =>
-    S.decodeSync(BulkDeletePlayersInput)(data),
+    Schema.decodeSync(BulkDeletePlayersInput)(data),
   )
   .handler(async ({ data }) =>
     RuntimeServer.runPromise(
@@ -139,7 +152,7 @@ export function useBulkDeletePlayersBase(queryKey: readonly string[]) {
 export const deletePlayerFn = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
   .inputValidator((data: typeof DeletePlayerInput.Type) =>
-    S.decodeSync(DeletePlayerInput)(data),
+    Schema.decodeSync(DeletePlayerInput)(data),
   )
   .handler(async ({ data }) =>
     RuntimeServer.runPromise(

@@ -6,7 +6,7 @@ import {
 } from '@lax-db/core/schema';
 import { Link } from '@tanstack/react-router';
 import { type ColumnDef, createColumnHelper } from '@tanstack/react-table';
-import { Schema as S } from 'effect';
+import { Schema } from 'effect';
 import { User2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { DataTableColumnHeader } from '@/components/data-table/data-table-column-header';
@@ -95,7 +95,7 @@ export function createEditablePlayerColumns({
 
               if (numValue !== null) {
                 const result =
-                  S.decodeUnknownEither(JerseyNumberSchema)(numValue);
+                  Schema.decodeUnknownEither(JerseyNumberSchema)(numValue);
                 if (result._tag === 'Left') {
                   toast.error('Jersey number must be between 0 and 1000');
                   return;
@@ -135,7 +135,7 @@ export function createEditablePlayerColumns({
 
               if (nameValue) {
                 const result =
-                  S.decodeUnknownEither(PlayerNameSchema)(nameValue);
+                  Schema.decodeUnknownEither(PlayerNameSchema)(nameValue);
 
                 if (result._tag === 'Left') {
                   toast.error(
@@ -244,7 +244,8 @@ export function createEditablePlayerColumns({
               const emailValue = newValue || null;
 
               if (emailValue) {
-                const result = S.decodeUnknownEither(EmailSchema)(emailValue);
+                const result =
+                  Schema.decodeUnknownEither(EmailSchema)(emailValue);
                 if (result._tag === 'Left') {
                   toast.error('Please enter a valid email address');
                   return;

@@ -1,7 +1,9 @@
+import { AuthError, AuthService } from '@lax-db/core/auth';
+import { RuntimeServer } from '@lax-db/core/runtime.server';
 import { TeamIdSchema } from '@lax-db/core/schema';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
-import { Schema as S } from 'effect';
+import { Effect, Schema } from 'effect';
 import { Mail, Plus, Settings, UserMinus } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { PageBody } from '@/components/layout/page-content';
@@ -23,51 +25,62 @@ import { authClient } from '@/lib/auth-client';
 import { authMiddleware } from '@/lib/middleware';
 import { TeamHeader } from './-components/team-header';
 
-const GetTeamDataSchema = S.Struct({
+const GetTeamDataSchema = Schema.Struct({
   ...TeamIdSchema,
 });
 
 const getTeamData = createServerFn({ method: 'GET' })
   .middleware([authMiddleware])
   .inputValidator((data: typeof GetTeamDataSchema.Type) =>
-    S.decodeSync(GetTeamDataSchema)(data),
+    Schema.decodeSync(GetTeamDataSchema)(data),
   )
-  .handler(async ({ data: { teamId }, context }) => {
-    const { auth } = await import('@lax-db/core/auth');
+  .handler(async ({ data: { teamId }, context }) =>
+    RuntimeServer.runPromise(
+      Effect.gen(function* () {
+        const auth = yield* AuthService;
 
-    try {
-      // Get team members and active member role
-      const [membersResult, activeMemberResult] = await Promise.all([
-        auth.api.listTeamMembers({
-          query: { teamId },
-          headers: context.headers,
-        }),
-        auth.api.getActiveMember({
-          headers: context.headers,
-        }),
-      ]);
+        try {
+          const [membersResult, activeMemberResult] = yield* Effect.all(
+            [
+              Effect.tryPromise(() =>
+                auth.auth().api.listTeamMembers({
+                  query: { teamId },
+                  headers: context.headers,
+                }),
+              ).pipe(Effect.mapError(() => new AuthError())),
+              Effect.tryPromise(() =>
+                auth.auth().api.getActiveMember({
+                  headers: context.headers,
+                }),
+              ).pipe(Effect.mapError(() => new AuthError())),
+            ],
+            { concurrency: 'unbounded' },
+          );
 
-      const members = membersResult || [];
-      const activeMember = activeMemberResult || null;
-      const canManageTeam =
-        activeMember?.role === 'coach' || activeMember?.role === 'headCoach';
+          const members = membersResult || [];
+          const activeMember = activeMemberResult || null;
+          const canManageTeam =
+            activeMember?.role === 'coach' ||
+            activeMember?.role === 'headCoach';
 
-      return {
-        teamId,
-        members,
-        activeMember,
-        canManageTeam,
-      };
-    } catch (error) {
-      console.error('Error loading team data:', error);
-      return {
-        teamId,
-        members: [],
-        activeMember: null,
-        canManageTeam: false,
-      };
-    }
-  });
+          return {
+            teamId,
+            members,
+            activeMember,
+            canManageTeam,
+          };
+        } catch (error) {
+          console.error('Error loading team data:', error);
+          return {
+            teamId,
+            members: [],
+            activeMember: null,
+            canManageTeam: false,
+          };
+        }
+      }),
+    ),
+  );
 
 export const Route = createFileRoute('/_protected/$organizationSlug/$teamId/')({
   component: TeamManagementPage,

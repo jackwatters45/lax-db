@@ -5,7 +5,7 @@ import { RuntimeServer } from '@lax-db/core/runtime.server';
 import { useMutation } from '@tanstack/react-query';
 import { createFileRoute, Link, useRouter } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
-import { Effect, Schema as S } from 'effect';
+import { Effect, Schema } from 'effect';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { PageBody } from '@/components/layout/page-content';
@@ -32,11 +32,11 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { authMiddleware } from '@/lib/middleware';
 
-const FeedbackSchema = S.Struct({
-  topic: S.Literal(...TOPIC_ENUM),
-  rating: S.Literal(...RATING_ENUM),
-  feedback: S.String.pipe(
-    S.minLength(10, {
+const FeedbackSchema = Schema.Struct({
+  topic: Schema.Literal(...TOPIC_ENUM),
+  rating: Schema.Literal(...RATING_ENUM),
+  feedback: Schema.String.pipe(
+    Schema.minLength(10, {
       message: () => 'Feedback must be at least 10 characters long',
     }),
   ),
@@ -48,7 +48,7 @@ type FeedbackFormValues = typeof FeedbackSchema.Type;
 const submitFeedback = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
   .inputValidator((data: FeedbackFormValues) =>
-    S.decodeSync(FeedbackSchema)(data),
+    Schema.decodeSync(FeedbackSchema)(data),
   )
   .handler(async ({ data, context: { session } }) =>
     RuntimeServer.runPromise(

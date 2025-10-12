@@ -9104,25 +9104,25 @@ When using [Effect/Schema](https://effect.website/docs/schema/introduction/) an 
 import { createFileRoute } from '@tanstack/react-router'
 import { Schema as S } from 'effect'
 
-const productSearchSchema = S.standardSchemaV1(
-  S.Struct({
-    page: S.NumberFromString.pipe(
-      S.optional,
-      S.withDefaults({
+const productSearchSchema = SchemastandardSchemaV1(
+  SchemaStruct({
+    page: SchemaNumberFromString.pipe(
+      Schemaoptional,
+      SchemawithDefaults({
         constructor: () => 1,
         decoding: () => 1,
       }),
     ),
-    filter: S.String.pipe(
-      S.optional,
-      S.withDefaults({
+    filter: SchemaString.pipe(
+      Schemaoptional,
+      SchemawithDefaults({
         constructor: () => '',
         decoding: () => '',
       }),
     ),
-    sort: S.Literal('newest', 'oldest', 'price').pipe(
-      S.optional,
-      S.withDefaults({
+    sort: SchemaLiteral('newest', 'oldest', 'price').pipe(
+      Schemaoptional,
+      SchemawithDefaults({
         constructor: () => 'newest' as const,
         decoding: () => 'newest' as const,
       }),

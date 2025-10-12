@@ -1,4 +1,3 @@
-import { OrganizationService } from '@lax-db/core/organization/index';
 import { RuntimeServer } from '@lax-db/core/runtime.server';
 import { TeamIdSchema } from '@lax-db/core/schema';
 import { TeamService } from '@lax-db/core/team/index';
@@ -10,7 +9,7 @@ import {
 } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import type { Team, TeamMember } from 'better-auth/plugins';
-import { Effect, Schema as S } from 'effect';
+import { Effect, Schema } from 'effect';
 import { ArrowRight, Plus, Trash2, Users } from 'lucide-react';
 import { toast } from 'sonner';
 import { DashboardHeader } from '@/components/sidebar/dashboard-header';
@@ -30,28 +29,16 @@ import { BreadcrumbItem, BreadcrumbLink } from '@/components/ui/breadcrumb';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { authMiddleware } from '@/lib/middleware';
+import { getUserOrganizationContext } from '@/query/organizations';
 
-const getUserOrganizationContext = createServerFn()
-  .middleware([authMiddleware])
-  .handler(async ({ context }) =>
-    RuntimeServer.runPromise(
-      Effect.gen(function* () {
-        const organizationService = yield* OrganizationService;
-        return yield* organizationService.getUserOrganizationContext(
-          context.headers,
-        );
-      }),
-    ),
-  );
-
-const DeleteTeamSchema = S.Struct({
+const DeleteTeamSchema = Schema.Struct({
   ...TeamIdSchema,
 });
 
 const deleteTeam = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
   .inputValidator((data: typeof DeleteTeamSchema.Type) =>
-    S.decodeSync(DeleteTeamSchema)(data),
+    Schema.decodeSync(DeleteTeamSchema)(data),
   )
   .handler(async ({ data, context }) =>
     RuntimeServer.runPromise(
@@ -64,9 +51,7 @@ const deleteTeam = createServerFn({ method: 'POST' })
 
 export const Route = createFileRoute('/_protected/$organizationSlug/')({
   component: TeamsOverviewPage,
-  loader: async () => {
-    return await getUserOrganizationContext();
-  },
+  loader: async () => getUserOrganizationContext(),
 });
 
 function TeamsOverviewPage() {

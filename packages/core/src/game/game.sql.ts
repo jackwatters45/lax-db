@@ -1,6 +1,7 @@
 import { boolean, index, integer, pgTable, text } from 'drizzle-orm/pg-core';
-import { ids, timestamp, timestamps } from '../drizzle/types';
+import { ids, timestamp, timestamps } from '../drizzle';
 import { organizationTable } from '../organization/organization.sql';
+import { seasonTable } from '../season/season.sql';
 import { teamTable } from '../team/team.sql';
 
 export const gameTable = pgTable(
@@ -13,6 +14,9 @@ export const gameTable = pgTable(
     teamId: text('team_id')
       .notNull()
       .references(() => teamTable.id, { onDelete: 'cascade' }),
+    seasonId: integer('seasonId')
+      .notNull()
+      .references(() => seasonTable.id, { onDelete: 'cascade' }),
 
     // Opponent Information
     opponentName: text('opponent_name').notNull(),
@@ -39,7 +43,6 @@ export const gameTable = pgTable(
     location: text('location'), // For maps/directions
 
     // Optional Fields V2
-    seasonId: text('season_id'), // Future-proofing
     uniformColor: text('uniform_color'), // Practical need
     arrivalTime: timestamp('arrival_time'), // Important for logistics
     opponentLogoUrl: text('opponent_logo_url'), // UI enhancement
@@ -57,7 +60,7 @@ export const gameTable = pgTable(
 );
 
 type GameInternal = typeof gameTable.$inferSelect;
-export type Game = Omit<GameInternal, 'id'>;
+export type GameSelect = Omit<GameInternal, 'id'>;
 
 export type GameInsert = typeof gameTable.$inferInsert;
 

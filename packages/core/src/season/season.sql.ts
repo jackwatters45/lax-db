@@ -1,5 +1,5 @@
 import { index, pgEnum, pgTable, text } from 'drizzle-orm/pg-core';
-import { ids, timestamp, timestamps } from '../drizzle/types';
+import { ids, timestamp, timestamps } from '../drizzle';
 import { organizationTable } from '../organization/organization.sql';
 import { teamTable } from '../team/team.sql';
 
@@ -21,8 +21,9 @@ export const seasonTable = pgTable(
       .references(() => teamTable.id, { onDelete: 'cascade' }),
     name: text('name').notNull(),
     startDate: timestamp('start_date').notNull(),
-    endDate: timestamp('end_date').notNull(),
+    endDate: timestamp('end_date'),
     status: seasonStatusEnum('status').notNull().default('active'),
+    division: text('division'),
     ...timestamps,
   },
   (table) => [
@@ -32,6 +33,6 @@ export const seasonTable = pgTable(
 );
 
 type SeasonInternal = typeof seasonTable.$inferSelect;
-export type Season = Omit<SeasonInternal, 'id'>;
+export type SeasonSelect = Omit<SeasonInternal, 'id'>;
 
 export type SeasonInsert = typeof seasonTable.$inferInsert;

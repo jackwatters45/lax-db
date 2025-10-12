@@ -4,7 +4,7 @@ import { TeamIdSchema } from '@lax-db/core/schema';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
-import { Effect, Schema as S } from 'effect';
+import { Effect, Schema } from 'effect';
 import { useMemo } from 'react';
 import {
   DataTableBody,
@@ -34,14 +34,14 @@ import { createEditablePlayerColumns } from './-components/players-columns';
 import { PlayersFilterBar } from './-components/players-filterbar';
 import { PlayersToolbar } from './-components/players-toolbar';
 
-const GetTeamPlayers = S.Struct({
+const GetTeamPlayers = Schema.Struct({
   ...TeamIdSchema,
 });
 
 const getTeamPlayers = createServerFn({ method: 'GET' })
   .middleware([authMiddleware])
   .inputValidator((data: typeof GetTeamPlayers.Type) =>
-    S.decodeSync(GetTeamPlayers)(data),
+    Schema.decodeSync(GetTeamPlayers)(data),
   )
   .handler(async ({ data }) =>
     RuntimeServer.runPromise(
