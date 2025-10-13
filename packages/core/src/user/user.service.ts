@@ -30,7 +30,7 @@ export class UserService extends Effect.Service<UserService>()('UserService', {
             .where(eq(userTable.email, validated.email))
             .pipe(Effect.mapError(() => new UserError()));
         }),
-    };
+    } as const;
   }),
   dependencies: [DatabaseLive],
 }) {}

@@ -189,7 +189,7 @@ export class TeamService extends Effect.Service<TeamService>()('TeamService', {
             ),
           );
         }),
-    };
+    } as const;
   }),
   dependencies: [DatabaseLive, AuthService.Default],
 }) {}

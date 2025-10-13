@@ -237,7 +237,7 @@ export class OrganizationService extends Effect.Service<OrganizationService>()(
               canManageTeams,
             } satisfies DashboardData;
           }),
-      };
+      } as const;
     }),
     dependencies: [AuthService.Default],
   },
