@@ -17,7 +17,7 @@ export const logout = createServerFn({ method: 'POST' })
         const session = context.session;
         if (!session) {
           yield* Effect.tryPromise(() =>
-            auth.auth().api.signOut({ headers: context.headers }),
+            auth.auth.api.signOut({ headers: context.headers }),
           );
         }
       }),

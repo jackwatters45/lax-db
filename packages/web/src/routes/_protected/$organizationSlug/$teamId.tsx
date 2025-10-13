@@ -26,7 +26,7 @@ const getTeamDashboardData = createServerFn({ method: 'GET' })
 
           const headers = context.headers;
           const teams = yield* Effect.tryPromise(() =>
-            auth.auth().api.listOrganizationTeams({
+            auth.auth.api.listOrganizationTeams({
               query: {
                 organizationId: data.activeOrganizationId,
               },

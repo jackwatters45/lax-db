@@ -23,7 +23,7 @@ export class TeamService extends Effect.Service<TeamService>()('TeamService', {
           const validated = yield* Schema.decode(CreateTeamInput)(input);
 
           const session = yield* Effect.tryPromise(() =>
-            auth.auth().api.getSession({ headers }),
+            auth.auth.api.getSession({ headers }),
           ).pipe(
             Effect.mapError(
               () => new TeamError({ customMessage: 'Failed to get session' }),
@@ -37,7 +37,7 @@ export class TeamService extends Effect.Service<TeamService>()('TeamService', {
           }
 
           const activeOrganization = yield* Effect.tryPromise(() =>
-            auth.auth().api.getFullOrganization({ headers }),
+            auth.auth.api.getFullOrganization({ headers }),
           ).pipe(
             Effect.mapError(
               () =>
@@ -56,7 +56,7 @@ export class TeamService extends Effect.Service<TeamService>()('TeamService', {
           }
 
           const result = yield* Effect.tryPromise(() => {
-            return auth.auth().api.createTeam({
+            return auth.auth.api.createTeam({
               headers,
               body: {
                 name: validated.name,
@@ -76,7 +76,7 @@ export class TeamService extends Effect.Service<TeamService>()('TeamService', {
           const validated = yield* Schema.decode(UpdateTeamInput)(input);
 
           const result = yield* Effect.tryPromise(() => {
-            return auth.auth().api.updateTeam({
+            return auth.auth.api.updateTeam({
               headers,
               body: {
                 teamId: validated.teamId,
@@ -105,7 +105,7 @@ export class TeamService extends Effect.Service<TeamService>()('TeamService', {
           const validated = yield* Schema.decode(DeleteTeamInput)(input);
 
           yield* Effect.tryPromise(() =>
-            auth.auth().api.removeTeam({
+            auth.auth.api.removeTeam({
               headers,
               body: {
                 teamId: validated.teamId,
@@ -123,7 +123,7 @@ export class TeamService extends Effect.Service<TeamService>()('TeamService', {
           const validated = yield* Schema.decode(GetTeamMembersInput)(input);
 
           const result = yield* Effect.tryPromise(() =>
-            auth.auth().api.listTeamMembers({
+            auth.auth.api.listTeamMembers({
               headers,
               query: {
                 teamId: validated.teamId,
@@ -155,7 +155,7 @@ export class TeamService extends Effect.Service<TeamService>()('TeamService', {
           const validated = yield* Schema.decode(InvitePlayerInput)(input);
 
           yield* Effect.tryPromise(() =>
-            auth.auth().api.createInvitation({
+            auth.auth.api.createInvitation({
               body: {
                 email: validated.email,
                 role: validated.role,
@@ -174,7 +174,7 @@ export class TeamService extends Effect.Service<TeamService>()('TeamService', {
           const validated = yield* Schema.decode(RemoveTeamMemberInput)(input);
 
           yield* Effect.tryPromise(() =>
-            auth.auth().api.removeTeamMember({
+            auth.auth.api.removeTeamMember({
               body: {
                 teamId: validated.teamId,
                 userId: validated.userId,

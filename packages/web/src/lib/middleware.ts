@@ -15,7 +15,7 @@ export const authMiddleware = createMiddleware({
       const { headers } = request;
 
       const session = yield* Effect.promise(() =>
-        auth.auth().api.getSession({ headers }),
+        auth.auth.api.getSession({ headers }),
       );
 
       if (!session) {

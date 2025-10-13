@@ -38,7 +38,7 @@ const getDashboardData = createServerFn({ method: 'GET' })
           const [organizations, activeOrganization] = yield* Effect.all(
             [
               Effect.tryPromise(() =>
-                auth.auth().api.listOrganizationTeams({ headers }),
+                auth.auth.api.listOrganizationTeams({ headers }),
               ).pipe(
                 Effect.mapError(
                   () =>
@@ -48,7 +48,7 @@ const getDashboardData = createServerFn({ method: 'GET' })
                 ),
               ),
               Effect.tryPromise(() =>
-                auth.auth().api.getFullOrganization({ headers }),
+                auth.auth.api.getFullOrganization({ headers }),
               ).pipe(
                 Effect.mapError(
                   () =>

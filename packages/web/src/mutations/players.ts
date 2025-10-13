@@ -1,12 +1,10 @@
 import {
-  PlayerService,
-  type TeamPlayerWithInfo,
-} from '@lax-db/core/player/index';
-import {
   BulkDeletePlayersInput,
   DeletePlayerInput,
   PositionSchema,
+  type TeamPlayerWithInfo,
 } from '@lax-db/core/player/player.schema';
+import { PlayerService } from '@lax-db/core/player/player.service';
 import { RuntimeServer } from '@lax-db/core/runtime.server';
 import {
   EmailSchema,

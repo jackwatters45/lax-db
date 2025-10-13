@@ -1,6 +1,6 @@
 import { effectTsResolver } from '@hookform/resolvers/effect-ts';
 import { RATING_ENUM, TOPIC_ENUM } from '@lax-db/core/feedback/feedback.schema';
-import { FeedbackService } from '@lax-db/core/feedback/index';
+import { FeedbackService } from '@lax-db/core/feedback/feedback.service';
 import { RuntimeServer } from '@lax-db/core/runtime.server';
 import { useMutation } from '@tanstack/react-query';
 import { createFileRoute, Link, useRouter } from '@tanstack/react-router';

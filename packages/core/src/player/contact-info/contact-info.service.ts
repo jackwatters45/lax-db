@@ -67,15 +67,3 @@ export class PlayerContactInfoService extends Effect.Service<PlayerContactInfoSe
     dependencies: [DatabaseLive],
   },
 ) {}
-
-// Return Types
-type PlayerContactInfoServiceType = Effect.Effect.Success<
-  typeof PlayerContactInfoService
->;
-
-type PlayerWithContactInfo = Effect.Effect.Success<
-  ReturnType<PlayerContactInfoServiceType['getPlayerWithContactInfo']>
->;
-
-export type PlayerWithContactInfoNonNullable =
-  NonNullable<PlayerWithContactInfo>;

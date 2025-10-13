@@ -43,13 +43,13 @@ const getTeamData = createServerFn({ method: 'GET' })
           const [membersResult, activeMemberResult] = yield* Effect.all(
             [
               Effect.tryPromise(() =>
-                auth.auth().api.listTeamMembers({
+                auth.auth.api.listTeamMembers({
                   query: { teamId },
                   headers: context.headers,
                 }),
               ).pipe(Effect.mapError(() => new AuthError())),
               Effect.tryPromise(() =>
-                auth.auth().api.getActiveMember({
+                auth.auth.api.getActiveMember({
                   headers: context.headers,
                 }),
               ).pipe(Effect.mapError(() => new AuthError())),

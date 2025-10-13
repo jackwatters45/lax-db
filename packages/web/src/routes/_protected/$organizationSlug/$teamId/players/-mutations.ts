@@ -1,14 +1,12 @@
 import {
-  PlayerService,
-  type TeamPlayerWithInfo,
-} from '@lax-db/core/player/index';
-import {
   AddNewPlayerToTeamInput,
   AddPlayerToTeamInput,
   BulkRemovePlayersFromTeamInput,
   CreatePlayerInput,
   RemovePlayerFromTeamInput,
+  type TeamPlayerWithInfo,
 } from '@lax-db/core/player/player.schema';
+import { PlayerService } from '@lax-db/core/player/player.service';
 import { RuntimeServer } from '@lax-db/core/runtime.server';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createServerFn } from '@tanstack/react-start';
