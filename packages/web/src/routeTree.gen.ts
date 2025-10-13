@@ -79,15 +79,15 @@ import { Route as authLogoutRouteImport } from './routes/(auth)/logout';
 import { Route as authRegisterRouteImport } from './routes/(auth)/register';
 import { Route as marketingIndexRouteImport } from './routes/(marketing)/index';
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$';
-import { Route as TestRouteImport } from './routes/test';
+import { Route as ScratchIndexRouteImport } from './routes/scratch/index';
 
-const TestRoute = TestRouteImport.update({
-  id: '/test',
-  path: '/test',
-  getParentRoute: () => rootRouteImport,
-} as any);
 const ProtectedRoute = ProtectedRouteImport.update({
   id: '/_protected',
+  getParentRoute: () => rootRouteImport,
+} as any);
+const ScratchIndexRoute = ScratchIndexRouteImport.update({
+  id: '/scratch/',
+  path: '/scratch/',
   getParentRoute: () => rootRouteImport,
 } as any);
 const marketingIndexRoute = marketingIndexRouteImport.update({
@@ -500,13 +500,13 @@ const ProtectedOrganizationSlugTeamIdPlayersPlayerIdContactInfoRoute =
   } as any);
 
 export interface FileRoutesByFullPath {
-  '/test': typeof TestRoute;
   '/login': typeof authLoginRoute;
   '/logout': typeof authLogoutRoute;
   '/register': typeof authRegisterRoute;
   '/$organizationSlug': typeof ProtectedOrganizationSlugRouteWithChildren;
   '/redirect': typeof ProtectedRedirectRoute;
   '/': typeof marketingIndexRoute;
+  '/scratch': typeof ScratchIndexRoute;
   '/$organizationSlug/$teamId': typeof ProtectedOrganizationSlugTeamIdRouteWithChildren;
   '/$organizationSlug/feedback': typeof ProtectedOrganizationSlugFeedbackRoute;
   '/$organizationSlug/plan': typeof ProtectedOrganizationSlugPlanRoute;
@@ -572,12 +572,12 @@ export interface FileRoutesByFullPath {
   '/$organizationSlug/$teamId/players/$playerId': typeof ProtectedOrganizationSlugTeamIdPlayersPlayerIdIndexRoute;
 }
 export interface FileRoutesByTo {
-  '/test': typeof TestRoute;
   '/login': typeof authLoginRoute;
   '/logout': typeof authLogoutRoute;
   '/register': typeof authRegisterRoute;
   '/redirect': typeof ProtectedRedirectRoute;
   '/': typeof marketingIndexRoute;
+  '/scratch': typeof ScratchIndexRoute;
   '/$organizationSlug/feedback': typeof ProtectedOrganizationSlugFeedbackRoute;
   '/$organizationSlug/plan': typeof ProtectedOrganizationSlugPlanRoute;
   '/organizations/create': typeof ProtectedOrganizationsCreateRoute;
@@ -644,13 +644,13 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport;
   '/_protected': typeof ProtectedRouteWithChildren;
-  '/test': typeof TestRoute;
   '/(auth)/login': typeof authLoginRoute;
   '/(auth)/logout': typeof authLogoutRoute;
   '/(auth)/register': typeof authRegisterRoute;
   '/_protected/$organizationSlug': typeof ProtectedOrganizationSlugRouteWithChildren;
   '/_protected/redirect': typeof ProtectedRedirectRoute;
   '/(marketing)/': typeof marketingIndexRoute;
+  '/scratch/': typeof ScratchIndexRoute;
   '/_protected/$organizationSlug/$teamId': typeof ProtectedOrganizationSlugTeamIdRouteWithChildren;
   '/_protected/$organizationSlug/feedback': typeof ProtectedOrganizationSlugFeedbackRoute;
   '/_protected/$organizationSlug/plan': typeof ProtectedOrganizationSlugPlanRoute;
@@ -718,13 +718,13 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
   fullPaths:
-    | '/test'
     | '/login'
     | '/logout'
     | '/register'
     | '/$organizationSlug'
     | '/redirect'
     | '/'
+    | '/scratch'
     | '/$organizationSlug/$teamId'
     | '/$organizationSlug/feedback'
     | '/$organizationSlug/plan'
@@ -790,12 +790,12 @@ export interface FileRouteTypes {
     | '/$organizationSlug/$teamId/players/$playerId';
   fileRoutesByTo: FileRoutesByTo;
   to:
-    | '/test'
     | '/login'
     | '/logout'
     | '/register'
     | '/redirect'
     | '/'
+    | '/scratch'
     | '/$organizationSlug/feedback'
     | '/$organizationSlug/plan'
     | '/organizations/create'
@@ -861,13 +861,13 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/_protected'
-    | '/test'
     | '/(auth)/login'
     | '/(auth)/logout'
     | '/(auth)/register'
     | '/_protected/$organizationSlug'
     | '/_protected/redirect'
     | '/(marketing)/'
+    | '/scratch/'
     | '/_protected/$organizationSlug/$teamId'
     | '/_protected/$organizationSlug/feedback'
     | '/_protected/$organizationSlug/plan'
@@ -935,28 +935,28 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   ProtectedRoute: typeof ProtectedRouteWithChildren;
-  TestRoute: typeof TestRoute;
   authLoginRoute: typeof authLoginRoute;
   authLogoutRoute: typeof authLogoutRoute;
   authRegisterRoute: typeof authRegisterRoute;
   marketingIndexRoute: typeof marketingIndexRoute;
+  ScratchIndexRoute: typeof ScratchIndexRoute;
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute;
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/test': {
-      id: '/test';
-      path: '/test';
-      fullPath: '/test';
-      preLoaderRoute: typeof TestRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
     '/_protected': {
       id: '/_protected';
       path: '';
       fullPath: '';
       preLoaderRoute: typeof ProtectedRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    '/scratch/': {
+      id: '/scratch/';
+      path: '/scratch';
+      fullPath: '/scratch';
+      preLoaderRoute: typeof ScratchIndexRouteImport;
       parentRoute: typeof rootRouteImport;
     };
     '/(marketing)/': {
@@ -1679,11 +1679,11 @@ const ProtectedRouteWithChildren = ProtectedRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   ProtectedRoute: ProtectedRouteWithChildren,
-  TestRoute: TestRoute,
   authLoginRoute: authLoginRoute,
   authLogoutRoute: authLogoutRoute,
   authRegisterRoute: authRegisterRoute,
   marketingIndexRoute: marketingIndexRoute,
+  ScratchIndexRoute: ScratchIndexRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 };
 export const routeTree = rootRouteImport

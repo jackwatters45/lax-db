@@ -27,7 +27,6 @@ import {
   organizationTable,
 } from './organization/organization.sql';
 import { RedisService } from './redis';
-import { RuntimeServer } from './runtime.server';
 import { teamMemberTable, teamTable } from './team/team.sql';
 import { userTable } from './user/user.sql';
 
@@ -41,7 +40,6 @@ import { userTable } from './user/user.sql';
 //   server: 'sandbox',
 // });
 
-// TODO: try using the RuntimeServer
 const runtime = ManagedRuntime.make(
   Layer.mergeAll(RedisService.Default, DatabaseLive),
 );
@@ -163,7 +161,7 @@ export class AuthService extends Effect.Service<AuthService>()('AuthService', {
                     return membership.organizationId;
                   });
 
-                  const organizationId = await RuntimeServer.runPromise(effect);
+                  const organizationId = await runtime.runPromise(effect);
                   return {
                     data: {
                       ...session,

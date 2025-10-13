@@ -39,7 +39,7 @@ const getAllGames = createServerFn({ method: 'GET' })
     ),
   );
 
-export const Route = createFileRoute('/test')({
+export const Route = createFileRoute('/scratch/')({
   component: RouteComponent,
   // ssr: 'data-only',
   loader: async () =>
