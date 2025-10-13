@@ -76,7 +76,7 @@ export class FeedbackService extends Effect.Service<FeedbackService>()(
               catch: () => new FeedbackError({}),
             });
           }),
-      };
+      } as const;
     }),
     dependencies: [DatabaseLive, EmailService.Default],
   },

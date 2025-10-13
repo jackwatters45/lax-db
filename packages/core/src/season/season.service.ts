@@ -120,7 +120,7 @@ export class SeasonService extends Effect.Service<SeasonService>()(
                 Effect.mapError(() => new ErrorInvalidSeason()),
               );
           }),
-      };
+      } as const;
     }),
     dependencies: [DatabaseLive],
   },

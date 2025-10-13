@@ -110,7 +110,7 @@ export class GameService extends Effect.Service<GameService>()('GameService', {
               Effect.mapError(() => new ErrorInvalidGame()),
             );
         }),
-    };
+    } as const;
   }),
   dependencies: [DatabaseLive],
 }) {}

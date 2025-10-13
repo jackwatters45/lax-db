@@ -383,7 +383,7 @@ export class PlayerService extends Effect.Service<PlayerService>()(
                 Effect.mapError(() => new PlayerError()),
               );
           }),
-      };
+      } as const;
     }),
     dependencies: [DatabaseLive],
   },

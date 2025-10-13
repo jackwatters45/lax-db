@@ -62,7 +62,7 @@ export class PlayerContactInfoService extends Effect.Service<PlayerContactInfoSe
               );
             return result || null;
           }),
-      };
+      } as const;
     }),
     dependencies: [DatabaseLive],
   },

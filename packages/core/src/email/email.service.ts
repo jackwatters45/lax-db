@@ -150,7 +150,7 @@ export class EmailService extends Effect.Service<EmailService>()(
               Effect.mapError(() => new EmailError()),
             );
           }),
-      };
+      } as const;
     }),
   },
 ) {}
