@@ -1,4 +1,4 @@
-import type { TeamPlayerWithInfo } from '@lax-db/core/player/index';
+import type { TeamPlayerWithInfo } from '@lax-db/core/player/player.schema';
 import {
   Card,
   CardContent,

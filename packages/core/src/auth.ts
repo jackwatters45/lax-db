@@ -54,198 +54,199 @@ export class AuthService extends Effect.Service<AuthService>()('AuthService', {
     const db = yield* PgDrizzle;
     const redis = yield* RedisService;
 
-    return {
-      auth: () =>
-        betterAuth({
-          appName: 'Goalbound',
-          secret: Resource.BetterAuthSecret.value,
-          database: drizzleAdapter(db, {
-            provider: 'pg',
-            schema: {
-              user: userTable,
-              session: authSchema.sessionTable,
-              account: authSchema.accountTable,
-              verification: authSchema.verificationTable,
-              organization: organizationTable,
-              member: memberTable,
-              invitation: invitationTable,
-              team: teamTable,
-              teamMember: teamMemberTable,
-              // subscription: authSchema.subscriptionTable,
-            },
-          }),
-          emailAndPassword: {
-            enabled: true,
-          },
-          socialProviders: {
-            google: {
-              clientId: Resource.GoogleAuthClientId.value,
-              clientSecret: Resource.GoogleAuthClientSecret.value,
-            },
-          },
-          session: {
-            cookieCache: {
-              enabled: true,
-              maxAge: 5 * 60, // Cache duration in seconds
-            },
-          },
-          rateLimit: {
-            window: 10, // time window in seconds
-            max: 100, // max requests in the window
-            storage: 'secondary-storage',
-          },
-          secondaryStorage: {
-            get: async (key) => {
+    const auth = betterAuth({
+      appName: 'Goalbound',
+      secret: Resource.BetterAuthSecret.value,
+      database: drizzleAdapter(db, {
+        provider: 'pg',
+        schema: {
+          user: userTable,
+          session: authSchema.sessionTable,
+          account: authSchema.accountTable,
+          verification: authSchema.verificationTable,
+          organization: organizationTable,
+          member: memberTable,
+          invitation: invitationTable,
+          team: teamTable,
+          teamMember: teamMemberTable,
+          // subscription: authSchema.subscriptionTable,
+        },
+      }),
+      emailAndPassword: {
+        enabled: true,
+      },
+      socialProviders: {
+        google: {
+          clientId: Resource.GoogleAuthClientId.value,
+          clientSecret: Resource.GoogleAuthClientSecret.value,
+        },
+      },
+      session: {
+        cookieCache: {
+          enabled: true,
+          maxAge: 5 * 60, // Cache duration in seconds
+        },
+      },
+      rateLimit: {
+        window: 10, // time window in seconds
+        max: 100, // max requests in the window
+        storage: 'secondary-storage',
+      },
+      secondaryStorage: {
+        get: async (key) => {
+          const effect = Effect.gen(function* () {
+            return yield* redis.get(key);
+          });
+
+          return await runtime.runPromise(effect);
+        },
+        set: async (key, value, ttl) => {
+          const effect = Effect.gen(function* () {
+            return yield* redis.set(key, value, ttl);
+          });
+
+          return await runtime.runPromise(effect);
+        },
+        delete: async (key) => {
+          const effect = Effect.gen(function* () {
+            return yield* redis.delete(key);
+          });
+
+          return await runtime.runPromise(effect);
+        },
+      },
+      databaseHooks: {
+        session: {
+          create: {
+            before: async (session) => {
               const effect = Effect.gen(function* () {
-                return yield* redis.get(key);
+                // First, try to get the active organization from session
+                const sessionFromDb = yield* db
+                  .select({
+                    activeOrganizationId:
+                      authSchema.sessionTable.activeOrganizationId,
+                  })
+                  .from(authSchema.sessionTable)
+                  .where(eq(authSchema.sessionTable.userId, session.userId))
+                  .limit(1)
+                  .pipe(
+                    Effect.flatMap(Arr.head),
+                    Effect.tapError(Effect.logError),
+                    Effect.mapError(() => new AuthError()),
+                  );
+
+                if (sessionFromDb?.activeOrganizationId) {
+                  return sessionFromDb?.activeOrganizationId;
+                }
+
+                // No active org found, get user's first organization
+                const membership = yield* db
+                  .select({ organizationId: memberTable.organizationId })
+                  .from(memberTable)
+                  .where(eq(memberTable.userId, session.userId))
+                  .orderBy(desc(memberTable.createdAt))
+                  .limit(1)
+                  .pipe(
+                    Effect.flatMap(Arr.head),
+                    Effect.tapError(Effect.logError),
+                    Effect.mapError(() => new AuthError()),
+                  );
+
+                if (!membership) {
+                  return null;
+                }
+
+                return membership.organizationId;
               });
 
-              return await runtime.runPromise(effect);
-            },
-            set: async (key, value, ttl) => {
-              const effect = Effect.gen(function* () {
-                return yield* redis.set(key, value, ttl);
-              });
-
-              return await runtime.runPromise(effect);
-            },
-            delete: async (key) => {
-              const effect = Effect.gen(function* () {
-                return yield* redis.delete(key);
-              });
-
-              return await runtime.runPromise(effect);
-            },
-          },
-          databaseHooks: {
-            session: {
-              create: {
-                before: async (session) => {
-                  const effect = Effect.gen(function* () {
-                    // First, try to get the active organization from session
-                    const sessionFromDb = yield* db
-                      .select({
-                        activeOrganizationId:
-                          authSchema.sessionTable.activeOrganizationId,
-                      })
-                      .from(authSchema.sessionTable)
-                      .where(eq(authSchema.sessionTable.userId, session.userId))
-                      .limit(1)
-                      .pipe(
-                        Effect.flatMap(Arr.head),
-                        Effect.tapError(Effect.logError),
-                        Effect.mapError(() => new AuthError()),
-                      );
-
-                    if (sessionFromDb?.activeOrganizationId) {
-                      return sessionFromDb?.activeOrganizationId;
-                    }
-
-                    // No active org found, get user's first organization
-                    const membership = yield* db
-                      .select({ organizationId: memberTable.organizationId })
-                      .from(memberTable)
-                      .where(eq(memberTable.userId, session.userId))
-                      .orderBy(desc(memberTable.createdAt))
-                      .limit(1)
-                      .pipe(
-                        Effect.flatMap(Arr.head),
-                        Effect.tapError(Effect.logError),
-                        Effect.mapError(() => new AuthError()),
-                      );
-
-                    if (!membership) {
-                      return null;
-                    }
-
-                    return membership.organizationId;
-                  });
-
-                  const organizationId = await runtime.runPromise(effect);
-                  return {
-                    data: {
-                      ...session,
-                      activeOrganizationId: organizationId,
-                    },
-                  };
+              const organizationId = await runtime.runPromise(effect);
+              return {
+                data: {
+                  ...session,
+                  activeOrganizationId: organizationId,
                 },
-              },
+              };
             },
           },
-          plugins: [
-            // polar({
-            //   client: polarClient,
-            //   createCustomerOnSignUp: true,
-            //   getCustomerCreateParams: async ({ user: _user }, _request) => ({
-            //     metadata: {
-            //       myCustomProperty: '123',
-            //     },
-            //   }),
-            //   use: [
-            //     checkout({
-            //       products: [
-            //         {
-            //           productId: '123-456-789', // ID of Product from Polar Dashboard
-            //           slug: 'pro', // Custom slug for easy reference in Checkout URL, e.g. /checkout/pro
-            //         },
-            //       ],
-            //       successUrl: '/success?checkout_id={CHECKOUT_ID}',
-            //       authenticatedUsersOnly: true,
-            //     }),
-            //     portal(),
-            //     usage(),
-            //     webhooks({
-            //       secret: process.env.POLAR_WEBHOOK_SECRET!,
-            //       // onCustomerStateChanged: (payload) => // Triggered when anything regarding a customer changes
-            //       // onOrderPaid: (payload) => // Triggered when an order was paid (purchase, subscription renewal, etc.)
-            //       // ...  // Over 25 granular webhook handlers
-            //       // onPayload: (payload) => // Catch-all for all events
-            //     }),
-            //   ],
-            // }),
-            admin(),
-            organization({
-              ac,
-              roles: {
-                headCoach,
-                coach,
-                assistantCoach,
-                player,
-                parent,
-              },
-              teams: { enabled: true },
-              creatorRole: 'headCoach', // Club creator becomes head coach
-              allowUserToCreateOrganization: true, // Allow creating new clubs
-              sendInvitationEmail: async (data) => {
-                const inviteLink = `${process.env.APP_URL || 'http://localhost:3000'}/accept-invitation/${data.id}`;
+        },
+      },
+      plugins: [
+        // polar({
+        //   client: polarClient,
+        //   createCustomerOnSignUp: true,
+        //   getCustomerCreateParams: async ({ user: _user }, _request) => ({
+        //     metadata: {
+        //       myCustomProperty: '123',
+        //     },
+        //   }),
+        //   use: [
+        //     checkout({
+        //       products: [
+        //         {
+        //           productId: '123-456-789', // ID of Product from Polar Dashboard
+        //           slug: 'pro', // Custom slug for easy reference in Checkout URL, e.g. /checkout/pro
+        //         },
+        //       ],
+        //       successUrl: '/success?checkout_id={CHECKOUT_ID}',
+        //       authenticatedUsersOnly: true,
+        //     }),
+        //     portal(),
+        //     usage(),
+        //     webhooks({
+        //       secret: process.env.POLAR_WEBHOOK_SECRET!,
+        //       // onCustomerStateChanged: (payload) => // Triggered when anything regarding a customer changes
+        //       // onOrderPaid: (payload) => // Triggered when an order was paid (purchase, subscription renewal, etc.)
+        //       // ...  // Over 25 granular webhook handlers
+        //       // onPayload: (payload) => // Catch-all for all events
+        //     }),
+        //   ],
+        // }),
+        admin(),
+        organization({
+          ac,
+          roles: {
+            headCoach,
+            coach,
+            assistantCoach,
+            player,
+            parent,
+          },
+          teams: { enabled: true },
+          creatorRole: 'headCoach', // Club creator becomes head coach
+          allowUserToCreateOrganization: true, // Allow creating new clubs
+          sendInvitationEmail: async (data) => {
+            const inviteLink = `${process.env.APP_URL || 'http://localhost:3000'}/accept-invitation/${data.id}`;
 
-                console.log('Invitation email would be sent:', {
-                  to: data.email,
-                  subject: `Join ${data.organization.name} on LaxDB`,
-                  inviteLink,
-                  clubName: data.organization.name,
-                  role: data.role,
-                });
+            console.log('Invitation email would be sent:', {
+              to: data.email,
+              subject: `Join ${data.organization.name} on LaxDB`,
+              inviteLink,
+              clubName: data.organization.name,
+              role: data.role,
+            });
 
-                // TODO: Implement actual email sending
-                // await sendEmail({
-                //   to: data.email,
-                //   subject: `Join ${data.organization.name} on LaxDB`,
-                //   template: "player-invitation",
-                //   data: {
-                //     inviteLink,
-                //     clubName: data.organization.name,
-                //     role: data.role,
-                //     teamName: data.teamId ? await getTeamName(data.teamId) : null,
-                //   },
-                // });
-              },
-            }),
-            openAPI(),
-            lastLoginMethod(),
-            reactStartCookies(), // make sure this is the last plugin in the array
-          ],
+            // TODO: Implement actual email sending
+            // await sendEmail({
+            //   to: data.email,
+            //   subject: `Join ${data.organization.name} on LaxDB`,
+            //   template: "player-invitation",
+            //   data: {
+            //     inviteLink,
+            //     clubName: data.organization.name,
+            //     role: data.role,
+            //     teamName: data.teamId ? await getTeamName(data.teamId) : null,
+            //   },
+            // });
+          },
         }),
+        openAPI(),
+        lastLoginMethod(),
+        reactStartCookies(), // make sure this is the last plugin in the array
+      ],
+    });
+
+    return {
+      auth,
     };
   }),
   dependencies: [DatabaseLive, RedisService.Default],

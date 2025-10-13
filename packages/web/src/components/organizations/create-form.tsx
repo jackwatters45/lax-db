@@ -1,5 +1,6 @@
 import { effectTsResolver } from '@hookform/resolvers/effect-ts';
-import { OrganizationService } from '@lax-db/core/organization/index';
+import { CreateOrganizationInput } from '@lax-db/core/organization/organization.schema';
+import { OrganizationService } from '@lax-db/core/organization/organization.service';
 import { RuntimeServer } from '@lax-db/core/runtime.server';
 import { useMutation } from '@tanstack/react-query';
 import { Link, useCanGoBack, useRouter } from '@tanstack/react-router';
@@ -21,12 +22,11 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { authMiddleware } from '@/lib/middleware';
-import { CreateOrganizationSchema } from '@/lib/schema';
 
 const createOrganization = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
-  .inputValidator((data: typeof CreateOrganizationSchema.Type) =>
-    Schema.decodeSync(CreateOrganizationSchema)(data),
+  .inputValidator((data: typeof CreateOrganizationInput.Type) =>
+    Schema.decodeSync(CreateOrganizationInput)(data),
   )
   .handler(async ({ data, context }) =>
     RuntimeServer.runPromise(
@@ -40,7 +40,7 @@ const createOrganization = createServerFn({ method: 'POST' })
     ),
   );
 
-type FormData = typeof CreateOrganizationSchema.Type;
+type FormData = typeof CreateOrganizationInput.Type;
 
 const generateSlug = (name: string) => {
   return name
@@ -59,7 +59,7 @@ export function CreateOrganizationForm({
   const canGoBack = useCanGoBack();
 
   const form = useForm<FormData>({
-    resolver: effectTsResolver(CreateOrganizationSchema),
+    resolver: effectTsResolver(CreateOrganizationInput),
     defaultValues: {
       name: '',
       slug: '',

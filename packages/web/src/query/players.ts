@@ -1,4 +1,4 @@
-import { PlayerService } from '@lax-db/core/player/index';
+import { PlayerService } from '@lax-db/core/player/player.service';
 import { RuntimeServer } from '@lax-db/core/runtime.server';
 import { OrganizationIdSchema } from '@lax-db/core/schema';
 import { createServerFn } from '@tanstack/react-start';

@@ -1,6 +1,6 @@
 import { RuntimeServer } from '@lax-db/core/runtime.server';
 import { TeamIdSchema } from '@lax-db/core/schema';
-import { TeamService } from '@lax-db/core/team/index';
+import { TeamService } from '@lax-db/core/team/team.service';
 import {
   createFileRoute,
   Link,

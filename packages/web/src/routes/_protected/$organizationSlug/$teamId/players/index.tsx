@@ -1,4 +1,4 @@
-import { PlayerService } from '@lax-db/core/player/index';
+import { PlayerService } from '@lax-db/core/player/player.service';
 import { RuntimeServer } from '@lax-db/core/runtime.server';
 import { TeamIdSchema } from '@lax-db/core/schema';
 import { useQuery } from '@tanstack/react-query';

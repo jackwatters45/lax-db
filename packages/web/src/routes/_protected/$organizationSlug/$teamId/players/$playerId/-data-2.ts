@@ -1,4 +1,4 @@
-import type { PlayerWithContactInfoNonNullable } from '@lax-db/core/player/contact-info/index';
+import type { PlayerWithContactInfoNonNullable } from '@lax-db/core/player/contact-info/contact-info.schema';
 
 // TODO: need to move this to props
 export const playerInfo = {

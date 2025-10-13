@@ -74,7 +74,6 @@ export class SeasonService extends Effect.Service<SeasonService>()(
           Effect.gen(function* () {
             const decoded = yield* decodeArguments(CreateSeasonInput, input);
 
-            // @ts-expect-error
             yield* db.insert(seasonTable).values(decoded);
           }),
 

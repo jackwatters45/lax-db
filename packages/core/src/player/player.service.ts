@@ -388,12 +388,3 @@ export class PlayerService extends Effect.Service<PlayerService>()(
     dependencies: [DatabaseLive],
   },
 ) {}
-
-// Return Types
-type PlayerServiceType = Effect.Effect.Success<typeof PlayerService>;
-
-type TeamPlayersResult = Effect.Effect.Success<
-  ReturnType<PlayerServiceType['getTeamPlayers']>
->;
-
-export type TeamPlayerWithInfo = TeamPlayersResult[number];

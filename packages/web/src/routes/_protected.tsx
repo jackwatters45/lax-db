@@ -15,14 +15,14 @@ const getSessionAndOrg = createServerFn({ method: 'GET' })
         let activeOrganization: Organization | undefined | null;
 
         activeOrganization = yield* Effect.promise(() =>
-          auth.auth().api.getFullOrganization({
+          auth.auth.api.getFullOrganization({
             headers: context.headers,
           }),
         );
 
         if (!activeOrganization) {
           activeOrganization = yield* Effect.promise(() =>
-            auth.auth().api.listOrganizations({
+            auth.auth.api.listOrganizations({
               headers: context.headers,
             }),
           ).pipe(Effect.flatMap(Arr.head));

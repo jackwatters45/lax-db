@@ -1,4 +1,4 @@
-import type { TeamPlayerWithInfo } from '@lax-db/core/player/index';
+import type { TeamPlayerWithInfo } from '@lax-db/core/player/player.schema';
 import { createFileRoute } from '@tanstack/react-router';
 import type { Table } from '@tanstack/react-table';
 import { Mail } from 'lucide-react';

@@ -40,7 +40,7 @@ const deleteOrganization = createServerFn({ method: 'POST' })
         try {
           // Get user's organizations before deleting
           const organizationsResult = yield* Effect.tryPromise(() =>
-            auth.auth().api.listOrganizations({ headers }),
+            auth.auth.api.listOrganizations({ headers }),
           );
 
           // Check if this is the last organization
@@ -54,7 +54,7 @@ const deleteOrganization = createServerFn({ method: 'POST' })
 
           // Delete the organization
           yield* Effect.tryPromise(() =>
-            auth.auth().api.deleteOrganization({
+            auth.auth.api.deleteOrganization({
               body: { organizationId: data.organizationId },
               headers,
             }),
@@ -68,7 +68,7 @@ const deleteOrganization = createServerFn({ method: 'POST' })
           // Set the first remaining organization as active
           if (remainingOrgs && remainingOrgs.length > 0) {
             yield* Effect.tryPromise(() =>
-              auth.auth().api.setActiveOrganization({
+              auth.auth.api.setActiveOrganization({
                 body: { organizationId: remainingOrgs[0]?.id },
                 headers,
               }),
@@ -101,10 +101,10 @@ const getDashboardData = createServerFn()
         try {
           const [organization, organizations] = yield* Effect.all([
             Effect.tryPromise(() =>
-              auth.auth().api.getFullOrganization({ headers: context.headers }),
+              auth.auth.api.getFullOrganization({ headers: context.headers }),
             ),
             Effect.tryPromise(() =>
-              auth.auth().api.listOrganizations({ headers: context.headers }),
+              auth.auth.api.listOrganizations({ headers: context.headers }),
             ),
           ]);
 

@@ -1,5 +1,5 @@
 import { effectTsResolver } from '@hookform/resolvers/effect-ts';
-import { OrganizationService } from '@lax-db/core/organization/index';
+import { OrganizationService } from '@lax-db/core/organization/organization.service';
 import { RuntimeServer } from '@lax-db/core/runtime.server';
 import { useMutation } from '@tanstack/react-query';
 import { Link, useCanGoBack, useRouter } from '@tanstack/react-router';

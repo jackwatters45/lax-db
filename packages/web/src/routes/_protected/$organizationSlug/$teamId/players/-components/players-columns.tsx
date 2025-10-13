@@ -1,4 +1,4 @@
-import type { TeamPlayerWithInfo } from '@lax-db/core/player/index';
+import type { TeamPlayerWithInfo } from '@lax-db/core/player/player.schema';
 import { EmailSchema, JerseyNumberSchema } from '@lax-db/core/schema';
 import { Link } from '@tanstack/react-router';
 import { type ColumnDef, createColumnHelper } from '@tanstack/react-table';

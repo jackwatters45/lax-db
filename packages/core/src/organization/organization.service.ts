@@ -25,7 +25,7 @@ export class OrganizationService extends Effect.Service<OrganizationService>()(
             );
 
             yield* Effect.tryPromise(() =>
-              auth.auth().api.checkOrganizationSlug({
+              auth.auth.api.checkOrganizationSlug({
                 body: {
                   slug: validated.slug,
                 },
@@ -41,7 +41,7 @@ export class OrganizationService extends Effect.Service<OrganizationService>()(
             );
 
             const result = yield* Effect.tryPromise(() =>
-              auth.auth().api.createOrganization({
+              auth.auth.api.createOrganization({
                 headers,
                 body: {
                   name: validated.name,
@@ -68,7 +68,7 @@ export class OrganizationService extends Effect.Service<OrganizationService>()(
             }
 
             yield* Effect.tryPromise(() =>
-              auth.auth().api.setActiveOrganization({
+              auth.auth.api.setActiveOrganization({
                 headers,
                 body: {
                   organizationId,
@@ -87,7 +87,7 @@ export class OrganizationService extends Effect.Service<OrganizationService>()(
             );
 
             const teams = yield* Effect.tryPromise(() =>
-              auth.auth().api.listOrganizationTeams({
+              auth.auth.api.listOrganizationTeams({
                 headers,
                 query: {
                   organizationId,
@@ -125,7 +125,7 @@ export class OrganizationService extends Effect.Service<OrganizationService>()(
             );
 
             yield* Effect.tryPromise(() =>
-              auth.auth().api.acceptInvitation({
+              auth.auth.api.acceptInvitation({
                 headers,
                 body: {
                   invitationId: validated.invitationId,
@@ -144,7 +144,7 @@ export class OrganizationService extends Effect.Service<OrganizationService>()(
         getUserOrganizationContext: (headers: Headers) =>
           Effect.gen(function* () {
             const session = yield* Effect.tryPromise(() =>
-              auth.auth().api.getSession({ headers }),
+              auth.auth.api.getSession({ headers }),
             ).pipe(
               Effect.mapError(
                 () =>
@@ -163,7 +163,7 @@ export class OrganizationService extends Effect.Service<OrganizationService>()(
             const [activeOrganization, teams] = yield* Effect.all(
               [
                 Effect.tryPromise(() =>
-                  auth.auth().api.getFullOrganization({ headers }),
+                  auth.auth.api.getFullOrganization({ headers }),
                 ).pipe(
                   Effect.mapError(
                     () =>
@@ -173,7 +173,7 @@ export class OrganizationService extends Effect.Service<OrganizationService>()(
                   ),
                 ),
                 Effect.tryPromise(() =>
-                  auth.auth().api.listOrganizationTeams({ headers }),
+                  auth.auth.api.listOrganizationTeams({ headers }),
                 ).pipe(
                   Effect.mapError(
                     () =>
@@ -196,7 +196,7 @@ export class OrganizationService extends Effect.Service<OrganizationService>()(
             const teamsWithMembers = yield* Effect.all(
               teams.map((team) =>
                 Effect.tryPromise(() =>
-                  auth.auth().api.listTeamMembers({
+                  auth.auth.api.listTeamMembers({
                     headers,
                     query: {
                       teamId: team.id,

@@ -1,4 +1,4 @@
-import { Schema } from 'effect';
+import { type Effect, Schema } from 'effect';
 import {
   JerseyNumberSchema as BaseJerseyNumberSchema,
   EmailSchema,
@@ -8,6 +8,7 @@ import {
   PlayerNameSchema,
   TeamIdSchema,
 } from '../schema';
+import type { PlayerService } from './player.service';
 
 export const JerseyNumberSchema = Schema.NullOr(BaseJerseyNumberSchema);
 
@@ -97,3 +98,12 @@ export class BulkDeletePlayersInput extends Schema.Class<BulkDeletePlayersInput>
 )({
   playerIds: Schema.Array(Schema.String),
 }) {}
+
+// Return Types
+type PlayerServiceType = Effect.Effect.Success<typeof PlayerService>;
+
+type TeamPlayersResult = Effect.Effect.Success<
+  ReturnType<PlayerServiceType['getTeamPlayers']>
+>;
+
+export type TeamPlayerWithInfo = TeamPlayersResult[number];

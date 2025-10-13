@@ -1,6 +1,6 @@
 import { effectTsResolver } from '@hookform/resolvers/effect-ts';
 import { RuntimeServer } from '@lax-db/core/runtime.server';
-import { TeamService } from '@lax-db/core/team/index';
+import { TeamService } from '@lax-db/core/team/team.service';
 import { useMutation } from '@tanstack/react-query';
 import { createFileRoute, Link, useRouter } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';

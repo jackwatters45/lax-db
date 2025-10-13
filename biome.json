@@ -9,6 +9,9 @@
     "enabled": true,
     "indentStyle": "space"
   },
+  "files": {
+    "includes": ["**", "!bun.lock", "!**/*.gen.ts", "!**/sst-env.d.ts"]
+  },
   "assist": { "actions": { "source": { "organizeImports": "on" } } },
   "linter": {
     "enabled": true,

@@ -32,6 +32,19 @@ export class CreateSeasonInput extends Schema.Class<CreateSeasonInput>(
 )({
   ...OrganizationIdSchema,
   ...TeamIdSchema,
+  name: Schema.String.pipe(
+    Schema.minLength(1, { message: () => 'Season name is required' }),
+    Schema.maxLength(100, {
+      message: () => 'Season name must be 100 characters or less',
+    }),
+    Schema.trimmed(),
+  ),
+  startDate: Schema.DateFromSelf,
+  endDate: Schema.NullOr(Schema.DateFromSelf),
+  status: Schema.Literal('active', 'completed', 'upcoming').pipe(
+    Schema.optional,
+  ),
+  division: Schema.NullOr(Schema.String),
 }) {}
 
 export class UpdateSeasonInput extends Schema.Class<UpdateSeasonInput>(

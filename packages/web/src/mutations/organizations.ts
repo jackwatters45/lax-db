@@ -23,7 +23,7 @@ const switchActiveOrganization = createServerFn({ method: 'POST' })
       Effect.gen(function* () {
         const auth = yield* AuthService;
         const organization = yield* Effect.promise(() =>
-          auth.auth().api.setActiveOrganization({
+          auth.auth.api.setActiveOrganization({
             headers: context.headers,
             body: {
               organizationId: data.organizationId,
