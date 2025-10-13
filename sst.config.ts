@@ -12,9 +12,9 @@ export default $config({
           profile:
             input.stage === 'production' ? 'laxdb-production' : 'laxdb-dev',
         },
-        cloudflare: '6.6.0',
         planetscale: '0.4.1',
         command: true,
+        cloudflare: '6.10.0',
       },
     };
   },
