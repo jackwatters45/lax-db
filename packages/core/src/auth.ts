@@ -9,7 +9,7 @@ import {
 } from 'better-auth/plugins';
 import { reactStartCookies } from 'better-auth/react-start';
 import { desc, eq } from 'drizzle-orm';
-import { Array as Arr, Effect, Layer, ManagedRuntime, Schema } from 'effect';
+import { Array as Arr, Data, Effect, Layer, ManagedRuntime } from 'effect';
 import { Resource } from 'sst';
 import * as authSchema from './auth/auth.sql';
 import {
@@ -44,10 +44,7 @@ const runtime = ManagedRuntime.make(
   Layer.mergeAll(RedisService.Default, DatabaseLive),
 );
 
-export class AuthError extends Schema.TaggedError<AuthError>()(
-  'AuthError',
-  {},
-) {}
+export class AuthError extends Data.TaggedError('AuthError')<{}> {}
 
 export class AuthService extends Effect.Service<AuthService>()('AuthService', {
   effect: Effect.gen(function* () {
@@ -94,25 +91,13 @@ export class AuthService extends Effect.Service<AuthService>()('AuthService', {
       },
       secondaryStorage: {
         get: async (key) => {
-          const effect = Effect.gen(function* () {
-            return yield* redis.get(key);
-          });
-
-          return await runtime.runPromise(effect);
+          return await runtime.runPromise(redis.get(key));
         },
         set: async (key, value, ttl) => {
-          const effect = Effect.gen(function* () {
-            return yield* redis.set(key, value, ttl);
-          });
-
-          return await runtime.runPromise(effect);
+          return await runtime.runPromise(redis.set(key, value, ttl));
         },
         delete: async (key) => {
-          const effect = Effect.gen(function* () {
-            return yield* redis.delete(key);
-          });
-
-          return await runtime.runPromise(effect);
+          return await runtime.runPromise(redis.delete(key));
         },
       },
       databaseHooks: {

@@ -30,7 +30,7 @@ export class GameService extends Effect.Service<GameService>()('GameService', {
             .where(isNull(gameTable.deletedAt))
             .pipe(
               Effect.tapError(Effect.logError),
-              Effect.mapError(() => new ErrorInvalidGame()),
+              Effect.mapError((cause) => new ErrorInvalidGame({ cause })),
               // TODO: better error
               // TODO: add cron job to delete deleted players etc after a certain time
             );
@@ -52,7 +52,7 @@ export class GameService extends Effect.Service<GameService>()('GameService', {
             .pipe(
               Effect.flatMap(Arr.head),
               Effect.tapError(Effect.logError),
-              Effect.mapError(() => new ErrorInvalidGame()),
+              Effect.mapError((cause) => new ErrorInvalidGame({ cause })),
             );
 
           return game;
@@ -86,7 +86,7 @@ export class GameService extends Effect.Service<GameService>()('GameService', {
             )
             .pipe(
               Effect.tapError(Effect.logError),
-              Effect.mapError(() => new ErrorInvalidGame()),
+              Effect.mapError((cause) => new ErrorInvalidGame({ cause })),
             );
         }),
 
@@ -107,7 +107,7 @@ export class GameService extends Effect.Service<GameService>()('GameService', {
             )
             .pipe(
               Effect.tapError(Effect.logError),
-              Effect.mapError(() => new ErrorInvalidGame()),
+              Effect.mapError((cause) => new ErrorInvalidGame({ cause })),
             );
         }),
     } as const;

@@ -5,7 +5,7 @@ import { OrganizationSlugSchema } from '@lax-db/core/schema';
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { getRequestHeader } from '@tanstack/react-start/server';
-import { Console, Effect, Schema } from 'effect';
+import { Effect, Schema } from 'effect';
 import { AppSidebar } from '@/components/sidebar/app-sidebar';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { authMiddleware } from '@/lib/middleware';
@@ -23,61 +23,53 @@ const getDashboardData = createServerFn({ method: 'GET' })
     RuntimeServer.runPromise(
       Effect.gen(function* () {
         const auth = yield* AuthService;
-
-        try {
-          if (!context.session?.user) {
-            return {
-              organizations: [],
-              activeOrganization: null,
-              sidebarOpen: true,
-            };
-          }
-
-          const headers = context.headers;
-
-          const [organizations, activeOrganization] = yield* Effect.all(
-            [
-              Effect.tryPromise(() =>
-                auth.auth.api.listOrganizationTeams({ headers }),
-              ).pipe(
-                Effect.mapError(
-                  () =>
-                    new OrganizationError({
-                      customMessage: 'Failed to get teams',
-                    }),
-                ),
-              ),
-              Effect.tryPromise(() =>
-                auth.auth.api.getFullOrganization({ headers }),
-              ).pipe(
-                Effect.mapError(
-                  () =>
-                    new OrganizationError({
-                      customMessage: 'Failed to get active organization',
-                    }),
-                ),
-              ),
-            ],
-            { concurrency: 'unbounded' },
-          );
-
-          const cookie = getRequestHeader('Cookie');
-          const match = cookie?.match(/sidebar_state=([^;]+)/);
-          const sidebarOpen = match?.[1] !== 'false';
-
-          return {
-            organizations,
-            activeOrganization,
-            sidebarOpen,
-          };
-        } catch (error) {
-          yield* Console.error('Dashboard data error:', error);
+        if (!context.session?.user) {
           return {
             organizations: [],
             activeOrganization: null,
             sidebarOpen: true,
           };
         }
+
+        const headers = context.headers;
+
+        const [organizations, activeOrganization] = yield* Effect.all(
+          [
+            Effect.tryPromise(() =>
+              auth.auth.api.listOrganizationTeams({ headers }),
+            ).pipe(
+              Effect.mapError(
+                (cause) =>
+                  new OrganizationError({
+                    cause,
+                    message: 'Failed to get teams',
+                  }),
+              ),
+            ),
+            Effect.tryPromise(() =>
+              auth.auth.api.getFullOrganization({ headers }),
+            ).pipe(
+              Effect.mapError(
+                (cause) =>
+                  new OrganizationError({
+                    cause,
+                    message: 'Failed to get active organization',
+                  }),
+              ),
+            ),
+          ],
+          { concurrency: 'unbounded' },
+        );
+
+        const cookie = getRequestHeader('Cookie');
+        const match = cookie?.match(/sidebar_state=([^;]+)/);
+        const sidebarOpen = match?.[1] !== 'false';
+
+        return {
+          organizations,
+          activeOrganization,
+          sidebarOpen,
+        };
       }),
     ),
   );

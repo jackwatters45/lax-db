@@ -1,6 +1,5 @@
-import { Schema } from 'effect';
+import { Data } from 'effect';
 
-export class EmailError extends Schema.TaggedError<EmailError>()(
-  'EmailError',
-  {},
-) {}
+export class EmailError extends Data.TaggedError('EmailError')<{
+  cause: unknown;
+}> {}

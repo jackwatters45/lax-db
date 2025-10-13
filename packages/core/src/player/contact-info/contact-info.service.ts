@@ -58,7 +58,9 @@ export class PlayerContactInfoService extends Effect.Service<PlayerContactInfoSe
               .pipe(
                 Effect.flatMap(Arr.head),
                 Effect.tapError(Effect.logError),
-                Effect.mapError(() => new PlayerContactInfoError()),
+                Effect.mapError(
+                  (cause) => new PlayerContactInfoError({ cause }),
+                ),
               );
             return result || null;
           }),

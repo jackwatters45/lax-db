@@ -16,52 +16,45 @@ const getTeamDashboardData = createServerFn({ method: 'GET' })
       Effect.gen(function* () {
         const auth = yield* AuthService;
 
-        try {
-          if (!context.session?.user) {
-            return {
-              teams: [],
-              activeTeam: null,
-            };
-          }
-
-          const headers = context.headers;
-          const teams = yield* Effect.tryPromise(() =>
-            auth.auth.api.listOrganizationTeams({
-              query: {
-                organizationId: data.activeOrganizationId,
-              },
-              headers,
-            }),
-          ).pipe(
-            Effect.mapError(
-              () =>
-                new TeamError({
-                  customMessage: 'Failed to list organization teams',
-                }),
-            ),
-          );
-
-          // Find the active team from the teamId parameter
-          const activeTeam =
-            teams?.find((team) => team.id === data.teamId) || null;
-          if (!activeTeam) {
-            throw redirect({
-              to: '/$organizationSlug',
-              params: { organizationSlug: data.activeOrganizationId },
-            });
-          }
-
-          return {
-            teams,
-            activeTeam,
-          };
-        } catch (error) {
-          console.error('Team dashboard data error:', error);
+        if (!context.session?.user) {
           return {
             teams: [],
             activeTeam: null,
           };
         }
+
+        const headers = context.headers;
+        const teams = yield* Effect.tryPromise(() =>
+          auth.auth.api.listOrganizationTeams({
+            query: {
+              organizationId: data.activeOrganizationId,
+            },
+            headers,
+          }),
+        ).pipe(
+          Effect.mapError(
+            (cause) =>
+              new TeamError({
+                cause,
+                message: 'Failed to list organization teams',
+              }),
+          ),
+        );
+
+        // Find the active team from the teamId parameter
+        const activeTeam =
+          teams?.find((team) => team.id === data.teamId) || null;
+        if (!activeTeam) {
+          throw redirect({
+            to: '/$organizationSlug',
+            params: { organizationSlug: data.activeOrganizationId },
+          });
+        }
+
+        return {
+          teams,
+          activeTeam,
+        };
       }),
     ),
   );

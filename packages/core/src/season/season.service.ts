@@ -39,7 +39,7 @@ export class SeasonService extends Effect.Service<SeasonService>()(
               )
               .pipe(
                 Effect.tapError(Effect.logError),
-                Effect.mapError(() => new ErrorInvalidSeason()),
+                Effect.mapError((cause) => new ErrorInvalidSeason({ cause })),
               );
 
             return seasons;
@@ -64,7 +64,7 @@ export class SeasonService extends Effect.Service<SeasonService>()(
               .pipe(
                 Effect.flatMap(Arr.head),
                 Effect.tapError(Effect.logError),
-                Effect.mapError(() => new ErrorInvalidSeason()),
+                Effect.mapError((cause) => new ErrorInvalidSeason({ cause })),
               );
 
             return season;
@@ -96,7 +96,7 @@ export class SeasonService extends Effect.Service<SeasonService>()(
               )
               .pipe(
                 Effect.tapError(Effect.logError),
-                Effect.mapError(() => new ErrorInvalidSeason()),
+                Effect.mapError((cause) => new ErrorInvalidSeason({ cause })),
               );
           }),
 
@@ -117,7 +117,7 @@ export class SeasonService extends Effect.Service<SeasonService>()(
               )
               .pipe(
                 Effect.tapError(Effect.logError),
-                Effect.mapError(() => new ErrorInvalidSeason()),
+                Effect.mapError((cause) => new ErrorInvalidSeason({ cause })),
               );
           }),
       } as const;

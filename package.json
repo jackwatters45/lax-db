@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "effect": "latest",
-    "sst": "^3.17.14"
+    "sst": "^3.17.19"
   },
   "overrides": {
     "esbuild": "0.25.0"

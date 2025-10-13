@@ -33,9 +33,10 @@ export class OrganizationService extends Effect.Service<OrganizationService>()(
             ).pipe(
               Effect.tapError(Effect.logError),
               Effect.mapError(
-                () =>
+                (cause) =>
                   new OrganizationError({
-                    customMessage: 'Slug is not available',
+                    cause,
+                    message: 'Slug is not available',
                   }),
               ),
             );
@@ -51,9 +52,10 @@ export class OrganizationService extends Effect.Service<OrganizationService>()(
             ).pipe(
               Effect.tapError(Effect.logError),
               Effect.mapError(
-                () =>
+                (cause) =>
                   new OrganizationError({
-                    customMessage: 'Failed to create organization',
+                    cause,
+                    message: 'Failed to create organization',
                   }),
               ),
             );
@@ -62,7 +64,8 @@ export class OrganizationService extends Effect.Service<OrganizationService>()(
             if (!organizationId) {
               yield* Effect.fail(
                 new OrganizationError({
-                  customMessage: 'Failed to create organization',
+                  cause: 'No organization ID returned',
+                  message: 'Failed to create organization',
                 }),
               );
             }
@@ -78,10 +81,10 @@ export class OrganizationService extends Effect.Service<OrganizationService>()(
               Effect.tapError(Effect.logError),
 
               Effect.mapError(
-                () =>
+                (cause) =>
                   new OrganizationError({
-                    customMessage:
-                      'Organization created but failed to set as active',
+                    cause,
+                    message: 'Organization created but failed to set as active',
                   }),
               ),
             );
@@ -97,9 +100,10 @@ export class OrganizationService extends Effect.Service<OrganizationService>()(
               Effect.tapError(Effect.logError),
 
               Effect.mapError(
-                () =>
+                (cause) =>
                   new OrganizationError({
-                    customMessage:
+                    cause,
+                    message:
                       'Organization created but failed to get default team',
                   }),
               ),
@@ -109,8 +113,8 @@ export class OrganizationService extends Effect.Service<OrganizationService>()(
             if (!team) {
               return yield* Effect.fail(
                 new OrganizationError({
-                  customMessage:
-                    'Organization created but no default team found',
+                  cause: 'No default team found',
+                  message: 'Organization created but no default team found',
                 }),
               );
             }
@@ -133,9 +137,10 @@ export class OrganizationService extends Effect.Service<OrganizationService>()(
               }),
             ).pipe(
               Effect.mapError(
-                () =>
+                (cause) =>
                   new OrganizationError({
-                    customMessage: 'Failed to accept invitation',
+                    cause,
+                    message: 'Failed to accept invitation',
                   }),
               ),
             );
@@ -147,16 +152,18 @@ export class OrganizationService extends Effect.Service<OrganizationService>()(
               auth.auth.api.getSession({ headers }),
             ).pipe(
               Effect.mapError(
-                () =>
+                (cause) =>
                   new OrganizationError({
-                    customMessage: 'Failed to get session',
+                    cause,
+                    message: 'Failed to get session',
                   }),
               ),
             );
 
             if (!session?.user) {
               throw new OrganizationError({
-                customMessage: 'User not authenticated',
+                cause: 'No user in session',
+                message: 'User not authenticated',
               });
             }
 
@@ -166,9 +173,10 @@ export class OrganizationService extends Effect.Service<OrganizationService>()(
                   auth.auth.api.getFullOrganization({ headers }),
                 ).pipe(
                   Effect.mapError(
-                    () =>
+                    (cause) =>
                       new OrganizationError({
-                        customMessage: 'Failed to get active organization',
+                        cause,
+                        message: 'Failed to get active organization',
                       }),
                   ),
                 ),
@@ -176,9 +184,10 @@ export class OrganizationService extends Effect.Service<OrganizationService>()(
                   auth.auth.api.listOrganizationTeams({ headers }),
                 ).pipe(
                   Effect.mapError(
-                    () =>
+                    (cause) =>
                       new OrganizationError({
-                        customMessage: 'Failed to get teams',
+                        cause,
+                        message: 'Failed to get teams',
                       }),
                   ),
                 ),
@@ -188,7 +197,8 @@ export class OrganizationService extends Effect.Service<OrganizationService>()(
 
             if (!activeOrganization) {
               throw new OrganizationError({
-                customMessage: 'User has no active organization',
+                cause: 'No active organization',
+                message: 'User has no active organization',
               });
             }
 
@@ -212,7 +222,8 @@ export class OrganizationService extends Effect.Service<OrganizationService>()(
                       return null; // Will be handled by orElse below
                     }
                     return new OrganizationError({
-                      customMessage: 'Failed to get team members',
+                      cause,
+                      message: 'Failed to get team members',
                     });
                   }),
                   Effect.orElse(() => Effect.succeed([])), // Return empty array on error

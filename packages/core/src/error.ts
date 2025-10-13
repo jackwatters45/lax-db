@@ -1,6 +1,5 @@
-import { Schema } from 'effect';
+import { Data } from 'effect';
 
-export class ErrorInvalidArgs extends Schema.TaggedError<ErrorInvalidArgs>()(
+export class ErrorInvalidArgs extends Data.TaggedError(
   'ErrorInvalidArgs',
-  {},
-) {}
+)<{}> {}

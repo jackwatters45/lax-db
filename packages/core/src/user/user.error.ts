@@ -1,5 +1,6 @@
-import { Schema } from 'effect';
+import { Data } from 'effect';
 
-export class UserError extends Schema.TaggedError<UserError>()('UserError', {
-  customMessage: Schema.optional(Schema.String),
-}) {}
+export class UserError extends Data.TaggedError('UserError')<{
+  cause: unknown;
+  message?: string;
+}> {}

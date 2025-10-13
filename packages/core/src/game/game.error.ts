@@ -1,6 +1,5 @@
-import { Schema } from 'effect';
+import { Data } from 'effect';
 
-export class ErrorInvalidGame extends Schema.TaggedError<ErrorInvalidGame>()(
-  'ErrorInvalidGame',
-  {},
-) {}
+export class ErrorInvalidGame extends Data.TaggedError('ErrorInvalidGame')<{
+  cause: unknown;
+}> {}

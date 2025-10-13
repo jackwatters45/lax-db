@@ -30,7 +30,9 @@ export class FeedbackService extends Effect.Service<FeedbackService>()(
                     .then((rows) => rows.at(0));
 
                   if (!inserted) {
-                    throw new FeedbackError({});
+                    throw new FeedbackError({
+                      cause: 'Failed to insert feedback',
+                    });
                   }
 
                   // Send email notification in the background (don't block the response)
@@ -46,7 +48,9 @@ export class FeedbackService extends Effect.Service<FeedbackService>()(
                       })
                       .pipe(
                         Effect.tapError(Effect.logError),
-                        Effect.mapError(() => new FeedbackError()),
+                        Effect.mapError(
+                          (cause) => new FeedbackError({ cause }),
+                        ),
                         Effect.catchAll(() => Effect.succeed(void 0)),
                       ),
                   );
@@ -68,12 +72,12 @@ export class FeedbackService extends Effect.Service<FeedbackService>()(
                     .then((rows) => rows.at(0));
 
                   if (!result) {
-                    throw new FeedbackError({});
+                    throw new FeedbackError({ cause: 'Feedback not found' });
                   }
 
                   return result;
                 }),
-              catch: () => new FeedbackError({}),
+              catch: (cause) => new FeedbackError({ cause }),
             });
           }),
       } as const;
