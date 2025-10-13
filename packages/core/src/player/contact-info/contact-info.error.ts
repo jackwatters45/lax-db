@@ -1,8 +1,8 @@
-import { Schema } from 'effect';
+import { Data } from 'effect';
 
-export class PlayerContactInfoError extends Schema.TaggedError<PlayerContactInfoError>()(
+export class PlayerContactInfoError extends Data.TaggedError(
   'PlayerContactInfoError',
-  {
-    customMessage: Schema.optional(Schema.String),
-  },
-) {}
+)<{
+  cause: unknown;
+  message?: string;
+}> {}

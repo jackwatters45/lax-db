@@ -1,8 +1,6 @@
-import { Schema } from 'effect';
+import { Data } from 'effect';
 
-export class PlayerError extends Schema.TaggedError<PlayerError>()(
-  'PlayerError',
-  {
-    customMessage: Schema.optional(Schema.String),
-  },
-) {}
+export class PlayerError extends Data.TaggedError('PlayerError')<{
+  cause: unknown;
+  message?: string;
+}> {}

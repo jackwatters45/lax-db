@@ -1,11 +1,11 @@
-import { Effect, Schema } from 'effect';
+import { Data, Effect } from 'effect';
 import { Redis, type RedisOptions } from 'ioredis';
 import { Resource } from 'sst';
 
-export class RedisError extends Schema.TaggedError<RedisError>()(
-  'RedisError',
-  {},
-) {}
+export class RedisError extends Data.TaggedError('RedisError')<{
+  cause: unknown;
+  msg: string;
+}> {}
 
 export class RedisService extends Effect.Service<RedisService>()(
   'RedisService',
@@ -26,48 +26,55 @@ export class RedisService extends Effect.Service<RedisService>()(
       const client = new Redis(redisConfig);
 
       return {
-        get: (key: string) =>
-          Effect.gen(function* () {
-            return yield* Effect.tryPromise(() => client.get(key)).pipe(
-              Effect.tapError(Effect.logError),
-              Effect.mapError(
-                () => new RedisError(`Failed to get key: ${key}`),
-              ),
-            );
-          }),
+        get: Effect.fn('Redis:get')(function* (key: string) {
+          return yield* Effect.tryPromise(() => client.get(key)).pipe(
+            Effect.tapError(Effect.logError),
+            Effect.mapError(
+              (cause) =>
+                new RedisError({ msg: `Failed to get key: ${key}`, cause }),
+            ),
+          );
+        }),
 
-        set: (key: string, value: string, ttlSeconds?: number) =>
-          Effect.gen(function* () {
-            return yield* Effect.tryPromise(() => {
-              if (ttlSeconds) {
-                return client.set(key, value, 'EX', ttlSeconds);
-              }
-              return client.set(key, value);
-            }).pipe(
-              Effect.mapError(
-                () => new RedisError(`Failed to set key: ${key}`),
-              ),
-              Effect.asVoid,
-            );
-          }),
+        set: Effect.fn('Redis:set')(function* (
+          key: string,
+          value: string,
+          ttlSeconds?: number,
+        ) {
+          return yield* Effect.tryPromise(() => {
+            if (ttlSeconds) {
+              return client.set(key, value, 'EX', ttlSeconds);
+            }
+            return client.set(key, value);
+          }).pipe(
+            Effect.mapError(
+              (cause) =>
+                new RedisError({ msg: `Failed to set key: ${key}`, cause }),
+            ),
+            Effect.asVoid,
+          );
+        }),
 
-        delete: (key: string) =>
-          Effect.gen(function* () {
-            return yield* Effect.tryPromise(() => client.del(key)).pipe(
-              Effect.mapError(
-                () => new RedisError(`Failed to delete key: ${key}`),
-              ),
-              Effect.asVoid,
-            );
-          }),
+        delete: Effect.fn('Redis:delete')(function* (key: string) {
+          return yield* Effect.tryPromise(() => client.del(key)).pipe(
+            Effect.mapError(
+              (cause) =>
+                new RedisError({
+                  msg: `Failed to delete key: ${key}`,
+                  cause,
+                }),
+            ),
+            Effect.asVoid,
+          );
+        }),
 
-        disconnect: () =>
-          Effect.gen(function* () {
-            return yield* Effect.try({
-              try: () => client.disconnect(),
-              catch: () => new RedisError('Failed to disconnect Redis'),
-            });
-          }),
+        disconnect: Effect.fn('Redis:disconnect')(function* () {
+          return yield* Effect.try({
+            try: () => client.disconnect(),
+            catch: (cause) =>
+              new RedisError({ msg: 'Failed to disconnect Redis', cause }),
+          });
+        }),
       };
     }),
   },

@@ -28,7 +28,10 @@ export class UserService extends Effect.Service<UserService>()('UserService', {
             .select()
             .from(userTable)
             .where(eq(userTable.email, validated.email))
-            .pipe(Effect.mapError(() => new UserError()));
+            .pipe(
+              Effect.tapError(Effect.logError),
+              Effect.mapError((cause) => new UserError({ cause })),
+            );
         }),
     } as const;
   }),

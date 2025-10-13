@@ -47,7 +47,7 @@ export class EmailService extends Effect.Service<EmailService>()(
             });
 
             yield* Effect.tryPromise(() => sesClient.send(command)).pipe(
-              Effect.mapError(() => new EmailError()),
+              Effect.mapError((cause) => new EmailError({ cause })),
             );
           }),
         sendFeedbackNotification: (input: SendFeedbackEmailInput) =>
@@ -147,7 +147,7 @@ export class EmailService extends Effect.Service<EmailService>()(
             });
 
             yield* Effect.tryPromise(() => sesClient.send(command)).pipe(
-              Effect.mapError(() => new EmailError()),
+              Effect.mapError((cause) => new EmailError({ cause })),
             );
           }),
       } as const;

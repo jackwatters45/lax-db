@@ -39,10 +39,9 @@ export class AcceptInvitationInput extends Schema.Class<AcceptInvitationInput>(
   invitationId: Schema.String,
 }) {}
 
-// Dashboard-specific type
-export interface DashboardData {
+export type DashboardData = {
   activeOrganization: Organization;
   teams: (Team & { members: TeamMember[] })[];
   activeMember: Member | null;
   canManageTeams: boolean;
-}
+};

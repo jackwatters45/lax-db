@@ -1,6 +1,5 @@
-import { Schema } from 'effect';
+import { Data } from 'effect';
 
-export class ErrorInvalidSeason extends Schema.TaggedError<ErrorInvalidSeason>()(
-  'ErrorInvalidSeason',
-  {},
-) {}
+export class ErrorInvalidSeason extends Data.TaggedError('ErrorInvalidSeason')<{
+  cause: unknown;
+}> {}

@@ -1,5 +1,6 @@
-import { Schema } from 'effect';
+import { Data } from 'effect';
 
-export class TeamError extends Schema.TaggedError<TeamError>()('TeamError', {
-  customMessage: Schema.optional(Schema.String),
-}) {}
+export class TeamError extends Data.TaggedError('TeamError')<{
+  cause: unknown;
+  message?: string;
+}> {}

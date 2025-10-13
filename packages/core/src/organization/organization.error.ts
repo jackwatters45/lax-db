@@ -1,8 +1,6 @@
-import { Schema } from 'effect';
+import { Data } from 'effect';
 
-export class OrganizationError extends Schema.TaggedError<OrganizationError>()(
-  'OrganizationError',
-  {
-    customMessage: Schema.optional(Schema.String),
-  },
-) {}
+export class OrganizationError extends Data.TaggedError('OrganizationError')<{
+  cause: unknown;
+  message?: string;
+}> {}

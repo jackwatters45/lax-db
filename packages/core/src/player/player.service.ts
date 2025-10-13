@@ -50,7 +50,7 @@ export class PlayerService extends Effect.Service<PlayerService>()(
               )
               .pipe(
                 Effect.tapError(Effect.logError),
-                Effect.mapError(() => new PlayerError()),
+                Effect.mapError((cause) => new PlayerError({ cause })),
               );
 
             return result;
@@ -85,12 +85,15 @@ export class PlayerService extends Effect.Service<PlayerService>()(
               .pipe(
                 Effect.flatMap(Arr.head),
                 Effect.tapError(Effect.logError),
-                Effect.mapError(() => new PlayerError()),
+                Effect.mapError((cause) => new PlayerError({ cause })),
               );
 
             if (!result) {
               return yield* Effect.fail(
-                new PlayerError({ customMessage: 'Failed to create player' }),
+                new PlayerError({
+                  cause: 'No result from insert',
+                  message: 'Failed to create player',
+                }),
               );
             }
 
@@ -130,7 +133,7 @@ export class PlayerService extends Effect.Service<PlayerService>()(
               )
               .pipe(
                 Effect.tapError(Effect.logError),
-                Effect.mapError(() => new PlayerError()),
+                Effect.mapError((cause) => new PlayerError({ cause })),
               );
           }),
 
@@ -163,12 +166,15 @@ export class PlayerService extends Effect.Service<PlayerService>()(
               .pipe(
                 Effect.flatMap(Arr.head),
                 Effect.tapError(Effect.logError),
-                Effect.mapError(() => new PlayerError()),
+                Effect.mapError((cause) => new PlayerError({ cause })),
               );
 
             if (!result) {
               return yield* Effect.fail(
-                new PlayerError({ customMessage: 'Failed to update player' }),
+                new PlayerError({
+                  cause: 'No result from update',
+                  message: 'Failed to update player',
+                }),
               );
             }
 
@@ -194,12 +200,15 @@ export class PlayerService extends Effect.Service<PlayerService>()(
               .pipe(
                 Effect.flatMap(Arr.head),
                 Effect.tapError(Effect.logError),
-                Effect.mapError(() => new PlayerError()),
+                Effect.mapError((cause) => new PlayerError({ cause })),
               );
 
             if (!player) {
               return yield* Effect.fail(
-                new PlayerError({ customMessage: 'Player not found' }),
+                new PlayerError({
+                  cause: 'Player not found in database',
+                  message: 'Player not found',
+                }),
               );
             }
 
@@ -216,13 +225,14 @@ export class PlayerService extends Effect.Service<PlayerService>()(
               .pipe(
                 Effect.flatMap(Arr.head),
                 Effect.tapError(Effect.logError),
-                Effect.mapError(() => new PlayerError()),
+                Effect.mapError((cause) => new PlayerError({ cause })),
               );
 
             if (!result) {
               return yield* Effect.fail(
                 new PlayerError({
-                  customMessage: 'Failed to update team player',
+                  cause: 'No result from update',
+                  message: 'Failed to update team player',
                 }),
               );
             }
@@ -246,12 +256,15 @@ export class PlayerService extends Effect.Service<PlayerService>()(
               .pipe(
                 Effect.flatMap(Arr.head),
                 Effect.tapError(Effect.logError),
-                Effect.mapError(() => new PlayerError()),
+                Effect.mapError((cause) => new PlayerError({ cause })),
               );
 
             if (!player) {
               return yield* Effect.fail(
-                new PlayerError({ customMessage: 'Player not found' }),
+                new PlayerError({
+                  cause: 'Player not found in database',
+                  message: 'Player not found',
+                }),
               );
             }
 
@@ -267,13 +280,14 @@ export class PlayerService extends Effect.Service<PlayerService>()(
               .pipe(
                 Effect.flatMap(Arr.head),
                 Effect.tapError(Effect.logError),
-                Effect.mapError(() => new PlayerError()),
+                Effect.mapError((cause) => new PlayerError({ cause })),
               );
 
             if (!result) {
               return yield* Effect.fail(
                 new PlayerError({
-                  customMessage: 'Failed to add player to team',
+                  cause: 'No result from insert',
+                  message: 'Failed to add player to team',
                 }),
               );
             }
@@ -299,12 +313,15 @@ export class PlayerService extends Effect.Service<PlayerService>()(
               .pipe(
                 Effect.flatMap(Arr.head),
                 Effect.tapError(Effect.logError),
-                Effect.mapError(() => new PlayerError()),
+                Effect.mapError((cause) => new PlayerError({ cause })),
               );
 
             if (!player) {
               return yield* Effect.fail(
-                new PlayerError({ customMessage: 'Player not found' }),
+                new PlayerError({
+                  cause: 'Player not found in database',
+                  message: 'Player not found',
+                }),
               );
             }
 
@@ -318,7 +335,7 @@ export class PlayerService extends Effect.Service<PlayerService>()(
               )
               .pipe(
                 Effect.tapError(Effect.logError),
-                Effect.mapError(() => new PlayerError()),
+                Effect.mapError((cause) => new PlayerError({ cause })),
               );
           }),
 
@@ -339,7 +356,7 @@ export class PlayerService extends Effect.Service<PlayerService>()(
               )
               .pipe(
                 Effect.tapError(Effect.logError),
-                Effect.mapError(() => new PlayerError()),
+                Effect.mapError((cause) => new PlayerError({ cause })),
               );
 
             const playerIds = players.map((p) => p.id);
@@ -354,7 +371,7 @@ export class PlayerService extends Effect.Service<PlayerService>()(
               )
               .pipe(
                 Effect.tapError(Effect.logError),
-                Effect.mapError(() => new PlayerError()),
+                Effect.mapError((cause) => new PlayerError({ cause })),
               );
           }),
 
@@ -366,7 +383,7 @@ export class PlayerService extends Effect.Service<PlayerService>()(
               .where(eq(playerTable.publicId, validated.playerId))
               .pipe(
                 Effect.tapError(Effect.logError),
-                Effect.mapError(() => new PlayerError()),
+                Effect.mapError((cause) => new PlayerError({ cause })),
               );
           }),
 
@@ -380,7 +397,7 @@ export class PlayerService extends Effect.Service<PlayerService>()(
               .where(inArray(playerTable.publicId, validated.playerIds))
               .pipe(
                 Effect.tapError(Effect.logError),
-                Effect.mapError(() => new PlayerError()),
+                Effect.mapError((cause) => new PlayerError({ cause })),
               );
           }),
       } as const;
