@@ -62,7 +62,6 @@
     "use-debounce": "^10.0.6"
   },
   "devDependencies": {
-    "@effect/language-service": "^0.1.0",
     "@vitejs/plugin-react": "^4.7.0",
     "@tanstack/react-devtools": "^0.6.10",
     "@tanstack/react-query-devtools": "^5.90.2",

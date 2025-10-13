@@ -32,7 +32,6 @@
   },
   "devDependencies": {
     "@effect/build-utils": "^0.7.9",
-    "@effect/language-service": "^0.1.0",
     "@effect/vitest": "latest",
     "@types/pg": "^8.15.5",
     "@types/ws": "^8.18.1",
