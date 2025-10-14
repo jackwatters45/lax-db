@@ -3,6 +3,11 @@
   "compilerOptions": {
     "forceConsistentCasingInFileNames": true,
     "noUncheckedIndexedAccess": true,
-    "plugins": [{ "name": "@effect/language-service" }]
+    "strictNullChecks": true,
+    "plugins": [
+      {
+        "name": "@effect/language-service"
+      }
+    ]
   }
 }

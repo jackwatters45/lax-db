@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.2.5/schema.json",
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "vcs": {
     "enabled": true,
     "clientKind": "git",
@@ -10,24 +10,47 @@
     "indentStyle": "space"
   },
   "files": {
-    "includes": ["**", "!bun.lock", "!**/*.gen.ts", "!**/sst-env.d.ts"]
+    "includes": [
+      "**",
+      "!bun.lock",
+      "!**/*.gen.ts",
+      "!**/sst-env.d.ts"
+    ]
   },
-  "assist": { "actions": { "source": { "organizeImports": "on" } } },
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
+  },
   "linter": {
     "enabled": true,
     "rules": {
       "recommended": true,
       "nursery": {
-        "useSortedClasses": "info"
-      },
-      "complexity": {
-        "noUselessEmptyExport": "off"
+        "useSortedClasses": "info",
+        "noShadow": "warn",
+        "useImageSize": "warn"
       },
       "suspicious": {
-        "noArrayIndexKey": "warn"
+        "noArrayIndexKey": "warn",
+        "noConsole": "warn",
+        "noEmptyBlockStatements": "warn",
+        "useAwait": "warn",
+        "noExplicitAny": "warn",
+        "noEvolvingTypes": "warn",
+        "noUnknownAtRules": "warn",
+        "noAlert": "warn"
+      },
+      "complexity": {
+        "noVoid": "warn",
+        "noBannedTypes": "warn",
+        "noExcessiveCognitiveComplexity": "warn"
       },
       "a11y": {
-        "useValidAnchor": "warn"
+        "useValidAnchor": "warn",
+        "noNoninteractiveElementInteractions": "warn"
       },
       "style": {
         "useImportType": "error",
@@ -42,17 +65,49 @@
         "noUnusedTemplateLiteral": "error",
         "useNumberNamespace": "error",
         "noInferrableTypes": "error",
-        "noUselessElse": "error"
+        "noUselessElse": "error",
+        "noMagicNumbers": "warn",
+        "noNestedTernary": "warn",
+        "noHeadElement": "off"
+      },
+      "performance": {
+        "useTopLevelRegex": "warn",
+        "noNamespaceImport": "warn",
+        "noBarrelFile": "warn",
+        "noImgElement": "off"
       },
       "correctness": {
-        "useYield": "off"
+        "useYield": "off",
+        "noUnusedVariables": "warn",
+        "noUnusedFunctionParameters": "warn",
+        "noNestedComponentDefinitions": "warn"
       }
     },
-    "includes": ["**", "!**/tests/**/*", "!**/dist/**/*", "!**/*.gen.ts"]
+    "includes": [
+      "**",
+      "!**/tests/**/*",
+      "!**/dist/**/*",
+      "!**/*.gen.ts",
+      "!sst.config.ts",
+      "!**/infra/**/*"
+    ]
   },
   "javascript": {
     "formatter": {
       "quoteStyle": "single"
     }
-  }
+  },
+  "overrides": [
+    {
+      "includes": [
+        "biome.json"
+      ],
+      "formatter": {
+        "enabled": false
+      }
+    }
+  ],
+  "extends": [
+    "ultracite"
+  ]
 }
