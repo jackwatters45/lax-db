@@ -10,23 +10,29 @@ const MigratorRuntime = ManagedRuntime.make(MainLayer);
 
 export const handler = async () => {
   MigratorRuntime.runPromise(
-    Effect.gen(function* () {
-      const client = new Pool({
-        ssl: true,
-        host: Resource.Database.host,
-        port: Resource.Database.port,
-        user: Resource.Database.username,
-        password: Resource.Database.password,
-        database: Resource.Database.database,
-      });
+    Effect.acquireUseRelease(
+      Effect.sync(
+        () =>
+          new Pool({
+            ssl: true,
+            host: Resource.Database.host,
+            port: Resource.Database.port,
+            user: Resource.Database.username,
+            password: Resource.Database.password,
+            database: Resource.Database.database,
+          }),
+      ),
+      (client) =>
+        Effect.gen(function* () {
+          const db = drizzle(client);
 
-      const db = drizzle(client);
-
-      yield* Effect.promise(() =>
-        migrate(db, {
-          migrationsFolder: 'packages/core/migrations',
+          yield* Effect.promise(() =>
+            migrate(db, {
+              migrationsFolder: 'packages/core/migrations',
+            }),
+          );
         }),
-      );
-    }),
+      (client) => Effect.promise(() => client.end()),
+    ),
   );
 };
