@@ -9,7 +9,7 @@ import {
 import { seasonStatusEnum } from './season.sql';
 
 export class Season extends Schema.Class<Season>('Season')({
-  ...IdsSchema,
+  publicId: IdsSchema.publicId,
   ...OrganizationIdSchema,
   ...TeamIdSchema,
   name: Schema.String,
