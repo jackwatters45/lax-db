@@ -40,8 +40,7 @@ export const SeasonHandlers = SeasonRpcs.toLayer(
       SeasonGet: (payload) => service.get(payload),
       SeasonCreate: (payload) => service.create(payload),
       SeasonUpdate: (payload) => service.update(payload),
-      SeasonDelete: (payload) =>
-        service.delete(payload).pipe(Effect.as(undefined)),
+      SeasonDelete: (payload) => service.delete(payload),
     };
   })
 ).pipe(Layer.provide(SeasonService.Default));

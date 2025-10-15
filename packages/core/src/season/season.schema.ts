@@ -1,15 +1,15 @@
 import { Schema } from 'effect';
 import {
-  IdsSchema,
   NullableTeamIdSchema,
   OrganizationIdSchema,
+  PublicIdSchema,
   TeamIdSchema,
   TimestampsSchema,
 } from '../schema';
 import { seasonStatusEnum } from './season.sql';
 
 export class Season extends Schema.Class<Season>('Season')({
-  publicId: IdsSchema.publicId,
+  publicId: PublicIdSchema.publicId,
   ...OrganizationIdSchema,
   ...TeamIdSchema,
   name: Schema.String,
@@ -32,7 +32,7 @@ export class GetSeasonInput extends Schema.Class<GetSeasonInput>(
 )({
   ...OrganizationIdSchema,
   ...NullableTeamIdSchema,
-  publicId: IdsSchema.publicId,
+  publicId: PublicIdSchema.publicId,
 }) {}
 
 export class CreateSeasonInput extends Schema.Class<CreateSeasonInput>(
@@ -58,7 +58,7 @@ export class UpdateSeasonInput extends Schema.Class<UpdateSeasonInput>(
 )({
   ...OrganizationIdSchema,
   ...NullableTeamIdSchema,
-  publicId: IdsSchema.publicId,
+  publicId: PublicIdSchema.publicId,
   name: Schema.optional(
     Schema.String.pipe(
       Schema.minLength(1, { message: () => 'Season name is required' }),
@@ -79,5 +79,5 @@ export class DeleteSeasonInput extends Schema.Class<DeleteSeasonInput>(
 )({
   ...OrganizationIdSchema,
   ...NullableTeamIdSchema,
-  publicId: IdsSchema.publicId,
+  publicId: PublicIdSchema.publicId,
 }) {}

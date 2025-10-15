@@ -1,47 +1,81 @@
-// // ---------------------------------------------
-// // HTTP API Handlers (Thin Adapters)
-// // These are also thin wrappers that map HTTP requests to the SAME use cases.
-// // Notice: Zero duplication with RPC - both use GamesService/UsersService!
-// // ---------------------------------------------
+import {
+  HttpApi,
+  HttpApiBuilder,
+  HttpApiEndpoint,
+  HttpApiGroup,
+} from '@effect/platform';
+import { GameContract } from '@lax-db/core/game/game.contract';
+import { GameService } from '@lax-db/core/game/game.service';
+import {
+  ConstraintViolationError,
+  DatabaseError,
+  NotFoundError,
+  ValidationError,
+} from '@lax-db/core/error';
+import { Effect, Layer } from 'effect';
 
-// import {
-//   HttpApi,
-//   HttpApiBuilder,
-//   HttpApiEndpoint,
-//   HttpApiGroup,
-// } from '@effect/platform';
-// import { GameContract } from '@lax-db/core/api/game.contract';
-// import { GamesService } from '@lax-db/core/api/game.service';
-// import { NotFoundError, ValidationError } from '@lax-db/core/error';
-// import { Effect, Layer } from 'effect';
+export const GamesApi = HttpApi.make('GamesApi').add(
+  HttpApiGroup.make('Games')
+    .add(
+      HttpApiEndpoint.post('listGames', '/api/games')
+        .addSuccess(GameContract.list.success)
+        .addError(NotFoundError)
+        .addError(ValidationError)
+        .addError(DatabaseError)
+        .addError(ConstraintViolationError)
+        .setPayload(GameContract.list.payload)
+    )
+    .add(
+      HttpApiEndpoint.post('getGame', '/api/games/get')
+        .addSuccess(GameContract.get.success)
+        .addError(NotFoundError)
+        .addError(ValidationError)
+        .addError(DatabaseError)
+        .addError(ConstraintViolationError)
+        .setPayload(GameContract.get.payload)
+    )
+    .add(
+      HttpApiEndpoint.post('createGame', '/api/games/create')
+        .addSuccess(GameContract.create.success)
+        .addError(NotFoundError)
+        .addError(ValidationError)
+        .addError(DatabaseError)
+        .addError(ConstraintViolationError)
+        .setPayload(GameContract.create.payload)
+    )
+    .add(
+      HttpApiEndpoint.post('updateGame', '/api/games/update')
+        .addSuccess(GameContract.update.success)
+        .addError(NotFoundError)
+        .addError(ValidationError)
+        .addError(DatabaseError)
+        .addError(ConstraintViolationError)
+        .setPayload(GameContract.update.payload)
+    )
+    .add(
+      HttpApiEndpoint.post('deleteGame', '/api/games/delete')
+        .addSuccess(GameContract.delete.success)
+        .addError(NotFoundError)
+        .addError(ValidationError)
+        .addError(DatabaseError)
+        .addError(ConstraintViolationError)
+        .setPayload(GameContract.delete.payload)
+    )
+);
 
-// export const GamesApi = HttpApi.make('GamesApi').add(
-//   HttpApiGroup.make('Games')
-//     .add(
-//       HttpApiEndpoint.get('getGames', '/api/games')
-//         .addSuccess(GameContract.list.success)
-//         .addError(NotFoundError)
-//         .addError(ValidationError)
-//     )
-//     .add(
-//       HttpApiEndpoint.get('getGameById', '/api/games/:id')
-//         .addSuccess(GameContract.getById.success)
-//         .addError(NotFoundError)
-//         .addError(ValidationError)
-//         .setPath(GameContract.getById.path)
-//     )
-// );
+const GamesApiHandlers = HttpApiBuilder.group(GamesApi, 'Games', (handlers) =>
+  Effect.gen(function* () {
+    const service = yield* GameService;
 
-// const GamesApiHandlers = HttpApiBuilder.group(GamesApi, 'Games', (handlers) =>
-//   Effect.gen(function* () {
-//     const service = yield* GamesService;
+    return handlers
+      .handle('listGames', ({ payload }) => service.list(payload))
+      .handle('getGame', ({ payload }) => service.get(payload))
+      .handle('createGame', ({ payload }) => service.create(payload))
+      .handle('updateGame', ({ payload }) => service.update(payload))
+      .handle('deleteGame', ({ payload }) => service.delete(payload));
+  })
+).pipe(Layer.provide(GameService.Default));
 
-//     return handlers
-//       .handle('getGames', () => service.listGames())
-//       .handle('getGameById', ({ path }) => service.getGameById(path.id));
-//   })
-// ).pipe(Layer.provide(GamesService.Default));
-
-// export const GamesApiLive = HttpApiBuilder.api(GamesApi).pipe(
-//   Layer.provide(GamesApiHandlers)
-// );
+export const GamesApiLive = HttpApiBuilder.api(GamesApi).pipe(
+  Layer.provide(GamesApiHandlers)
+);

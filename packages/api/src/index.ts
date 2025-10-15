@@ -8,11 +8,17 @@ import {
 import { BunHttpServer, BunRuntime } from '@effect/platform-bun';
 import { RpcSerialization, RpcServer } from '@effect/rpc';
 import { DateTime, Layer } from 'effect';
+import { GamesApiLive } from './game/game.api';
+import { GameHandlers, GameRpcs } from './game/game.rpc';
 import { SeasonsApiLive } from './season/season.api';
 import { SeasonHandlers, SeasonRpcs } from './season/season.rpc';
 
-// TODO: this doesnt really make sense as AllRpcs - how to best organize
-const AllRpcs = RpcServer.layer(SeasonRpcs).pipe(Layer.provide(SeasonHandlers));
+const AllRpcs = Layer.mergeAll(
+  RpcServer.layer(SeasonRpcs).pipe(Layer.provide(SeasonHandlers)),
+  RpcServer.layer(GameRpcs).pipe(Layer.provide(GameHandlers))
+);
+
+const AllApis = Layer.mergeAll(SeasonsApiLive, GamesApiLive);
 
 const RpcProtocol = RpcServer.layerProtocolHttp({
   path: '/rpc',
@@ -27,7 +33,7 @@ const Main = HttpApiBuilder.serve(HttpMiddleware.logger).pipe(
   Layer.provide(HttpApiScalar.layer({ path: '/docs' })),
   Layer.provide(HttpApiBuilder.middlewareCors({ allowedOrigins: ['*'] })),
   Layer.provide(HttpApiBuilder.middlewareOpenApi()),
-  Layer.provide(SeasonsApiLive),
+  Layer.provide(AllApis),
   Layer.provide(AllRpcs),
   Layer.provide(RpcProtocol),
   Layer.provide(HealthCheckRoute),

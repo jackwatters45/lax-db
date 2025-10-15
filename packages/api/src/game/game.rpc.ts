@@ -1,33 +1,46 @@
-// // ---------------------------------------------
-// // RPC Handlers (Thin Adapters)
-// // These are just thin wrappers that map RPC calls to use cases.
-// // No business logic here - just protocol adaptation.
-// // ---------------------------------------------
+import { Rpc, RpcGroup } from '@effect/rpc';
+import { GameContract } from '@lax-db/core/game/game.contract';
+import { GameService } from '@lax-db/core/game/game.service';
+import { Effect, Layer } from 'effect';
 
-// import { Rpc, RpcGroup } from '@effect/rpc';
-// import { GameContract } from '@lax-db/core/api/game.contract';
-// import { GamesService } from '@lax-db/core/api/game.service';
-// import { Effect, Layer } from 'effect';
+export class GameRpcs extends RpcGroup.make(
+  Rpc.make('GameList', {
+    success: GameContract.list.success,
+    error: GameContract.list.error,
+    payload: GameContract.list.payload,
+  }),
+  Rpc.make('GameGet', {
+    success: GameContract.get.success,
+    error: GameContract.get.error,
+    payload: GameContract.get.payload,
+  }),
+  Rpc.make('GameCreate', {
+    success: GameContract.create.success,
+    error: GameContract.create.error,
+    payload: GameContract.create.payload,
+  }),
+  Rpc.make('GameUpdate', {
+    success: GameContract.update.success,
+    error: GameContract.update.error,
+    payload: GameContract.update.payload,
+  }),
+  Rpc.make('GameDelete', {
+    success: GameContract.delete.success,
+    error: GameContract.delete.error,
+    payload: GameContract.delete.payload,
+  })
+) {}
 
-// export class GameRpcs extends RpcGroup.make(
-//   Rpc.make('GameList', {
-//     success: GameContract.list.success,
-//     error: GameContract.list.error,
-//   }),
-//   Rpc.make('GameById', {
-//     success: GameContract.getById.success,
-//     error: GameContract.getById.error,
-//     payload: GameContract.getById.payload,
-//   })
-// ) {}
+export const GameHandlers = GameRpcs.toLayer(
+  Effect.gen(function* () {
+    const service = yield* GameService;
 
-// export const GameHandlers = GameRpcs.toLayer(
-//   Effect.gen(function* () {
-//     const service = yield* GamesService;
-
-//     return {
-//       GameList: () => service.listGames(),
-//       GameById: ({ id }) => service.getGameById(id),
-//     };
-//   })
-// ).pipe(Layer.provide(GamesService.Default));
+    return {
+      GameList: (payload) => service.list(payload),
+      GameGet: (payload) => service.get(payload),
+      GameCreate: (payload) => service.create(payload),
+      GameUpdate: (payload) => service.update(payload),
+      GameDelete: (payload) => service.delete(payload),
+    };
+  })
+).pipe(Layer.provide(GameService.Default));
