@@ -4,14 +4,14 @@ import {
   HttpApiEndpoint,
   HttpApiGroup,
 } from '@effect/platform';
-import { SeasonContract } from '@lax-db/core/season/season.contract';
-import { SeasonService } from '@lax-db/core/season/season.service';
 import {
   ConstraintViolationError,
   DatabaseError,
   NotFoundError,
   ValidationError,
 } from '@lax-db/core/error';
+import { SeasonContract } from '@lax-db/core/season/season.contract';
+import { SeasonService } from '@lax-db/core/season/season.service';
 import { Effect, Layer } from 'effect';
 
 export const SeasonsApi = HttpApi.make('SeasonsApi').add(
@@ -75,9 +75,7 @@ const SeasonsApiHandlers = HttpApiBuilder.group(
         .handle('getSeason', ({ payload }) => service.get(payload))
         .handle('createSeason', ({ payload }) => service.create(payload))
         .handle('updateSeason', ({ payload }) => service.update(payload))
-        .handle('deleteSeason', ({ payload }) =>
-          service.delete(payload).pipe(Effect.as(undefined))
-        );
+        .handle('deleteSeason', ({ payload }) => service.delete(payload));
     })
 ).pipe(Layer.provide(SeasonService.Default));
 

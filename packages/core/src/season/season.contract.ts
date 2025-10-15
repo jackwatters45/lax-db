@@ -43,7 +43,7 @@ export const SeasonContract = {
     payload: UpdateSeasonInput,
   },
   delete: {
-    success: Schema.Void,
+    success: Season,
     error: SeasonErrors,
     payload: DeleteSeasonInput,
   },

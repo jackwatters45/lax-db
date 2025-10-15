@@ -1,4 +1,5 @@
 import { Schema } from 'effect';
+import { NANOID_LENGTH } from './constant';
 
 // Drizzle Schemas
 export const SerialSchema = Schema.Number.pipe(
@@ -8,14 +9,13 @@ export const SerialSchema = Schema.Number.pipe(
   })
 );
 export const NanoidSchema = Schema.String.pipe(
-  Schema.length(12),
+  Schema.length(NANOID_LENGTH),
   Schema.pattern(/^[A-Za-z0-9_-]{12}$/, {
     message: () => 'Invalid nanoid format',
   })
 );
 
-export const IdsSchema = {
-  id: SerialSchema,
+export const PublicIdSchema = {
   publicId: NanoidSchema,
 };
 
@@ -29,10 +29,12 @@ export const TimestampsSchema = {
   deletedAt: DeletedAtSchema,
 };
 
+const BASE_64_REGEX = /^[a-zA-Z0-9]{32}$/;
+
 // Better Auth Schema
 export const Base64IdSchema = (msg?: string) =>
   Schema.String.pipe(
-    Schema.pattern(/^[a-zA-Z0-9]{32}$/, {
+    Schema.pattern(BASE_64_REGEX, {
       message: () => msg ?? 'Invalid Base64 ID format',
     })
   );
@@ -58,6 +60,7 @@ export const OrganizationIdSchema = {
   organizationId: Base64IdSchema('Organization ID is required'),
 };
 
+// Rando - not sure if i want these ones here...
 export const JerseyNumberSchema = Schema.Number.pipe(
   Schema.int({ message: () => 'Jersey number must be a whole number' }),
   Schema.greaterThanOrEqualTo(0, {
