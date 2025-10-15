@@ -1,0 +1,33 @@
+{
+  "name": "@lax-db/api",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "bun run --watch ./src/index.ts",
+    "build": "bun build --target bun index.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {},
+  "dependencies": {
+    "@effect/platform": "^0.92.1",
+    "@effect/platform-bun": "^0.81.1",
+    "@effect/rpc": "^0.71.0",
+    "@lax-db/core": "workspace:*"
+  },
+  "exports": {
+    "./*": "./src/*.ts"
+  },
+  "effect": {
+    "generateExports": {
+      "include": [
+        "**/*.ts"
+      ]
+    },
+    "generateIndex": {
+      "include": [
+        "**/*.ts"
+      ]
+    }
+  }
+}

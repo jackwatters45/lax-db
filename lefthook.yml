@@ -1,20 +1,9 @@
 pre-commit:
-  jobs:
-    - run: bun x ultracite fix
-      glob:
-        - "*.js"
-        - "*.jsx"
-        - "*.ts"
-        - "*.tsx"
-        - "*.json"
-        - "*.jsonc"
-        - "*.css"
-      stage_fixed: true
   parallel: true
   commands:
-    # check:
-    #   glob: "*.{js,ts,jsx,tsx,json,md}"
-    #   run: bunx biome check --write --unsafe --no-errors-on-unmatched --files-ignore-unknown=true {staged_files} && git update-index --again
+    check:
+      glob: "*.{js,ts,jsx,tsx,json,jsonc,css,md}"
+      run: bun x ultracite fix
     types:
       run: bun run typecheck
     ruff-check:

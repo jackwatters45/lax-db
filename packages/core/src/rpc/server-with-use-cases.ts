@@ -1,27 +1,3 @@
-/*
- * USE-CASE DRIVEN ARCHITECTURE EXAMPLE
- *
- * This file demonstrates how to minimize code duplication between RPC and HTTP API
- * by using a shared service/use-case layer.
- *
- * ARCHITECTURE:
- *
- * ┌─────────────────────────────────────┐
- * │ RPC Handlers │ HTTP API Handlers    │  ← Thin adapters (1-2 lines each)
- * ├──────────────┴──────────────────────┤
- * │ GamesService (Use Cases)            │  ← ALL business logic (shared!)
- * ├─────────────────────────────────────┤
- * │ GamesRepo (Data Access)             │  ← Data layer (shared!)
- * └─────────────────────────────────────┘
- *
- * KEY BENEFIT: The exact same Games resource is exposed via BOTH RPC and HTTP API
- * with ZERO code duplication. Both protocols call the same service methods:
- * - listGames() ← called by RPC GameList AND HTTP GET /api/games
- * - getGameById() ← called by RPC GameById AND HTTP GET /api/games/:id
- *
- * This is Hexagonal Architecture (Ports & Adapters) with Effect!
- */
-
 import {
   FetchHttpClient,
   HttpApi,
@@ -33,7 +9,7 @@ import {
   HttpRouter,
   HttpServer,
 } from '@effect/platform';
-import { BunHttpServer } from '@effect/platform-bun';
+import { BunHttpServer, BunRuntime } from '@effect/platform-bun';
 import {
   Rpc,
   RpcClient,
@@ -43,9 +19,6 @@ import {
 } from '@effect/rpc';
 import { DateTime, Effect, Layer, Schema } from 'effect';
 
-// ---------------------------------------------
-// Schemas (Shared across RPC and HTTP API)
-// These are protocol-agnostic data definitions
 // ---------------------------------------------
 // Schemas (Shared across RPC and HTTP API)
 // These are protocol-agnostic data definitions
@@ -229,7 +202,7 @@ const router = HttpRouter.empty.pipe(
   HttpRouter.use(HttpMiddleware.cors({ allowedOrigins: ['*'] }))
 );
 
-const _Main = router.pipe(
+const Main = router.pipe(
   HttpServer.serve(),
   Layer.provide(HttpApiBuilder.serve()),
   Layer.provide(GamesApiLive),
@@ -240,7 +213,7 @@ const _Main = router.pipe(
 );
 
 // Uncomment to run the server
-// BunRuntime.runMain(Layer.launch(Main));
+BunRuntime.runMain(Layer.launch(Main));
 
 // ---------------------------------------------
 // Client Examples
@@ -252,23 +225,29 @@ const RpcProtocolLive = RpcClient.layerProtocolHttp({
   url: 'http://localhost:3001/rpc',
 }).pipe(Layer.provide([FetchHttpClient.layer, RpcSerialization.layerNdjson]));
 
-const _rpcClientProgram = Effect.gen(function* () {
+const rpcClientProgram = Effect.gen(function* () {
   const gameClient = yield* RpcClient.make(GameRpcs);
 
   const games = yield* gameClient.GameList();
   const game = yield* gameClient.GameById({ id: 1 });
 
+  console.log('RPC - Games:', games);
+  console.log('RPC - Game by ID:', game);
+
   return { games, game };
 });
 
 // HTTP Client - Access Games via REST API
-const _httpClientProgram = Effect.gen(function* () {
+const httpClientProgram = Effect.gen(function* () {
   const gamesClient = yield* HttpApiClient.make(GamesApi, {
     baseUrl: 'http://localhost:3001',
   });
 
   const games = yield* gamesClient.Games.getGames();
   const game = yield* gamesClient.Games.getGameById({ path: { id: 1 } });
+
+  console.log('HTTP - Games:', games);
+  console.log('HTTP - Game by ID:', game);
 
   return { games, game };
 });
@@ -282,6 +261,9 @@ const combinedProgram = Effect.gen(function* () {
 
   const gamesViaRpc = yield* gameRpcClient.GameList();
   const gamesViaHttp = yield* gamesHttpClient.Games.getGames();
+
+  console.log('Same data via RPC:', gamesViaRpc);
+  console.log('Same data via HTTP:', gamesViaHttp);
 
   return { gamesViaRpc, gamesViaHttp };
 }).pipe(Effect.scoped);
@@ -353,22 +335,27 @@ FILE STRUCTURE RECOMMENDATION:
 packages/core/src/
 ├── domain/
 │   ├── schemas/
-│   │   └── game.schema.ts       # Game schema
+│   │   ├── game.schema.ts       # Game schema
+│   │   └── user.schema.ts       # User schema
 │   └── errors/
 │       └── api-errors.ts        # NotFoundError, ValidationError, etc.
 │
 ├── application/
 │   ├── repositories/
-│   │   └── games.repo.ts        # GamesRepo
+│   │   ├── games.repo.ts        # GamesRepo
+│   │   └── users.repo.ts        # UsersRepo
 │   └── services/
-│       └── games.service.ts     # GamesService (use cases) ← SHARED LOGIC
+│       ├── games.service.ts     # GamesService (use cases)
+│       └── users.service.ts     # UsersService (use cases)
 │
 ├── infrastructure/
 │   ├── rpc/
 │   │   ├── games.rpc.ts         # GameRpcs + thin handlers
+│   │   ├── users.rpc.ts         # UserRpcs + thin handlers
 │   │   └── index.ts
 │   ├── http/
 │   │   ├── games.api.ts         # GamesApi + thin handlers
+│   │   ├── users.api.ts         # UsersApi + thin handlers
 │   │   └── index.ts
 │   └── server.ts                # Server setup
 │
@@ -379,10 +366,7 @@ packages/core/src/
 
 This is Domain-Driven Design structure:
 - domain/: Pure business entities (schemas, errors)
-- application/: Business logic (services, repos) ← THE SHARED LAYER
-- infrastructure/: Technical details (RPC, HTTP, database) ← Thin adapters
-
-The key insight: services/ is where ALL logic lives, and it's shared!
-Both RPC and HTTP are just different ways to call the same service methods.
+- application/: Business logic (services, repos)
+- infrastructure/: Technical details (RPC, HTTP, database)
 
 */
