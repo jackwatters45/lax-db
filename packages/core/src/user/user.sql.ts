@@ -21,4 +21,8 @@ export const userTable = pgTable(
     index('user_name_idx').on(table.name),
   ]
 );
-export type User = typeof userTable.$inferSelect;
+
+type UserInternal = typeof userTable.$inferSelect;
+export type UserSelect = Omit<UserInternal, 'id'>;
+
+export type UserInsert = typeof userTable.$inferInsert;
