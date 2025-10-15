@@ -1,5 +1,6 @@
 import { GetAllGamesInput } from '@lax-db/core/game/game.schema';
 import { GameService } from '@lax-db/core/game/game.service';
+import { RpcGameClient } from '@lax-db/core/rpc/client';
 import { RuntimeServer } from '@lax-db/core/runtime.server';
 import { GetAllSeasonsInput } from '@lax-db/core/season/season.schema';
 import { SeasonService } from '@lax-db/core/season/season.service';
@@ -58,9 +59,24 @@ export const Route = createFileRoute('/scratch/')({
   },
 });
 
+import { Atom, useAtomValue } from '@effect-atom/atom-react';
+
+const runtimeAtom = Atom.runtime(RpcGameClient.Default);
+
+const gameAtom = runtimeAtom.atom(
+  Effect.gen(function* () {
+    const client = yield* RpcGameClient;
+    return yield* client.GameList();
+  }),
+);
+
 // add players selector for like quick adding to seasons, teams when creating
 function RouteComponent() {
   const data = Route.useLoaderData();
+
+  const gameRpcResult = useAtomValue(gameAtom);
+
+  console.log({ gameRpcResult });
 
   return (
     <div>
