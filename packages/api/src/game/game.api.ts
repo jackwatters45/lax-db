@@ -4,14 +4,14 @@ import {
   HttpApiEndpoint,
   HttpApiGroup,
 } from '@effect/platform';
-import { GameContract } from '@lax-db/core/game/game.contract';
-import { GameService } from '@lax-db/core/game/game.service';
 import {
   ConstraintViolationError,
   DatabaseError,
   NotFoundError,
   ValidationError,
 } from '@lax-db/core/error';
+import { GameContract } from '@lax-db/core/game/game.contract';
+import { GameService } from '@lax-db/core/game/game.service';
 import { Effect, Layer } from 'effect';
 
 export const GamesApi = HttpApi.make('GamesApi').add(
