@@ -6,13 +6,40 @@ import {
   OrganizationIdSchema,
   PlayerIdSchema,
   PlayerNameSchema,
+  PublicIdSchema,
   TeamIdSchema,
+  TimestampsSchema,
 } from '../schema';
 import type { PlayerService } from './player.service';
 
 export const JerseyNumberSchema = Schema.NullOr(BaseJerseyNumberSchema);
 
 export const PositionSchema = Schema.NullOr(Schema.String);
+
+export class Player extends Schema.Class<Player>('Player')({
+  ...PublicIdSchema,
+  ...OrganizationIdSchema,
+  userId: Schema.NullOr(Schema.String),
+  name: Schema.NullOr(Schema.String),
+  email: Schema.NullOr(Schema.String),
+  phone: Schema.NullOr(Schema.String),
+  dateOfBirth: Schema.NullOr(Schema.String),
+  ...TimestampsSchema,
+}) {}
+
+export class TeamPlayer extends Schema.Class<TeamPlayer>('TeamPlayer')({
+  ...PublicIdSchema,
+  ...OrganizationIdSchema,
+  userId: Schema.NullOr(Schema.String),
+  name: Schema.NullOr(Schema.String),
+  email: Schema.NullOr(Schema.String),
+  phone: Schema.NullOr(Schema.String),
+  dateOfBirth: Schema.NullOr(Schema.String),
+  ...TimestampsSchema,
+  teamId: Schema.String,
+  jerseyNumber: Schema.NullOr(Schema.Number),
+  position: Schema.NullOr(Schema.String),
+}) {}
 
 export class GetAllPlayersInput extends Schema.Class<GetAllPlayersInput>(
   'GetAllPlayersInput'
