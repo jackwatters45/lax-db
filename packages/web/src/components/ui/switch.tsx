@@ -8,9 +8,7 @@ const Switch = ({
   ref,
   ...props
 }: React.ComponentPropsWithoutRef<typeof SwitchPrimitives.Root> & {
-  ref?: React.RefObject<React.ComponentRef<
-    typeof SwitchPrimitives.Root
-  > | null>;
+  ref?: React.Ref<React.ComponentRef<typeof SwitchPrimitives.Root>>;
 }) => (
   <SwitchPrimitives.Root
     className={cn(

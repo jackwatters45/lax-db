@@ -9,9 +9,7 @@ const Checkbox = ({
   ref,
   ...props
 }: React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root> & {
-  ref?: React.RefObject<React.ComponentRef<
-    typeof CheckboxPrimitive.Root
-  > | null>;
+  ref?: React.Ref<React.ComponentRef<typeof CheckboxPrimitive.Root>>;
 }) => (
   <CheckboxPrimitive.Root
     className={cn(

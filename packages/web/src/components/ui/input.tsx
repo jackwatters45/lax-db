@@ -21,32 +21,34 @@ export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement>,
     VariantProps<typeof inputVariants> {}
 
-const Input = ({
+function Input({
   className,
   variant,
   type,
   ref,
   ...props
-}: InputProps & { ref?: React.RefObject<HTMLInputElement | null> }) => (
-  <input
-    className={cn(inputVariants({ variant, className }))}
-    ref={ref}
-    type={type}
-    {...props}
-  />
-);
+}: InputProps & { ref?: React.Ref<HTMLInputElement> }) {
+  return (
+    <input
+      className={cn(inputVariants({ variant, className }))}
+      ref={ref}
+      type={type}
+      {...props}
+    />
+  );
+}
 Input.displayName = 'Input';
 
 export interface ControlledInput extends Omit<InputProps, 'defaultValue'> {
   onUpdate: (value: string | null) => void;
 }
 
-const ControlledInput = ({
+function ControlledInput({
   value,
   onUpdate,
   ref,
   ...props
-}: ControlledInput & { ref?: React.RefObject<HTMLInputElement | null> }) => {
+}: ControlledInput & { ref?: React.Ref<HTMLInputElement> }) {
   const [localValue, setLocalValue] = React.useState(value?.toString() ?? '');
 
   return (
@@ -58,7 +60,6 @@ const ControlledInput = ({
       value={localValue}
     />
   );
-};
-ControlledInput.displayName = 'ControlledInput';
+}
 
 export { ControlledInput, Input };

@@ -15,9 +15,7 @@ const TooltipContent = ({
   ref,
   ...props
 }: React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Content> & {
-  ref?: React.RefObject<React.ComponentRef<
-    typeof TooltipPrimitive.Content
-  > | null>;
+  ref?: React.Ref<React.ComponentRef<typeof TooltipPrimitive.Content>>;
 }) => (
   <TooltipPrimitive.Portal>
     <TooltipPrimitive.Content

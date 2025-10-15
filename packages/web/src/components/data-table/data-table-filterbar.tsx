@@ -11,7 +11,14 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
+import { ButtonGroup } from '../ui/button-group';
 import { TabsList, TabsTrigger } from '../ui/tabs';
+import {
+  type FilterBarActions,
+  FilterBarContext,
+  type FilterBarContextValue,
+  useFilterBar,
+} from './use-filterbar';
 
 type FilterBarProviderProps<TData = unknown> = {
   table: Table<TData>;
@@ -165,9 +172,7 @@ function FilterBarDisplayTypeToggle() {
   );
 }
 
-import { ButtonGroup } from '../ui/button-group';
-
-// re-export data-table-filters
+// biome-ignore  lint/performance/noBarrelFile: <prefer to be able to import from this file>
 export {
   FilterCheckbox,
   FilterClear,
@@ -175,13 +180,6 @@ export {
   FilterSearch,
   FilterSelect,
 } from './data-table-filters';
-
-import {
-  type FilterBarActions,
-  FilterBarContext,
-  type FilterBarContextValue,
-  useFilterBar,
-} from './use-filterbar';
 
 export {
   FilterActions,

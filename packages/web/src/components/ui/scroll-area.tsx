@@ -9,9 +9,7 @@ const ScrollArea = ({
   ref,
   ...props
 }: React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.Root> & {
-  ref?: React.RefObject<React.ComponentRef<
-    typeof ScrollAreaPrimitive.Root
-  > | null>;
+  ref?: React.Ref<React.ComponentRef<typeof ScrollAreaPrimitive.Root>>;
 }) => (
   <ScrollAreaPrimitive.Root
     className={cn('relative overflow-hidden', className)}
@@ -35,9 +33,9 @@ const ScrollBar = ({
 }: React.ComponentPropsWithoutRef<
   typeof ScrollAreaPrimitive.ScrollAreaScrollbar
 > & {
-  ref?: React.RefObject<React.ComponentRef<
-    typeof ScrollAreaPrimitive.ScrollAreaScrollbar
-  > | null>;
+  ref?: React.Ref<
+    React.ComponentRef<typeof ScrollAreaPrimitive.ScrollAreaScrollbar>
+  >;
 }) => (
   <ScrollAreaPrimitive.ScrollAreaScrollbar
     className={cn(

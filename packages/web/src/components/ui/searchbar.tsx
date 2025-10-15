@@ -14,7 +14,7 @@ const Searchbar = ({
   placeholder = 'Search...',
   ref,
   ...props
-}: SearchbarProps & { ref?: React.RefObject<HTMLInputElement | null> }) => (
+}: SearchbarProps & { ref?: React.Ref<HTMLInputElement> }) => (
   <div className="relative">
     <RiSearchLine className="-translate-y-1/2 absolute top-1/2 left-3 size-4 text-muted-foreground" />
     <Input

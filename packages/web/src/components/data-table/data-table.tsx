@@ -26,6 +26,7 @@ import type { ClassNameChildrenProp, ClassNameProp } from '@/types';
 import {
   DataTableContext,
   type DataTableContextValue,
+  // biome-ignore lint/style/noExportedImports: <using export from leads to circular import>
   useDataTable,
 } from './use-data-table';
 
@@ -193,6 +194,5 @@ export {
   DataTableHeader,
   DataTableProvider,
   DataTableRoot,
+  type useDataTable,
 };
-
-export type { useDataTable } from './data-table';

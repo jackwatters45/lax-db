@@ -10,9 +10,7 @@ const Separator = ({
   ref,
   ...props
 }: React.ComponentPropsWithoutRef<typeof SeparatorPrimitive.Root> & {
-  ref?: React.RefObject<React.ComponentRef<
-    typeof SeparatorPrimitive.Root
-  > | null>;
+  ref?: React.Ref<React.ComponentRef<typeof SeparatorPrimitive.Root>>;
 }) => (
   <SeparatorPrimitive.Root
     className={cn(

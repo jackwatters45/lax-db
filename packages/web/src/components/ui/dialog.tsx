@@ -17,9 +17,7 @@ const DialogOverlay = ({
   ref,
   ...props
 }: React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay> & {
-  ref?: React.RefObject<React.ComponentRef<
-    typeof DialogPrimitive.Overlay
-  > | null>;
+  ref?: React.Ref<React.ComponentRef<typeof DialogPrimitive.Overlay>>;
 }) => (
   <DialogPrimitive.Overlay
     className={cn(
@@ -38,9 +36,7 @@ const DialogContent = ({
   ref,
   ...props
 }: React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & {
-  ref?: React.RefObject<React.ComponentRef<
-    typeof DialogPrimitive.Content
-  > | null>;
+  ref?: React.Ref<React.ComponentRef<typeof DialogPrimitive.Content>>;
 }) => (
   <DialogPortal>
     <DialogOverlay />
@@ -95,9 +91,7 @@ const DialogTitle = ({
   ref,
   ...props
 }: React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title> & {
-  ref?: React.RefObject<React.ComponentRef<
-    typeof DialogPrimitive.Title
-  > | null>;
+  ref?: React.Ref<React.ComponentRef<typeof DialogPrimitive.Title>>;
 }) => (
   <DialogPrimitive.Title
     className={cn(
@@ -115,9 +109,7 @@ const DialogDescription = ({
   ref,
   ...props
 }: React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description> & {
-  ref?: React.RefObject<React.ComponentRef<
-    typeof DialogPrimitive.Description
-  > | null>;
+  ref?: React.Ref<React.ComponentRef<typeof DialogPrimitive.Description>>;
 }) => (
   <DialogPrimitive.Description
     className={cn('text-muted-foreground text-sm', className)}
