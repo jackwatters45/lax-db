@@ -29,7 +29,7 @@ function FilterBarProvider<TData>({
       table,
       actions,
     }),
-    [table, actions],
+    [table, actions]
   );
 
   return (
@@ -49,7 +49,7 @@ function FilterBar({ children, className }: FilterBarProps) {
     <div
       className={cn(
         'flex flex-wrap items-center justify-between gap-2 px-4 sm:gap-x-6',
-        className,
+        className
       )}
     >
       {children}
@@ -67,7 +67,7 @@ function FilterGroup({ children, className }: FilterGroupProps) {
     <div
       className={cn(
         'flex w-full flex-col gap-2 sm:w-fit sm:flex-row sm:items-center',
-        className,
+        className
       )}
     >
       {children}
@@ -91,39 +91,41 @@ function FilterBarViewOptions() {
     <Popover>
       <PopoverTrigger asChild>
         <Button
-          variant="outline"
           size="sm"
+          variant="outline"
           // className="ml-auto flex h-7 gap-x-2 text-sm sm:text-xs"
         >
-          <RiEqualizer2Line className="size-4" aria-hidden="true" />
+          <RiEqualizer2Line aria-hidden="true" className="size-4" />
           View
         </Button>
       </PopoverTrigger>
       <PopoverContent
         align="end"
-        sideOffset={7}
         className="z-50 w-fit space-y-2"
+        sideOffset={7}
       >
         <Label className="font-semibold">Display Properties</Label>
         <div className="mt-2 flex flex-col space-y-2">
           {columns.map((column) => {
-            if (!column.getCanHide()) return null;
+            if (!column.getCanHide()) {
+              return null;
+            }
             const label =
               (column.columnDef.meta?.displayName as string) || column.id;
             return (
               <div
-                key={column.id}
                 className="flex items-center gap-2 overflow-y-auto rounded-sm text-sm hover:bg-accent hover:text-accent-foreground"
+                key={column.id}
               >
                 <Checkbox
-                  id={column.id}
-                  checked={column.getIsVisible()}
-                  onCheckedChange={(value) => column.toggleVisibility(!!value)}
                   aria-label={`Toggle ${label} column visibility`}
+                  checked={column.getIsVisible()}
+                  id={column.id}
+                  onCheckedChange={(value) => column.toggleVisibility(!!value)}
                 />
                 <Label
-                  htmlFor={column.id}
                   className="cursor-pointer font-normal text-sm"
+                  htmlFor={column.id}
                 >
                   {label}
                 </Label>
@@ -144,7 +146,7 @@ function FilterBarAddButton({ children, className }: FilterBarAddButtonProps) {
   const { actions } = useFilterBar();
 
   return (
-    <Button onClick={actions?.onAdd} size={'sm'} className={className}>
+    <Button className={className} onClick={actions?.onAdd} size={'sm'}>
       {children}
     </Button>
   );
@@ -164,14 +166,16 @@ function FilterBarDisplayTypeToggle() {
 }
 
 import { ButtonGroup } from '../ui/button-group';
+
 // re-export data-table-filters
-import {
+export {
   FilterCheckbox,
   FilterClear,
   FilterNumber,
   FilterSearch,
   FilterSelect,
 } from './data-table-filters';
+
 import {
   type FilterBarActions,
   FilterBarContext,
@@ -187,9 +191,4 @@ export {
   FilterBarViewOptions,
   FilterBarDisplayTypeToggle,
   FilterBarAddButton,
-  FilterCheckbox,
-  FilterClear,
-  FilterNumber,
-  FilterSearch,
-  FilterSelect,
 };

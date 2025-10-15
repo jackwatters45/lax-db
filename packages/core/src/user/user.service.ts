@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { PgDrizzle } from '@effect/sql-drizzle/Pg';
 import { eq } from 'drizzle-orm';
 import { Effect, Schema } from 'effect';
-import { DatabaseLive } from '../drizzle';
+import { DatabaseLive } from '../drizzle/drizzle.service';
 import { UserError } from './user.error';
 import { CreateInput, FromEmailInput } from './user.schema';
 import { userTable } from './user.sql';
@@ -30,7 +30,7 @@ export class UserService extends Effect.Service<UserService>()('UserService', {
             .where(eq(userTable.email, validated.email))
             .pipe(
               Effect.tapError(Effect.logError),
-              Effect.mapError((cause) => new UserError({ cause })),
+              Effect.mapError((cause) => new UserError({ cause }))
             );
         }),
     } as const;

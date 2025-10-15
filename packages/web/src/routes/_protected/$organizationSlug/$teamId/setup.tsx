@@ -38,15 +38,15 @@ const UpdateTeamSchema = Schema.Struct({
 const updateTeam = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
   .inputValidator((data: typeof UpdateTeamSchema.Type) =>
-    Schema.decodeSync(UpdateTeamSchema)(data),
+    Schema.decodeSync(UpdateTeamSchema)(data)
   )
   .handler(async ({ data, context }) =>
     RuntimeServer.runPromise(
       Effect.gen(function* () {
         const teamService = yield* TeamService;
         return yield* teamService.updateTeam(data, context.headers);
-      }),
-    ),
+      })
+    )
   );
 
 const formSchema = Schema.Struct({
@@ -57,21 +57,21 @@ const formSchema = Schema.Struct({
     }),
     Schema.maxLength(100, {
       message: () => 'Team name must be less than 100 characters',
-    }),
+    })
   ),
   description: Schema.optional(
     Schema.String.pipe(
       Schema.maxLength(500, {
         message: () => 'Description must be less than 500 characters',
-      }),
-    ),
+      })
+    )
   ),
 });
 
 type FormData = typeof formSchema.Type;
 
 export const Route = createFileRoute(
-  '/_protected/$organizationSlug/$teamId/setup',
+  '/_protected/$organizationSlug/$teamId/setup'
 )({
   component: SetupTeamPage,
   loader: async () => {
@@ -108,9 +108,8 @@ function SetupTeamPage() {
         },
       });
     },
-    onError: (error) => {
+    onError: (_error) => {
       toast.error('Failed to create team. Please try again.');
-      console.error('Create team error:', error);
     },
   });
 
@@ -130,18 +129,18 @@ function SetupTeamPage() {
     <>
       <DashboardHeader>
         <BreadcrumbItem>
-          <BreadcrumbLink title="Teams" asChild>
-            <Link to="/$organizationSlug" params={{ organizationSlug }}>
+          <BreadcrumbLink asChild title="Teams">
+            <Link params={{ organizationSlug }} to="/$organizationSlug">
               Teams
             </Link>
           </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         <BreadcrumbItem>
-          <BreadcrumbLink title={team.name} asChild>
+          <BreadcrumbLink asChild title={team.name}>
             <Link
-              to="/$organizationSlug/$teamId"
               params={{ organizationSlug, teamId }}
+              to="/$organizationSlug/$teamId"
             >
               {team.name}
             </Link>
@@ -149,10 +148,10 @@ function SetupTeamPage() {
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         <BreadcrumbItem>
-          <BreadcrumbLink title="Setup" asChild>
+          <BreadcrumbLink asChild title="Setup">
             <Link
-              to="/$organizationSlug/$teamId/setup"
               params={{ organizationSlug, teamId }}
+              to="/$organizationSlug/$teamId/setup"
             >
               Setup
             </Link>
@@ -174,8 +173,8 @@ function SetupTeamPage() {
           <CardContent>
             <Form {...form}>
               <form
-                onSubmit={form.handleSubmit(onSubmit)}
                 className="space-y-6"
+                onSubmit={form.handleSubmit(onSubmit)}
               >
                 <FormField
                   control={form.control}
@@ -214,19 +213,19 @@ function SetupTeamPage() {
 
                 <div className="flex gap-4 pt-4">
                   <Button
+                    asChild
+                    className="flex-1"
                     type="button"
                     variant="outline"
-                    className="flex-1"
-                    asChild
                   >
-                    <Link to="/$organizationSlug" params={{ organizationSlug }}>
+                    <Link params={{ organizationSlug }} to="/$organizationSlug">
                       Skip
                     </Link>
                   </Button>
                   <Button
-                    type="submit"
-                    disabled={updateTeamMutation.isPending}
                     className="flex-1"
+                    disabled={updateTeamMutation.isPending}
+                    type="submit"
                   >
                     {updateTeamMutation.isPending
                       ? 'Creating...'

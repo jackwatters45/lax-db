@@ -17,7 +17,7 @@ const GetDashboardDataSchema = Schema.Struct({
 const getDashboardData = createServerFn({ method: 'GET' })
   .middleware([authMiddleware])
   .inputValidator((data: typeof GetDashboardDataSchema.Type) =>
-    Schema.decodeSync(GetDashboardDataSchema)(data),
+    Schema.decodeSync(GetDashboardDataSchema)(data)
   )
   .handler(async ({ context }) =>
     RuntimeServer.runPromise(
@@ -36,29 +36,29 @@ const getDashboardData = createServerFn({ method: 'GET' })
         const [organizations, activeOrganization] = yield* Effect.all(
           [
             Effect.tryPromise(() =>
-              auth.auth.api.listOrganizationTeams({ headers }),
+              auth.auth.api.listOrganizationTeams({ headers })
             ).pipe(
               Effect.mapError(
                 (cause) =>
                   new OrganizationError({
                     cause,
                     message: 'Failed to get teams',
-                  }),
-              ),
+                  })
+              )
             ),
             Effect.tryPromise(() =>
-              auth.auth.api.getFullOrganization({ headers }),
+              auth.auth.api.getFullOrganization({ headers })
             ).pipe(
               Effect.mapError(
                 (cause) =>
                   new OrganizationError({
                     cause,
                     message: 'Failed to get active organization',
-                  }),
-              ),
+                  })
+              )
             ),
           ],
-          { concurrency: 'unbounded' },
+          { concurrency: 'unbounded' }
         );
 
         const cookie = getRequestHeader('Cookie');
@@ -70,8 +70,8 @@ const getDashboardData = createServerFn({ method: 'GET' })
           activeOrganization,
           sidebarOpen,
         };
-      }),
-    ),
+      })
+    )
   );
 
 export const Route = createFileRoute('/_protected/$organizationSlug')({
@@ -92,15 +92,14 @@ export const Route = createFileRoute('/_protected/$organizationSlug')({
 
     return {
       organizations: data.organizations,
-      activeOrganization: activeOrganization,
+      activeOrganization,
       sidebarOpen: data.sidebarOpen,
     };
   },
-  loader: async ({ params }) => {
-    return await getDashboardData({
+  loader: async ({ params }) =>
+    await getDashboardData({
       data: { organizationSlug: params.organizationSlug },
-    });
-  },
+    }),
   component: OrganizationLayout,
 });
 

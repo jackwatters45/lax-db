@@ -11,7 +11,7 @@ export class ScraperService extends Context.Tag('ScraperService')<
     readonly scrapePlayerStats: (
       competitionId: string,
       poolId: string,
-      roundId: string,
+      roundId: string
     ) => Effect.Effect<ScrapedData, Error>;
   }
 >() {}
@@ -26,7 +26,7 @@ export const ScraperServiceLive = Layer.effect(
     const scrapePlayerStats = (
       competitionId: string,
       poolId: string,
-      roundId: string,
+      roundId: string
     ) =>
       Effect.gen(function* () {
         const url = `https://websites.mygameday.app/comp_info.cgi?c=${competitionId}&pool=${poolId}&round=${roundId}&a=STATS`;
@@ -49,11 +49,11 @@ export const ScraperServiceLive = Layer.effect(
               playerUrl: $cells.eq(0).find('a').attr('href'),
               team: $cells.eq(1).text().trim(),
               teamUrl: $cells.eq(1).find('a').attr('href'),
-              matches: Number.parseInt($cells.eq(2).text()) || 0,
+              matches: Number.parseInt($cells.eq(2).text(), 10) || 0,
               lastMatchDate: $cells.eq(3).text().trim(),
               totalAssists: $cells.eq(4).text().trim() || '0',
-              totalScore: Number.parseInt($cells.eq(5).text()) || 0,
-              highestScore: Number.parseInt($cells.eq(6).text()) || 0,
+              totalScore: Number.parseInt($cells.eq(5).text(), 10) || 0,
+              highestScore: Number.parseInt($cells.eq(6).text(), 10) || 0,
               highestScoreDate: $cells.eq(7).text().trim(),
               highestScoreOpponent: $cells.eq(8).text().trim(),
               highestScoreVenue: $cells.eq(9).text().trim(),
@@ -78,5 +78,5 @@ export const ScraperServiceLive = Layer.effect(
       }).pipe(Effect.mapError((error) => new Error(String(error))));
 
     return { scrapePlayerStats };
-  }),
+  })
 );

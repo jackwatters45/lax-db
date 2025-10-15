@@ -68,13 +68,12 @@ const mockPlayerStats = {
 const getPlayerDetailedStats = createServerFn({ method: 'GET' })
   .inputValidator((data: { playerId: string }) => data)
   .handler(async ({ data }) => {
-    console.log('Getting detailed stats for:', data.playerId);
     // TODO: Replace with actual API call
     return mockPlayerStats;
   });
 
 export const Route = createFileRoute(
-  '/_protected/$organizationSlug/players/$playerId/stats',
+  '/_protected/$organizationSlug/players/$playerId/stats'
 )({
   component: PlayerStatsPage,
   loader: async ({ params }) => {
@@ -89,21 +88,20 @@ function PlayerStatsPage() {
   const stats = Route.useLoaderData();
   const { organizationSlug, playerId } = Route.useParams();
 
-  const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat('en-US', {
+  const formatDate = (date: Date) =>
+    new Intl.DateTimeFormat('en-US', {
       month: 'short',
       day: 'numeric',
     }).format(date);
-  };
 
   return (
     <div className="container mx-auto py-8">
       <div className="mb-8">
         <Link
-          to="/$organizationSlug/players/$playerId"
           params={{ organizationSlug, playerId }}
+          to="/$organizationSlug/players/$playerId"
         >
-          <Button variant="ghost" className="mb-4">
+          <Button className="mb-4" variant="ghost">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to {stats.playerName}
           </Button>
@@ -206,8 +204,8 @@ function PlayerStatsPage() {
               <div className="space-y-3">
                 {stats.gameLog.map((game) => (
                   <div
-                    key={game.id}
                     className="flex items-center justify-between rounded border p-3"
+                    key={game.id}
                   >
                     <div className="flex items-center gap-4">
                       <div className="text-center">

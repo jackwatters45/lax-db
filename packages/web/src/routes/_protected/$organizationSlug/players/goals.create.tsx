@@ -25,16 +25,16 @@ const goalFormSchema = Schema.Struct({
     Schema.minLength(1, { message: () => 'Title is required' }),
     Schema.maxLength(100, {
       message: () => 'Title must be less than 100 characters',
-    }),
+    })
   ),
   description: Schema.optional(Schema.String),
   category: Schema.Literal('skill', 'academic', 'team', 'personal'),
   currentValue: Schema.optional(Schema.String),
   targetValue: Schema.String.pipe(
-    Schema.minLength(1, { message: () => 'Target value is required' }),
+    Schema.minLength(1, { message: () => 'Target value is required' })
   ),
   dueDate: Schema.String.pipe(
-    Schema.minLength(1, { message: () => 'Due date is required' }),
+    Schema.minLength(1, { message: () => 'Due date is required' })
   ),
   priority: Schema.Literal('low', 'medium', 'high'),
 });
@@ -53,10 +53,9 @@ const createPlayerGoal = createServerFn({ method: 'POST' })
       currentValue?: string;
       dueDate: string;
       priority: string;
-    }) => data,
+    }) => data
   )
   .handler(async ({ data }) => {
-    console.log('Creating goal:', data);
     // TODO: Replace with actual API call
     // const { PlayerDevelopmentAPI } = await import('@lax-db/core/player-development/index');
     // return await PlayerDevelopmentAPI.createGoal(data, headers);
@@ -68,7 +67,6 @@ const createPlayerGoal = createServerFn({ method: 'POST' })
 const getPlayerInfo = createServerFn({ method: 'GET' })
   .inputValidator((data: { playerId: string }) => data)
   .handler(async ({ data }) => {
-    console.log('Getting player info for:', data.playerId);
     // TODO: Replace with actual API call
     return {
       id: data.playerId,
@@ -79,7 +77,7 @@ const getPlayerInfo = createServerFn({ method: 'GET' })
   });
 
 export const Route = createFileRoute(
-  '/_protected/$organizationSlug/players/goals/create',
+  '/_protected/$organizationSlug/players/goals/create'
 )({
   component: CreateGoalPage,
   validateSearch: (search: Record<string, unknown>) => ({
@@ -129,9 +127,7 @@ function CreateGoalPage() {
         to: '/$organizationSlug/players/$playerId',
         params: { organizationSlug, playerId },
       });
-    } catch (error) {
-      console.error('Failed to create goal:', error);
-    }
+    } catch (_error) {}
   };
 
   const categories = [
@@ -151,10 +147,10 @@ function CreateGoalPage() {
     <div className="container mx-auto max-w-2xl py-8">
       <div className="mb-8">
         <Link
-          to="/$organizationSlug/players/$playerId"
           params={{ organizationSlug, playerId }}
+          to="/$organizationSlug/players/$playerId"
         >
-          <Button variant="ghost" className="mb-4">
+          <Button className="mb-4" variant="ghost">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to {player.name}
           </Button>
@@ -177,7 +173,7 @@ function CreateGoalPage() {
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
               {/* Title */}
               <FormField
                 control={form.control}
@@ -229,14 +225,14 @@ function CreateGoalPage() {
                       <div className="grid grid-cols-2 gap-2">
                         {categories.map((category) => (
                           <button
-                            key={category.value}
-                            type="button"
-                            onClick={() => field.onChange(category.value)}
                             className={`flex items-center gap-2 rounded-md border p-3 text-left transition-colors ${
                               field.value === category.value
                                 ? 'border-primary bg-primary/5'
                                 : 'border-input hover:bg-muted'
                             }`}
+                            key={category.value}
+                            onClick={() => field.onChange(category.value)}
+                            type="button"
                           >
                             <span className="text-lg">{category.icon}</span>
                             <span className="font-medium text-sm">
@@ -291,7 +287,7 @@ function CreateGoalPage() {
                     <FormControl>
                       <div className="relative">
                         <Calendar className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
-                        <Input type="date" className="pl-10" {...field} />
+                        <Input className="pl-10" type="date" {...field} />
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -310,16 +306,16 @@ function CreateGoalPage() {
                       <div className="flex gap-2">
                         {priorities.map((priority) => (
                           <button
-                            key={priority.value}
-                            type="button"
-                            onClick={() => field.onChange(priority.value)}
                             className={`flex-1 rounded-md border p-2 text-center transition-colors ${
                               field.value === priority.value
                                 ? 'border-primary bg-primary/5'
                                 : 'border-input hover:bg-muted'
                             }`}
+                            key={priority.value}
+                            onClick={() => field.onChange(priority.value)}
+                            type="button"
                           >
-                            <Badge variant={priority.color} className="w-full">
+                            <Badge className="w-full" variant={priority.color}>
                               {priority.label}
                             </Badge>
                           </button>
@@ -334,22 +330,22 @@ function CreateGoalPage() {
               {/* Actions */}
               <div className="flex gap-3 pt-4">
                 <Button
+                  asChild
+                  className="flex-1"
                   type="button"
                   variant="outline"
-                  className="flex-1"
-                  asChild
                 >
                   <Link
-                    to="/$organizationSlug/players/$playerId"
                     params={{ organizationSlug, playerId }}
+                    to="/$organizationSlug/players/$playerId"
                   >
                     Cancel
                   </Link>
                 </Button>
                 <Button
-                  type="submit"
                   className="flex-1"
                   disabled={form.formState.isSubmitting}
+                  type="submit"
                 >
                   {form.formState.isSubmitting ? 'Creating...' : 'Create Goal'}
                 </Button>

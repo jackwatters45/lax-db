@@ -20,8 +20,8 @@ export function PlayerHeader({
       <DashboardHeader>{children}</DashboardHeader>
       <PlayerSubNav
         organizationSlug={organizationSlug}
-        teamId={teamId}
         playerId={playerId}
+        teamId={teamId}
       />
     </div>
   );
@@ -42,25 +42,25 @@ export function PlayerSubNav({
     <Navbar className="border-b">
       <NavbarItem asChild>
         <Link
-          to="/$organizationSlug/$teamId/players/$playerId"
-          params={{ organizationSlug, teamId, playerId }}
           activeOptions={{ exact: true }}
+          params={{ organizationSlug, teamId, playerId }}
+          to="/$organizationSlug/$teamId/players/$playerId"
         >
           Info
         </Link>
       </NavbarItem>
       <NavbarItem asChild>
         <Link
-          to="/$organizationSlug/$teamId/players/$playerId/contact-info"
           params={{ organizationSlug, teamId, playerId }}
+          to="/$organizationSlug/$teamId/players/$playerId/contact-info"
         >
           Contact Info
         </Link>
       </NavbarItem>
       <NavbarItem asChild>
         <Link
-          to="/$organizationSlug/$teamId/players/$playerId/edit"
           params={{ organizationSlug, teamId, playerId }}
+          to="/$organizationSlug/$teamId/players/$playerId/edit"
         >
           Edit
         </Link>

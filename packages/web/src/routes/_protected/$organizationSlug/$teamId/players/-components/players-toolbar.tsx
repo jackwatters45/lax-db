@@ -16,7 +16,7 @@ import { useDataTable } from '@/components/data-table/use-data-table';
 import { usePlayerMutations } from '../-mutations';
 
 const Route = createFileRoute(
-  '/_protected/$organizationSlug/$teamId/players/',
+  '/_protected/$organizationSlug/$teamId/players/'
 )();
 
 const getPlayerIds = (table: Table<TeamPlayerWithInfo>) => {
@@ -33,7 +33,7 @@ export function PlayersToolbar() {
 
   const { bulkDelete, bulkRemove } = usePlayerMutations(
     activeOrganization.id,
-    teamId,
+    teamId
   );
 
   const onDelete = () => {
@@ -50,9 +50,9 @@ export function PlayersToolbar() {
 
   return (
     <BulkEditProvider
-      table={table}
-      rowSelection={rowSelection}
       actions={{ onDelete, onRemove }}
+      rowSelection={rowSelection}
+      table={table}
     >
       <BulkEditToolbar>
         <BulkEditToolbarSelection />
@@ -60,8 +60,8 @@ export function PlayersToolbar() {
         <BulkEditToolbarActions>
           <BulkEditToolbarCopyAction
             columnId="email"
-            tooltipContent="Copy Emails"
             icon={Mail}
+            tooltipContent="Copy Emails"
           />
           <BulkEditToolbarSeparator />
           <BulkEditToolbarRemoveAction tooltipContent="Remove From Team" />

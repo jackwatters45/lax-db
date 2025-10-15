@@ -52,12 +52,12 @@ import {
 } from '@/components/ui/select';
 
 export const Route = createFileRoute(
-  '/_protected/$organizationSlug/film/$filmId',
+  '/_protected/$organizationSlug/film/$filmId'
 )({
   component: FilmViewerPage,
 });
 
-interface FilmEvent {
+type FilmEvent = {
   id: string;
   timestamp: number;
   type:
@@ -75,9 +75,9 @@ interface FilmEvent {
   createdBy: string;
   createdAt: string;
   tags: string[];
-}
+};
 
-interface FilmData {
+type FilmData = {
   id: string;
   title: string;
   gameDate: string;
@@ -94,7 +94,7 @@ interface FilmData {
   tags: string[];
   events: FilmEvent[];
   views: number;
-}
+};
 
 const mockFilm: FilmData = {
   id: '1',
@@ -202,11 +202,11 @@ const eventFormSchema = Schema.Struct({
     'substitution',
     'timeout',
     'highlight',
-    'note',
+    'note'
   ),
   player: Schema.optional(Schema.String),
   description: Schema.String.pipe(
-    Schema.minLength(1, { message: () => 'Description is required' }),
+    Schema.minLength(1, { message: () => 'Description is required' })
   ),
   tags: Schema.optional(Schema.String),
 });
@@ -293,7 +293,7 @@ function FilmViewerPage() {
   };
 
   const addEvent = (values: EventFormValues) => {
-    const newEvent: FilmEvent = {
+    const _newEvent: FilmEvent = {
       id: `e${Date.now()}`,
       timestamp: currentTime,
       type: values.type,
@@ -309,8 +309,6 @@ function FilmViewerPage() {
             .filter(Boolean)
         : [],
     };
-
-    console.log('Adding event:', newEvent);
 
     // Reset form
     eventForm.reset();
@@ -378,7 +376,7 @@ function FilmViewerPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Button variant="outline" size="sm">
+        <Button size="sm" variant="outline">
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Library
         </Button>
@@ -390,11 +388,11 @@ function FilmViewerPage() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm">
+          <Button size="sm" variant="outline">
             <Download className="mr-2 h-4 w-4" />
             Download
           </Button>
-          <Button variant="outline" size="sm">
+          <Button size="sm" variant="outline">
             <Share className="mr-2 h-4 w-4" />
             Share
           </Button>
@@ -420,14 +418,11 @@ function FilmViewerPage() {
                 <div className="absolute right-0 bottom-0 left-0 p-4">
                   <div className="relative">
                     <div
-                      ref={progressRef}
-                      className="h-2 w-full cursor-pointer rounded bg-black/50"
-                      role="slider"
-                      tabIndex={0}
                       aria-label="Video progress"
-                      aria-valuemin={0}
                       aria-valuemax={film.duration}
+                      aria-valuemin={0}
                       aria-valuenow={currentTime}
+                      className="h-2 w-full cursor-pointer rounded bg-black/50"
                       onClick={(e) => {
                         if (progressRef.current) {
                           const rect =
@@ -443,6 +438,9 @@ function FilmViewerPage() {
                           seekTo(Math.min(film.duration, currentTime + 10));
                         }
                       }}
+                      ref={progressRef}
+                      role="slider"
+                      tabIndex={0}
                     >
                       <div
                         className="h-full rounded bg-red-500"
@@ -452,16 +450,9 @@ function FilmViewerPage() {
                       {/* Event markers */}
                       {film.events.map((event) => (
                         <button
-                          key={event.id}
-                          className="-translate-x-0.5 absolute top-0 h-full w-1 transform cursor-pointer"
-                          style={{
-                            left: `${(event.timestamp / film.duration) * 100}%`,
-                          }}
-                          type="button"
-                          tabIndex={0}
                           aria-label={`Jump to ${event.type} at ${formatTime(event.timestamp)}`}
-                          onMouseEnter={() => setHoveredEvent(event.id)}
-                          onMouseLeave={() => setHoveredEvent(null)}
+                          className="-translate-x-0.5 absolute top-0 h-full w-1 transform cursor-pointer"
+                          key={event.id}
                           onClick={() => seekTo(event.timestamp)}
                           onKeyDown={(e) => {
                             if (e.key === 'Enter' || e.key === ' ') {
@@ -469,6 +460,13 @@ function FilmViewerPage() {
                               seekTo(event.timestamp);
                             }
                           }}
+                          onMouseEnter={() => setHoveredEvent(event.id)}
+                          onMouseLeave={() => setHoveredEvent(null)}
+                          style={{
+                            left: `${(event.timestamp / film.duration) * 100}%`,
+                          }}
+                          tabIndex={0}
+                          type="button"
                         >
                           <div
                             className={`h-full w-1 ${getEventTypeColor(event.type).includes('green') ? 'bg-green-400' : getEventTypeColor(event.type).includes('blue') ? 'bg-blue-400' : getEventTypeColor(event.type).includes('red') ? 'bg-red-400' : getEventTypeColor(event.type).includes('orange') ? 'bg-orange-400' : getEventTypeColor(event.type).includes('purple') ? 'bg-purple-400' : getEventTypeColor(event.type).includes('yellow') ? 'bg-yellow-400' : getEventTypeColor(event.type).includes('pink') ? 'bg-pink-400' : 'bg-gray-400'}`}
@@ -495,18 +493,18 @@ function FilmViewerPage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={skipBackward}
                       className="text-white hover:bg-white/20"
+                      onClick={skipBackward}
+                      size="sm"
+                      variant="ghost"
                     >
                       <SkipBack className="h-4 w-4" />
                     </Button>
                     <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={togglePlayPause}
                       className="text-white hover:bg-white/20"
+                      onClick={togglePlayPause}
+                      size="sm"
+                      variant="ghost"
                     >
                       {isPlaying ? (
                         <Pause className="h-4 w-4" />
@@ -515,20 +513,20 @@ function FilmViewerPage() {
                       )}
                     </Button>
                     <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={skipForward}
                       className="text-white hover:bg-white/20"
+                      onClick={skipForward}
+                      size="sm"
+                      variant="ghost"
                     >
                       <SkipForward className="h-4 w-4" />
                     </Button>
 
                     <div className="flex items-center gap-2">
                       <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={toggleMute}
                         className="text-white hover:bg-white/20"
+                        onClick={toggleMute}
+                        size="sm"
+                        variant="ghost"
                       >
                         {isMuted ? (
                           <VolumeX className="h-4 w-4" />
@@ -537,15 +535,15 @@ function FilmViewerPage() {
                         )}
                       </Button>
                       <input
-                        type="range"
-                        min="0"
+                        className="w-20"
                         max="1"
-                        step="0.1"
-                        value={isMuted ? 0 : volume}
+                        min="0"
                         onChange={(e) =>
                           setVolume(Number.parseFloat(e.target.value))
                         }
-                        className="w-20"
+                        step="0.1"
+                        type="range"
+                        value={isMuted ? 0 : volume}
                       />
                     </div>
 
@@ -556,11 +554,11 @@ function FilmViewerPage() {
 
                   <div className="flex items-center gap-2">
                     <select
-                      value={playbackRate}
+                      className="rounded border-0 bg-white/20 px-2 py-1 text-sm text-white"
                       onChange={(e) =>
                         changePlaybackRate(Number.parseFloat(e.target.value))
                       }
-                      className="rounded border-0 bg-white/20 px-2 py-1 text-sm text-white"
+                      value={playbackRate}
                     >
                       <option value={0.25}>0.25x</option>
                       <option value={0.5}>0.5x</option>
@@ -572,17 +570,17 @@ function FilmViewerPage() {
                     </select>
 
                     <Button
-                      variant="ghost"
-                      size="sm"
                       className="text-white hover:bg-white/20"
+                      size="sm"
+                      variant="ghost"
                     >
                       <Settings className="h-4 w-4" />
                     </Button>
 
                     <Button
-                      variant="ghost"
-                      size="sm"
                       className="text-white hover:bg-white/20"
+                      size="sm"
+                      variant="ghost"
                     >
                       <Maximize className="h-4 w-4" />
                     </Button>
@@ -597,8 +595,8 @@ function FilmViewerPage() {
               <div className="flex items-center justify-between">
                 <CardTitle>Add Event</CardTitle>
                 <Button
-                  size="sm"
                   onClick={() => setShowEventForm(!showEventForm)}
+                  size="sm"
                 >
                   <Plus className="mr-2 h-4 w-4" />
                   Add Event
@@ -609,8 +607,8 @@ function FilmViewerPage() {
               <CardContent>
                 <Form {...eventForm}>
                   <form
-                    onSubmit={eventForm.handleSubmit(addEvent)}
                     className="space-y-4"
+                    onSubmit={eventForm.handleSubmit(addEvent)}
                   >
                     <div className="grid grid-cols-2 gap-4">
                       <FormField
@@ -620,8 +618,8 @@ function FilmViewerPage() {
                           <FormItem>
                             <FormLabel>Event Type</FormLabel>
                             <Select
-                              onValueChange={field.onChange}
                               defaultValue={field.value}
+                              onValueChange={field.onChange}
                             >
                               <FormControl>
                                 <SelectTrigger>
@@ -695,15 +693,15 @@ function FilmViewerPage() {
                     />
                     <div className="flex gap-2">
                       <Button
-                        type="submit"
                         disabled={eventForm.formState.isSubmitting}
+                        type="submit"
                       >
                         Add Event at {formatTime(currentTime)}
                       </Button>
                       <Button
+                        onClick={() => setShowEventForm(false)}
                         type="button"
                         variant="outline"
-                        onClick={() => setShowEventForm(false)}
                       >
                         Cancel
                       </Button>
@@ -731,11 +729,9 @@ function FilmViewerPage() {
                 .sort((a, b) => a.timestamp - b.timestamp)
                 .map((event) => (
                   <button
-                    key={event.id}
-                    className="cursor-pointer rounded-lg border p-3 transition-colors hover:bg-muted/50"
-                    type="button"
-                    tabIndex={0}
                     aria-label={`Jump to ${event.type}: ${event.description}`}
+                    className="cursor-pointer rounded-lg border p-3 transition-colors hover:bg-muted/50"
+                    key={event.id}
                     onClick={() => seekTo(event.timestamp)}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' || e.key === ' ') {
@@ -743,6 +739,8 @@ function FilmViewerPage() {
                         seekTo(event.timestamp);
                       }
                     }}
+                    tabIndex={0}
+                    type="button"
                   >
                     <div className="mb-2 flex items-start gap-2">
                       <Badge
@@ -753,10 +751,10 @@ function FilmViewerPage() {
                           {event.type}
                         </span>
                       </Badge>
-                      <Badge variant="outline" className="text-xs">
+                      <Badge className="text-xs" variant="outline">
                         Q{event.quarter}
                       </Badge>
-                      <Badge variant="outline" className="text-xs">
+                      <Badge className="text-xs" variant="outline">
                         {formatTime(event.timestamp)}
                       </Badge>
                     </div>
@@ -775,9 +773,9 @@ function FilmViewerPage() {
                       <div className="mb-2 flex flex-wrap gap-1">
                         {event.tags.map((tag) => (
                           <Badge
+                            className="text-xs"
                             key={tag}
                             variant="secondary"
-                            className="text-xs"
                           >
                             {tag}
                           </Badge>
@@ -789,16 +787,16 @@ function FilmViewerPage() {
                       <span>by {event.createdBy}</span>
                       <div className="flex gap-1">
                         <Button
-                          variant="ghost"
-                          size="sm"
                           className="h-6 w-6 p-0"
+                          size="sm"
+                          variant="ghost"
                         >
                           <Edit className="h-3 w-3" />
                         </Button>
                         <Button
-                          variant="ghost"
-                          size="sm"
                           className="h-6 w-6 p-0 text-red-500"
+                          size="sm"
+                          variant="ghost"
                         >
                           <Trash2 className="h-3 w-3" />
                         </Button>
@@ -858,7 +856,7 @@ function FilmViewerPage() {
                   <span className="text-muted-foreground text-sm">Tags:</span>
                   <div className="mt-1 flex flex-wrap gap-1">
                     {film.tags.map((tag) => (
-                      <Badge key={tag} variant="secondary" className="text-xs">
+                      <Badge className="text-xs" key={tag} variant="secondary">
                         {tag}
                       </Badge>
                     ))}

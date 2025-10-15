@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute(
-  '/_protected/$organizationSlug/playbook/assignments',
+  '/_protected/$organizationSlug/playbook/assignments'
 )({
   component: RouteComponent,
 });

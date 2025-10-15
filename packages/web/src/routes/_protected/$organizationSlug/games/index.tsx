@@ -89,8 +89,7 @@ export const Route = createFileRoute('/_protected/$organizationSlug/games/')({
       ]);
 
       return { games, permissions };
-    } catch (error) {
-      console.error('Failed to load games:', error);
+    } catch (_error) {
       return {
         games: mockGames,
         permissions: {
@@ -121,8 +120,8 @@ function Header() {
   return (
     <GamesHeader organizationSlug={organizationSlug}>
       <BreadcrumbItem>
-        <BreadcrumbLink className="max-w-full truncate" title="Games" asChild>
-          <Link to="/$organizationSlug/games" params={{ organizationSlug }}>
+        <BreadcrumbLink asChild className="max-w-full truncate" title="Games">
+          <Link params={{ organizationSlug }} to="/$organizationSlug/games">
             Games
           </Link>
         </BreadcrumbLink>

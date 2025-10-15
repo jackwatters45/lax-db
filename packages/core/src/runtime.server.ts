@@ -18,7 +18,7 @@ const MainLayer = Layer.mergeAll(
   UserService.Default,
   PlayerService.Default,
   PlayerContactInfoService.Default,
-  FeedbackService.Default,
+  FeedbackService.Default
 );
 
 export const RuntimeServer = ManagedRuntime.make(MainLayer);

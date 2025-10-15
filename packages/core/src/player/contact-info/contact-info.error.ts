@@ -1,7 +1,7 @@
 import { Data } from 'effect';
 
 export class PlayerContactInfoError extends Data.TaggedError(
-  'PlayerContactInfoError',
+  'PlayerContactInfoError'
 )<{
   cause: unknown;
   message?: string;

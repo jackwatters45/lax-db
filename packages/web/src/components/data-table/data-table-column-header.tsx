@@ -31,15 +31,15 @@ export function DataTableColumnHeader<TData, TValue>({
 
   return (
     <button
-      onClick={column.getToggleSortingHandler()}
-      onKeyDown={handleKeyDown}
+      aria-label={`Sort by ${title}`}
       className={cn(
         column.columnDef.enableSorting === true
           ? '-mx-2 inline-flex cursor-pointer select-none items-center gap-2 rounded-md px-2 py-1 hover:bg-muted focus:outline-none focus:ring-2 focus:ring-ring'
           : 'inline-flex items-center gap-2',
-        className,
+        className
       )}
-      aria-label={`Sort by ${title}`}
+      onClick={column.getToggleSortingHandler()}
+      onKeyDown={handleKeyDown}
       type="button"
       {...props}
     >
@@ -47,18 +47,18 @@ export function DataTableColumnHeader<TData, TValue>({
       {column.getCanSort() ? (
         <div className="-space-y-2">
           <RiArrowUpSLine
+            aria-hidden="true"
             className={cn(
               'size-3.5 text-foreground',
-              column.getIsSorted() === 'desc' ? 'opacity-30' : '',
+              column.getIsSorted() === 'desc' ? 'opacity-30' : ''
             )}
-            aria-hidden="true"
           />
           <RiArrowDownSLine
+            aria-hidden="true"
             className={cn(
               'size-3.5 text-foreground',
-              column.getIsSorted() === 'asc' ? 'opacity-30' : '',
+              column.getIsSorted() === 'asc' ? 'opacity-30' : ''
             )}
-            aria-hidden="true"
           />
         </div>
       ) : null}

@@ -26,7 +26,7 @@ import { authMiddleware } from '@/lib/middleware';
 const createOrganization = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
   .inputValidator((data: typeof CreateOrganizationInput.Type) =>
-    Schema.decodeSync(CreateOrganizationInput)(data),
+    Schema.decodeSync(CreateOrganizationInput)(data)
   )
   .handler(async ({ data, context }) =>
     RuntimeServer.runPromise(
@@ -34,21 +34,20 @@ const createOrganization = createServerFn({ method: 'POST' })
         const organizationService = yield* OrganizationService;
         return yield* organizationService.createOrganization(
           data,
-          context.headers,
+          context.headers
         );
-      }),
-    ),
+      })
+    )
   );
 
 type FormData = typeof CreateOrganizationInput.Type;
 
-const generateSlug = (name: string) => {
-  return name
+const generateSlug = (name: string) =>
+  name
     .toLowerCase()
     .replace(/[^a-z0-9\s-]/g, '')
     .replace(/\s+/g, '-')
     .slice(0, 50);
-};
 
 export function CreateOrganizationForm({
   organizationSlug,
@@ -78,7 +77,7 @@ export function CreateOrganizationForm({
     onError: (error, variables) => {
       if (error.message === 'Slug is not available') {
         toast.error(
-          `Slug "${variables.slug}" is not available. Please try a different slug.`,
+          `Slug "${variables.slug}" is not available. Please try a different slug.`
         );
       } else {
         toast.error('Failed to create organization. Please try again.');
@@ -110,7 +109,7 @@ export function CreateOrganizationForm({
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
               <FormField
                 control={form.control}
                 name="name"
@@ -151,22 +150,22 @@ export function CreateOrganizationForm({
 
               <div className="flex gap-4 pt-4">
                 {organizationSlug ? (
-                  <Button type="button" variant="outline" asChild>
+                  <Button asChild type="button" variant="outline">
                     <Link
-                      to="/$organizationSlug"
-                      params={{ organizationSlug }}
                       onClick={(e) => {
                         if (canGoBack) {
                           e.preventDefault();
                           router.history.back();
                         }
                       }}
+                      params={{ organizationSlug }}
+                      to="/$organizationSlug"
                     >
                       Cancel
                     </Link>
                   </Button>
                 ) : null}
-                <Button type="submit" disabled={createOrgMutation.isPending}>
+                <Button disabled={createOrgMutation.isPending} type="submit">
                   {createOrgMutation.isPending ? 'Creating...' : 'Create Club'}
                 </Button>
               </div>

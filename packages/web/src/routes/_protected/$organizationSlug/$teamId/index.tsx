@@ -6,6 +6,7 @@ import { createServerFn } from '@tanstack/react-start';
 import { Effect, Schema } from 'effect';
 import { Mail, Plus, Settings, UserMinus } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import { PageBody } from '@/components/layout/page-content';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -32,7 +33,7 @@ const GetTeamDataSchema = Schema.Struct({
 const getTeamData = createServerFn({ method: 'GET' })
   .middleware([authMiddleware])
   .inputValidator((data: typeof GetTeamDataSchema.Type) =>
-    Schema.decodeSync(GetTeamDataSchema)(data),
+    Schema.decodeSync(GetTeamDataSchema)(data)
   )
   .handler(async ({ data: { teamId }, context }) =>
     RuntimeServer.runPromise(
@@ -46,15 +47,15 @@ const getTeamData = createServerFn({ method: 'GET' })
                 auth.auth.api.listTeamMembers({
                   query: { teamId },
                   headers: context.headers,
-                }),
+                })
               ).pipe(Effect.mapError(() => new AuthError())),
               Effect.tryPromise(() =>
                 auth.auth.api.getActiveMember({
                   headers: context.headers,
-                }),
+                })
               ).pipe(Effect.mapError(() => new AuthError())),
             ],
-            { concurrency: 'unbounded' },
+            { concurrency: 'unbounded' }
           );
 
           const members = membersResult || [];
@@ -69,8 +70,7 @@ const getTeamData = createServerFn({ method: 'GET' })
             activeMember,
             canManageTeam,
           };
-        } catch (error) {
-          console.error('Error loading team data:', error);
+        } catch (_error) {
           return {
             teamId,
             members: [],
@@ -78,15 +78,14 @@ const getTeamData = createServerFn({ method: 'GET' })
             canManageTeam: false,
           };
         }
-      }),
-    ),
+      })
+    )
   );
 
 export const Route = createFileRoute('/_protected/$organizationSlug/$teamId/')({
   component: TeamManagementPage,
-  loader: async ({ params }) => {
-    return await getTeamData({ data: { teamId: params.teamId } });
-  },
+  loader: async ({ params }) =>
+    await getTeamData({ data: { teamId: params.teamId } }),
 });
 
 function TeamManagementPage() {
@@ -104,8 +103,7 @@ function TeamManagementPage() {
         const teamsResult = await authClient.organization.listTeams();
         const team = teamsResult.data?.find((t) => t.id === teamId);
         setTeamName(team?.name || 'Unknown Team');
-      } catch (error) {
-        console.error('Error loading team details:', error);
+      } catch (_error) {
         setTeamName('Unknown Team');
       } finally {
         setLoading(false);
@@ -202,9 +200,9 @@ function TeamManagementPage() {
                 <div className="space-y-4">
                   {members.map((member) => (
                     <TeamMemberCard
+                      canManage={canManageTeam}
                       key={member.id}
                       member={member}
-                      canManage={canManageTeam}
                       teamId={teamId}
                     />
                   ))}
@@ -228,8 +226,8 @@ function TeamManagementPage() {
           {/* Invite Player Dialog */}
           {invitePlayerOpen && (
             <InvitePlayerDialog
-              open={invitePlayerOpen}
               onClose={() => setInvitePlayerOpen(false)}
+              open={invitePlayerOpen}
               teamId={teamId}
             />
           )}
@@ -273,13 +271,13 @@ function TeamMemberCard({
         userId: member.userId,
       });
 
-      if (!error) {
-        window.location.reload(); // Simple refresh for now
+      if (error) {
+        toast.error('Failed to remove player. Please try again.');
       } else {
-        alert('Failed to remove player. Please try again.');
+        window.location.reload(); // Simple refresh for now
       }
     } catch (_error) {
-      alert('Failed to remove player. Please try again.');
+      toast.error('Failed to remove player. Please try again.');
     }
   };
 
@@ -295,9 +293,9 @@ function TeamMemberCard({
         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted">
           {userDetails.image ? (
             <img
-              src={userDetails.image}
               alt={userDetails.name}
               className="h-10 w-10 rounded-full"
+              src={userDetails.image}
             />
           ) : (
             <span className="font-semibold">
@@ -319,14 +317,14 @@ function TeamMemberCard({
 
         {canManage && (
           <div className="flex gap-1">
-            <Button variant="ghost" size="sm">
+            <Button size="sm" variant="ghost">
               <Mail className="h-4 w-4" />
             </Button>
             <Button
-              variant="ghost"
-              size="sm"
               className="text-destructive hover:text-destructive"
               onClick={handleRemoveFromTeam}
+              size="sm"
+              variant="ghost"
             >
               <UserMinus className="h-4 w-4" />
             </Button>
@@ -351,7 +349,9 @@ function InvitePlayerDialog({
 
   const handleInvitePlayer = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim()) return;
+    if (!email.trim()) {
+      return;
+    }
 
     setLoading(true);
     try {
@@ -361,43 +361,45 @@ function InvitePlayerDialog({
         teamId,
       });
 
-      if (!error) {
+      if (error) {
+        toast.error('Failed to send invitation. Please try again.');
+      } else {
         setEmail('');
         onClose();
-        alert('Invitation sent successfully!');
-      } else {
-        alert('Failed to send invitation. Please try again.');
+        toast.error('Invitation sent successfully!');
       }
     } catch (_error) {
-      alert('Failed to send invitation. Please try again.');
+      toast.error('Failed to send invitation. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
-  if (!open) return null;
+  if (!open) {
+    return null;
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
       <div className="w-full max-w-md rounded-lg bg-background p-6">
         <h2 className="mb-4 font-semibold text-xl">Invite Player to Team</h2>
 
-        <form onSubmit={handleInvitePlayer} className="space-y-4">
+        <form className="space-y-4" onSubmit={handleInvitePlayer}>
           <div>
             <label
-              htmlFor="playerEmail"
               className="mb-2 block font-medium text-sm"
+              htmlFor="playerEmail"
             >
               Player Email
             </label>
             <input
+              className="w-full rounded-md border border-input px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
               id="playerEmail"
-              type="email"
-              value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="player@example.com"
-              className="w-full rounded-md border border-input px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
               required
+              type="email"
+              value={email}
             />
             <p className="mt-1 text-muted-foreground text-xs">
               They will receive an email invitation to join this team
@@ -406,17 +408,17 @@ function InvitePlayerDialog({
 
           <div className="flex gap-3 pt-4">
             <Button
+              className="flex-1"
+              onClick={onClose}
               type="button"
               variant="outline"
-              onClick={onClose}
-              className="flex-1"
             >
               Cancel
             </Button>
             <Button
-              type="submit"
-              disabled={loading || !email.trim()}
               className="flex-1"
+              disabled={loading || !email.trim()}
+              type="submit"
             >
               {loading ? 'Sending...' : 'Send Invitation'}
             </Button>
@@ -434,8 +436,8 @@ function Header() {
   return (
     <TeamHeader organizationSlug={organizationSlug} teamId={teamId}>
       <BreadcrumbItem>
-        <BreadcrumbLink className="max-w-full truncate" title="Teams" asChild>
-          <Link to="/$organizationSlug" params={{ organizationSlug }}>
+        <BreadcrumbLink asChild className="max-w-full truncate" title="Teams">
+          <Link params={{ organizationSlug }} to="/$organizationSlug">
             Teams
           </Link>
         </BreadcrumbLink>
@@ -445,8 +447,8 @@ function Header() {
         <BreadcrumbDropdown>
           <BreadcrumbLink asChild>
             <Link
-              to="/$organizationSlug/$teamId"
               params={{ organizationSlug, teamId: activeTeam.id }}
+              to="/$organizationSlug/$teamId"
             >
               {activeTeam.name}
             </Link>
@@ -458,11 +460,11 @@ function Header() {
             {teams.map((team) => (
               <BreadcrumbDropdownItem asChild key={team.id}>
                 <Link
-                  to="/$organizationSlug/$teamId"
                   params={{
                     organizationSlug,
                     teamId: team.id,
                   }}
+                  to="/$organizationSlug/$teamId"
                 >
                   {team.name}
                 </Link>

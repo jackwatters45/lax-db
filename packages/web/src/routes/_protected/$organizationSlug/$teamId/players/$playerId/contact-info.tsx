@@ -18,12 +18,10 @@ import { PlayerHeader } from './-components/player-header';
 import { contactInfo } from './-data-2';
 
 export const Route = createFileRoute(
-  '/_protected/$organizationSlug/$teamId/players/$playerId/contact-info',
+  '/_protected/$organizationSlug/$teamId/players/$playerId/contact-info'
 )({
   component: ContactInfo,
-  loader: async () => {
-    return { contactInfo };
-  },
+  loader: async () => ({ contactInfo }),
 });
 
 // TODO: update edit version
@@ -43,9 +41,9 @@ function ContactInfo() {
               <CardTitle>Contact Information</CardTitle>
               {!isEditing && (
                 <Button
-                  variant="ghost"
-                  size="sm"
                   onClick={() => setIsEditing(true)}
+                  size="sm"
+                  variant="ghost"
                 >
                   <Pencil className="h-4 w-4" />
                 </Button>
@@ -79,12 +77,12 @@ function Header() {
   return (
     <PlayerHeader
       organizationSlug={organizationSlug}
-      teamId={activeTeam.id}
       playerId={contactInfo.playerId}
+      teamId={activeTeam.id}
     >
       <BreadcrumbItem>
-        <BreadcrumbLink className="max-w-full truncate" title="Teams" asChild>
-          <Link to="/$organizationSlug" params={{ organizationSlug }}>
+        <BreadcrumbLink asChild className="max-w-full truncate" title="Teams">
+          <Link params={{ organizationSlug }} to="/$organizationSlug">
             Teams
           </Link>
         </BreadcrumbLink>
@@ -92,17 +90,17 @@ function Header() {
       <BreadcrumbSeparator />
       <TeamBreadcrumbSwitcher
         activeTeam={activeTeam}
-        teams={teams}
         organizationSlug={organizationSlug}
+        teams={teams}
       >
         {({ team }) => (
           <Link
-            to="/$organizationSlug/$teamId/players/$playerId/contact-info"
             params={{
               organizationSlug,
               teamId: activeTeam.id,
               playerId: contactInfo.playerId,
             }}
+            to="/$organizationSlug/$teamId/players/$playerId/contact-info"
           >
             {team.name}
           </Link>
@@ -110,10 +108,10 @@ function Header() {
       </TeamBreadcrumbSwitcher>
       <BreadcrumbSeparator />
       <BreadcrumbItem>
-        <BreadcrumbLink title="Players" asChild>
+        <BreadcrumbLink asChild title="Players">
           <Link
-            to="/$organizationSlug/$teamId/players"
             params={{ organizationSlug, teamId: activeTeam.id }}
+            to="/$organizationSlug/$teamId/players"
           >
             Players
           </Link>
@@ -121,28 +119,28 @@ function Header() {
       </BreadcrumbItem>
       <BreadcrumbSeparator />
       <BreadcrumbItem>
-        <BreadcrumbLink title={contactInfo.name!} asChild>
+        <BreadcrumbLink asChild title={contactInfo.name!}>
           <Link
-            to="/$organizationSlug/$teamId/players/$playerId"
             params={{
               organizationSlug,
               teamId: activeTeam.id,
               playerId: contactInfo.playerId,
             }}
+            to="/$organizationSlug/$teamId/players/$playerId"
           >
             {contactInfo.name}
           </Link>
         </BreadcrumbLink>
       </BreadcrumbItem>
       <BreadcrumbItem>
-        <BreadcrumbLink title={'Contact Info'} asChild>
+        <BreadcrumbLink asChild title={'Contact Info'}>
           <Link
-            to="/$organizationSlug/$teamId/players/$playerId/contact-info"
             params={{
               organizationSlug,
               teamId: activeTeam.id,
               playerId: contactInfo.playerId,
             }}
+            to="/$organizationSlug/$teamId/players/$playerId/contact-info"
           >
             Contact Info
           </Link>

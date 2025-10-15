@@ -36,34 +36,34 @@ export function ModalAddUser({ children }: ModalAddUserProps) {
               With free plan, you can add up to 10 users to each workspace.
             </DialogDescription>
             <div className="mt-4">
-              <Label htmlFor="email-new-user" className="font-medium">
+              <Label className="font-medium" htmlFor="email-new-user">
                 Email
               </Label>
               <Input
+                className="mt-2"
                 id="email-new-user"
                 name="email-new-user"
                 placeholder="Insert email..."
-                className="mt-2"
               />
             </div>
             <div className="mt-4">
-              <Label htmlFor="role-new-user" className="font-medium">
+              <Label className="font-medium" htmlFor="role-new-user">
                 Select role
               </Label>
               <Select>
                 <SelectTrigger
+                  className="mt-2"
                   id="role-new-user"
                   name="role-new-user"
-                  className="mt-2"
                 >
                   <SelectValue placeholder="Select role..." />
                 </SelectTrigger>
                 <SelectContent align="end">
                   {roles.map((role) => (
                     <SelectItem
+                      disabled={role.value === 'admin'}
                       key={role.value}
                       value={role.value}
-                      disabled={role.value === 'admin'}
                     >
                       {role.label}
                     </SelectItem>
@@ -82,7 +82,7 @@ export function ModalAddUser({ children }: ModalAddUserProps) {
               </Button>
             </DialogClose>
             <DialogClose asChild>
-              <Button type="submit" className="w-full sm:w-fit">
+              <Button className="w-full sm:w-fit" type="submit">
                 Add user
               </Button>
             </DialogClose>

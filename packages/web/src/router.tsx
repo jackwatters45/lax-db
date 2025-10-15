@@ -15,13 +15,9 @@ export function getRouter() {
     defaultPreload: 'intent',
     defaultErrorComponent: DefaultCatchBoundary,
     defaultNotFoundComponent: () => <NotFound />,
-    Wrap: (props: { children: React.ReactNode }) => {
-      return (
-        <TanstackQuery.Provider {...ctx}>
-          {props.children}
-        </TanstackQuery.Provider>
-      );
-    },
+    Wrap: (props: { children: React.ReactNode }) => (
+      <TanstackQuery.Provider {...ctx}>{props.children}</TanstackQuery.Provider>
+    ),
   });
 
   setupRouterSsrQueryIntegration({
@@ -33,7 +29,7 @@ export function getRouter() {
 }
 
 declare module '@tanstack/react-router' {
-  interface Register {
+  type Register = {
     router: ReturnType<typeof getRouter>;
-  }
+  };
 }

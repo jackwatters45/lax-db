@@ -50,13 +50,15 @@ const ColumnFiltersLabel = ({
   columnFilterLabels,
   className,
 }: ColumnFilterLabelProps) => {
-  if (!columnFilterLabels) return null;
+  if (!columnFilterLabels) {
+    return null;
+  }
 
   if (columnFilterLabels.length < 3) {
     return (
       <span className={cn('truncate', className)}>
         {columnFilterLabels.map((value, index) => (
-          <span key={value} className={cn('font-semibold text-primary')}>
+          <span className={cn('font-semibold text-primary')} key={value}>
             {value}
             {index < columnFilterLabels.length - 1 && ', '}
           </span>
@@ -95,10 +97,10 @@ function FilterSearch({
 
   return (
     <Input
+      className={cn('h-7 w-full sm:max-w-[250px]', className)}
+      onChange={handleSearchChange}
       placeholder={placeholder}
       value={searchTerm}
-      onChange={handleSearchChange}
-      className={cn('h-7 w-full sm:max-w-[250px]', className)}
     />
   );
 }
@@ -110,17 +112,19 @@ function FilterClear({ className }: FilterClearProps) {
 
   const isFiltered = table.getState().columnFilters.length > 0;
 
-  if (!isFiltered) return null;
+  if (!isFiltered) {
+    return null;
+  }
 
   return (
     <Button
-      variant="ghost"
-      onClick={() => table.resetColumnFilters()}
-      size={'sm'}
       className={cn(
         'border border-border px-2 font-semibold text-primary sm:border-none sm:py-1',
-        className,
+        className
       )}
+      onClick={() => table.resetColumnFilters()}
+      size={'sm'}
+      variant="ghost"
     >
       Clear filters
     </Button>
@@ -137,12 +141,14 @@ function FilterSelect<TData, TValue>({
 }: FilterSelectProps<TData, TValue>) {
   const columnFilters = column?.getFilterValue() as string;
   const [selectedValues, setSelectedValues] = React.useState<string>(
-    columnFilters || '',
+    columnFilters || ''
   );
   const [open, setOpen] = React.useState(false);
 
   const columnFilterLabels = React.useMemo(() => {
-    if (!selectedValues) return undefined;
+    if (!selectedValues) {
+      return;
+    }
     return [selectedValues];
   }, [selectedValues]);
 
@@ -151,17 +157,17 @@ function FilterSelect<TData, TValue>({
   }, [columnFilters]);
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover onOpenChange={setOpen} open={open}>
       <PopoverTrigger asChild>
         <button
-          type="button"
           className={cn(
             'flex w-full items-center gap-x-1.5 whitespace-nowrap rounded-md border border-border px-2 py-1.5 font-medium hover:bg-muted sm:w-fit sm:text-xs',
             selectedValues
               ? 'text-foreground'
               : 'border-dashed text-muted-foreground',
-            focusRing,
+            focusRing
           )}
+          type="button"
         >
           <span
             aria-hidden="true"
@@ -174,11 +180,11 @@ function FilterSelect<TData, TValue>({
             }}
           >
             <RiAddLine
+              aria-hidden="true"
               className={cn(
                 '-ml-px size-5 shrink-0 transition sm:size-4',
-                selectedValues && 'rotate-45 hover:text-destructive',
+                selectedValues && 'rotate-45 hover:text-destructive'
               )}
-              aria-hidden="true"
             />
           </span>
           {columnFilterLabels && columnFilterLabels.length > 0 ? (
@@ -187,21 +193,20 @@ function FilterSelect<TData, TValue>({
             <span className="w-full text-left sm:w-fit">{title}</span>
           )}
           {columnFilterLabels && columnFilterLabels.length > 0 && (
-            <span className="h-4 w-px bg-border" aria-hidden="true" />
+            <span aria-hidden="true" className="h-4 w-px bg-border" />
           )}
           <ColumnFiltersLabel
-            columnFilterLabels={columnFilterLabels}
             className="w-full text-left sm:w-fit"
+            columnFilterLabels={columnFilterLabels}
           />
           <RiArrowDownSLine
-            className="size-5 shrink-0 text-muted-foreground sm:size-4"
             aria-hidden="true"
+            className="size-5 shrink-0 text-muted-foreground sm:size-4"
           />
         </button>
       </PopoverTrigger>
       <PopoverContent
         align="start"
-        sideOffset={7}
         className="min-w-[calc(var(--radix-popover-trigger-width))] max-w-[calc(var(--radix-popover-trigger-width))] sm:min-w-56 sm:max-w-56"
         onInteractOutside={() => {
           if (!columnFilters || columnFilters === '') {
@@ -209,6 +214,7 @@ function FilterSelect<TData, TValue>({
             setSelectedValues('');
           }
         }}
+        sideOffset={7}
       >
         <form
           onSubmit={(e) => {
@@ -223,10 +229,10 @@ function FilterSelect<TData, TValue>({
                 Filter by {title}
               </Label>
               <Select
-                value={selectedValues}
                 onValueChange={(value) => {
                   setSelectedValues(value);
                 }}
+                value={selectedValues}
               >
                 <SelectTrigger className="mt-2 sm:py-1">
                   <SelectValue placeholder="Select" />
@@ -242,13 +248,13 @@ function FilterSelect<TData, TValue>({
             </div>
             {columnFilterLabels && columnFilterLabels.length > 0 && (
               <Button
-                variant="secondary"
                 className="w-full sm:py-1"
-                type="button"
                 onClick={() => {
                   column?.setFilterValue('');
                   setSelectedValues('');
                 }}
+                type="button"
+                variant="secondary"
               >
                 Reset
               </Button>
@@ -269,12 +275,14 @@ function FilterCheckbox<TData, TValue>({
 }: FilterCheckboxProps<TData, TValue>) {
   const columnFilters = column?.getFilterValue() as string[];
   const [selectedValues, setSelectedValues] = React.useState<string[]>(
-    columnFilters || [],
+    columnFilters || []
   );
   const [open, setOpen] = React.useState(false);
 
   const columnFilterLabels = React.useMemo(() => {
-    if (!selectedValues || selectedValues.length === 0) return undefined;
+    if (!selectedValues || selectedValues.length === 0) {
+      return;
+    }
     return selectedValues;
   }, [selectedValues]);
 
@@ -283,17 +291,17 @@ function FilterCheckbox<TData, TValue>({
   }, [columnFilters]);
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover onOpenChange={setOpen} open={open}>
       <PopoverTrigger asChild>
         <button
-          type="button"
           className={cn(
             'flex h-7 w-full items-center gap-x-1.5 whitespace-nowrap rounded-md border border-border px-2 py-1.5 font-medium text-sm hover:bg-muted sm:w-fit',
             selectedValues && selectedValues.length > 0
               ? 'text-foreground'
               : 'border-dashed text-muted-foreground',
-            focusRing,
+            focusRing
           )}
+          type="button"
         >
           <span
             aria-hidden="true"
@@ -306,13 +314,13 @@ function FilterCheckbox<TData, TValue>({
             }}
           >
             <RiAddLine
+              aria-hidden="true"
               className={cn(
                 '-ml-px size-5 shrink-0 transition sm:size-4',
                 selectedValues &&
                   selectedValues.length > 0 &&
-                  'rotate-45 hover:text-destructive',
+                  'rotate-45 hover:text-destructive'
               )}
-              aria-hidden="true"
             />
           </span>
           {columnFilterLabels && columnFilterLabels.length > 0 ? (
@@ -321,21 +329,20 @@ function FilterCheckbox<TData, TValue>({
             <span className="w-full text-left sm:w-fit">{title}</span>
           )}
           {columnFilterLabels && columnFilterLabels.length > 0 && (
-            <span className="h-4 w-px bg-border" aria-hidden="true" />
+            <span aria-hidden="true" className="h-4 w-px bg-border" />
           )}
           <ColumnFiltersLabel
-            columnFilterLabels={columnFilterLabels}
             className="w-full text-left sm:w-fit"
+            columnFilterLabels={columnFilterLabels}
           />
           <RiArrowDownSLine
-            className="size-5 shrink-0 text-muted-foreground sm:size-4"
             aria-hidden="true"
+            className="size-5 shrink-0 text-muted-foreground sm:size-4"
           />
         </button>
       </PopoverTrigger>
       <PopoverContent
         align="start"
-        sideOffset={7}
         className="min-w-[calc(var(--radix-popover-trigger-width))] max-w-[calc(var(--radix-popover-trigger-width))] sm:min-w-56 sm:max-w-56"
         onInteractOutside={() => {
           if (!columnFilters || columnFilters.length === 0) {
@@ -343,6 +350,7 @@ function FilterCheckbox<TData, TValue>({
             setSelectedValues([]);
           }
         }}
+        sideOffset={7}
       >
         <form
           onSubmit={(e) => {
@@ -357,45 +365,41 @@ function FilterCheckbox<TData, TValue>({
                 Filter by {title}
               </Label>
               <div className="mt-2 space-y-2 overflow-y-auto sm:max-h-40">
-                {options.map((option) => {
-                  return (
-                    <div key={option.label} className="flex items-center gap-2">
-                      <Checkbox
-                        id={option.value}
-                        checked={selectedValues?.includes(option.value)}
-                        onCheckedChange={(checked) => {
-                          setSelectedValues((prev) => {
-                            if (checked) {
-                              return prev
-                                ? [...prev, option.value]
-                                : [option.value];
-                            }
-                            return prev.filter(
-                              (value) => value !== option.value,
-                            );
-                          });
-                        }}
-                      />
-                      <Label
-                        htmlFor={option.value}
-                        className="text-base sm:text-sm"
-                      >
-                        {option.label}
-                      </Label>
-                    </div>
-                  );
-                })}
+                {options.map((option) => (
+                  <div className="flex items-center gap-2" key={option.label}>
+                    <Checkbox
+                      checked={selectedValues?.includes(option.value)}
+                      id={option.value}
+                      onCheckedChange={(checked) => {
+                        setSelectedValues((prev) => {
+                          if (checked) {
+                            return prev
+                              ? [...prev, option.value]
+                              : [option.value];
+                          }
+                          return prev.filter((value) => value !== option.value);
+                        });
+                      }}
+                    />
+                    <Label
+                      className="text-base sm:text-sm"
+                      htmlFor={option.value}
+                    >
+                      {option.label}
+                    </Label>
+                  </div>
+                ))}
               </div>
             </div>
             {columnFilterLabels && columnFilterLabels.length > 0 && (
               <Button
-                variant="secondary"
                 className="w-full sm:py-1"
-                type="button"
                 onClick={() => {
                   column?.setFilterValue([]);
                   setSelectedValues([]);
                 }}
+                type="button"
+                variant="secondary"
               >
                 Reset
               </Button>
@@ -419,24 +423,30 @@ function FilterNumber<TData, TValue>({
 }: FilterNumberProps<TData, TValue>) {
   const columnFilters = column?.getFilterValue() as ConditionFilter;
   const [selectedValues, setSelectedValues] = React.useState<ConditionFilter>(
-    columnFilters || { condition: '', value: ['', ''] },
+    columnFilters || { condition: '', value: ['', ''] }
   );
   const [open, setOpen] = React.useState(false);
 
   const columnFilterLabels = React.useMemo(() => {
-    if (!selectedValues || selectedValues.condition === '') return undefined;
+    if (!selectedValues || selectedValues.condition === '') {
+      return;
+    }
 
     const condition = options.find(
-      (option) => option.value === selectedValues.condition,
+      (option) => option.value === selectedValues.condition
     )?.label;
-    if (!condition) return undefined;
-    if (!selectedValues.value?.[0] && !selectedValues.value?.[1])
+    if (!condition) {
+      return;
+    }
+    if (!(selectedValues.value?.[0] || selectedValues.value?.[1])) {
       return [`${condition}`];
-    if (!selectedValues.value?.[1])
+    }
+    if (!selectedValues.value?.[1]) {
       return [`${condition} ${formatter(selectedValues.value?.[0])}`];
+    }
     return [
       `${condition} ${formatter(selectedValues.value?.[0])} and ${formatter(
-        selectedValues.value?.[1],
+        selectedValues.value?.[1]
       )}`,
     ];
   }, [selectedValues, options, formatter]);
@@ -448,17 +458,17 @@ function FilterNumber<TData, TValue>({
   const isBetween = selectedValues?.condition === 'is-between';
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover onOpenChange={setOpen} open={open}>
       <PopoverTrigger asChild>
         <button
-          type="button"
           className={cn(
             'flex w-full items-center gap-x-1.5 whitespace-nowrap rounded-md border border-border px-2 py-1.5 font-medium hover:bg-muted sm:w-fit sm:text-xs',
             selectedValues && selectedValues.condition !== ''
               ? 'text-foreground'
               : 'border-dashed text-muted-foreground',
-            focusRing,
+            focusRing
           )}
+          type="button"
         >
           <span
             aria-hidden="true"
@@ -471,13 +481,13 @@ function FilterNumber<TData, TValue>({
             }}
           >
             <RiAddLine
+              aria-hidden="true"
               className={cn(
                 '-ml-px size-5 shrink-0 transition sm:size-4',
                 selectedValues &&
                   selectedValues.condition !== '' &&
-                  'rotate-45 hover:text-destructive',
+                  'rotate-45 hover:text-destructive'
               )}
-              aria-hidden="true"
             />
           </span>
           {columnFilterLabels && columnFilterLabels.length > 0 ? (
@@ -486,21 +496,20 @@ function FilterNumber<TData, TValue>({
             <span className="w-full text-left sm:w-fit">{title}</span>
           )}
           {columnFilterLabels && columnFilterLabels.length > 0 && (
-            <span className="h-4 w-px bg-border" aria-hidden="true" />
+            <span aria-hidden="true" className="h-4 w-px bg-border" />
           )}
           <ColumnFiltersLabel
-            columnFilterLabels={columnFilterLabels}
             className="w-full text-left sm:w-fit"
+            columnFilterLabels={columnFilterLabels}
           />
           <RiArrowDownSLine
-            className="size-5 shrink-0 text-muted-foreground sm:size-4"
             aria-hidden="true"
+            className="size-5 shrink-0 text-muted-foreground sm:size-4"
           />
         </button>
       </PopoverTrigger>
       <PopoverContent
         align="start"
-        sideOffset={7}
         className="min-w-[calc(var(--radix-popover-trigger-width))] max-w-[calc(var(--radix-popover-trigger-width))] sm:min-w-56 sm:max-w-56"
         onInteractOutside={() => {
           if (!columnFilters || columnFilters.condition === '') {
@@ -508,6 +517,7 @@ function FilterNumber<TData, TValue>({
             setSelectedValues({ condition: '', value: ['', ''] });
           }
         }}
+        sideOffset={7}
       >
         <form
           onSubmit={(e) => {
@@ -523,15 +533,13 @@ function FilterNumber<TData, TValue>({
               </Label>
               <div className="space-y-2">
                 <Select
-                  value={selectedValues?.condition}
                   onValueChange={(value) => {
-                    setSelectedValues((prev) => {
-                      return {
-                        condition: value,
-                        value: [value !== '' ? prev?.value?.[0] || '' : '', ''],
-                      };
-                    });
+                    setSelectedValues((prev) => ({
+                      condition: value,
+                      value: [value !== '' ? prev?.value?.[0] || '' : '', ''],
+                    }));
                   }}
+                  value={selectedValues?.condition}
                 >
                   <SelectTrigger className="mt-2 sm:py-1">
                     <SelectValue placeholder="Select condition" />
@@ -547,26 +555,24 @@ function FilterNumber<TData, TValue>({
 
                 <div className="flex w-full items-center gap-2">
                   <RiCornerDownRightLine
-                    className="size-4 shrink-0 text-muted-foreground"
                     aria-hidden="true"
+                    className="size-4 shrink-0 text-muted-foreground"
                   />
                   <Input
-                    disabled={!selectedValues?.condition}
-                    type="number"
-                    placeholder="$0"
                     className="sm:[&>input]:py-1"
-                    value={selectedValues?.value?.[0] || ''}
+                    disabled={!selectedValues?.condition}
                     onChange={(e) => {
-                      setSelectedValues((prev) => {
-                        return {
-                          condition: prev?.condition || '',
-                          value: [
-                            e.target.value,
-                            isBetween ? prev?.value?.[1] || '' : '',
-                          ],
-                        };
-                      });
+                      setSelectedValues((prev) => ({
+                        condition: prev?.condition || '',
+                        value: [
+                          e.target.value,
+                          isBetween ? prev?.value?.[1] || '' : '',
+                        ],
+                      }));
                     }}
+                    placeholder="$0"
+                    type="number"
+                    value={selectedValues?.value?.[0] || ''}
                   />
                   {selectedValues?.condition === 'is-between' && (
                     <>
@@ -574,19 +580,17 @@ function FilterNumber<TData, TValue>({
                         and
                       </span>
                       <Input
-                        disabled={!selectedValues?.condition}
-                        type="number"
-                        placeholder="$0"
                         className="sm:[&>input]:py-1"
-                        value={selectedValues?.value?.[1] || ''}
+                        disabled={!selectedValues?.condition}
                         onChange={(e) => {
-                          setSelectedValues((prev) => {
-                            return {
-                              condition: prev?.condition || '',
-                              value: [prev?.value?.[0] || '', e.target.value],
-                            };
-                          });
+                          setSelectedValues((prev) => ({
+                            condition: prev?.condition || '',
+                            value: [prev?.value?.[0] || '', e.target.value],
+                          }));
                         }}
+                        placeholder="$0"
+                        type="number"
+                        value={selectedValues?.value?.[1] || ''}
                       />
                     </>
                   )}
@@ -595,13 +599,13 @@ function FilterNumber<TData, TValue>({
             </div>
             {columnFilterLabels && columnFilterLabels.length > 0 && (
               <Button
-                variant="secondary"
                 className="w-full sm:py-1"
-                type="button"
                 onClick={() => {
                   column?.setFilterValue({ condition: '', value: ['', ''] });
                   setSelectedValues({ condition: '', value: ['', ''] });
                 }}
+                type="button"
+                variant="secondary"
               >
                 Reset
               </Button>

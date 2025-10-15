@@ -70,11 +70,11 @@ function EmptyContactInfo({ setIsEditing }: EmptyContactInfoProps) {
       </EmptyHeader>
       <EmptyContent>
         <Button
-          variant="link"
           asChild
           className="text-muted-foreground"
-          size="sm"
           onClick={() => setIsEditing(true)}
+          size="sm"
+          variant="link"
         >
           Learn More <ArrowUpRightIcon />
         </Button>
@@ -136,8 +136,7 @@ function ContactInfoEdit({ contactInfo, setIsEditing }: ContactInfoEditProps) {
     defaultValues: contactInfo,
   });
 
-  const onSubmit = (data: PlayerWithContactInfoNonNullable) => {
-    console.log('Saving contact info:', data);
+  const onSubmit = (_data: PlayerWithContactInfoNonNullable) => {
     setIsEditing(false);
   };
 
@@ -152,7 +151,7 @@ function ContactInfoEdit({ contactInfo, setIsEditing }: ContactInfoEditProps) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
         <ContactInfoCardWrapper>
           <EmailEditCard form={form} />
           <PhoneEditCard form={form} />
@@ -166,10 +165,10 @@ function ContactInfoEdit({ contactInfo, setIsEditing }: ContactInfoEditProps) {
         </ContactInfoCardWrapper>
         <div className="flex gap-2">
           <Button type="submit">Save Changes</Button>
-          <Button type="button" variant="outline" onClick={handleReset}>
+          <Button onClick={handleReset} type="button" variant="outline">
             Reset
           </Button>
-          <Button type="button" variant="outline" onClick={handleCancel}>
+          <Button onClick={handleCancel} type="button" variant="outline">
             Cancel
           </Button>
         </div>

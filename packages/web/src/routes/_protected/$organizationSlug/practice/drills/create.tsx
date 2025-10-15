@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
 // Types for drill creation
-interface DrillFormData {
+type DrillFormData = {
   name: string;
   description: string;
   category: string;
@@ -23,7 +23,7 @@ interface DrillFormData {
   instructions: string;
   variations: string[];
   safetyNotes: string;
-}
+};
 
 // Mock data for dropdowns
 const mockFormData = {
@@ -82,26 +82,16 @@ const mockFormData = {
 // Server function for creating drill
 const createDrill = createServerFn({ method: 'POST' })
   .inputValidator((data: DrillFormData) => data)
-  .handler(async ({ data }) => {
-    // TODO: Replace with actual API call
-    // const { DrillAPI } = await import('@lax-db/core/practice/drills');
-    // const request = getRequest();
-    // return await DrillAPI.createDrill(teamId, data, request.headers);
-
-    console.log('Creating drill:', data);
-    return { success: true, drillId: 'new-drill-id' };
-  });
+  .handler(async ({ data }) => ({ success: true, drillId: 'new-drill-id' }));
 
 // Server function for permissions
-const getCreatePermissions = createServerFn().handler(async () => {
-  return {
-    canCreateDrills: true,
-    canCreateCategories: true,
-  };
-});
+const getCreatePermissions = createServerFn().handler(async () => ({
+  canCreateDrills: true,
+  canCreateCategories: true,
+}));
 
 export const Route = createFileRoute(
-  '/_protected/$organizationSlug/practice/drills/create',
+  '/_protected/$organizationSlug/practice/drills/create'
 )({
   component: CreateDrill,
   loader: async () => {
@@ -138,7 +128,7 @@ function CreateDrill() {
 
   const handleBasicChange = (
     field: keyof DrillFormData,
-    value: string | string[] | number | null,
+    value: string | string[] | number | null
   ) => {
     setDrillData((prev) => ({ ...prev, [field]: value }));
   };
@@ -229,19 +219,14 @@ function CreateDrill() {
           },
         });
       }
-    } catch (error) {
-      console.error('Error creating drill:', error);
-    }
+    } catch (_error) {}
   };
 
-  const canSubmit = () => {
-    return (
-      drillData.name &&
-      drillData.description &&
-      drillData.category &&
-      drillData.instructions
-    );
-  };
+  const canSubmit = () =>
+    drillData.name &&
+    drillData.description &&
+    drillData.category &&
+    drillData.instructions;
 
   return (
     <div className="container mx-auto max-w-4xl py-8">
@@ -253,9 +238,8 @@ function CreateDrill() {
           </p>
         </div>
 
-        <Button variant="outline" asChild>
+        <Button asChild variant="outline">
           <Link
-            to="/$organizationSlug/practice/drills"
             params={{ organizationSlug }}
             search={{
               search: '',
@@ -263,6 +247,7 @@ function CreateDrill() {
               difficulty: 'All',
               favorites: false,
             }}
+            to="/$organizationSlug/practice/drills"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Drills
@@ -282,21 +267,21 @@ function CreateDrill() {
                 <Label htmlFor="drillName">Drill Name *</Label>
                 <Input
                   id="drillName"
-                  value={drillData.name}
                   onChange={(e) => handleBasicChange('name', e.target.value)}
                   placeholder="Enter drill name"
+                  value={drillData.name}
                 />
               </div>
 
               <div>
                 <Label htmlFor="category">Category *</Label>
                 <select
+                  className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
                   id="category"
-                  value={drillData.category}
                   onChange={(e) =>
                     handleBasicChange('category', e.target.value)
                   }
-                  className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                  value={drillData.category}
                 >
                   <option value="">Select category</option>
                   {formData.categories.map((category) => (
@@ -311,13 +296,13 @@ function CreateDrill() {
             <div>
               <Label htmlFor="description">Description *</Label>
               <textarea
+                className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 id="description"
-                value={drillData.description}
                 onChange={(e) =>
                   handleBasicChange('description', e.target.value)
                 }
                 placeholder="Describe the purpose and overview of this drill"
-                className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                value={drillData.description}
               />
             </div>
 
@@ -325,12 +310,12 @@ function CreateDrill() {
               <div>
                 <Label htmlFor="difficulty">Difficulty Level</Label>
                 <select
+                  className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
                   id="difficulty"
-                  value={drillData.difficulty}
                   onChange={(e) =>
                     handleBasicChange('difficulty', e.target.value)
                   }
-                  className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                  value={drillData.difficulty}
                 >
                   <option value="beginner">Beginner</option>
                   <option value="intermediate">Intermediate</option>
@@ -342,13 +327,13 @@ function CreateDrill() {
                 <Label htmlFor="duration">Duration (minutes)</Label>
                 <Input
                   id="duration"
-                  type="number"
-                  value={drillData.duration}
+                  max="60"
+                  min="5"
                   onChange={(e) =>
                     handleBasicChange('duration', Number(e.target.value))
                   }
-                  min="5"
-                  max="60"
+                  type="number"
+                  value={drillData.duration}
                 />
               </div>
 
@@ -356,30 +341,30 @@ function CreateDrill() {
                 <Label>Player Count</Label>
                 <div className="flex gap-2">
                   <Input
-                    type="number"
-                    value={drillData.playerCountMin}
+                    max="50"
+                    min="2"
                     onChange={(e) =>
                       handleBasicChange(
                         'playerCountMin',
-                        Number(e.target.value),
+                        Number(e.target.value)
                       )
                     }
                     placeholder="Min"
-                    min="2"
-                    max="50"
+                    type="number"
+                    value={drillData.playerCountMin}
                   />
                   <Input
-                    type="number"
-                    value={drillData.playerCountMax || ''}
+                    max="50"
+                    min={drillData.playerCountMin}
                     onChange={(e) =>
                       handleBasicChange(
                         'playerCountMax',
-                        e.target.value ? Number(e.target.value) : null,
+                        e.target.value ? Number(e.target.value) : null
                       )
                     }
                     placeholder="Max (optional)"
-                    min={drillData.playerCountMin}
-                    max="50"
+                    type="number"
+                    value={drillData.playerCountMax || ''}
                   />
                 </div>
               </div>
@@ -396,13 +381,13 @@ function CreateDrill() {
             <div>
               <Label htmlFor="instructions">Step-by-step Instructions *</Label>
               <textarea
+                className="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 id="instructions"
-                value={drillData.instructions}
                 onChange={(e) =>
                   handleBasicChange('instructions', e.target.value)
                 }
                 placeholder="Provide detailed step-by-step instructions for executing this drill"
-                className="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                value={drillData.instructions}
               />
             </div>
           </CardContent>
@@ -416,17 +401,17 @@ function CreateDrill() {
           <CardContent className="space-y-4">
             <div className="flex gap-2">
               <Input
-                value={newEquipment}
                 onChange={(e) => setNewEquipment(e.target.value)}
-                placeholder="Add equipment item"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
                     e.preventDefault();
                     addEquipment();
                   }
                 }}
+                placeholder="Add equipment item"
+                value={newEquipment}
               />
-              <Button type="button" onClick={addEquipment} size="sm">
+              <Button onClick={addEquipment} size="sm" type="button">
                 Add
               </Button>
             </div>
@@ -437,10 +422,9 @@ function CreateDrill() {
               <div className="mt-2 flex flex-wrap gap-2">
                 {formData.commonEquipment.map((item) => (
                   <Button
+                    className="h-auto p-1 text-xs"
+                    disabled={drillData.equipment.includes(item)}
                     key={item}
-                    type="button"
-                    variant="ghost"
-                    size="sm"
                     onClick={() =>
                       !drillData.equipment.includes(item) &&
                       handleBasicChange('equipment', [
@@ -448,8 +432,9 @@ function CreateDrill() {
                         item,
                       ])
                     }
-                    className="h-auto p-1 text-xs"
-                    disabled={drillData.equipment.includes(item)}
+                    size="sm"
+                    type="button"
+                    variant="ghost"
                   >
                     {item}
                   </Button>
@@ -466,9 +451,9 @@ function CreateDrill() {
                     <Badge key={item} variant="outline">
                       {item}
                       <button
-                        type="button"
-                        onClick={() => removeEquipment(item)}
                         className="ml-1 hover:text-red-500"
+                        onClick={() => removeEquipment(item)}
+                        type="button"
                       >
                         <X className="h-3 w-3" />
                       </button>
@@ -488,17 +473,17 @@ function CreateDrill() {
           <CardContent className="space-y-4">
             <div className="flex gap-2">
               <Input
-                value={newSkill}
                 onChange={(e) => setNewSkill(e.target.value)}
-                placeholder="Add skill focus"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
                     e.preventDefault();
                     addSkill();
                   }
                 }}
+                placeholder="Add skill focus"
+                value={newSkill}
               />
-              <Button type="button" onClick={addSkill} size="sm">
+              <Button onClick={addSkill} size="sm" type="button">
                 Add
               </Button>
             </div>
@@ -509,10 +494,9 @@ function CreateDrill() {
               <div className="mt-2 flex flex-wrap gap-2">
                 {formData.commonSkills.map((skill) => (
                   <Button
+                    className="h-auto p-1 text-xs"
+                    disabled={drillData.skillsFocus.includes(skill)}
                     key={skill}
-                    type="button"
-                    variant="ghost"
-                    size="sm"
                     onClick={() =>
                       !drillData.skillsFocus.includes(skill) &&
                       handleBasicChange('skillsFocus', [
@@ -520,8 +504,9 @@ function CreateDrill() {
                         skill,
                       ])
                     }
-                    className="h-auto p-1 text-xs"
-                    disabled={drillData.skillsFocus.includes(skill)}
+                    size="sm"
+                    type="button"
+                    variant="ghost"
                   >
                     {skill}
                   </Button>
@@ -538,9 +523,9 @@ function CreateDrill() {
                     <Badge key={skill} variant="secondary">
                       {skill}
                       <button
-                        type="button"
-                        onClick={() => removeSkill(skill)}
                         className="ml-1 hover:text-red-500"
+                        onClick={() => removeSkill(skill)}
+                        type="button"
                       >
                         <X className="h-3 w-3" />
                       </button>
@@ -560,17 +545,17 @@ function CreateDrill() {
           <CardContent className="space-y-4">
             <div className="flex gap-2">
               <Input
-                value={newTag}
                 onChange={(e) => setNewTag(e.target.value)}
-                placeholder="Add tag"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
                     e.preventDefault();
                     addTag();
                   }
                 }}
+                placeholder="Add tag"
+                value={newTag}
               />
-              <Button type="button" onClick={addTag} size="sm">
+              <Button onClick={addTag} size="sm" type="button">
                 Add
               </Button>
             </div>
@@ -581,16 +566,16 @@ function CreateDrill() {
               <div className="mt-2 flex flex-wrap gap-2">
                 {formData.commonTags.map((tag) => (
                   <Button
+                    className="h-auto p-1 text-xs"
+                    disabled={drillData.tags.includes(tag)}
                     key={tag}
-                    type="button"
-                    variant="ghost"
-                    size="sm"
                     onClick={() =>
                       !drillData.tags.includes(tag) &&
                       handleBasicChange('tags', [...drillData.tags, tag])
                     }
-                    className="h-auto p-1 text-xs"
-                    disabled={drillData.tags.includes(tag)}
+                    size="sm"
+                    type="button"
+                    variant="ghost"
                   >
                     {tag}
                   </Button>
@@ -607,9 +592,9 @@ function CreateDrill() {
                     <Badge key={tag} variant="outline">
                       {tag}
                       <button
-                        type="button"
-                        onClick={() => removeTag(tag)}
                         className="ml-1 hover:text-red-500"
+                        onClick={() => removeTag(tag)}
+                        type="button"
                       >
                         <X className="h-3 w-3" />
                       </button>
@@ -633,17 +618,17 @@ function CreateDrill() {
               <div className="space-y-2">
                 <div className="flex gap-2">
                   <Input
-                    value={newVariation}
                     onChange={(e) => setNewVariation(e.target.value)}
-                    placeholder="Add a drill variation"
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') {
                         e.preventDefault();
                         addVariation();
                       }
                     }}
+                    placeholder="Add a drill variation"
+                    value={newVariation}
                   />
-                  <Button type="button" onClick={addVariation} size="sm">
+                  <Button onClick={addVariation} size="sm" type="button">
                     Add
                   </Button>
                 </div>
@@ -651,15 +636,15 @@ function CreateDrill() {
                   <div className="space-y-1">
                     {drillData.variations.map((variation, index) => (
                       <div
-                        key={variation}
                         className="flex items-center justify-between rounded border p-2"
+                        key={variation}
                       >
                         <span className="text-sm">{variation}</span>
                         <Button
+                          onClick={() => removeVariation(index)}
+                          size="sm"
                           type="button"
                           variant="ghost"
-                          size="sm"
-                          onClick={() => removeVariation(index)}
                         >
                           <X className="h-3 w-3" />
                         </Button>
@@ -674,13 +659,13 @@ function CreateDrill() {
             <div>
               <Label htmlFor="safetyNotes">Safety Notes</Label>
               <textarea
+                className="flex min-h-[60px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 id="safetyNotes"
-                value={drillData.safetyNotes}
                 onChange={(e) =>
                   handleBasicChange('safetyNotes', e.target.value)
                 }
                 placeholder="Any safety considerations or precautions for this drill"
-                className="flex min-h-[60px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                value={drillData.safetyNotes}
               />
             </div>
           </CardContent>
@@ -688,9 +673,8 @@ function CreateDrill() {
 
         {/* Actions */}
         <div className="flex items-center justify-between">
-          <Button variant="outline" asChild>
+          <Button asChild variant="outline">
             <Link
-              to="/$organizationSlug/practice/drills"
               params={{ organizationSlug }}
               search={{
                 search: '',
@@ -698,12 +682,13 @@ function CreateDrill() {
                 difficulty: 'All',
                 favorites: false,
               }}
+              to="/$organizationSlug/practice/drills"
             >
               Cancel
             </Link>
           </Button>
 
-          <Button onClick={handleSubmit} disabled={!canSubmit()}>
+          <Button disabled={!canSubmit()} onClick={handleSubmit}>
             <Save className="mr-2 h-4 w-4" />
             Create Drill
           </Button>

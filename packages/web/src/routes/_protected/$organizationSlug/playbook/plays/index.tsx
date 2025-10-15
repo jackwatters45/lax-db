@@ -157,18 +157,16 @@ const getPlaysData = createServerFn().handler(async () => {
 });
 
 // Server function for permissions
-const getPlaysPermissions = createServerFn().handler(async () => {
-  return {
-    canCreatePlays: true,
-    canEditPlays: true,
-    canDeletePlays: true,
-    canViewAnalytics: true,
-    canAssignPlays: true,
-  };
-});
+const getPlaysPermissions = createServerFn().handler(async () => ({
+  canCreatePlays: true,
+  canEditPlays: true,
+  canDeletePlays: true,
+  canViewAnalytics: true,
+  canAssignPlays: true,
+}));
 
 export const Route = createFileRoute(
-  '/_protected/$organizationSlug/playbook/plays/',
+  '/_protected/$organizationSlug/playbook/plays/'
 )({
   component: PlaysList,
   validateSearch: (search: Record<string, unknown>) => ({
@@ -192,13 +190,12 @@ function PlaysList() {
   const { data, permissions } = Route.useLoaderData();
   const search = Route.useSearch();
 
-  const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat('en-US', {
+  const formatDate = (date: Date) =>
+    new Intl.DateTimeFormat('en-US', {
       month: 'short',
       day: 'numeric',
       year: 'numeric',
     }).format(date);
-  };
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
@@ -237,7 +234,7 @@ function PlaysList() {
       play.name.toLowerCase().includes(search.search.toLowerCase()) ||
       play.description.toLowerCase().includes(search.search.toLowerCase()) ||
       play.tags.some((tag) =>
-        tag.toLowerCase().includes(search.search.toLowerCase()),
+        tag.toLowerCase().includes(search.search.toLowerCase())
       );
 
     const matchesCategory =
@@ -265,10 +262,10 @@ function PlaysList() {
         </div>
 
         <div className="flex gap-2">
-          <Button variant="outline" asChild>
+          <Button asChild variant="outline">
             <Link
-              to="/$organizationSlug/playbook"
               params={{ organizationSlug }}
+              to="/$organizationSlug/playbook"
             >
               <BookOpen className="mr-2 h-4 w-4" />
               Dashboard
@@ -277,8 +274,8 @@ function PlaysList() {
           {permissions.canCreatePlays && (
             <Button asChild>
               <Link
-                to="/$organizationSlug/playbook/plays/create"
                 params={{ organizationSlug }}
+                to="/$organizationSlug/playbook/plays/create"
               >
                 <Plus className="mr-2 h-4 w-4" />
                 New Play
@@ -301,7 +298,7 @@ function PlaysList() {
             {/* Search */}
             <div className="relative">
               <Search className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
-              <Input placeholder="Search plays..." className="pl-10" />
+              <Input className="pl-10" placeholder="Search plays..." />
             </div>
 
             {/* Category Filter */}
@@ -325,11 +322,11 @@ function PlaysList() {
             {/* Favorites Toggle */}
             <div className="flex items-center gap-2">
               <input
-                type="checkbox"
-                id="favorites"
                 className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                id="favorites"
+                type="checkbox"
               />
-              <label htmlFor="favorites" className="font-medium text-sm">
+              <label className="font-medium text-sm" htmlFor="favorites">
                 Favorites only
               </label>
             </div>
@@ -346,8 +343,8 @@ function PlaysList() {
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {filteredPlays.map((play) => (
           <Card
-            key={play.id}
             className="group transition-shadow hover:shadow-lg"
+            key={play.id}
           >
             <CardHeader>
               <div className="flex items-start justify-between">
@@ -361,9 +358,9 @@ function PlaysList() {
                   <div className="flex-1">
                     <CardTitle className="flex items-center gap-2">
                       <Link
-                        to="/$organizationSlug/playbook/plays/$playId"
-                        params={{ organizationSlug, playId: play.id }}
                         className="hover:underline"
+                        params={{ organizationSlug, playId: play.id }}
+                        to="/$organizationSlug/playbook/plays/$playId"
                       >
                         {play.name}
                       </Link>
@@ -406,12 +403,12 @@ function PlaysList() {
               {/* Tags */}
               <div className="mb-4 flex flex-wrap gap-1">
                 {play.tags.slice(0, 3).map((tag) => (
-                  <Badge key={tag} variant="outline" className="text-xs">
+                  <Badge className="text-xs" key={tag} variant="outline">
                     {tag}
                   </Badge>
                 ))}
                 {play.tags.length > 3 && (
-                  <Badge variant="outline" className="text-xs">
+                  <Badge className="text-xs" variant="outline">
                     +{play.tags.length - 3}
                   </Badge>
                 )}
@@ -429,19 +426,19 @@ function PlaysList() {
 
               {/* Actions */}
               <div className="flex gap-2">
-                <Button size="sm" className="flex-1" asChild>
+                <Button asChild className="flex-1" size="sm">
                   <Link
-                    to="/$organizationSlug/playbook/plays/$playId"
                     params={{ organizationSlug, playId: play.id }}
+                    to="/$organizationSlug/playbook/plays/$playId"
                   >
                     View Details
                   </Link>
                 </Button>
                 {permissions.canEditPlays && (
-                  <Button size="sm" variant="outline" asChild>
+                  <Button asChild size="sm" variant="outline">
                     <Link
-                      to="/$organizationSlug/playbook/plays/$playId/edit"
                       params={{ organizationSlug, playId: play.id }}
+                      to="/$organizationSlug/playbook/plays/$playId/edit"
                     >
                       Edit
                     </Link>
@@ -465,8 +462,8 @@ function PlaysList() {
             {permissions.canCreatePlays && (
               <Button asChild>
                 <Link
-                  to="/$organizationSlug/playbook/plays/create"
                   params={{ organizationSlug }}
+                  to="/$organizationSlug/playbook/plays/create"
                 >
                   <Plus className="mr-2 h-4 w-4" />
                   Create New Play

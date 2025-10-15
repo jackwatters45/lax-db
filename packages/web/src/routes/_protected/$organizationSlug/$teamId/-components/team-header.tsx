@@ -31,17 +31,17 @@ export function TeamSubNav({ organizationSlug, teamId }: TeamSubNavProps) {
     <Navbar className="border-b">
       <NavbarItem asChild>
         <Link
-          to="/$organizationSlug/$teamId"
-          params={{ organizationSlug, teamId }}
           activeOptions={{ exact: true }}
+          params={{ organizationSlug, teamId }}
+          to="/$organizationSlug/$teamId"
         >
           Home
         </Link>
       </NavbarItem>
       <NavbarItem asChild>
         <Link
-          to="/$organizationSlug/$teamId/players"
           params={{ organizationSlug, teamId }}
+          to="/$organizationSlug/$teamId/players"
         >
           Players
         </Link>

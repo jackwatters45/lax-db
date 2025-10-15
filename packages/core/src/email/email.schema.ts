@@ -1,7 +1,7 @@
 import { Schema } from 'effect';
 
 export class SendEmailInput extends Schema.Class<SendEmailInput>(
-  'SendEmailInput',
+  'SendEmailInput'
 )({
   to: Schema.Array(Schema.String),
   subject: Schema.String,
@@ -11,7 +11,7 @@ export class SendEmailInput extends Schema.Class<SendEmailInput>(
 }) {}
 
 export class SendFeedbackEmailInput extends Schema.Class<SendFeedbackEmailInput>(
-  'SendFeedbackEmailInput',
+  'SendFeedbackEmailInput'
 )({
   feedbackId: Schema.Number,
   topic: Schema.String,

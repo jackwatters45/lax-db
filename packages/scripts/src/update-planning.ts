@@ -10,19 +10,19 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Console, Effect } from 'effect';
 
-interface DocumentStats {
+type DocumentStats = {
   readonly totalLines: number;
   readonly totalTasks: number;
   readonly completedTasks: number;
   readonly completionRate: number;
-}
+};
 
-interface UpdateResult {
+type UpdateResult = {
   readonly success: boolean;
   readonly dateString: string;
   readonly stats: DocumentStats;
   readonly error?: string;
-}
+};
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = join(__filename, '..');
@@ -34,7 +34,7 @@ const PLANNING_PATH = join(
   'web',
   'src',
   'content',
-  'planning.md',
+  'planning.md'
 );
 
 // Effect-based file operations
@@ -78,10 +78,10 @@ const calculateStats = (content: string): DocumentStats => {
   const lines = content.split('\n');
   const tasks = lines.filter(
     (line) =>
-      line.includes('[ ]') || line.includes('[x]') || line.includes('[X]'),
+      line.includes('[ ]') || line.includes('[x]') || line.includes('[X]')
   ).length;
   const completedTasks = lines.filter(
-    (line) => line.includes('[x]') || line.includes('[X]'),
+    (line) => line.includes('[x]') || line.includes('[X]')
   ).length;
 
   return {
@@ -130,7 +130,7 @@ const logSuccess = (dateString: string, stats: DocumentStats) =>
 
 const logError = (error: unknown) =>
   Console.log(
-    `❌ Error updating planning document: ${error instanceof Error ? error.message : String(error)}`,
+    `❌ Error updating planning document: ${error instanceof Error ? error.message : String(error)}`
   );
 
 // Main program

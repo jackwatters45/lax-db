@@ -41,29 +41,29 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 
 export const Route = createFileRoute(
-  '/_protected/$organizationSlug/film/upload',
+  '/_protected/$organizationSlug/film/upload'
 )({
   component: FilmUploadPage,
 });
 
-interface UploadedFile {
+type UploadedFile = {
   file: File;
   progress: number;
   status: 'uploading' | 'processing' | 'complete' | 'error';
   id: string;
   preview?: string;
-}
+};
 
 // Form schema - simplified to avoid complex typing issues
 const filmMetadataSchema = Schema.Struct({
   title: Schema.String.pipe(
-    Schema.minLength(1, { message: () => 'Title is required' }),
+    Schema.minLength(1, { message: () => 'Title is required' })
   ),
   gameDate: Schema.String.pipe(
-    Schema.minLength(1, { message: () => 'Game date is required' }),
+    Schema.minLength(1, { message: () => 'Game date is required' })
   ),
   opponent: Schema.String.pipe(
-    Schema.minLength(1, { message: () => 'Opponent is required' }),
+    Schema.minLength(1, { message: () => 'Opponent is required' })
   ),
   gameType: Schema.String,
   venue: Schema.optional(Schema.String),
@@ -114,9 +114,12 @@ function FilmUploadPage() {
   });
 
   const handleFileSelect = (files: FileList | null) => {
-    if (!files) return;
+    if (!files) {
+      return;
+    }
 
-    Array.from(files).forEach((file) => {
+    const filesArr = Array.from(files);
+    for (const file of filesArr) {
       if (file.type.startsWith('video/')) {
         const newFile: UploadedFile = {
           file,
@@ -128,7 +131,7 @@ function FilmUploadPage() {
         setUploadedFiles((prev) => [...prev, newFile]);
         simulateUpload(newFile.id);
       }
-    });
+    }
   };
 
   const simulateUpload = (fileId: string) => {
@@ -140,12 +143,12 @@ function FilmUploadPage() {
         clearInterval(interval);
         setUploadedFiles((prev) =>
           prev.map((f) =>
-            f.id === fileId ? { ...f, progress: 100, status: 'complete' } : f,
-          ),
+            f.id === fileId ? { ...f, progress: 100, status: 'complete' } : f
+          )
         );
       } else {
         setUploadedFiles((prev) =>
-          prev.map((f) => (f.id === fileId ? { ...f, progress } : f)),
+          prev.map((f) => (f.id === fileId ? { ...f, progress } : f))
         );
       }
     }, 500);
@@ -182,7 +185,9 @@ function FilmUploadPage() {
   };
 
   const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return '0 Bytes';
+    if (bytes === 0) {
+      return '0 Bytes';
+    }
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -193,14 +198,10 @@ function FilmUploadPage() {
     uploadedFiles.length > 0 &&
     uploadedFiles.every((f) => f.status === 'complete');
 
-  const onSubmit = async (values: FilmMetadataValues) => {
+  const onSubmit = async (_values: FilmMetadataValues) => {
     setCurrentStep('processing');
     // Simulate processing
     setTimeout(() => {
-      console.log('Film uploaded successfully:', {
-        files: uploadedFiles,
-        metadata: { ...values, tags },
-      });
       // Navigate back to library
     }, 3000);
   };
@@ -209,7 +210,7 @@ function FilmUploadPage() {
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-4">
-          <Button variant="outline" size="sm" disabled>
+          <Button disabled size="sm" variant="outline">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Library
           </Button>
@@ -271,7 +272,7 @@ function FilmUploadPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Button variant="outline" size="sm">
+        <Button size="sm" variant="outline">
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Library
         </Button>
@@ -351,24 +352,24 @@ function FilmUploadPage() {
             </CardHeader>
             <CardContent>
               <button
-                type="button"
                 className={`w-full rounded-lg border-2 border-dashed p-8 text-center transition-colors ${
                   isDragging
                     ? 'border-blue-500 bg-blue-50'
                     : 'border-gray-300 hover:border-gray-400'
                 }`}
-                onDrop={handleDrop}
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
                 onClick={() => fileInputRef.current?.click()}
+                onDragLeave={handleDragLeave}
+                onDragOver={handleDragOver}
+                onDrop={handleDrop}
+                type="button"
               >
                 <input
+                  accept="video/*"
+                  className="hidden"
+                  multiple
+                  onChange={(e) => handleFileSelect(e.target.files)}
                   ref={fileInputRef}
                   type="file"
-                  multiple
-                  accept="video/*"
-                  onChange={(e) => handleFileSelect(e.target.files)}
-                  className="hidden"
                 />
 
                 <div className="space-y-4">
@@ -406,8 +407,8 @@ function FilmUploadPage() {
               <CardContent className="space-y-3">
                 {uploadedFiles.map((file) => (
                   <div
-                    key={file.id}
                     className="flex items-center gap-4 rounded-lg border p-3"
+                    key={file.id}
                   >
                     <div className="flex-shrink-0">
                       <FileVideo className="h-8 w-8 text-blue-500" />
@@ -419,6 +420,7 @@ function FilmUploadPage() {
                           {file.file.name}
                         </p>
                         <Badge
+                          className="text-xs"
                           variant={
                             file.status === 'complete'
                               ? 'default'
@@ -426,7 +428,6 @@ function FilmUploadPage() {
                                 ? 'destructive'
                                 : 'secondary'
                           }
-                          className="text-xs"
                         >
                           {file.status === 'uploading' && 'Uploading'}
                           {file.status === 'processing' && 'Processing'}
@@ -452,10 +453,10 @@ function FilmUploadPage() {
                     </div>
 
                     <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => removeFile(file.id)}
                       className="text-red-500 hover:text-red-700"
+                      onClick={() => removeFile(file.id)}
+                      size="sm"
+                      variant="ghost"
                     >
                       <X className="h-4 w-4" />
                     </Button>
@@ -467,8 +468,8 @@ function FilmUploadPage() {
 
           <div className="flex justify-end">
             <Button
-              onClick={() => setCurrentStep('metadata')}
               disabled={!canProceedToMetadata}
+              onClick={() => setCurrentStep('metadata')}
             >
               Continue to Details
             </Button>
@@ -478,7 +479,7 @@ function FilmUploadPage() {
 
       {currentStep === 'metadata' && (
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
             <Card>
               <CardHeader>
                 <CardTitle>Game Information</CardTitle>
@@ -543,8 +544,8 @@ function FilmUploadPage() {
                       <FormItem>
                         <FormLabel>Game Type</FormLabel>
                         <Select
-                          onValueChange={field.onChange}
                           defaultValue={field.value}
+                          onValueChange={field.onChange}
                         >
                           <FormControl>
                             <SelectTrigger>
@@ -586,10 +587,10 @@ function FilmUploadPage() {
                       <FormItem>
                         <FormLabel>Home/Away</FormLabel>
                         <Select
+                          defaultValue={field.value ? 'true' : 'false'}
                           onValueChange={(value) =>
                             field.onChange(value === 'true')
                           }
-                          defaultValue={field.value ? 'true' : 'false'}
                         >
                           <FormControl>
                             <SelectTrigger>
@@ -629,8 +630,7 @@ function FilmUploadPage() {
                   <FormLabel>Tags</FormLabel>
                   <div className="flex gap-2">
                     <Input
-                      placeholder="Add tags..."
-                      value={currentTag}
+                      className="flex-1"
                       onChange={(e) => setCurrentTag(e.target.value)}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter') {
@@ -638,12 +638,13 @@ function FilmUploadPage() {
                           addTag();
                         }
                       }}
-                      className="flex-1"
+                      placeholder="Add tags..."
+                      value={currentTag}
                     />
                     <Button
-                      type="button"
-                      onClick={addTag}
                       disabled={!currentTag.trim()}
+                      onClick={addTag}
+                      type="button"
                     >
                       <Tag className="h-4 w-4" />
                     </Button>
@@ -652,15 +653,15 @@ function FilmUploadPage() {
                     <div className="flex flex-wrap gap-2">
                       {tags.map((tag) => (
                         <Badge
+                          className="text-xs"
                           key={tag}
                           variant="secondary"
-                          className="text-xs"
                         >
                           {tag}
                           <button
-                            type="button"
-                            onClick={() => removeTag(tag)}
                             className="ml-1 hover:text-destructive"
+                            onClick={() => removeTag(tag)}
+                            type="button"
                           >
                             <X className="h-3 w-3" />
                           </button>
@@ -677,10 +678,10 @@ function FilmUploadPage() {
                     <FormItem className="flex flex-row items-start space-x-3 space-y-0">
                       <FormControl>
                         <input
-                          type="checkbox"
                           checked={field.value}
-                          onChange={field.onChange}
                           className="rounded"
+                          onChange={field.onChange}
+                          type="checkbox"
                         />
                       </FormControl>
                       <div className="space-y-1 leading-none">
@@ -780,13 +781,13 @@ function FilmUploadPage() {
 
             <div className="flex justify-between">
               <Button
+                onClick={() => setCurrentStep('upload')}
                 type="button"
                 variant="outline"
-                onClick={() => setCurrentStep('upload')}
               >
                 Back to Upload
               </Button>
-              <Button type="submit" disabled={form.formState.isSubmitting}>
+              <Button disabled={form.formState.isSubmitting} type="submit">
                 {form.formState.isSubmitting ? 'Uploading...' : 'Upload Film'}
               </Button>
             </div>

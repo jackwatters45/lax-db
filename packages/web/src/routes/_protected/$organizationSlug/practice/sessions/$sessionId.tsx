@@ -163,37 +163,23 @@ const mockSessionData = {
 // Server function for getting session data
 const getSessionData = createServerFn({ method: 'GET' })
   .inputValidator((sessionId: string) => sessionId)
-  .handler(async ({ data: sessionId }) => {
-    // TODO: Replace with actual API call
-    // const { PracticeAPI } = await import('@lax-db/core/practice/sessions');
-    // const request = getRequest();
-    // return await PracticeAPI.getSession(teamId, sessionId, request.headers);
-
-    console.log('Getting session data for:', sessionId);
-    return mockSessionData;
-  });
+  .handler(async ({ data: sessionId }) => mockSessionData);
 
 // Server function for updating session
 const updateSession = createServerFn({ method: 'POST' })
   .inputValidator((data: { sessionId: string; updates: any }) => data)
-  .handler(async ({ data: { sessionId, updates } }) => {
-    // TODO: Replace with actual API call
-    console.log('Updating session:', sessionId, updates);
-    return { success: true };
-  });
+  .handler(async ({ data: { sessionId, updates } }) => ({ success: true }));
 
 // Server function for permissions
-const getSessionPermissions = createServerFn().handler(async () => {
-  return {
-    canManageSession: true,
-    canEditDrills: true,
-    canRecordAttendance: true,
-    canEndSession: true,
-  };
-});
+const getSessionPermissions = createServerFn().handler(async () => ({
+  canManageSession: true,
+  canEditDrills: true,
+  canRecordAttendance: true,
+  canEndSession: true,
+}));
 
 export const Route = createFileRoute(
-  '/_protected/$organizationSlug/practice/sessions/$sessionId',
+  '/_protected/$organizationSlug/practice/sessions/$sessionId'
 )({
   component: PracticeSession,
   loader: async ({ params }) => {
@@ -212,11 +198,13 @@ function PracticeSession() {
   const { session, drills, attendance, stats } = data;
 
   const [currentDrillId, setCurrentDrillId] = useState<string | null>(
-    drills.find((d) => d.status === 'in_progress')?.id || null,
+    drills.find((d) => d.status === 'in_progress')?.id || null
   );
 
   const formatTime = (date: Date | null) => {
-    if (!date) return '--:--';
+    if (!date) {
+      return '--:--';
+    }
     return new Intl.DateTimeFormat('en-US', {
       hour: '2-digit',
       minute: '2-digit',
@@ -224,7 +212,9 @@ function PracticeSession() {
   };
 
   const formatDuration = (minutes: number | null) => {
-    if (!minutes) return '--';
+    if (!minutes) {
+      return '--';
+    }
     return `${minutes}min`;
   };
 
@@ -254,9 +244,8 @@ function PracticeSession() {
     }
   };
 
-  const getSessionProgress = () => {
-    return Math.round((stats.completedDrills / stats.totalDrills) * 100);
-  };
+  const getSessionProgress = () =>
+    Math.round((stats.completedDrills / stats.totalDrills) * 100);
 
   const handleStartDrill = async (drillId: string) => {
     // Update drill status to in_progress
@@ -311,10 +300,10 @@ function PracticeSession() {
     <div className="container mx-auto py-8">
       <div className="mb-8 flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Button variant="outline" size="sm" asChild>
+          <Button asChild size="sm" variant="outline">
             <Link
-              to="/$organizationSlug/practice/schedule"
               params={{ organizationSlug }}
+              to="/$organizationSlug/practice/schedule"
             >
               <ArrowLeft className="h-4 w-4" />
             </Link>
@@ -336,7 +325,7 @@ function PracticeSession() {
             </Button>
           )}
           {permissions.canManageSession && (
-            <Button variant="outline" disabled>
+            <Button disabled variant="outline">
               <Edit className="mr-2 h-4 w-4" />
               Edit
             </Button>
@@ -415,10 +404,10 @@ function PracticeSession() {
               <div className="space-y-3">
                 {drills.map((drill) => (
                   <div
-                    key={drill.id}
                     className={`rounded border p-4 ${
                       drill.id === currentDrillId ? 'ring-2 ring-primary' : ''
                     }`}
+                    key={drill.id}
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex-1">
@@ -493,8 +482,8 @@ function PracticeSession() {
                         {drill.status === 'scheduled' &&
                           permissions.canManageSession && (
                             <Button
-                              size="sm"
                               onClick={() => handleStartDrill(drill.id)}
+                              size="sm"
                             >
                               <Play className="mr-2 h-3 w-3" />
                               Start
@@ -504,8 +493,8 @@ function PracticeSession() {
                         {drill.status === 'in_progress' &&
                           permissions.canManageSession && (
                             <Button
-                              size="sm"
                               onClick={() => handleCompleteDrill(drill.id)}
+                              size="sm"
                             >
                               <CheckCircle className="mr-2 h-3 w-3" />
                               Complete
@@ -513,7 +502,7 @@ function PracticeSession() {
                           )}
 
                         {permissions.canEditDrills && (
-                          <Button size="sm" variant="outline" disabled>
+                          <Button disabled size="sm" variant="outline">
                             <Edit className="mr-2 h-3 w-3" />
                             Edit
                           </Button>
@@ -537,7 +526,7 @@ function PracticeSession() {
                   <h4 className="mb-2 font-medium">Objectives</h4>
                   <ul className="space-y-1 text-sm">
                     {session.objectives.map((objective) => (
-                      <li key={objective} className="flex items-start gap-2">
+                      <li className="flex items-start gap-2" key={objective}>
                         <span className="text-muted-foreground">•</span>
                         {objective}
                       </li>
@@ -584,8 +573,8 @@ function PracticeSession() {
               <div className="space-y-2">
                 {attendance.map((player) => (
                   <div
-                    key={player.playerId}
                     className="flex items-center justify-between"
+                    key={player.playerId}
                   >
                     <span className="text-sm">{player.playerName}</span>
                     <div className="flex items-center gap-2">
@@ -595,8 +584,8 @@ function PracticeSession() {
                         </span>
                       )}
                       <Badge
-                        variant={getAttendanceColor(player.status)}
                         className="text-xs"
+                        variant={getAttendanceColor(player.status)}
                       >
                         {player.status}
                       </Badge>
@@ -607,10 +596,10 @@ function PracticeSession() {
 
               {permissions.canRecordAttendance && (
                 <Button
-                  variant="outline"
-                  size="sm"
                   className="mt-4 w-full"
                   disabled
+                  size="sm"
+                  variant="outline"
                 >
                   Update Attendance
                 </Button>
@@ -666,9 +655,9 @@ function PracticeSession() {
             <CardContent className="space-y-3">
               {permissions.canRecordAttendance && (
                 <Button
-                  variant="outline"
                   className="w-full justify-start"
                   disabled
+                  variant="outline"
                 >
                   <Users className="mr-2 h-4 w-4" />
                   Record Attendance
@@ -676,18 +665,18 @@ function PracticeSession() {
               )}
 
               <Button
-                variant="outline"
                 className="w-full justify-start"
                 disabled
+                variant="outline"
               >
                 <RotateCcw className="mr-2 h-4 w-4" />
                 Reset Timer
               </Button>
 
               <Button
-                variant="outline"
                 className="w-full justify-start"
                 disabled
+                variant="outline"
               >
                 <Pause className="mr-2 h-4 w-4" />
                 Pause Session
@@ -695,9 +684,9 @@ function PracticeSession() {
 
               {permissions.canManageSession && (
                 <Button
-                  variant="outline"
                   className="w-full justify-start"
                   disabled
+                  variant="outline"
                 >
                   <Edit className="mr-2 h-4 w-4" />
                   Add Notes

@@ -65,7 +65,6 @@ const mockPlayerResources = [
 const getPlayerResources = createServerFn({ method: 'GET' })
   .inputValidator((data: { playerId: string }) => data)
   .handler(async ({ data }) => {
-    console.log('Getting player resources for:', data.playerId);
     // TODO: Replace with actual API call
     return {
       playerName: 'Alex Johnson',
@@ -73,16 +72,14 @@ const getPlayerResources = createServerFn({ method: 'GET' })
     };
   });
 
-const getPlayerPermissions = createServerFn().handler(async () => {
-  return {
-    canAssignResources: true,
-    canEditResources: true,
-    canDeleteResources: true,
-  };
-});
+const getPlayerPermissions = createServerFn().handler(async () => ({
+  canAssignResources: true,
+  canEditResources: true,
+  canDeleteResources: true,
+}));
 
 export const Route = createFileRoute(
-  '/_protected/$organizationSlug/players/$playerId/resources',
+  '/_protected/$organizationSlug/players/$playerId/resources'
 )({
   component: PlayerResourcesPage,
   loader: async ({ params }) => {
@@ -99,13 +96,12 @@ function PlayerResourcesPage() {
   const { playerName, resources, permissions } = Route.useLoaderData();
   const { organizationSlug, playerId } = Route.useParams();
 
-  const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat('en-US', {
+  const formatDate = (date: Date) =>
+    new Intl.DateTimeFormat('en-US', {
       month: 'short',
       day: 'numeric',
       year: 'numeric',
     }).format(date);
-  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -150,7 +146,7 @@ function PlayerResourcesPage() {
 
   const groupedResources = {
     active: resources.filter(
-      (r) => r.status === 'in_progress' || r.status === 'not_started',
+      (r) => r.status === 'in_progress' || r.status === 'not_started'
     ),
     completed: resources.filter((r) => r.status === 'completed'),
   };
@@ -159,10 +155,10 @@ function PlayerResourcesPage() {
     <div className="container mx-auto py-8">
       <div className="mb-8">
         <Link
-          to="/$organizationSlug/players/$playerId"
           params={{ organizationSlug, playerId }}
+          to="/$organizationSlug/players/$playerId"
         >
-          <Button variant="ghost" className="mb-4">
+          <Button className="mb-4" variant="ghost">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to {playerName}
           </Button>
@@ -179,9 +175,9 @@ function PlayerResourcesPage() {
           {permissions.canAssignResources && (
             <Button asChild>
               <Link
-                to="/$organizationSlug/players/resources/create"
                 params={{ organizationSlug }}
                 search={{ playerId }}
+                to="/$organizationSlug/players/resources/create"
               >
                 <Plus className="mr-2 h-4 w-4" />
                 Assign Resource
@@ -267,7 +263,7 @@ function PlayerResourcesPage() {
           <h2 className="mb-4 font-semibold text-xl">Completed Resources</h2>
           <div className="space-y-3">
             {groupedResources.completed.map((resource) => (
-              <Card key={resource.id} className="opacity-75">
+              <Card className="opacity-75" key={resource.id}>
                 <CardContent className="pt-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
@@ -303,9 +299,9 @@ function PlayerResourcesPage() {
           {permissions.canAssignResources && (
             <Button asChild>
               <Link
-                to="/$organizationSlug/players/resources/create"
                 params={{ organizationSlug }}
                 search={{ playerId }}
+                to="/$organizationSlug/players/resources/create"
               >
                 <Plus className="mr-2 h-4 w-4" />
                 Assign First Resource

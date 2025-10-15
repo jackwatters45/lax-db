@@ -25,18 +25,18 @@ export function GamesSubNav({ organizationSlug }: GamesSubNavProps) {
     <Navbar className="border-b">
       <NavbarItem asChild>
         <Link
-          to="/$organizationSlug/games"
-          params={{ organizationSlug }}
           activeOptions={{ exact: true }}
+          params={{ organizationSlug }}
+          to="/$organizationSlug/games"
         >
           Info
         </Link>
       </NavbarItem>
       <NavbarItem asChild>
         <Link
-          to="/$organizationSlug/games/old"
-          params={{ organizationSlug }}
           activeOptions={{ exact: true }}
+          params={{ organizationSlug }}
+          to="/$organizationSlug/games/old"
         >
           Old
         </Link>

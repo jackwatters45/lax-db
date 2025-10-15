@@ -1,45 +1,50 @@
 import { Slot } from '@radix-ui/react-slot';
-import * as React from 'react';
+import type * as React from 'react';
 import { cn } from '../../lib/utils';
 
-const NavbarRoot = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, children, ...props }, ref) => {
-  return (
-    <div
-      ref={ref}
-      className={cn('flex h-[46px] items-center [&>*]:shrink-0', className)}
-      {...props}
-    >
-      {children}
-    </div>
-  );
-});
+const NavbarRoot = ({
+  className,
+  children,
+  ref,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement> & {
+  ref?: React.RefObject<HTMLDivElement | null>;
+}) => (
+  <div
+    className={cn('flex h-[46px] items-center [&>*]:shrink-0', className)}
+    ref={ref}
+    {...props}
+  >
+    {children}
+  </div>
+);
 NavbarRoot.displayName = 'NavbarRoot';
 
-const NavbarItem = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & {
-    asChild?: boolean;
-  }
->(({ className, children, asChild = false, ...props }, ref) => {
+const NavbarItem = ({
+  className,
+  children,
+  asChild = false,
+  ref,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement> & {
+  asChild?: boolean;
+} & { ref?: React.RefObject<HTMLDivElement | null> }) => {
   const Comp = asChild ? Slot : 'div';
   return (
     <Comp
-      ref={ref}
       className={cn(
         'relative inline-block select-none border-transparent border-b-2 px-3 py-4 font-normal text-muted-foreground text-sm leading-[0.875rem] transition-colors duration-200 ease-out hover:bg-accent',
         '[&.active]:border-foreground [&.active]:text-foreground [&.active]:no-underline',
-        className,
+        className
       )}
+      ref={ref}
       style={{ outlineOffset: '-6px' }}
       {...props}
     >
       {children}
     </Comp>
   );
-});
+};
 NavbarItem.displayName = 'NavbarItem';
 
 const Navbar = NavbarRoot;

@@ -68,10 +68,10 @@ function Home() {
                 ),
                 a: ({ href, children }) => (
                   <a
-                    href={href}
                     className="text-primary underline decoration-primary/30 transition-colors hover:text-primary-hover hover:decoration-primary/60"
-                    target="_blank"
+                    href={href}
                     rel="noopener noreferrer"
+                    target="_blank"
                   >
                     {children}
                   </a>
@@ -105,8 +105,8 @@ function Header() {
   return (
     <DashboardHeader>
       <BreadcrumbItem>
-        <BreadcrumbLink title="Plan" asChild>
-          <Link to="/$organizationSlug/plan" params={{ organizationSlug }}>
+        <BreadcrumbLink asChild title="Plan">
+          <Link params={{ organizationSlug }} to="/$organizationSlug/plan">
             Plan
           </Link>
         </BreadcrumbLink>

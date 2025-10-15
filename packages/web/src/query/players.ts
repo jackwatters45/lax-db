@@ -12,13 +12,13 @@ const GetOrganizationPlayersSchema = Schema.Struct({
 export const getOrganizationPlayers = createServerFn({ method: 'GET' })
   .middleware([authMiddleware])
   .inputValidator((data: typeof GetOrganizationPlayersSchema.Type) =>
-    Schema.decodeSync(GetOrganizationPlayersSchema)(data),
+    Schema.decodeSync(GetOrganizationPlayersSchema)(data)
   )
   .handler(async ({ data }) =>
     RuntimeServer.runPromise(
       Effect.gen(function* () {
         const playerService = yield* PlayerService;
         return yield* playerService.getAll(data);
-      }),
-    ),
+      })
+    )
   );

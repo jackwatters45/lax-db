@@ -31,7 +31,7 @@ import { invitedUsers, roles, users } from '../-data';
 import { ModalAddUser } from './-ModalAddUser';
 
 export const Route = createFileRoute(
-  '/_protected/$organizationSlug/settings/users/',
+  '/_protected/$organizationSlug/settings/users/'
 )({
   component: Users,
 });
@@ -46,8 +46,8 @@ function Users() {
             <div className="sm:flex sm:items-center sm:justify-between">
               <div>
                 <h3
-                  id="existing-users"
                   className="scroll-mt-10 font-semibold text-foreground"
+                  id="existing-users"
                 >
                   Users
                 </h3>
@@ -58,8 +58,8 @@ function Users() {
               <ModalAddUser>
                 <Button className="mt-4 w-full gap-2 sm:mt-0 sm:w-fit">
                   <RiAddLine
-                    className="-ml-1 size-4 shrink-0"
                     aria-hidden="true"
+                    className="-ml-1 size-4 shrink-0"
                   />
                   Add user
                 </Button>
@@ -68,13 +68,13 @@ function Users() {
             <ul className="mt-6 divide-y divide-border">
               {users.map((user) => (
                 <li
-                  key={user.name}
                   className="flex items-center justify-between gap-x-6 py-2.5"
+                  key={user.name}
                 >
                   <div className="flex items-center gap-x-4 truncate">
                     <span
-                      className="hidden size-9 shrink-0 items-center justify-center rounded-full border border-border bg-background text-muted-foreground text-xs sm:flex"
                       aria-hidden="true"
+                      className="hidden size-9 shrink-0 items-center justify-center rounded-full border border-border bg-background text-muted-foreground text-xs sm:flex"
                     >
                       {user.initials}
                     </span>
@@ -103,9 +103,9 @@ function Users() {
                                 <SelectContent align="end">
                                   {roles.map((role) => (
                                     <SelectItem
+                                      disabled={role.value === 'admin'}
                                       key={role.value}
                                       value={role.value}
-                                      disabled={role.value === 'admin'}
                                     >
                                       {role.label}
                                     </SelectItem>
@@ -133,9 +133,9 @@ function Users() {
                         <SelectContent align="end">
                           {roles.map((role) => (
                             <SelectItem
+                              disabled={role.value === 'admin'}
                               key={role.value}
                               value={role.value}
-                              disabled={role.value === 'admin'}
                             >
                               {role.label}
                             </SelectItem>
@@ -146,12 +146,12 @@ function Users() {
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button
-                          variant="ghost"
                           className="group size-8 hover:border hover:border-border hover:bg-muted data-[state=open]:border-border data-[state=open]:bg-muted"
+                          variant="ghost"
                         >
                           <RiMore2Fill
-                            className="size-4 shrink-0 text-muted-foreground group-hover:text-foreground"
                             aria-hidden="true"
+                            className="size-4 shrink-0 text-muted-foreground group-hover:text-foreground"
                           />
                         </Button>
                       </DropdownMenuTrigger>
@@ -172,23 +172,23 @@ function Users() {
               ))}
             </ul>
           </section>
-          <section className="mt-12" aria-labelledby="pending-invitations">
+          <section aria-labelledby="pending-invitations" className="mt-12">
             <h2
-              id="pending-invitations"
               className="scroll-mt-10 font-semibold text-foreground"
+              id="pending-invitations"
             >
               Pending invitations
             </h2>
             <ul className="mt-6 divide-y divide-border">
               {invitedUsers.map((user) => (
                 <li
-                  key={user.initials}
                   className="flex items-center justify-between gap-x-6 py-2.5"
+                  key={user.initials}
                 >
                   <div className="flex items-center gap-x-4">
                     <span
-                      className="hidden size-9 shrink-0 items-center justify-center rounded-full border border-border border-dashed bg-background text-muted-foreground text-xs sm:flex"
                       aria-hidden="true"
+                      className="hidden size-9 shrink-0 items-center justify-center rounded-full border border-border border-dashed bg-background text-muted-foreground text-xs sm:flex"
                     >
                       {user.initials}
                     </span>
@@ -209,9 +209,9 @@ function Users() {
                       <SelectContent align="end">
                         {roles.map((role) => (
                           <SelectItem
+                            disabled={role.value === 'admin'}
                             key={role.value}
                             value={role.value}
-                            disabled={role.value === 'admin'}
                           >
                             {role.label}
                           </SelectItem>
@@ -221,12 +221,12 @@ function Users() {
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button
-                          variant="ghost"
                           className="group size-8 hover:border hover:border-border hover:bg-muted data-[state=open]:border-border data-[state=open]:bg-muted"
+                          variant="ghost"
                         >
                           <RiMore2Fill
-                            className="size-4 shrink-0 text-muted-foreground group-hover:text-foreground"
                             aria-hidden="true"
+                            className="size-4 shrink-0 text-muted-foreground group-hover:text-foreground"
                           />
                         </Button>
                       </DropdownMenuTrigger>
@@ -256,10 +256,10 @@ function Header() {
   return (
     <SettingsHeader organizationSlug={organizationSlug}>
       <BreadcrumbItem>
-        <BreadcrumbLink title="Settings" asChild>
+        <BreadcrumbLink asChild title="Settings">
           <Link
-            to="/$organizationSlug/settings/general"
             params={{ organizationSlug }}
+            to="/$organizationSlug/settings/general"
           >
             Settings
           </Link>
@@ -267,10 +267,10 @@ function Header() {
       </BreadcrumbItem>
       <BreadcrumbSeparator />
       <BreadcrumbItem>
-        <BreadcrumbLink title="Users" asChild>
+        <BreadcrumbLink asChild title="Users">
           <Link
-            to="/$organizationSlug/settings/users"
             params={{ organizationSlug }}
+            to="/$organizationSlug/settings/users"
           >
             Users
           </Link>

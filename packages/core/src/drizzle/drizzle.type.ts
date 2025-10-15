@@ -24,7 +24,7 @@ export const timestamps = {
     .notNull()
     .$defaultFn(() => new Date()),
   updatedAt: timestamp('updated_at').$onUpdate(
-    () => /* @__PURE__ */ new Date(),
+    () => /* @__PURE__ */ new Date()
   ),
   deletedAt: timestamp('deleted_at'),
 };

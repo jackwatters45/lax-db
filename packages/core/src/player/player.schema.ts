@@ -15,13 +15,13 @@ export const JerseyNumberSchema = Schema.NullOr(BaseJerseyNumberSchema);
 export const PositionSchema = Schema.NullOr(Schema.String);
 
 export class GetAllPlayersInput extends Schema.Class<GetAllPlayersInput>(
-  'GetAllPlayersInput',
+  'GetAllPlayersInput'
 )({
   ...OrganizationIdSchema,
 }) {}
 
 export class CreatePlayerInput extends Schema.Class<CreatePlayerInput>(
-  'CreatePlayerInput',
+  'CreatePlayerInput'
 )({
   ...OrganizationIdSchema,
   name: PlayerNameSchema,
@@ -32,13 +32,13 @@ export class CreatePlayerInput extends Schema.Class<CreatePlayerInput>(
 }) {}
 
 export class GetTeamPlayersInput extends Schema.Class<GetTeamPlayersInput>(
-  'GetTeamPlayersInput',
+  'GetTeamPlayersInput'
 )({
   ...TeamIdSchema,
 }) {}
 
 export class UpdatePlayerInput extends Schema.Class<UpdatePlayerInput>(
-  'UpdatePlayerInput',
+  'UpdatePlayerInput'
 )({
   ...PlayerIdSchema,
   name: Schema.optional(NullablePlayerNameSchema),
@@ -48,7 +48,7 @@ export class UpdatePlayerInput extends Schema.Class<UpdatePlayerInput>(
 }) {}
 
 export class UpdateTeamPlayerInput extends Schema.Class<UpdateTeamPlayerInput>(
-  'UpdateTeamPlayerInput',
+  'UpdateTeamPlayerInput'
 )({
   ...TeamIdSchema,
   ...PlayerIdSchema,
@@ -57,7 +57,7 @@ export class UpdateTeamPlayerInput extends Schema.Class<UpdateTeamPlayerInput>(
 }) {}
 
 export class AddNewPlayerToTeamInput extends Schema.Class<AddNewPlayerToTeamInput>(
-  'AddNewPlayerToTeamInput',
+  'AddNewPlayerToTeamInput'
 )({
   ...TeamIdSchema,
   jerseyNumber: JerseyNumberSchema,
@@ -65,7 +65,7 @@ export class AddNewPlayerToTeamInput extends Schema.Class<AddNewPlayerToTeamInpu
 }) {}
 
 export class AddPlayerToTeamInput extends Schema.Class<AddPlayerToTeamInput>(
-  'AddPlayerToTeamInput',
+  'AddPlayerToTeamInput'
 )({
   ...PlayerIdSchema,
   ...TeamIdSchema,
@@ -74,27 +74,27 @@ export class AddPlayerToTeamInput extends Schema.Class<AddPlayerToTeamInput>(
 }) {}
 
 export class RemovePlayerFromTeamInput extends Schema.Class<RemovePlayerFromTeamInput>(
-  'RemovePlayerFromTeamInput',
+  'RemovePlayerFromTeamInput'
 )({
   teamId: Schema.String,
   playerId: Schema.String,
 }) {}
 
 export class DeletePlayerInput extends Schema.Class<DeletePlayerInput>(
-  'DeletePlayerInput',
+  'DeletePlayerInput'
 )({
   playerId: Schema.String,
 }) {}
 
 export class BulkRemovePlayersFromTeamInput extends Schema.Class<BulkRemovePlayersFromTeamInput>(
-  'BulkRemovePlayersFromTeamInput',
+  'BulkRemovePlayersFromTeamInput'
 )({
   teamId: Schema.String,
   playerIds: Schema.Array(Schema.String),
 }) {}
 
 export class BulkDeletePlayersInput extends Schema.Class<BulkDeletePlayersInput>(
-  'BulkDeletePlayersInput',
+  'BulkDeletePlayersInput'
 )({
   playerIds: Schema.Array(Schema.String),
 }) {}

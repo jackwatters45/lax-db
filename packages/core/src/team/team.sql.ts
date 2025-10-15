@@ -1,5 +1,5 @@
 import { index, pgTable, text } from 'drizzle-orm/pg-core';
-import { timestamp } from '../drizzle';
+import { timestamp } from '../drizzle/drizzle.type';
 import { organizationTable } from '../organization/organization.sql';
 import { userTable } from '../user/user.sql';
 
@@ -14,14 +14,14 @@ export const teamTable = pgTable(
       .references(() => organizationTable.id, { onDelete: 'cascade' }),
     createdAt: timestamp('created_at').notNull(),
     updatedAt: timestamp('updated_at').$onUpdate(
-      () => /* @__PURE__ */ new Date(),
+      () => /* @__PURE__ */ new Date()
     ),
   },
   (table) => [
     index('team_organization_id_idx').on(table.organizationId),
     index('team_name_idx').on(table.name),
     index('team_created_at_idx').on(table.createdAt),
-  ],
+  ]
 );
 
 // Better Auth
@@ -41,5 +41,5 @@ export const teamMemberTable = pgTable(
     index('team_member_team_id_idx').on(table.teamId),
     index('team_member_user_id_idx').on(table.userId),
     index('team_member_team_user_idx').on(table.teamId, table.userId),
-  ],
+  ]
 );

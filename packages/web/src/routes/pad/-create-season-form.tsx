@@ -40,15 +40,15 @@ import { authMiddleware } from '@/lib/middleware';
 const createSeason = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
   .inputValidator((data: typeof CreateSeasonInput.Type) =>
-    Schema.decodeSync(CreateSeasonInput)(data),
+    Schema.decodeSync(CreateSeasonInput)(data)
   )
   .handler(async ({ data }) =>
     RuntimeServer.runPromise(
       Effect.gen(function* () {
         const seasonService = yield* SeasonService;
         return yield* seasonService.create(data);
-      }),
-    ),
+      })
+    )
   );
 
 type FormData = typeof CreateSeasonInput.Type;
@@ -68,8 +68,8 @@ export function CreateSeasonForm({
   const form = useForm<FormData>({
     resolver: effectTsResolver(CreateSeasonInput),
     defaultValues: {
-      organizationId: organizationId,
-      teamId: teamId,
+      organizationId,
+      teamId,
       status: 'active',
       endDate: null,
       division: null,
@@ -106,7 +106,7 @@ export function CreateSeasonForm({
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
               <FormField
                 control={form.control}
                 name="name"
@@ -134,6 +134,9 @@ export function CreateSeasonForm({
                     <div className="relative flex gap-2">
                       <FormControl>
                         <Input
+                          className="bg-background pr-10"
+                          placeholder="Select start date"
+                          readOnly
                           value={
                             field.value instanceof Date
                               ? field.value.toLocaleDateString('en-US', {
@@ -143,43 +146,40 @@ export function CreateSeasonForm({
                                 })
                               : ''
                           }
-                          placeholder="Select start date"
-                          className="bg-background pr-10"
-                          readOnly
                         />
                       </FormControl>
                       <Popover
-                        open={startDateOpen}
                         onOpenChange={setStartDateOpen}
+                        open={startDateOpen}
                       >
                         <PopoverTrigger asChild>
                           <Button
-                            variant="ghost"
-                            size="icon"
                             className="-translate-y-1/2 absolute top-1/2 right-2 h-6 w-6"
+                            size="icon"
+                            variant="ghost"
                           >
                             <CalendarIcon className="size-3" />
                             <span className="sr-only">Select date</span>
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent
-                          className="w-auto overflow-hidden p-0"
                           align="end"
                           alignOffset={-8}
+                          className="w-auto overflow-hidden p-0"
                           sideOffset={10}
                         >
                           <Calendar
+                            captionLayout="dropdown"
                             mode="single"
+                            onSelect={(date) => {
+                              field.onChange(date);
+                              setStartDateOpen(false);
+                            }}
                             selected={
                               field.value instanceof Date
                                 ? field.value
                                 : undefined
                             }
-                            onSelect={(date) => {
-                              field.onChange(date);
-                              setStartDateOpen(false);
-                            }}
-                            captionLayout="dropdown"
                           />
                         </PopoverContent>
                       </Popover>
@@ -198,6 +198,9 @@ export function CreateSeasonForm({
                     <div className="relative flex gap-2">
                       <FormControl>
                         <Input
+                          className="bg-background pr-10"
+                          placeholder="Select end date"
+                          readOnly
                           value={
                             field.value instanceof Date
                               ? field.value.toLocaleDateString('en-US', {
@@ -207,40 +210,37 @@ export function CreateSeasonForm({
                                 })
                               : ''
                           }
-                          placeholder="Select end date"
-                          className="bg-background pr-10"
-                          readOnly
                         />
                       </FormControl>
-                      <Popover open={endDateOpen} onOpenChange={setEndDateOpen}>
+                      <Popover onOpenChange={setEndDateOpen} open={endDateOpen}>
                         <PopoverTrigger asChild>
                           <Button
-                            variant="ghost"
-                            size="icon"
                             className="-translate-y-1/2 absolute top-1/2 right-2 h-6 w-6"
+                            size="icon"
+                            variant="ghost"
                           >
                             <CalendarIcon className="size-3" />
                             <span className="sr-only">Select date</span>
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent
-                          className="w-auto overflow-hidden p-0"
                           align="end"
                           alignOffset={-8}
+                          className="w-auto overflow-hidden p-0"
                           sideOffset={10}
                         >
                           <Calendar
+                            captionLayout="dropdown"
                             mode="single"
+                            onSelect={(date) => {
+                              field.onChange(date || null);
+                              setEndDateOpen(false);
+                            }}
                             selected={
                               field.value instanceof Date
                                 ? field.value
                                 : undefined
                             }
-                            onSelect={(date) => {
-                              field.onChange(date || null);
-                              setEndDateOpen(false);
-                            }}
-                            captionLayout="dropdown"
                           />
                         </PopoverContent>
                       </Popover>
@@ -283,8 +283,8 @@ export function CreateSeasonForm({
                       <Input
                         placeholder="e.g., U15, Division 1, Premier"
                         {...field}
-                        value={field.value || ''}
                         onChange={(e) => field.onChange(e.target.value || null)}
+                        value={field.value || ''}
                       />
                     </FormControl>
                     <FormMessage />
@@ -293,7 +293,7 @@ export function CreateSeasonForm({
               />
 
               <div className="flex gap-4 pt-4">
-                <Button type="submit" disabled={createSeasonMutation.isPending}>
+                <Button disabled={createSeasonMutation.isPending} type="submit">
                   {createSeasonMutation.isPending
                     ? 'Creating...'
                     : 'Create Season'}

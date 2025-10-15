@@ -46,7 +46,7 @@ function DataTableProvider<TData>({
 }: DataTableProviderProps<TData>) {
   const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    [],
+    []
   );
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
@@ -117,15 +117,15 @@ function DataTableHeader({ className }: DataTableHeaderProps) {
   return (
     <TableHeader className={className}>
       {table.getHeaderGroups().map((headerGroup) => (
-        <TableRow key={headerGroup.id} className="border-border border-y">
+        <TableRow className="border-border border-y" key={headerGroup.id}>
           {headerGroup.headers.map((header, i) => (
             <TableHead
-              key={header.id}
               className={cn(
                 'text-foreground',
                 header.column.columnDef.meta?.className,
-                i === headerGroup.headers.length - 1 ? '-translate-x-2' : '',
+                i === headerGroup.headers.length - 1 ? '-translate-x-2' : ''
               )}
+              key={header.id}
             >
               {flexRender(header.column.columnDef.header, header.getContext())}
             </TableHead>
@@ -149,7 +149,7 @@ function DataTableBody({ className }: DataTableBodyProps) {
           .rows.map((row) => <DataTableRow key={row.id} row={row} />)
       ) : (
         <TableRow>
-          <TableCell colSpan={columns.length} className="h-24 text-center">
+          <TableCell className="h-24 text-center" colSpan={columns.length}>
             No results.
           </TableCell>
         </TableRow>
@@ -167,15 +167,15 @@ function DataTableRow({ row, className }: DataTableRowProps) {
     <TableRow className={cn('group hover:bg-muted/50', className)}>
       {row.getVisibleCells().map((cell, index) => (
         <TableCell
-          key={cell.id}
           className={cn(
             row.getIsSelected() ? 'bg-muted/50' : '',
             'relative whitespace-nowrap py-1 text-foreground first:w-8',
             index === 0 ? '' : 'border-l',
             index === 0 ? 'pl-2' : '',
             index === row.getVisibleCells().length - 1 ? 'pr-2' : '',
-            cell.column.columnDef.meta?.className,
+            cell.column.columnDef.meta?.className
           )}
+          key={cell.id}
         >
           {index === 0 && row.getIsSelected() && (
             <div className="absolute inset-y-0 left-0 w-0.5 bg-primary" />
@@ -193,5 +193,6 @@ export {
   DataTableHeader,
   DataTableProvider,
   DataTableRoot,
-  type useDataTable,
 };
+
+export type { useDataTable } from './data-table';

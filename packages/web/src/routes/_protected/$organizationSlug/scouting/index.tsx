@@ -104,13 +104,11 @@ const getScoutingDashboard = createServerFn().handler(async () => {
 });
 
 // Server function for permissions
-const getScoutingPermissions = createServerFn().handler(async () => {
-  return {
-    canCreateReports: true,
-    canManageTeams: true,
-    canViewAllReports: true,
-  };
-});
+const getScoutingPermissions = createServerFn().handler(async () => ({
+  canCreateReports: true,
+  canManageTeams: true,
+  canViewAllReports: true,
+}));
 
 export const Route = createFileRoute('/_protected/$organizationSlug/scouting/')(
   {
@@ -123,19 +121,18 @@ export const Route = createFileRoute('/_protected/$organizationSlug/scouting/')(
 
       return { data, permissions };
     },
-  },
+  }
 );
 
 function ScoutingDashboard() {
   const { organizationSlug } = Route.useParams();
   const { data, permissions } = Route.useLoaderData();
 
-  const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat('en-US', {
+  const formatDate = (date: Date) =>
+    new Intl.DateTimeFormat('en-US', {
       month: 'short',
       day: 'numeric',
     }).format(date);
-  };
 
   const getPriorityColor = (priority: 'low' | 'medium' | 'high') => {
     switch (priority) {
@@ -173,10 +170,10 @@ function ScoutingDashboard() {
 
         <div className="flex gap-2">
           {permissions.canManageTeams && (
-            <Button variant="outline" asChild>
+            <Button asChild variant="outline">
               <Link
-                to="/$organizationSlug/scouting/teams/create"
                 params={{ organizationSlug }}
+                to="/$organizationSlug/scouting/teams/create"
               >
                 <Users className="mr-2 h-4 w-4" />
                 Add Team
@@ -186,8 +183,8 @@ function ScoutingDashboard() {
           {permissions.canCreateReports && (
             <Button asChild>
               <Link
-                to="/$organizationSlug/scouting/teams/create"
                 params={{ organizationSlug }}
+                to="/$organizationSlug/scouting/teams/create"
               >
                 <Plus className="mr-2 h-4 w-4" />
                 Create Report
@@ -209,12 +206,12 @@ function ScoutingDashboard() {
           <CardContent>
             <div className="space-y-2">
               {data.alerts.map((alert) => (
-                <div key={alert.createdAt} className="flex items-center gap-2">
+                <div className="flex items-center gap-2" key={alert.createdAt}>
                   {getAlertIcon(alert.type)}
                   <span className="text-sm">{alert.message}</span>
                   <Badge
-                    variant={getPriorityColor(alert.priority)}
                     className="ml-auto"
+                    variant={getPriorityColor(alert.priority)}
                   >
                     {alert.priority.toUpperCase()}
                   </Badge>
@@ -290,10 +287,10 @@ function ScoutingDashboard() {
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle>Recent Scouting Reports</CardTitle>
-              <Button variant="ghost" size="sm" asChild>
+              <Button asChild size="sm" variant="ghost">
                 <Link
-                  to="/$organizationSlug/scouting/teams"
                   params={{ organizationSlug }}
+                  to="/$organizationSlug/scouting/teams"
                 >
                   View All
                 </Link>
@@ -304,8 +301,8 @@ function ScoutingDashboard() {
             <div className="space-y-3">
               {data.recentReports.map((report) => (
                 <div
-                  key={report.id}
                   className="flex items-center justify-between rounded border p-3"
+                  key={report.id}
                 >
                   <div className="flex-1">
                     <div className="font-medium text-sm">{report.title}</div>
@@ -323,10 +320,10 @@ function ScoutingDashboard() {
                         {report.confidence}/10
                       </div>
                     </div>
-                    <Button variant="ghost" size="sm" asChild>
+                    <Button asChild size="sm" variant="ghost">
                       <Link
-                        to="/$organizationSlug/scouting/teams"
                         params={{ organizationSlug }}
+                        to="/$organizationSlug/scouting/teams"
                       >
                         <Eye className="h-3 w-3" />
                       </Link>
@@ -343,10 +340,10 @@ function ScoutingDashboard() {
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle>Upcoming Opponents</CardTitle>
-              <Button variant="ghost" size="sm" asChild>
+              <Button asChild size="sm" variant="ghost">
                 <Link
-                  to="/$organizationSlug/scouting/teams"
                   params={{ organizationSlug }}
+                  to="/$organizationSlug/scouting/teams"
                 >
                   View All Teams
                 </Link>
@@ -357,8 +354,8 @@ function ScoutingDashboard() {
             <div className="space-y-3">
               {data.upcomingOpponents.map((opponent) => (
                 <div
-                  key={opponent.id}
                   className="flex items-center justify-between rounded border p-3"
+                  key={opponent.id}
                 >
                   <div className="flex-1">
                     <div className="font-medium text-sm">{opponent.name}</div>
@@ -376,13 +373,13 @@ function ScoutingDashboard() {
                     {opponent.reportsCount === 0 && (
                       <Badge variant="destructive">No Reports</Badge>
                     )}
-                    <Button variant="ghost" size="sm" asChild>
+                    <Button asChild size="sm" variant="ghost">
                       <Link
-                        to="/$organizationSlug/scouting/teams/$teamId"
                         params={{
                           organizationSlug,
                           teamId: opponent.id,
                         }}
+                        to="/$organizationSlug/scouting/teams/$teamId"
                       >
                         <Eye className="h-3 w-3" />
                       </Link>
@@ -404,13 +401,13 @@ function ScoutingDashboard() {
           <div className="grid gap-3 md:grid-cols-3">
             {permissions.canCreateReports && (
               <Button
-                variant="outline"
-                className="h-auto flex-col gap-2 p-4"
                 asChild
+                className="h-auto flex-col gap-2 p-4"
+                variant="outline"
               >
                 <Link
-                  to="/$organizationSlug/scouting/teams/create"
                   params={{ organizationSlug }}
+                  to="/$organizationSlug/scouting/teams/create"
                 >
                   <FileText className="h-6 w-6" />
                   <div className="text-center">
@@ -425,13 +422,13 @@ function ScoutingDashboard() {
 
             {permissions.canManageTeams && (
               <Button
-                variant="outline"
-                className="h-auto flex-col gap-2 p-4"
                 asChild
+                className="h-auto flex-col gap-2 p-4"
+                variant="outline"
               >
                 <Link
-                  to="/$organizationSlug/scouting/teams/create"
                   params={{ organizationSlug }}
+                  to="/$organizationSlug/scouting/teams/create"
                 >
                   <Users className="h-6 w-6" />
                   <div className="text-center">
@@ -445,13 +442,13 @@ function ScoutingDashboard() {
             )}
 
             <Button
-              variant="outline"
-              className="h-auto flex-col gap-2 p-4"
               asChild
+              className="h-auto flex-col gap-2 p-4"
+              variant="outline"
             >
               <Link
-                to="/$organizationSlug/scouting/teams"
                 params={{ organizationSlug }}
+                to="/$organizationSlug/scouting/teams"
               >
                 <Target className="h-6 w-6" />
                 <div className="text-center">

@@ -11,7 +11,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 const createOpposingTeam = createServerFn({ method: 'POST' })
   .inputValidator((data: CreateOpposingTeamInput) => data)
   .handler(async ({ data }) => {
-    console.log('Creating opposing team:', data);
     // TODO: Replace with actual API call
     // const { ScoutingAPI } = await import('@lax-db/core/scouting/index');
     // const request = getRequest();
@@ -53,7 +52,7 @@ type CreateOpposingTeamInput = {
 };
 
 export const Route = createFileRoute(
-  '/_protected/$organizationSlug/scouting/teams/create',
+  '/_protected/$organizationSlug/scouting/teams/create'
 )({
   component: CreateOpposingTeamPage,
 });
@@ -97,9 +96,8 @@ function CreateOpposingTeamPage() {
         params: { organizationSlug },
       });
     },
-    onError: (error) => {
+    onError: (_error) => {
       toast.error('Failed to create team. Please try again.');
-      console.error('Create team error:', error);
     },
   });
 
@@ -137,7 +135,7 @@ function CreateOpposingTeamPage() {
 
   const handleInputChange = (
     field: keyof CreateOpposingTeamInput,
-    value: string | undefined,
+    value: string | undefined
   ) => {
     if (value !== undefined) {
       setFormData((prev) => ({ ...prev, [field]: value }));
@@ -148,10 +146,10 @@ function CreateOpposingTeamPage() {
     <div className="container mx-auto max-w-4xl py-8">
       <div className="mb-8">
         <Link
-          to="/$organizationSlug/scouting/teams"
           params={{ organizationSlug }}
+          to="/$organizationSlug/scouting/teams"
         >
-          <Button variant="ghost" className="mb-4">
+          <Button className="mb-4" variant="ghost">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Opposing Teams
           </Button>
@@ -176,58 +174,58 @@ function CreateOpposingTeamPage() {
             <CardContent className="space-y-4">
               <div>
                 <label
-                  htmlFor="name"
                   className="mb-2 block font-medium text-sm"
+                  htmlFor="name"
                 >
                   Team Name *
                 </label>
                 <input
+                  className="w-full rounded-md border border-input px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
                   id="name"
-                  type="text"
-                  value={formData.name}
                   onChange={(e) => handleInputChange('name', e.target.value)}
                   placeholder="e.g., Riverside Hawks, Central Valley Eagles"
-                  className="w-full rounded-md border border-input px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
                   required
+                  type="text"
+                  value={formData.name}
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label
-                    htmlFor="leagueName"
                     className="mb-2 block font-medium text-sm"
+                    htmlFor="leagueName"
                   >
                     League
                   </label>
                   <input
+                    className="w-full rounded-md border border-input px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
                     id="leagueName"
-                    type="text"
-                    value={formData.leagueName}
                     onChange={(e) =>
                       handleInputChange('leagueName', e.target.value)
                     }
                     placeholder="Metro Lacrosse League"
-                    className="w-full rounded-md border border-input px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
+                    type="text"
+                    value={formData.leagueName}
                   />
                 </div>
 
                 <div>
                   <label
-                    htmlFor="division"
                     className="mb-2 block font-medium text-sm"
+                    htmlFor="division"
                   >
                     Division
                   </label>
                   <input
+                    className="w-full rounded-md border border-input px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
                     id="division"
-                    type="text"
-                    value={formData.division}
                     onChange={(e) =>
                       handleInputChange('division', e.target.value)
                     }
                     placeholder="Division A"
-                    className="w-full rounded-md border border-input px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
+                    type="text"
+                    value={formData.division}
                   />
                 </div>
               </div>
@@ -235,80 +233,80 @@ function CreateOpposingTeamPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label
-                    htmlFor="teamColors"
                     className="mb-2 block font-medium text-sm"
+                    htmlFor="teamColors"
                   >
                     Team Colors
                   </label>
                   <input
+                    className="w-full rounded-md border border-input px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
                     id="teamColors"
-                    type="text"
-                    value={formData.teamColors}
                     onChange={(e) =>
                       handleInputChange('teamColors', e.target.value)
                     }
                     placeholder="Blue and Gold"
-                    className="w-full rounded-md border border-input px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
+                    type="text"
+                    value={formData.teamColors}
                   />
                 </div>
 
                 <div>
                   <label
-                    htmlFor="mascot"
                     className="mb-2 block font-medium text-sm"
+                    htmlFor="mascot"
                   >
                     Mascot
                   </label>
                   <input
+                    className="w-full rounded-md border border-input px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
                     id="mascot"
-                    type="text"
-                    value={formData.mascot}
                     onChange={(e) =>
                       handleInputChange('mascot', e.target.value)
                     }
                     placeholder="Hawks"
-                    className="w-full rounded-md border border-input px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
+                    type="text"
+                    value={formData.mascot}
                   />
                 </div>
               </div>
 
               <div>
                 <label
-                  htmlFor="homeField"
                   className="mb-2 block font-medium text-sm"
+                  htmlFor="homeField"
                 >
                   <MapPin className="mr-1 inline h-4 w-4" />
                   Home Field
                 </label>
                 <input
+                  className="w-full rounded-md border border-input px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
                   id="homeField"
-                  type="text"
-                  value={formData.homeField}
                   onChange={(e) =>
                     handleInputChange('homeField', e.target.value)
                   }
                   placeholder="Memorial Stadium, Sports Complex"
-                  className="w-full rounded-md border border-input px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
+                  type="text"
+                  value={formData.homeField}
                 />
               </div>
 
               <div>
                 <label
-                  htmlFor="typicalStyle"
                   className="mb-2 block font-medium text-sm"
+                  htmlFor="typicalStyle"
                 >
                   Playing Style
                 </label>
                 <select
+                  className="w-full rounded-md border border-input px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
                   id="typicalStyle"
-                  value={formData.typicalStyle}
                   onChange={(e) =>
                     handleInputChange(
                       'typicalStyle',
-                      e.target.value as CreateOpposingTeamInput['typicalStyle'],
+                      e.target.value as CreateOpposingTeamInput['typicalStyle']
                     )
                   }
-                  className="w-full rounded-md border border-input px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
+                  value={formData.typicalStyle}
                 >
                   <option value="aggressive">Aggressive</option>
                   <option value="fast_break">Fast Break</option>
@@ -327,37 +325,37 @@ function CreateOpposingTeamPage() {
             <CardContent className="space-y-4">
               <div>
                 <label
-                  htmlFor="coachName"
                   className="mb-2 block font-medium text-sm"
+                  htmlFor="coachName"
                 >
                   Head Coach
                 </label>
                 <input
+                  className="w-full rounded-md border border-input px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
                   id="coachName"
-                  type="text"
-                  value={formData.coachName}
                   onChange={(e) =>
                     handleInputChange('coachName', e.target.value)
                   }
                   placeholder="John Smith"
-                  className="w-full rounded-md border border-input px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
+                  type="text"
+                  value={formData.coachName}
                 />
               </div>
 
               <div>
                 <label
-                  htmlFor="assistantCoaches"
                   className="mb-2 block font-medium text-sm"
+                  htmlFor="assistantCoaches"
                 >
                   Assistant Coaches
                 </label>
                 <input
+                  className="w-full rounded-md border border-input px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
                   id="assistantCoaches"
-                  type="text"
-                  value={assistantCoachesText}
                   onChange={(e) => setAssistantCoachesText(e.target.value)}
                   placeholder="Mike Johnson, Sarah Wilson (comma separated)"
-                  className="w-full rounded-md border border-input px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
+                  type="text"
+                  value={assistantCoachesText}
                 />
                 <p className="mt-1 text-muted-foreground text-xs">
                   Separate multiple coaches with commas
@@ -366,61 +364,61 @@ function CreateOpposingTeamPage() {
 
               <div>
                 <label
-                  htmlFor="coachEmail"
                   className="mb-2 block font-medium text-sm"
+                  htmlFor="coachEmail"
                 >
                   <Mail className="mr-1 inline h-4 w-4" />
                   Coach Email
                 </label>
                 <input
+                  className="w-full rounded-md border border-input px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
                   id="coachEmail"
-                  type="email"
-                  value={formData.coachEmail}
                   onChange={(e) =>
                     handleInputChange('coachEmail', e.target.value)
                   }
                   placeholder="coach@team.com"
-                  className="w-full rounded-md border border-input px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
+                  type="email"
+                  value={formData.coachEmail}
                 />
               </div>
 
               <div>
                 <label
-                  htmlFor="coachPhone"
                   className="mb-2 block font-medium text-sm"
+                  htmlFor="coachPhone"
                 >
                   <Phone className="mr-1 inline h-4 w-4" />
                   Coach Phone
                 </label>
                 <input
+                  className="w-full rounded-md border border-input px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
                   id="coachPhone"
-                  type="tel"
-                  value={formData.coachPhone}
                   onChange={(e) =>
                     handleInputChange('coachPhone', e.target.value)
                   }
                   placeholder="(555) 123-4567"
-                  className="w-full rounded-md border border-input px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
+                  type="tel"
+                  value={formData.coachPhone}
                 />
               </div>
 
               <div>
                 <label
-                  htmlFor="teamWebsite"
                   className="mb-2 block font-medium text-sm"
+                  htmlFor="teamWebsite"
                 >
                   <Globe className="mr-1 inline h-4 w-4" />
                   Team Website
                 </label>
                 <input
+                  className="w-full rounded-md border border-input px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
                   id="teamWebsite"
-                  type="url"
-                  value={formData.teamWebsite}
                   onChange={(e) =>
                     handleInputChange('teamWebsite', e.target.value)
                   }
                   placeholder="https://team-website.com"
-                  className="w-full rounded-md border border-input px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
+                  type="url"
+                  value={formData.teamWebsite}
                 />
               </div>
             </CardContent>
@@ -435,18 +433,18 @@ function CreateOpposingTeamPage() {
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
                   <label
-                    htmlFor="strengths"
                     className="mb-2 block font-medium text-sm"
+                    htmlFor="strengths"
                   >
                     Team Strengths
                   </label>
                   <input
+                    className="w-full rounded-md border border-input px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
                     id="strengths"
-                    type="text"
-                    value={strengthsText}
                     onChange={(e) => setStrengthsText(e.target.value)}
                     placeholder="Fast Break, Strong Defense, Experienced Players"
-                    className="w-full rounded-md border border-input px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
+                    type="text"
+                    value={strengthsText}
                   />
                   <p className="mt-1 text-muted-foreground text-xs">
                     Separate multiple strengths with commas
@@ -455,18 +453,18 @@ function CreateOpposingTeamPage() {
 
                 <div>
                   <label
-                    htmlFor="weaknesses"
                     className="mb-2 block font-medium text-sm"
+                    htmlFor="weaknesses"
                   >
                     Team Weaknesses
                   </label>
                   <input
+                    className="w-full rounded-md border border-input px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
                     id="weaknesses"
-                    type="text"
-                    value={weaknessesText}
                     onChange={(e) => setWeaknessesText(e.target.value)}
                     placeholder="Poor Face-offs, Weak Left Side, Penalties"
-                    className="w-full rounded-md border border-input px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
+                    type="text"
+                    value={weaknessesText}
                   />
                   <p className="mt-1 text-muted-foreground text-xs">
                     Separate multiple weaknesses with commas
@@ -476,18 +474,18 @@ function CreateOpposingTeamPage() {
 
               <div>
                 <label
-                  htmlFor="keyPlayers"
                   className="mb-2 block font-medium text-sm"
+                  htmlFor="keyPlayers"
                 >
                   Key Players
                 </label>
                 <input
+                  className="w-full rounded-md border border-input px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
                   id="keyPlayers"
-                  type="text"
-                  value={keyPlayersText}
                   onChange={(e) => setKeyPlayersText(e.target.value)}
                   placeholder="#23 Johnson (Attack), #1 Smith (Goalie), #15 Davis (Midfield)"
-                  className="w-full rounded-md border border-input px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
+                  type="text"
+                  value={keyPlayersText}
                 />
                 <p className="mt-1 text-muted-foreground text-xs">
                   Include jersey numbers and positions, separate with commas
@@ -496,18 +494,18 @@ function CreateOpposingTeamPage() {
 
               <div>
                 <label
-                  htmlFor="notes"
                   className="mb-2 block font-medium text-sm"
+                  htmlFor="notes"
                 >
                   Additional Notes
                 </label>
                 <textarea
+                  className="w-full rounded-md border border-input px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
                   id="notes"
-                  value={formData.notes}
                   onChange={(e) => handleInputChange('notes', e.target.value)}
                   placeholder="Any additional information about this team..."
                   rows={3}
-                  className="w-full rounded-md border border-input px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
+                  value={formData.notes}
                 />
               </div>
             </CardContent>
@@ -516,18 +514,18 @@ function CreateOpposingTeamPage() {
 
         {/* Submit Buttons */}
         <div className="mt-6 flex gap-4">
-          <Button variant="outline" className="flex-1" asChild>
+          <Button asChild className="flex-1" variant="outline">
             <Link
-              to="/$organizationSlug/scouting/teams"
               params={{ organizationSlug }}
+              to="/$organizationSlug/scouting/teams"
             >
               Cancel
             </Link>
           </Button>
           <Button
-            type="submit"
-            disabled={createTeamMutation.isPending}
             className="flex-1"
+            disabled={createTeamMutation.isPending}
+            type="submit"
           >
             {createTeamMutation.isPending ? 'Creating Team...' : 'Create Team'}
           </Button>

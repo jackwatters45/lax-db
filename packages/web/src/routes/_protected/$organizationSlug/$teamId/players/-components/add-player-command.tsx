@@ -71,7 +71,9 @@ export function AddPlayerCommand({
   const filteredPlayers = allPlayers
     .filter((player) => !excludePlayerIds.includes(player.publicId))
     .filter((player) => {
-      if (!searchQuery.trim()) return true;
+      if (!searchQuery.trim()) {
+        return true;
+      }
       const query = searchQuery.toLowerCase();
       return (
         player.name?.toLowerCase().includes(query) ||
@@ -87,14 +89,16 @@ export function AddPlayerCommand({
   };
 
   const handleCreate = () => {
-    if (!searchQuery.trim()) return;
+    if (!searchQuery.trim()) {
+      return;
+    }
     handleCreateNewPlayer(searchQuery);
     setOpen(false);
     setSearchQuery('');
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog onOpenChange={setOpen} open={open}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="p-0">
         <DialogHeader className="px-4 pt-4">
@@ -102,9 +106,9 @@ export function AddPlayerCommand({
         </DialogHeader>
         <Command shouldFilter={false}>
           <CommandInput
+            onValueChange={setSearchQuery}
             placeholder="Search or create player..."
             value={searchQuery}
-            onValueChange={setSearchQuery}
           />
           <CommandList>
             {isLoading ? (
@@ -117,8 +121,8 @@ export function AddPlayerCommand({
                       {filteredPlayers.map((player) => (
                         <CommandItem
                           key={player.publicId}
-                          value={player.publicId}
                           onSelect={() => handleSelect(player)}
+                          value={player.publicId}
                         >
                           <div className="flex flex-col">
                             <span>{player.name || 'Unnamed'}</span>

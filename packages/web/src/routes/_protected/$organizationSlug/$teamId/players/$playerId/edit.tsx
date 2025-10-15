@@ -14,7 +14,6 @@ import { mockPlayerDetails } from './-utils';
 const getPlayerDetails = createServerFn({ method: 'GET' })
   .inputValidator((data: { playerId: string }) => data)
   .handler(async ({ data }) => {
-    console.log('Getting player details for:', data.playerId);
     // TODO: Replace with actual API call
     // const { PlayerDevelopmentAPI } = await import('@lax-db/core/player-development/index');
     // return await PlayerDevelopmentAPI.getPlayerProfile(data.playerId, headers);
@@ -23,7 +22,7 @@ const getPlayerDetails = createServerFn({ method: 'GET' })
   });
 
 export const Route = createFileRoute(
-  '/_protected/$organizationSlug/$teamId/players/$playerId/edit',
+  '/_protected/$organizationSlug/$teamId/players/$playerId/edit'
 )({
   component: RouteComponent,
   loader: async ({ params }) => {
@@ -56,12 +55,12 @@ function Header() {
   return (
     <PlayerHeader
       organizationSlug={organizationSlug}
-      teamId={activeTeam.id}
       playerId={player.id}
+      teamId={activeTeam.id}
     >
       <BreadcrumbItem>
-        <BreadcrumbLink className="max-w-full truncate" title="Teams" asChild>
-          <Link to="/$organizationSlug" params={{ organizationSlug }}>
+        <BreadcrumbLink asChild className="max-w-full truncate" title="Teams">
+          <Link params={{ organizationSlug }} to="/$organizationSlug">
             Teams
           </Link>
         </BreadcrumbLink>
@@ -69,17 +68,17 @@ function Header() {
       <BreadcrumbSeparator />
       <TeamBreadcrumbSwitcher
         activeTeam={activeTeam}
-        teams={teams}
         organizationSlug={organizationSlug}
+        teams={teams}
       >
         {({ team }) => (
           <Link
-            to="/$organizationSlug/$teamId/players/$playerId/edit"
             params={{
               organizationSlug,
               teamId: team.id,
               playerId: player.id,
             }}
+            to="/$organizationSlug/$teamId/players/$playerId/edit"
           >
             {team.name}
           </Link>
@@ -87,10 +86,10 @@ function Header() {
       </TeamBreadcrumbSwitcher>
       <BreadcrumbSeparator />
       <BreadcrumbItem>
-        <BreadcrumbLink title="Players" asChild>
+        <BreadcrumbLink asChild title="Players">
           <Link
-            to="/$organizationSlug/$teamId/players"
             params={{ organizationSlug, teamId: activeTeam.id }}
+            to="/$organizationSlug/$teamId/players"
           >
             Players
           </Link>
@@ -98,14 +97,14 @@ function Header() {
       </BreadcrumbItem>
       <BreadcrumbSeparator />
       <BreadcrumbItem>
-        <BreadcrumbLink title={player.name} asChild>
+        <BreadcrumbLink asChild title={player.name}>
           <Link
-            to="/$organizationSlug/$teamId/players/$playerId"
             params={{
               organizationSlug,
               teamId: activeTeam.id,
               playerId: player.id,
             }}
+            to="/$organizationSlug/$teamId/players/$playerId"
           >
             {player.name}
           </Link>
@@ -113,14 +112,14 @@ function Header() {
       </BreadcrumbItem>
       <BreadcrumbSeparator />
       <BreadcrumbItem>
-        <BreadcrumbLink title="Edit" asChild>
+        <BreadcrumbLink asChild title="Edit">
           <Link
-            to="/$organizationSlug/$teamId/players/$playerId/edit"
             params={{
               organizationSlug,
               teamId: activeTeam.id,
               playerId: player.id,
             }}
+            to="/$organizationSlug/$teamId/players/$playerId/edit"
           >
             Edit
           </Link>

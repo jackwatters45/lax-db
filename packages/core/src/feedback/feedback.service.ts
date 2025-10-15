@@ -1,11 +1,11 @@
 import { PgDrizzle } from '@effect/sql-drizzle/Pg';
 import { isNull } from 'drizzle-orm';
 import { Effect, Schema } from 'effect';
-import { DatabaseLive } from '../drizzle';
-import { EmailService } from '../email';
+import { DatabaseLive } from '../drizzle/drizzle.service';
+import { EmailService } from '../email/email.service';
 import { FeedbackError } from './feedback.error';
 import { CreateFeedbackInput } from './feedback.schema';
-import { type Feedback, feedbackTable } from './feedback.sql';
+import { feedbackTable } from './feedback.sql';
 
 export class FeedbackService extends Effect.Service<FeedbackService>()(
   'FeedbackService',
@@ -49,10 +49,10 @@ export class FeedbackService extends Effect.Service<FeedbackService>()(
                       .pipe(
                         Effect.tapError(Effect.logError),
                         Effect.mapError(
-                          (cause) => new FeedbackError({ cause }),
+                          (cause) => new FeedbackError({ cause })
                         ),
-                        Effect.catchAll(() => Effect.succeed(void 0)),
-                      ),
+                        Effect.catchAll(() => Effect.succeed(void 0))
+                      )
                   );
 
                   const result = await tx
@@ -83,7 +83,5 @@ export class FeedbackService extends Effect.Service<FeedbackService>()(
       } as const;
     }),
     dependencies: [DatabaseLive, EmailService.Default],
-  },
+  }
 ) {}
-
-export type { Feedback };

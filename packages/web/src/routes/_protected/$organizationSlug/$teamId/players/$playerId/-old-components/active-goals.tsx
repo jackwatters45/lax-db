@@ -22,11 +22,11 @@ export function ActiveGoals({
         <div className="flex items-center justify-between">
           <CardTitle>Active Goals</CardTitle>
           {canSetGoals && (
-            <Button variant="outline" size="sm" asChild>
+            <Button asChild size="sm" variant="outline">
               <Link
-                to="/$organizationSlug/players/goals/create"
                 params={{ organizationSlug }}
                 search={{ playerId: player.id }}
+                to="/$organizationSlug/players/goals/create"
               >
                 <Plus className="mr-2 h-4 w-4" />
                 Set Goal
@@ -39,7 +39,7 @@ export function ActiveGoals({
         {player.activeGoals.length > 0 ? (
           <div className="space-y-4">
             {player.activeGoals.map((goal) => (
-              <div key={goal.id} className="rounded border p-3">
+              <div className="rounded border p-3" key={goal.id}>
                 <div className="mb-2 flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     {getGoalCategoryIcon(goal.category)}

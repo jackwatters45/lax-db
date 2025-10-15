@@ -31,7 +31,7 @@ export const formatters: { [key: string]: any } = {
   currency: (number: number, currency = 'USD') =>
     new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: currency,
+      currency,
     }).format(number),
   unit: (number: number) => `${usNumberformatter(number)}`,
 };

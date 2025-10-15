@@ -20,6 +20,7 @@ export function createEditablePlayerColumns({
       id: 'select',
       header: ({ table }) => (
         <Checkbox
+          aria-label="Select all"
           checked={
             table.getIsAllPageRowsSelected()
               ? true
@@ -27,17 +28,16 @@ export function createEditablePlayerColumns({
                 ? 'indeterminate'
                 : false
           }
-          onCheckedChange={() => table.toggleAllPageRowsSelected()}
           className="translate-y-0.5"
-          aria-label="Select all"
+          onCheckedChange={() => table.toggleAllPageRowsSelected()}
         />
       ),
       cell: ({ row }) => (
         <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={() => row.toggleSelected()}
-          className="translate-y-0.5"
           aria-label="Select row"
+          checked={row.getIsSelected()}
+          className="translate-y-0.5"
+          onCheckedChange={() => row.toggleSelected()}
         />
       ),
       enableSorting: false,

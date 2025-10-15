@@ -60,8 +60,8 @@ function ContactCard({
   return (
     <ContactCardContext.Provider value={{ label, value, href }}>
       <Item
+        className={`w-full items-center justify-between gap-2 p-2 shadow-sm transition-shadow hover:shadow-md ${className || ''}`}
         variant={'outline'}
-        className={`w-full items-center justify-between gap-2 p-2 shadow-sm hover:shadow-md transition-shadow ${className || ''}`}
       >
         {children}
       </Item>
@@ -101,7 +101,7 @@ function ContactCardData() {
 function ContactCardLabel() {
   const { label } = useContactCard();
   return (
-    <ItemTitle className="text-xs text-muted-foreground">{label}</ItemTitle>
+    <ItemTitle className="text-muted-foreground text-xs">{label}</ItemTitle>
   );
 }
 
@@ -109,15 +109,15 @@ function ContactCardValue() {
   const { href, value } = useContactCard();
   return href ? (
     <a
+      className="break-all font-medium text-blue-600 text-sm hover:underline"
       href={href}
-      target={href.startsWith('http') ? '_blank' : undefined}
       rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
-      className="text-blue-600 hover:underline text-sm font-medium break-all"
+      target={href.startsWith('http') ? '_blank' : undefined}
     >
       {value}
     </a>
   ) : (
-    <span className="text-sm font-medium break-all">{value}</span>
+    <span className="break-all font-medium text-sm">{value}</span>
   );
 }
 
@@ -135,10 +135,10 @@ function ContactCardActions() {
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleCopy}
               className="h-6 w-6 p-0"
+              onClick={handleCopy}
+              size="sm"
+              variant="ghost"
             >
               <Copy className="h-3 w-3" />
             </Button>
@@ -150,13 +150,13 @@ function ContactCardActions() {
         {href && (
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="sm" asChild className="h-6 w-6 p-0">
+              <Button asChild className="h-6 w-6 p-0" size="sm" variant="ghost">
                 <a
                   href={href}
-                  target={href.startsWith('http') ? '_blank' : undefined}
                   rel={
                     href.startsWith('http') ? 'noopener noreferrer' : undefined
                   }
+                  target={href.startsWith('http') ? '_blank' : undefined}
                 >
                   <ExternalLink className="h-3 w-3" />
                 </a>
@@ -178,7 +178,7 @@ type EmailContactCardProps = {
 
 function EmailContactCard({ email }: EmailContactCardProps) {
   return (
-    <ContactCard label="Email" value={email} href={`mailto:${email}`}>
+    <ContactCard href={`mailto:${email}`} label="Email" value={email}>
       <ContactCardContent>
         <ContactCardIcon>
           <Mail className="h-4 w-4 text-muted-foreground" />
@@ -196,7 +196,7 @@ type PhoneContactCardProps = {
 
 function PhoneContactCard({ phone }: PhoneContactCardProps) {
   return (
-    <ContactCard label="Phone" value={phone} href={`tel:${phone}`}>
+    <ContactCard href={`tel:${phone}`} label="Phone" value={phone}>
       <ContactCardContent>
         <ContactCardIcon>
           <Phone className="h-4 w-4 text-muted-foreground" />
@@ -215,9 +215,9 @@ type FacebookContactCardProps = {
 function FacebookContactCard({ username }: FacebookContactCardProps) {
   return (
     <ContactCard
+      href={`https://facebook.com/${username}`}
       label="Facebook"
       value={username}
-      href={`https://facebook.com/${username}`}
     >
       <ContactCardContent>
         <ContactCardIcon>
@@ -237,9 +237,9 @@ type InstagramContactCardProps = {
 function InstagramContactCard({ username }: InstagramContactCardProps) {
   return (
     <ContactCard
+      href={`https://instagram.com/${username}`}
       label="Instagram"
       value={`@${username}`}
-      href={`https://instagram.com/${username}`}
     >
       <ContactCardContent>
         <ContactCardIcon>
@@ -258,7 +258,7 @@ type WhatsAppContactCardProps = {
 
 function WhatsAppContactCard({ phone }: WhatsAppContactCardProps) {
   return (
-    <ContactCard label="WhatsApp" value={phone} href={`https://wa.me/${phone}`}>
+    <ContactCard href={`https://wa.me/${phone}`} label="WhatsApp" value={phone}>
       <ContactCardContent>
         <ContactCardIcon>
           <MessageCircle className="h-4 w-4 text-muted-foreground" />
@@ -277,9 +277,9 @@ type GroupMeContactCardProps = {
 function GroupMeContactCard({ username }: GroupMeContactCardProps) {
   return (
     <ContactCard
+      href={`https://groupme.com/contact/${username}`}
       label="GroupMe"
       value={username}
-      href={`https://groupme.com/contact/${username}`}
     >
       <ContactCardContent>
         <ContactCardIcon>
@@ -299,9 +299,9 @@ type LinkedInContactCardProps = {
 function LinkedInContactCard({ username }: LinkedInContactCardProps) {
   return (
     <ContactCard
+      href={`https://linkedin.com/in/${username}`}
       label="LinkedIn"
       value={username}
-      href={`https://linkedin.com/in/${username}`}
     >
       <ContactCardContent>
         <ContactCardIcon>
@@ -339,9 +339,9 @@ type EmergencyContactPhoneCardProps = {
 function EmergencyContactPhoneCard({ phone }: EmergencyContactPhoneCardProps) {
   return (
     <ContactCard
+      href={`tel:${phone}`}
       label="Emergency Contact Phone"
       value={phone}
-      href={`tel:${phone}`}
     >
       <ContactCardContent>
         <ContactCardIcon>

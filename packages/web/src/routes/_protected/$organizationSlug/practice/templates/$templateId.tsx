@@ -22,12 +22,12 @@ import {
 } from '@/components/ui/card';
 
 export const Route = createFileRoute(
-  '/_protected/$organizationSlug/practice/templates/$templateId',
+  '/_protected/$organizationSlug/practice/templates/$templateId'
 )({
   component: TemplateDetailPage,
 });
 
-interface TemplateDetail {
+type TemplateDetail = {
   id: string;
   name: string;
   description: string;
@@ -43,9 +43,9 @@ interface TemplateDetail {
   createdBy: string;
   notes: string;
   drills: TemplateDrill[];
-}
+};
 
-interface TemplateDrill {
+type TemplateDrill = {
   id: string;
   name: string;
   description: string;
@@ -58,7 +58,7 @@ interface TemplateDrill {
   skills: string[];
   effectiveness: number;
   instructions: string;
-}
+};
 
 const mockTemplate: TemplateDetail = {
   id: '1',
@@ -179,7 +179,7 @@ function TemplateDetailPage() {
   const template = mockTemplate;
   const totalDuration = template.drills.reduce(
     (sum, drill) => sum + drill.duration,
-    0,
+    0
   );
 
   const getDifficultyColor = (difficulty: string) => {
@@ -195,18 +195,17 @@ function TemplateDetailPage() {
     }
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+  const formatDate = (dateString: string) =>
+    new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
     });
-  };
 
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Button variant="outline" size="sm">
+        <Button size="sm" variant="outline">
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Templates
         </Button>
@@ -259,7 +258,7 @@ function TemplateDetailPage() {
                 <h4 className="mb-2 font-medium">Focus Areas</h4>
                 <div className="flex flex-wrap gap-2">
                   {template.focus.map((focus) => (
-                    <Badge key={focus} variant="secondary" className="text-xs">
+                    <Badge className="text-xs" key={focus} variant="secondary">
                       {focus}
                     </Badge>
                   ))}
@@ -300,7 +299,7 @@ function TemplateDetailPage() {
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
                 <span>Practice Drills</span>
-                <Badge variant="outline" className="text-sm">
+                <Badge className="text-sm" variant="outline">
                   {template.drills.length} drills • {totalDuration} min total
                 </Badge>
               </CardTitle>
@@ -311,7 +310,7 @@ function TemplateDetailPage() {
             <CardContent>
               <div className="space-y-4">
                 {template.drills.map((drill, index) => (
-                  <div key={drill.id} className="rounded-lg border p-4">
+                  <div className="rounded-lg border p-4" key={drill.id}>
                     <div className="flex items-start gap-4">
                       <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary font-medium text-primary-foreground text-sm">
                         {index + 1}
@@ -322,7 +321,7 @@ function TemplateDetailPage() {
                           <div>
                             <div className="mb-1 flex items-center gap-2">
                               <h4 className="font-medium">{drill.name}</h4>
-                              <Badge variant="outline" className="text-xs">
+                              <Badge className="text-xs" variant="outline">
                                 {drill.category}
                               </Badge>
                               <Badge
@@ -357,9 +356,9 @@ function TemplateDetailPage() {
                             <div className="flex flex-wrap gap-1">
                               {drill.equipment.map((item) => (
                                 <Badge
+                                  className="text-xs"
                                   key={item}
                                   variant="outline"
-                                  className="text-xs"
                                 >
                                   {item}
                                 </Badge>
@@ -374,9 +373,9 @@ function TemplateDetailPage() {
                             <div className="flex flex-wrap gap-1">
                               {drill.skills.map((skill) => (
                                 <Badge
+                                  className="text-xs"
                                   key={skill}
                                   variant="secondary"
-                                  className="text-xs"
                                 >
                                   {skill}
                                 </Badge>
@@ -424,15 +423,15 @@ function TemplateDetailPage() {
                 <Play className="mr-2 h-4 w-4" />
                 Start Practice Now
               </Button>
-              <Button variant="outline" className="w-full" size="sm">
+              <Button className="w-full" size="sm" variant="outline">
                 <Calendar className="mr-2 h-4 w-4" />
                 Schedule for Later
               </Button>
-              <Button variant="outline" className="w-full" size="sm">
+              <Button className="w-full" size="sm" variant="outline">
                 <Copy className="mr-2 h-4 w-4" />
                 Duplicate Template
               </Button>
-              <Button variant="outline" className="w-full" size="sm">
+              <Button className="w-full" size="sm" variant="outline">
                 <Edit className="mr-2 h-4 w-4" />
                 Edit Template
               </Button>
@@ -508,8 +507,8 @@ function TemplateDetailPage() {
                   <div className="space-y-2">
                     {template.drills.map((drill) => (
                       <div
-                        key={drill.id}
                         className="flex items-center justify-between text-xs"
+                        key={drill.id}
                       >
                         <span className="mr-2 flex-1 truncate text-muted-foreground">
                           {drill.name}
@@ -529,9 +528,9 @@ function TemplateDetailPage() {
             </CardHeader>
             <CardContent>
               <Button
-                variant="outline"
                 className="w-full border-red-200 text-red-600 hover:bg-red-50"
                 size="sm"
+                variant="outline"
               >
                 <Trash2 className="mr-2 h-4 w-4" />
                 Delete Template

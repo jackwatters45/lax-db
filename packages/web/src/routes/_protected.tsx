@@ -17,14 +17,14 @@ const getSessionAndOrg = createServerFn({ method: 'GET' })
         activeOrganization = yield* Effect.promise(() =>
           auth.auth.api.getFullOrganization({
             headers: context.headers,
-          }),
+          })
         );
 
         if (!activeOrganization) {
           activeOrganization = yield* Effect.promise(() =>
             auth.auth.api.listOrganizations({
               headers: context.headers,
-            }),
+            })
           ).pipe(Effect.flatMap(Arr.head));
         }
 
@@ -33,8 +33,8 @@ const getSessionAndOrg = createServerFn({ method: 'GET' })
           session: context.session.session,
           activeOrganization,
         };
-      }),
-    ),
+      })
+    )
   );
 
 export const Route = createFileRoute('/_protected')({

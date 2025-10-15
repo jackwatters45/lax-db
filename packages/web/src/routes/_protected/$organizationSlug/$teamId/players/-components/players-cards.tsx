@@ -14,7 +14,7 @@ export function PlayerCards({ players }: { players: TeamPlayerWithInfo[] }) {
       {[...players, ...players, ...players, ...players, ...players].map(
         (player, i) => (
           <PlayerCard key={`${player.publicId}-${i}`} player={player} />
-        ),
+        )
       )}
     </div>
   );

@@ -23,12 +23,12 @@ import {
 // Update player
 const useUpdatePlayer = (organizationId: string, teamId: string) => {
   const mutation = useUpdatePlayerBase(
-    getTeamPlayersQK(organizationId, teamId),
+    getTeamPlayersQK(organizationId, teamId)
   );
 
   const handleUpdate = (
     playerId: string,
-    updates: Partial<TeamPlayerWithInfo>,
+    updates: Partial<TeamPlayerWithInfo>
   ) => {
     const { jerseyNumber, ...rest } = updates;
 
@@ -49,13 +49,13 @@ const useUpdatePlayer = (organizationId: string, teamId: string) => {
 // Add player to team
 export const AddNewPlayerWithTeamInput = Schema.extend(
   CreatePlayerInput,
-  AddNewPlayerToTeamInput,
+  AddNewPlayerToTeamInput
 );
 
 export const addNewPlayerToTeamFn = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
   .inputValidator((data: typeof AddNewPlayerWithTeamInput.Type) =>
-    Schema.decodeSync(AddNewPlayerWithTeamInput)(data),
+    Schema.decodeSync(AddNewPlayerWithTeamInput)(data)
   )
   .handler(async ({ data }) =>
     RuntimeServer.runPromise(
@@ -69,8 +69,8 @@ export const addNewPlayerToTeamFn = createServerFn({ method: 'POST' })
           dateOfBirth: data.dateOfBirth,
           userId: data.userId,
         });
-      }),
-    ),
+      })
+    )
   );
 
 export function useAddNewPlayerToTeam(organizationId: string, teamId: string) {
@@ -112,7 +112,7 @@ export function useAddNewPlayerToTeam(organizationId: string, teamId: string) {
       if (context?.previousPlayers) {
         queryClient.setQueryData(
           getTeamPlayersQK(organizationId, teamId),
-          context.previousPlayers,
+          context.previousPlayers
         );
       }
       toast.error('Failed to add player to team');
@@ -124,20 +124,20 @@ export function useAddNewPlayerToTeam(organizationId: string, teamId: string) {
 export const removePlayerFromTeamFn = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
   .inputValidator((data: typeof RemovePlayerFromTeamInput.Type) =>
-    Schema.decodeSync(RemovePlayerFromTeamInput)(data),
+    Schema.decodeSync(RemovePlayerFromTeamInput)(data)
   )
   .handler(async ({ data }) =>
     RuntimeServer.runPromise(
       Effect.gen(function* () {
         const playerService = yield* PlayerService;
         return yield* playerService.removePlayerFromTeam(data);
-      }),
-    ),
+      })
+    )
   );
 
 export function useRemovePlayerFromTeam(
   organizationId: string,
-  teamId: string,
+  teamId: string
 ) {
   const queryClient = useQueryClient();
 
@@ -152,7 +152,7 @@ export function useRemovePlayerFromTeam(
         ctx.client.getQueryData<TeamPlayerWithInfo[]>(queryKey);
 
       ctx.client.setQueryData<TeamPlayerWithInfo[]>(queryKey, (old = []) =>
-        old.filter((p) => p.publicId !== variables.playerId),
+        old.filter((p) => p.publicId !== variables.playerId)
       );
 
       return { previousPlayers };
@@ -161,7 +161,7 @@ export function useRemovePlayerFromTeam(
       if (context?.previousPlayers) {
         queryClient.setQueryData(
           getTeamPlayersQK(organizationId, teamId),
-          context.previousPlayers,
+          context.previousPlayers
         );
       }
       toast.error('Failed to remove player from team');
@@ -178,20 +178,20 @@ export function useRemovePlayerFromTeam(
 export const bulkRemovePlayersFromTeamFn = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
   .inputValidator((data: typeof BulkRemovePlayersFromTeamInput.Type) =>
-    Schema.decodeSync(BulkRemovePlayersFromTeamInput)(data),
+    Schema.decodeSync(BulkRemovePlayersFromTeamInput)(data)
   )
   .handler(async ({ data }) =>
     RuntimeServer.runPromise(
       Effect.gen(function* () {
         const playerService = yield* PlayerService;
         return yield* playerService.bulkRemovePlayersFromTeam(data);
-      }),
-    ),
+      })
+    )
   );
 
 export function useBulkRemovePlayersFromTeam(
   organizationId: string,
-  teamId: string,
+  teamId: string
 ) {
   const queryClient = useQueryClient();
 
@@ -206,7 +206,7 @@ export function useBulkRemovePlayersFromTeam(
         ctx.client.getQueryData<TeamPlayerWithInfo[]>(queryKey);
 
       ctx.client.setQueryData<TeamPlayerWithInfo[]>(queryKey, (old = []) =>
-        old.filter((p) => !variables.playerIds.includes(p.publicId)),
+        old.filter((p) => !variables.playerIds.includes(p.publicId))
       );
 
       return { previousPlayers };
@@ -215,7 +215,7 @@ export function useBulkRemovePlayersFromTeam(
       if (context?.previousPlayers) {
         queryClient.setQueryData(
           getTeamPlayersQK(organizationId, teamId),
-          context.previousPlayers,
+          context.previousPlayers
         );
       }
       toast.error('Failed to remove players from team');
@@ -270,7 +270,7 @@ export const LinkPlayerInputSchema = Schema.Struct({
 export const linkPlayerFn = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
   .inputValidator((data: typeof LinkPlayerServerInputSchema.Type) =>
-    Schema.decodeSync(LinkPlayerServerInputSchema)(data),
+    Schema.decodeSync(LinkPlayerServerInputSchema)(data)
   )
   .handler(async ({ data }) =>
     RuntimeServer.runPromise(
@@ -290,8 +290,8 @@ export const linkPlayerFn = createServerFn({ method: 'POST' })
         });
 
         return data.newPlayerData;
-      }),
-    ),
+      })
+    )
   );
 
 export function useLinkPlayer(organizationId: string, teamId: string) {
@@ -325,8 +325,8 @@ export function useLinkPlayer(organizationId: string, teamId: string) {
                 dateOfBirth: variables.newPlayerData.dateOfBirth,
                 organizationId: variables.newPlayerData.organizationId,
               }
-            : player,
-        ),
+            : player
+        )
       );
 
       return { previousPlayers };
@@ -335,7 +335,7 @@ export function useLinkPlayer(organizationId: string, teamId: string) {
       if (context?.previousPlayers) {
         queryClient.setQueryData(
           getTeamPlayersQK(organizationId, teamId),
-          context.previousPlayers,
+          context.previousPlayers
         );
       }
       toast.error('Failed to link player');
@@ -352,20 +352,20 @@ export function useLinkPlayer(organizationId: string, teamId: string) {
 export const addExistingPlayerToTeamFn = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
   .inputValidator((data: typeof AddPlayerToTeamInput.Type) =>
-    Schema.decodeSync(AddPlayerToTeamInput)(data),
+    Schema.decodeSync(AddPlayerToTeamInput)(data)
   )
   .handler(async ({ data }) =>
     RuntimeServer.runPromise(
       Effect.gen(function* () {
         const playerService = yield* PlayerService;
         return yield* playerService.addPlayerToTeam(data);
-      }),
-    ),
+      })
+    )
   );
 
 export function useAddExistingPlayerToTeam(
   organizationId: string,
-  teamId: string,
+  teamId: string
 ) {
   const queryClient = useQueryClient();
 

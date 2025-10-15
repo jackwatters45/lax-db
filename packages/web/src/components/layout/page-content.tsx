@@ -1,9 +1,9 @@
 import { cn } from '@/lib/utils';
 
-interface PageBodyProps {
+type PageBodyProps = {
   children: React.ReactNode;
   className?: string;
-}
+};
 
 /**
  * PageBody component for the scrollable content area.

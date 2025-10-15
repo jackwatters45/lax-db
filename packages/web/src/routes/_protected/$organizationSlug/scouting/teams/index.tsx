@@ -105,7 +105,7 @@ const mockOpposingTeams = [
 ];
 
 // Server function for getting opposing teams
-const getOpposingTeams = createServerFn().handler(async () => {
+const getOpposingTeams = createServerFn().handler(() => {
   // TODO: Replace with actual API call
   // const { ScoutingAPI } = await import('@lax-db/core/scouting/index');
   // const request = getRequest();
@@ -115,16 +115,14 @@ const getOpposingTeams = createServerFn().handler(async () => {
 });
 
 // Server function for permissions
-const getScoutingPermissions = createServerFn().handler(async () => {
-  return {
-    canCreateTeams: true,
-    canCreateReports: true,
-    canEditTeams: true,
-  };
-});
+const getScoutingPermissions = createServerFn().handler(async () => ({
+  canCreateTeams: true,
+  canCreateReports: true,
+  canEditTeams: true,
+}));
 
 export const Route = createFileRoute(
-  '/_protected/$organizationSlug/scouting/teams/',
+  '/_protected/$organizationSlug/scouting/teams/'
 )({
   component: OpposingTeamsPage,
   loader: async () => {
@@ -146,10 +144,10 @@ function OpposingTeamsPage() {
 
   // Get unique leagues and divisions for filtering
   const leagues = Array.from(
-    new Set(teams.map((team) => team.leagueName).filter(Boolean)),
+    new Set(teams.map((team) => team.leagueName).filter(Boolean))
   );
   const divisions = Array.from(
-    new Set(teams.map((team) => team.division).filter(Boolean)),
+    new Set(teams.map((team) => team.division).filter(Boolean))
   );
 
   // Filter teams based on search and filters
@@ -180,8 +178,8 @@ function OpposingTeamsPage() {
         {permissions.canCreateTeams && (
           <Button asChild>
             <Link
-              to="/$organizationSlug/scouting/teams/create"
               params={{ organizationSlug }}
+              to="/$organizationSlug/scouting/teams/create"
             >
               <Plus className="mr-2 h-4 w-4" />
               Add Team
@@ -197,19 +195,19 @@ function OpposingTeamsPage() {
             <div className="relative flex-1">
               <Search className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
               <input
-                type="text"
-                placeholder="Search teams, coaches, or leagues..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full rounded-md border border-input py-2 pr-3 pl-10 focus:outline-none focus:ring-2 focus:ring-ring"
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Search teams, coaches, or leagues..."
+                type="text"
+                value={searchTerm}
               />
             </div>
 
             <div className="flex gap-2">
               <select
-                value={selectedLeague}
-                onChange={(e) => setSelectedLeague(e.target.value)}
                 className="rounded-md border border-input px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
+                onChange={(e) => setSelectedLeague(e.target.value)}
+                value={selectedLeague}
               >
                 <option value="all">All Leagues</option>
                 {leagues.map((league) => (
@@ -220,9 +218,9 @@ function OpposingTeamsPage() {
               </select>
 
               <select
-                value={selectedDivision}
-                onChange={(e) => setSelectedDivision(e.target.value)}
                 className="rounded-md border border-input px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
+                onChange={(e) => setSelectedDivision(e.target.value)}
+                value={selectedDivision}
               >
                 <option value="all">All Divisions</option>
                 {divisions.map((division) => (
@@ -242,9 +240,9 @@ function OpposingTeamsPage() {
           {filteredTeams.map((team) => (
             <TeamCard
               key={team.id}
-              team={team}
-              permissions={permissions}
               organizationSlug={organizationSlug}
+              permissions={permissions}
+              team={team}
             />
           ))}
         </div>
@@ -262,8 +260,8 @@ function OpposingTeamsPage() {
           {permissions.canCreateTeams && (
             <Button asChild>
               <Link
-                to="/$organizationSlug/scouting/teams/create"
                 params={{ organizationSlug }}
+                to="/$organizationSlug/scouting/teams/create"
               >
                 <Plus className="mr-2 h-4 w-4" />
                 Add Your First Team
@@ -293,7 +291,9 @@ function TeamCard({
   organizationSlug: string;
 }) {
   const formatDate = (date: Date | null) => {
-    if (!date) return 'Never';
+    if (!date) {
+      return 'Never';
+    }
     return new Intl.DateTimeFormat('en-US', {
       month: 'short',
       day: 'numeric',
@@ -302,7 +302,9 @@ function TeamCard({
 
   const getWinPercentage = (wins: number, losses: number, ties: number) => {
     const total = wins + losses + ties;
-    if (total === 0) return 0;
+    if (total === 0) {
+      return 0;
+    }
     return Math.round(((wins + ties * 0.5) / total) * 100);
   };
 
@@ -443,23 +445,23 @@ function TeamCard({
 
         {/* Actions */}
         <div className="flex gap-2 pt-2">
-          <Button variant="outline" size="sm" className="flex-1" asChild>
+          <Button asChild className="flex-1" size="sm" variant="outline">
             <Link
-              to="/$organizationSlug/scouting/teams/$teamId"
               params={{
                 organizationSlug,
                 teamId: team.id,
               }}
+              to="/$organizationSlug/scouting/teams/$teamId"
             >
               View Details
             </Link>
           </Button>
 
           {permissions.canCreateReports && (
-            <Button variant="outline" size="sm" asChild>
+            <Button asChild size="sm" variant="outline">
               <Link
-                to="/$organizationSlug/scouting/teams/create"
                 params={{ organizationSlug }}
+                to="/$organizationSlug/scouting/teams/create"
               >
                 <FileText className="mr-1 h-3 w-3" />
                 Scout

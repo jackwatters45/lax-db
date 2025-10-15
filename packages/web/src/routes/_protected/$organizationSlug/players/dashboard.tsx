@@ -182,18 +182,16 @@ const getTeamPlayers = createServerFn().handler(async () => {
 });
 
 // Server function for permissions
-const getPlayerPermissions = createServerFn().handler(async () => {
-  return {
-    canViewAllPlayers: true,
-    canCreateNotes: true,
-    canAssess: true,
-    canAssignResources: true,
-    canSetGoals: true,
-  };
-});
+const getPlayerPermissions = createServerFn().handler(async () => ({
+  canViewAllPlayers: true,
+  canCreateNotes: true,
+  canAssess: true,
+  canAssignResources: true,
+  canSetGoals: true,
+}));
 
 export const Route = createFileRoute(
-  '/_protected/$organizationSlug/players/dashboard',
+  '/_protected/$organizationSlug/players/dashboard'
 )({
   component: PlayersPage,
   loader: async () => {
@@ -241,7 +239,7 @@ function PlayersPage() {
     averageGPA:
       players.reduce((sum, p) => sum + (p.gpa || 0), 0) / players.length,
     needingAttention: players.filter(
-      (p) => p.developmentTrend === 'needs_attention',
+      (p) => p.developmentTrend === 'needs_attention'
     ).length,
     highPotential: players.filter((p) => p.potentialRating >= 8).length,
   };
@@ -262,10 +260,10 @@ function PlayersPage() {
 
             <div className="flex gap-2">
               {permissions.canCreateNotes && (
-                <Button variant="outline" asChild>
+                <Button asChild variant="outline">
                   <Link
-                    to="/$organizationSlug/players/notes/create"
                     params={{ organizationSlug }}
+                    to="/$organizationSlug/players/notes/create"
                   >
                     <FileText className="mr-2 h-4 w-4" />
                     Add Note
@@ -275,8 +273,8 @@ function PlayersPage() {
               {permissions.canAssess && (
                 <Button asChild>
                   <Link
-                    to="/$organizationSlug/players/assessments/create"
                     params={{ organizationSlug }}
+                    to="/$organizationSlug/players/assessments/create"
                   >
                     <Plus className="mr-2 h-4 w-4" />
                     New Assessment
@@ -362,19 +360,19 @@ function PlayersPage() {
                 <div className="relative flex-1">
                   <Search className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
                   <input
-                    type="text"
-                    placeholder="Search players by name, position, or number..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
                     className="w-full rounded-md border border-input py-2 pr-3 pl-10 focus:outline-none focus:ring-2 focus:ring-ring"
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    placeholder="Search players by name, position, or number..."
+                    type="text"
+                    value={searchTerm}
                   />
                 </div>
 
                 <div className="flex gap-2">
                   <select
-                    value={selectedPosition}
-                    onChange={(e) => setSelectedPosition(e.target.value)}
                     className="rounded-md border border-input px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
+                    onChange={(e) => setSelectedPosition(e.target.value)}
+                    value={selectedPosition}
                   >
                     <option value="all">All Positions</option>
                     {positions.map((position) => (
@@ -385,9 +383,9 @@ function PlayersPage() {
                   </select>
 
                   <select
-                    value={selectedGrade}
-                    onChange={(e) => setSelectedGrade(e.target.value)}
                     className="rounded-md border border-input px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
+                    onChange={(e) => setSelectedGrade(e.target.value)}
+                    value={selectedGrade}
                   >
                     <option value="all">All Grades</option>
                     {grades.map((grade) => (
@@ -398,9 +396,9 @@ function PlayersPage() {
                   </select>
 
                   <select
-                    value={selectedTrend}
-                    onChange={(e) => setSelectedTrend(e.target.value)}
                     className="rounded-md border border-input px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
+                    onChange={(e) => setSelectedTrend(e.target.value)}
+                    value={selectedTrend}
                   >
                     <option value="all">All Trends</option>
                     <option value="improving">Improving</option>
@@ -418,8 +416,8 @@ function PlayersPage() {
               {filteredPlayers.map((player) => (
                 <PlayerCard
                   key={player.id}
-                  player={player}
                   permissions={permissions}
+                  player={player}
                 />
               ))}
             </div>
@@ -461,12 +459,11 @@ function PlayerCard({
 }) {
   const { organizationSlug } = Route.useParams();
 
-  const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat('en-US', {
+  const formatDate = (date: Date) =>
+    new Intl.DateTimeFormat('en-US', {
       month: 'short',
       day: 'numeric',
     }).format(date);
-  };
 
   const getTrendColor = (trend: string) => {
     switch (trend) {
@@ -612,24 +609,24 @@ function PlayerCard({
 
         {/* Actions */}
         <div className="flex gap-2 pt-2">
-          <Button variant="outline" size="sm" className="flex-1" asChild>
+          <Button asChild className="flex-1" size="sm" variant="outline">
             <Link
-              to="/$organizationSlug/players/$playerId"
               params={{
                 organizationSlug,
                 playerId: player.id,
               }}
+              to="/$organizationSlug/players/$playerId"
             >
               View Profile
             </Link>
           </Button>
 
           {permissions.canCreateNotes && (
-            <Button variant="outline" size="sm" asChild>
+            <Button asChild size="sm" variant="outline">
               <Link
-                to="/$organizationSlug/players/notes/create"
                 params={{ organizationSlug }}
                 search={{ playerId: player.id }}
+                to="/$organizationSlug/players/notes/create"
               >
                 <FileText className="mr-1 h-3 w-3" />
                 Note
@@ -638,11 +635,11 @@ function PlayerCard({
           )}
 
           {permissions.canAssess && (
-            <Button variant="outline" size="sm" asChild>
+            <Button asChild size="sm" variant="outline">
               <Link
-                to="/$organizationSlug/players/assessments/create"
                 params={{ organizationSlug }}
                 search={{ playerId: player.id }}
+                to="/$organizationSlug/players/assessments/create"
               >
                 <TrendingUp className="mr-1 h-3 w-3" />
                 Assess
@@ -661,8 +658,8 @@ function Header() {
   return (
     <PlayersHeader organizationSlug={organizationSlug}>
       <BreadcrumbItem>
-        <BreadcrumbLink className="max-w-full truncate" title="Players" asChild>
-          <Link to="/$organizationSlug/players" params={{ organizationSlug }}>
+        <BreadcrumbLink asChild className="max-w-full truncate" title="Players">
+          <Link params={{ organizationSlug }} to="/$organizationSlug/players">
             Teams
           </Link>
         </BreadcrumbLink>

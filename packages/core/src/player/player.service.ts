@@ -1,7 +1,7 @@
 import { PgDrizzle } from '@effect/sql-drizzle/Pg';
 import { and, eq, inArray, isNull } from 'drizzle-orm';
 import { Array as Arr, Effect, Schema } from 'effect';
-import { DatabaseLive } from '../drizzle';
+import { DatabaseLive } from '../drizzle/drizzle.service';
 import { PlayerError } from './player.error';
 import {
   AddPlayerToTeamInput,
@@ -45,12 +45,12 @@ export class PlayerService extends Effect.Service<PlayerService>()(
               .where(
                 and(
                   eq(playerTable.organizationId, validated.organizationId),
-                  isNull(playerTable.deletedAt),
-                ),
+                  isNull(playerTable.deletedAt)
+                )
               )
               .pipe(
                 Effect.tapError(Effect.logError),
-                Effect.mapError((cause) => new PlayerError({ cause })),
+                Effect.mapError((cause) => new PlayerError({ cause }))
               );
 
             return result;
@@ -85,7 +85,7 @@ export class PlayerService extends Effect.Service<PlayerService>()(
               .pipe(
                 Effect.flatMap(Arr.head),
                 Effect.tapError(Effect.logError),
-                Effect.mapError((cause) => new PlayerError({ cause })),
+                Effect.mapError((cause) => new PlayerError({ cause }))
               );
 
             if (!result) {
@@ -93,7 +93,7 @@ export class PlayerService extends Effect.Service<PlayerService>()(
                 new PlayerError({
                   cause: 'No result from insert',
                   message: 'Failed to create player',
-                }),
+                })
               );
             }
 
@@ -123,17 +123,17 @@ export class PlayerService extends Effect.Service<PlayerService>()(
               .from(playerTable)
               .innerJoin(
                 teamPlayerTable,
-                eq(playerTable.id, teamPlayerTable.playerId),
+                eq(playerTable.id, teamPlayerTable.playerId)
               )
               .where(
                 and(
                   eq(teamPlayerTable.teamId, validated.teamId),
-                  isNull(playerTable.deletedAt),
-                ),
+                  isNull(playerTable.deletedAt)
+                )
               )
               .pipe(
                 Effect.tapError(Effect.logError),
-                Effect.mapError((cause) => new PlayerError({ cause })),
+                Effect.mapError((cause) => new PlayerError({ cause }))
               );
           }),
 
@@ -148,8 +148,8 @@ export class PlayerService extends Effect.Service<PlayerService>()(
               .where(
                 and(
                   eq(playerTable.publicId, playerId),
-                  isNull(playerTable.deletedAt),
-                ),
+                  isNull(playerTable.deletedAt)
+                )
               )
               .returning({
                 publicId: playerTable.publicId,
@@ -166,7 +166,7 @@ export class PlayerService extends Effect.Service<PlayerService>()(
               .pipe(
                 Effect.flatMap(Arr.head),
                 Effect.tapError(Effect.logError),
-                Effect.mapError((cause) => new PlayerError({ cause })),
+                Effect.mapError((cause) => new PlayerError({ cause }))
               );
 
             if (!result) {
@@ -174,7 +174,7 @@ export class PlayerService extends Effect.Service<PlayerService>()(
                 new PlayerError({
                   cause: 'No result from update',
                   message: 'Failed to update player',
-                }),
+                })
               );
             }
 
@@ -184,7 +184,7 @@ export class PlayerService extends Effect.Service<PlayerService>()(
         updateTeamPlayer: (input: UpdateTeamPlayerInput) =>
           Effect.gen(function* () {
             const validated = yield* Schema.decode(UpdateTeamPlayerInput)(
-              input,
+              input
             );
             const { teamId, playerId, ...updateData } = validated;
 
@@ -194,13 +194,13 @@ export class PlayerService extends Effect.Service<PlayerService>()(
               .where(
                 and(
                   eq(playerTable.publicId, playerId),
-                  isNull(playerTable.deletedAt),
-                ),
+                  isNull(playerTable.deletedAt)
+                )
               )
               .pipe(
                 Effect.flatMap(Arr.head),
                 Effect.tapError(Effect.logError),
-                Effect.mapError((cause) => new PlayerError({ cause })),
+                Effect.mapError((cause) => new PlayerError({ cause }))
               );
 
             if (!player) {
@@ -208,7 +208,7 @@ export class PlayerService extends Effect.Service<PlayerService>()(
                 new PlayerError({
                   cause: 'Player not found in database',
                   message: 'Player not found',
-                }),
+                })
               );
             }
 
@@ -218,14 +218,14 @@ export class PlayerService extends Effect.Service<PlayerService>()(
               .where(
                 and(
                   eq(teamPlayerTable.teamId, teamId),
-                  eq(teamPlayerTable.playerId, player.id),
-                ),
+                  eq(teamPlayerTable.playerId, player.id)
+                )
               )
               .returning()
               .pipe(
                 Effect.flatMap(Arr.head),
                 Effect.tapError(Effect.logError),
-                Effect.mapError((cause) => new PlayerError({ cause })),
+                Effect.mapError((cause) => new PlayerError({ cause }))
               );
 
             if (!result) {
@@ -233,7 +233,7 @@ export class PlayerService extends Effect.Service<PlayerService>()(
                 new PlayerError({
                   cause: 'No result from update',
                   message: 'Failed to update team player',
-                }),
+                })
               );
             }
 
@@ -250,13 +250,13 @@ export class PlayerService extends Effect.Service<PlayerService>()(
               .where(
                 and(
                   eq(playerTable.publicId, validated.playerId),
-                  isNull(playerTable.deletedAt),
-                ),
+                  isNull(playerTable.deletedAt)
+                )
               )
               .pipe(
                 Effect.flatMap(Arr.head),
                 Effect.tapError(Effect.logError),
-                Effect.mapError((cause) => new PlayerError({ cause })),
+                Effect.mapError((cause) => new PlayerError({ cause }))
               );
 
             if (!player) {
@@ -264,7 +264,7 @@ export class PlayerService extends Effect.Service<PlayerService>()(
                 new PlayerError({
                   cause: 'Player not found in database',
                   message: 'Player not found',
-                }),
+                })
               );
             }
 
@@ -280,7 +280,7 @@ export class PlayerService extends Effect.Service<PlayerService>()(
               .pipe(
                 Effect.flatMap(Arr.head),
                 Effect.tapError(Effect.logError),
-                Effect.mapError((cause) => new PlayerError({ cause })),
+                Effect.mapError((cause) => new PlayerError({ cause }))
               );
 
             if (!result) {
@@ -288,7 +288,7 @@ export class PlayerService extends Effect.Service<PlayerService>()(
                 new PlayerError({
                   cause: 'No result from insert',
                   message: 'Failed to add player to team',
-                }),
+                })
               );
             }
 
@@ -298,7 +298,7 @@ export class PlayerService extends Effect.Service<PlayerService>()(
         removePlayerFromTeam: (input: RemovePlayerFromTeamInput) =>
           Effect.gen(function* () {
             const validated = yield* Schema.decode(RemovePlayerFromTeamInput)(
-              input,
+              input
             );
 
             const player = yield* db
@@ -307,13 +307,13 @@ export class PlayerService extends Effect.Service<PlayerService>()(
               .where(
                 and(
                   eq(playerTable.publicId, validated.playerId),
-                  isNull(playerTable.deletedAt),
-                ),
+                  isNull(playerTable.deletedAt)
+                )
               )
               .pipe(
                 Effect.flatMap(Arr.head),
                 Effect.tapError(Effect.logError),
-                Effect.mapError((cause) => new PlayerError({ cause })),
+                Effect.mapError((cause) => new PlayerError({ cause }))
               );
 
             if (!player) {
@@ -321,7 +321,7 @@ export class PlayerService extends Effect.Service<PlayerService>()(
                 new PlayerError({
                   cause: 'Player not found in database',
                   message: 'Player not found',
-                }),
+                })
               );
             }
 
@@ -330,19 +330,19 @@ export class PlayerService extends Effect.Service<PlayerService>()(
               .where(
                 and(
                   eq(teamPlayerTable.teamId, validated.teamId),
-                  eq(teamPlayerTable.playerId, player.id),
-                ),
+                  eq(teamPlayerTable.playerId, player.id)
+                )
               )
               .pipe(
                 Effect.tapError(Effect.logError),
-                Effect.mapError((cause) => new PlayerError({ cause })),
+                Effect.mapError((cause) => new PlayerError({ cause }))
               );
           }),
 
         bulkRemovePlayersFromTeam: (input: BulkRemovePlayersFromTeamInput) =>
           Effect.gen(function* () {
             const validated = yield* Schema.decode(
-              BulkRemovePlayersFromTeamInput,
+              BulkRemovePlayersFromTeamInput
             )(input);
 
             const players = yield* db
@@ -351,12 +351,12 @@ export class PlayerService extends Effect.Service<PlayerService>()(
               .where(
                 and(
                   inArray(playerTable.publicId, validated.playerIds),
-                  isNull(playerTable.deletedAt),
-                ),
+                  isNull(playerTable.deletedAt)
+                )
               )
               .pipe(
                 Effect.tapError(Effect.logError),
-                Effect.mapError((cause) => new PlayerError({ cause })),
+                Effect.mapError((cause) => new PlayerError({ cause }))
               );
 
             const playerIds = players.map((p) => p.id);
@@ -366,12 +366,12 @@ export class PlayerService extends Effect.Service<PlayerService>()(
               .where(
                 and(
                   eq(teamPlayerTable.teamId, validated.teamId),
-                  inArray(teamPlayerTable.playerId, playerIds),
-                ),
+                  inArray(teamPlayerTable.playerId, playerIds)
+                )
               )
               .pipe(
                 Effect.tapError(Effect.logError),
-                Effect.mapError((cause) => new PlayerError({ cause })),
+                Effect.mapError((cause) => new PlayerError({ cause }))
               );
           }),
 
@@ -383,25 +383,25 @@ export class PlayerService extends Effect.Service<PlayerService>()(
               .where(eq(playerTable.publicId, validated.playerId))
               .pipe(
                 Effect.tapError(Effect.logError),
-                Effect.mapError((cause) => new PlayerError({ cause })),
+                Effect.mapError((cause) => new PlayerError({ cause }))
               );
           }),
 
         bulkDeletePlayers: (input: BulkDeletePlayersInput) =>
           Effect.gen(function* () {
             const validated = yield* Schema.decode(BulkDeletePlayersInput)(
-              input,
+              input
             );
             yield* db
               .delete(playerTable)
               .where(inArray(playerTable.publicId, validated.playerIds))
               .pipe(
                 Effect.tapError(Effect.logError),
-                Effect.mapError((cause) => new PlayerError({ cause })),
+                Effect.mapError((cause) => new PlayerError({ cause }))
               );
           }),
       } as const;
     }),
     dependencies: [DatabaseLive],
-  },
+  }
 ) {}

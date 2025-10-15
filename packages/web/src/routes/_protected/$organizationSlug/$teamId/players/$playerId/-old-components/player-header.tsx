@@ -17,8 +17,8 @@ export function PlayerInfoHeader({
 }: PlayerHeaderProps) {
   return (
     <div className="mb-8">
-      <Link to="/$organizationSlug/players" params={{ organizationSlug }}>
-        <Button variant="ghost" className="mb-4">
+      <Link params={{ organizationSlug }} to="/$organizationSlug/players">
+        <Button className="mb-4" variant="ghost">
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Players
         </Button>
@@ -54,13 +54,13 @@ export function PlayerInfoHeader({
             {getTrendLabel(player.developmentTrend)}
           </Badge>
           {canEdit && (
-            <Button variant="outline" size="sm" asChild>
+            <Button asChild size="sm" variant="outline">
               <Link
-                to="/$organizationSlug/players/$playerId/edit"
                 params={{
                   organizationSlug,
                   playerId: player.id,
                 }}
+                to="/$organizationSlug/players/$playerId/edit"
               >
                 <Edit className="mr-2 h-4 w-4" />
                 Edit Profile

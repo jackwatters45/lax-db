@@ -58,7 +58,7 @@ const data: {
 ];
 
 export const Route = createFileRoute(
-  '/_protected/$organizationSlug/settings/billing/',
+  '/_protected/$organizationSlug/settings/billing/'
 )({
   component: Billing,
 });
@@ -78,13 +78,13 @@ function Billing() {
               Boost your analytics and unlock advanced features with our premium
               plans.{' '}
               <a
-                href="#"
                 className="inline-flex items-center gap-1 text-indigo-600 dark:text-indigo-500"
+                href="#"
               >
                 Compare plans
                 <RiArrowRightUpLine
-                  className="size-4 shrink-0"
                   aria-hidden="true"
+                  className="size-4 shrink-0"
                 />
               </a>
             </p>
@@ -94,8 +94,8 @@ function Billing() {
               <div className="grid grid-cols-1 gap-x-14 gap-y-8 md:grid-cols-3">
                 <div>
                   <h2
-                    id="billing-overview"
                     className="scroll-mt-10 font-semibold text-foreground"
+                    id="billing-overview"
                   >
                     Billing
                   </h2>
@@ -107,7 +107,7 @@ function Billing() {
                 <div className="md:col-span-2">
                   <ul className="w-full divide-y divide-border border-border border-b">
                     {data.map((item) => (
-                      <li key={item.name} className="px-2 py-4 text-sm md:p-4">
+                      <li className="px-2 py-4 text-sm md:p-4" key={item.name}>
                         <div className="w-full">
                           <div className="flex items-center justify-between">
                             <p className="font-medium text-foreground">
@@ -120,8 +120,8 @@ function Billing() {
                           <div className="w-full md:w-2/3">
                             {item.percentageValue && (
                               <Progress
-                                value={item.percentageValue}
                                 className="mt-2 h-1.5"
+                                value={item.percentageValue}
                               />
                             )}
                             <p className="mt-1 flex items-center justify-between text-muted-foreground text-xs">
@@ -148,8 +148,8 @@ function Billing() {
                 <div className="grid grid-cols-1 gap-x-14 gap-y-8 md:grid-cols-3">
                   <div>
                     <h2
-                      id="cost-spend-control"
                       className="scroll-mt-10 font-semibold text-foreground"
+                      id="cost-spend-control"
                     >
                       Cost spend control
                     </h2>
@@ -162,8 +162,8 @@ function Billing() {
                       <div className="flex items-center space-x-4">
                         <div className="flex h-16 w-16 items-center justify-center">
                           <Progress
-                            value={isSpendMgmtEnabled ? 62.2 : 0}
                             className="h-2 w-12 rotate-90"
+                            value={isSpendMgmtEnabled ? 62.2 : 0}
                           />
                         </div>
                         <div>
@@ -173,8 +173,8 @@ function Billing() {
                                 &#36;280 / 350 (62.2&#37;)
                               </p>
                               <Label
-                                htmlFor="spend-mgmt"
                                 className="text-muted-foreground"
+                                htmlFor="spend-mgmt"
                               >
                                 Spend management enabled
                               </Label>
@@ -185,8 +185,8 @@ function Billing() {
                                 &#36;0 / 0 (0&#37;)
                               </p>
                               <Label
-                                htmlFor="spend-mgmt"
                                 className="text-muted-foreground"
+                                htmlFor="spend-mgmt"
                               >
                                 Spend management disabled
                               </Label>
@@ -195,9 +195,9 @@ function Billing() {
                         </div>
                       </div>
                       <Switch
+                        checked={isSpendMgmtEnabled}
                         id="spend-mgmt"
                         name="spend-mgmt"
-                        checked={isSpendMgmtEnabled}
                         onCheckedChange={() => {
                           setIsSpendMgmtEnabled(!isSpendMgmtEnabled);
                         }}
@@ -206,7 +206,7 @@ function Billing() {
                     <div
                       className={cn(
                         'transform-gpu transition-all ease-smooth-bounce will-change-transform',
-                        isSpendMgmtEnabled ? 'h-52 md:h-32' : 'h-0',
+                        isSpendMgmtEnabled ? 'h-52 md:h-32' : 'h-0'
                       )}
                       style={{
                         transitionDuration: '300ms',
@@ -216,7 +216,7 @@ function Billing() {
                       <div
                         className={cn(
                           'animate-slideDownAndFade transition',
-                          isSpendMgmtEnabled ? '' : 'hidden',
+                          isSpendMgmtEnabled ? '' : 'hidden'
                         )}
                         style={{
                           animationDelay: '100ms',
@@ -231,11 +231,11 @@ function Billing() {
                               Set amount ($)
                             </Label>
                             <Input
+                              className="mt-2"
+                              defaultValue={350}
                               id="hard-cap"
                               name="hard-cap"
-                              defaultValue={350}
                               type="number"
-                              className="mt-2"
                             />
                           </div>
                           <div className="md:col-span-2">
@@ -243,11 +243,11 @@ function Billing() {
                               Provide email for notifications
                             </Label>
                             <Input
+                              className="mt-2"
                               id="email"
                               name="email"
                               placeholder="admin@company.com"
                               type="email"
-                              className="mt-2"
                             />
                           </div>
                         </div>
@@ -266,8 +266,8 @@ function Billing() {
                 <div className="grid grid-cols-1 gap-x-14 gap-y-8 md:grid-cols-3">
                   <div>
                     <h2
-                      id="add-ons"
                       className="scroll-mt-10 font-semibold text-foreground"
+                      id="add-ons"
                     >
                       Add-Ons
                     </h2>
@@ -297,13 +297,13 @@ function Billing() {
                           <Label htmlFor="bot-protection">Activate</Label>
                         </div>
                         <a
-                          href="#"
                           className="inline-flex items-center gap-1 text-indigo-600 text-sm dark:text-indigo-500"
+                          href="#"
                         >
                           Learn more
                           <RiArrowRightUpLine
-                            className="size-4 shrink-0"
                             aria-hidden="true"
+                            className="size-4 shrink-0"
                           />
                         </a>
                       </div>
@@ -328,13 +328,13 @@ function Billing() {
                           <Label htmlFor="insights">Activate</Label>
                         </div>
                         <a
-                          href="#"
                           className="inline-flex items-center gap-1 text-indigo-600 text-sm dark:text-indigo-500"
+                          href="#"
                         >
                           Learn more
                           <RiArrowRightUpLine
-                            className="size-4 shrink-0"
                             aria-hidden="true"
+                            className="size-4 shrink-0"
                           />
                         </a>
                       </div>
@@ -356,10 +356,10 @@ function Header() {
   return (
     <SettingsHeader organizationSlug={organizationSlug}>
       <BreadcrumbItem>
-        <BreadcrumbLink title="Settings" asChild>
+        <BreadcrumbLink asChild title="Settings">
           <Link
-            to="/$organizationSlug/settings/general"
             params={{ organizationSlug }}
+            to="/$organizationSlug/settings/general"
           >
             Settings
           </Link>
@@ -367,10 +367,10 @@ function Header() {
       </BreadcrumbItem>
       <BreadcrumbSeparator />
       <BreadcrumbItem>
-        <BreadcrumbLink title="Billing" asChild>
+        <BreadcrumbLink asChild title="Billing">
           <Link
-            to="/$organizationSlug/settings/billing"
             params={{ organizationSlug }}
+            to="/$organizationSlug/settings/billing"
           >
             Billing
           </Link>

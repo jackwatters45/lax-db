@@ -41,20 +41,20 @@ const GetTeamPlayers = Schema.Struct({
 const getTeamPlayers = createServerFn({ method: 'GET' })
   .middleware([authMiddleware])
   .inputValidator((data: typeof GetTeamPlayers.Type) =>
-    Schema.decodeSync(GetTeamPlayers)(data),
+    Schema.decodeSync(GetTeamPlayers)(data)
   )
   .handler(async ({ data }) =>
     RuntimeServer.runPromise(
       Effect.gen(function* () {
         const playerService = yield* PlayerService;
         return yield* playerService.getTeamPlayers(data);
-      }),
-    ),
+      })
+    )
   );
 
 // TODO: more of a replace than an update - make sure updates add user options + exclude ids or something...
 export const Route = createFileRoute(
-  '/_protected/$organizationSlug/$teamId/players/',
+  '/_protected/$organizationSlug/$teamId/players/'
 )({
   component: RouteComponent,
   loader: async ({ params, context }) => {
@@ -94,26 +94,26 @@ function PlayersDataTable() {
         organizationSlug,
         teamId,
       }),
-    [activeOrganization.id, organizationSlug, teamId],
+    [activeOrganization.id, organizationSlug, teamId]
   );
 
   const excludePlayerIds = useMemo(
     () => players.map((p) => p.publicId),
-    [players],
+    [players]
   );
 
   return (
     <DataTableProvider
       columns={columns}
       data={players}
-      showAllRows={true}
       meta={{ excludePlayerIds }}
+      showAllRows={true}
     >
       <DataTableRoot>
         <PlayersFilterBar
+          excludePlayerIds={players.map((p) => p.publicId)}
           organizationId={activeOrganization.id}
           teamId={teamId}
-          excludePlayerIds={players.map((p) => p.publicId)}
         />
         <TabsContent value="list">
           <DataTableContent>
@@ -121,7 +121,7 @@ function PlayersDataTable() {
             <DataTableBody />
           </DataTableContent>
         </TabsContent>
-        <TabsContent value="cards" className="container">
+        <TabsContent className="container" value="cards">
           <PlayerCards players={players} />
         </TabsContent>
         <PlayersToolbar />
@@ -137,8 +137,8 @@ function Header() {
   return (
     <TeamHeader organizationSlug={organizationSlug} teamId={teamId}>
       <BreadcrumbItem>
-        <BreadcrumbLink className="max-w-full truncate" title="Teams" asChild>
-          <Link to="/$organizationSlug" params={{ organizationSlug }}>
+        <BreadcrumbLink asChild className="max-w-full truncate" title="Teams">
+          <Link params={{ organizationSlug }} to="/$organizationSlug">
             Teams
           </Link>
         </BreadcrumbLink>
@@ -148,8 +148,8 @@ function Header() {
         <BreadcrumbDropdown>
           <BreadcrumbLink asChild>
             <Link
-              to="/$organizationSlug/$teamId"
               params={{ organizationSlug, teamId: activeTeam.id }}
+              to="/$organizationSlug/$teamId"
             >
               {activeTeam.name}
             </Link>
@@ -161,8 +161,8 @@ function Header() {
             {teams.map((team) => (
               <BreadcrumbDropdownItem asChild key={team.id}>
                 <Link
-                  to="/$organizationSlug/$teamId/players"
                   params={{ organizationSlug, teamId: team.id }}
+                  to="/$organizationSlug/$teamId/players"
                 >
                   {team.name}
                 </Link>
@@ -173,10 +173,10 @@ function Header() {
       </BreadcrumbItem>
       <BreadcrumbSeparator />
       <BreadcrumbItem>
-        <BreadcrumbLink title="Players" asChild>
+        <BreadcrumbLink asChild title="Players">
           <Link
-            to="/$organizationSlug/$teamId/players"
             params={{ organizationSlug, teamId: activeTeam.id }}
+            to="/$organizationSlug/$teamId/players"
           >
             Players
           </Link>

@@ -75,8 +75,7 @@ export const Route = createFileRoute('/_protected/$organizationSlug/games/old')(
         ]);
 
         return { games, permissions };
-      } catch (error) {
-        console.error('Failed to load games:', error);
+      } catch (_error) {
         return {
           games: mockGames,
           permissions: {
@@ -87,7 +86,7 @@ export const Route = createFileRoute('/_protected/$organizationSlug/games/old')(
         };
       }
     },
-  },
+  }
 );
 
 function GamesPage() {
@@ -96,13 +95,13 @@ function GamesPage() {
 
   const upcomingGames = games.filter(
     (game) =>
-      game.status === 'scheduled' && new Date(game.gameDate) > new Date(),
+      game.status === 'scheduled' && new Date(game.gameDate) > new Date()
   );
 
   const completedGames = games.filter((game) => game.status === 'completed');
 
   const nextGame = upcomingGames.sort(
-    (a, b) => new Date(a.gameDate).getTime() - new Date(b.gameDate).getTime(),
+    (a, b) => new Date(a.gameDate).getTime() - new Date(b.gameDate).getTime()
   )[0];
 
   return (
@@ -120,8 +119,8 @@ function GamesPage() {
           {permissions.canManageGames && (
             <Button asChild>
               <Link
-                to="/$organizationSlug/games/create"
                 params={{ organizationSlug }}
+                to="/$organizationSlug/games/create"
               >
                 <Plus className="mr-2 h-4 w-4" />
                 Schedule Game
@@ -142,8 +141,8 @@ function GamesPage() {
             <CardContent>
               <GameCard
                 game={nextGame}
-                permissions={permissions}
                 isHighlighted
+                permissions={permissions}
               />
             </CardContent>
           </Card>
@@ -155,7 +154,7 @@ function GamesPage() {
             <h2 className="mb-4 font-semibold text-xl">Upcoming Games</h2>
             <div className="grid gap-4 md:grid-cols-2">
               {upcomingGames.map((game) => (
-                <GameCard key={game.id} game={game} permissions={permissions} />
+                <GameCard game={game} key={game.id} permissions={permissions} />
               ))}
             </div>
           </div>
@@ -170,13 +169,13 @@ function GamesPage() {
                 .sort(
                   (a, b) =>
                     new Date(b.gameDate).getTime() -
-                    new Date(a.gameDate).getTime(),
+                    new Date(a.gameDate).getTime()
                 )
                 .slice(0, 6)
                 .map((game) => (
                   <GameCard
-                    key={game.id}
                     game={game}
+                    key={game.id}
                     permissions={permissions}
                   />
                 ))}
@@ -194,8 +193,8 @@ function GamesPage() {
             {permissions.canManageGames && (
               <Button asChild>
                 <Link
-                  to="/$organizationSlug/games/create"
                   params={{ organizationSlug }}
+                  to="/$organizationSlug/games/create"
                 >
                   <Plus className="mr-2 h-4 w-4" />
                   Schedule Your First Game
@@ -238,15 +237,14 @@ function GameCard({
 }) {
   const { organizationSlug } = Route.useParams();
 
-  const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat('en-US', {
+  const formatDate = (date: Date) =>
+    new Intl.DateTimeFormat('en-US', {
       weekday: 'short',
       month: 'short',
       day: 'numeric',
       hour: 'numeric',
       minute: '2-digit',
     }).format(date);
-  };
 
   const getStatusColor = (status: Game['status']) => {
     switch (status) {
@@ -309,7 +307,7 @@ function GameCard({
         <div className="flex items-center gap-2 text-sm">
           <MapPin className="h-4 w-4 text-muted-foreground" />
           <span>{game.venue}</span>
-          <Badge variant="outline" className="ml-auto text-xs">
+          <Badge className="ml-auto text-xs" variant="outline">
             {game.isHomeGame ? 'HOME' : 'AWAY'}
           </Badge>
         </div>
@@ -330,26 +328,26 @@ function GameCard({
 
         {/* Actions */}
         <div className="flex gap-2 pt-2">
-          <Button variant="outline" size="sm" className="flex-1" asChild>
+          <Button asChild className="flex-1" size="sm" variant="outline">
             <Link
-              to="/$organizationSlug/games/$gameId"
               params={{
                 organizationSlug,
                 gameId: game.id,
               }}
+              to="/$organizationSlug/games/$gameId"
             >
               View Details
             </Link>
           </Button>
 
           {permissions.canEditGames && game.status !== 'completed' && (
-            <Button variant="outline" size="sm" asChild>
+            <Button asChild size="sm" variant="outline">
               <Link
-                to="/$organizationSlug/games/$gameId/edit"
                 params={{
                   organizationSlug,
                   gameId: game.id,
                 }}
+                to="/$organizationSlug/games/$gameId/edit"
               >
                 Edit
               </Link>
@@ -357,13 +355,13 @@ function GameCard({
           )}
 
           {permissions.canViewStats && game.status === 'completed' && (
-            <Button variant="outline" size="sm" asChild>
+            <Button asChild size="sm" variant="outline">
               <Link
-                to="/$organizationSlug/games/$gameId/stats"
                 params={{
                   organizationSlug,
                   gameId: game.id,
                 }}
+                to="/$organizationSlug/games/$gameId/stats"
               >
                 <Users className="mr-1 h-3 w-3" />
                 Stats
@@ -382,8 +380,8 @@ function Header() {
   return (
     <GamesHeader organizationSlug={organizationSlug}>
       <BreadcrumbItem>
-        <BreadcrumbLink className="max-w-full truncate" title="Games" asChild>
-          <Link to="/$organizationSlug/games" params={{ organizationSlug }}>
+        <BreadcrumbLink asChild className="max-w-full truncate" title="Games">
+          <Link params={{ organizationSlug }} to="/$organizationSlug/games">
             Games
           </Link>
         </BreadcrumbLink>

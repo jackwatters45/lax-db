@@ -24,10 +24,10 @@ export const getMarkdownStats = (content: string) => {
   const headings = lines.filter((line) => line.startsWith('#')).length;
   const tasks = lines.filter(
     (line) =>
-      line.includes('[ ]') || line.includes('[x]') || line.includes('[X]'),
+      line.includes('[ ]') || line.includes('[x]') || line.includes('[X]')
   ).length;
   const completedTasks = lines.filter(
-    (line) => line.includes('[x]') || line.includes('[X]'),
+    (line) => line.includes('[x]') || line.includes('[X]')
   ).length;
 
   return {

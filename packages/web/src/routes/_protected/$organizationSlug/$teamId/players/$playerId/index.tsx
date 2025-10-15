@@ -26,7 +26,6 @@ import { mockPlayerDetails } from './-utils';
 const getPlayerDetails = createServerFn({ method: 'GET' })
   .inputValidator((data: { playerId: string }) => data)
   .handler(async ({ data }) => {
-    console.log('Getting player details for:', data.playerId);
     // TODO: Replace with actual API call
     // const { PlayerDevelopmentAPI } = await import('@lax-db/core/player-development/index');
     // return await PlayerDevelopmentAPI.getPlayerProfile(data.playerId, headers);
@@ -34,19 +33,17 @@ const getPlayerDetails = createServerFn({ method: 'GET' })
     return mockPlayerDetails;
   });
 
-const getPlayerPermissions = createServerFn().handler(async () => {
-  return {
-    canEdit: true,
-    canCreateNotes: true,
-    canAssess: true,
-    canAssignResources: true,
-    canSetGoals: true,
-    canViewSensitive: true,
-  };
-});
+const getPlayerPermissions = createServerFn().handler(async () => ({
+  canEdit: true,
+  canCreateNotes: true,
+  canAssess: true,
+  canAssignResources: true,
+  canSetGoals: true,
+  canViewSensitive: true,
+}));
 
 export const Route = createFileRoute(
-  '/_protected/$organizationSlug/$teamId/players/$playerId/',
+  '/_protected/$organizationSlug/$teamId/players/$playerId/'
 )({
   component: RouteComponent,
   loader: async ({ params }) => {
@@ -69,10 +66,10 @@ function RouteComponent() {
       <PageBody>
         <PageContainer>
           <PlayerInfo
-            organizationSlug={organizationSlug}
-            teamId={teamId}
-            playerInfo={playerInfo}
             canEdit={permissions.canEdit}
+            organizationSlug={organizationSlug}
+            playerInfo={playerInfo}
+            teamId={teamId}
           />
           <div className="space-y-4">
             {/*{permissions.canViewSensitive && (
@@ -80,7 +77,6 @@ function RouteComponent() {
             )}*/}
             <PlayerOverview player={player} />
             <QuickActions
-              playerId={player.id}
               organizationSlug={organizationSlug}
               permissions={{
                 canCreateNotes: permissions.canCreateNotes,
@@ -88,22 +84,23 @@ function RouteComponent() {
                 canAssignResources: permissions.canAssignResources,
                 canSetGoals: permissions.canSetGoals,
               }}
+              playerId={player.id}
             />
             <Separator />
             <SeasonStatistics player={player} />
             <ActiveGoals
-              player={player}
-              organizationSlug={organizationSlug}
               canSetGoals={permissions.canSetGoals}
+              organizationSlug={organizationSlug}
+              player={player}
             />
             <RecentNotes
-              player={player}
-              organizationSlug={organizationSlug}
               canCreateNotes={permissions.canCreateNotes}
+              organizationSlug={organizationSlug}
+              player={player}
             />
             <AssignedResources
-              player={player}
               organizationSlug={organizationSlug}
+              player={player}
             />
 
             <UpcomingEvents player={player} />
@@ -122,12 +119,12 @@ function Header() {
   return (
     <PlayerHeader
       organizationSlug={organizationSlug}
-      teamId={activeTeam.id}
       playerId={player.id}
+      teamId={activeTeam.id}
     >
       <BreadcrumbItem>
-        <BreadcrumbLink className="max-w-full truncate" title="Teams" asChild>
-          <Link to="/$organizationSlug" params={{ organizationSlug }}>
+        <BreadcrumbLink asChild className="max-w-full truncate" title="Teams">
+          <Link params={{ organizationSlug }} to="/$organizationSlug">
             Teams
           </Link>
         </BreadcrumbLink>
@@ -135,17 +132,17 @@ function Header() {
       <BreadcrumbSeparator />
       <TeamBreadcrumbSwitcher
         activeTeam={activeTeam}
-        teams={teams}
         organizationSlug={organizationSlug}
+        teams={teams}
       >
         {({ team }) => (
           <Link
-            to="/$organizationSlug/$teamId/players/$playerId"
             params={{
               organizationSlug,
               teamId: team.id,
               playerId: player.id,
             }}
+            to="/$organizationSlug/$teamId/players/$playerId"
           >
             {team.name}
           </Link>
@@ -153,10 +150,10 @@ function Header() {
       </TeamBreadcrumbSwitcher>
       <BreadcrumbSeparator />
       <BreadcrumbItem>
-        <BreadcrumbLink title="Players" asChild>
+        <BreadcrumbLink asChild title="Players">
           <Link
-            to="/$organizationSlug/$teamId/players"
             params={{ organizationSlug, teamId: activeTeam.id }}
+            to="/$organizationSlug/$teamId/players"
           >
             Players
           </Link>
@@ -164,14 +161,14 @@ function Header() {
       </BreadcrumbItem>
       <BreadcrumbSeparator />
       <BreadcrumbItem>
-        <BreadcrumbLink title={player.name} asChild>
+        <BreadcrumbLink asChild title={player.name}>
           <Link
-            to="/$organizationSlug/$teamId/players/$playerId"
             params={{
               organizationSlug,
               teamId: activeTeam.id,
               playerId: player.id,
             }}
+            to="/$organizationSlug/$teamId/players/$playerId"
           >
             {player.name}
           </Link>

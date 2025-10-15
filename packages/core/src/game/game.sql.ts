@@ -1,5 +1,5 @@
 import { boolean, index, integer, pgTable, text } from 'drizzle-orm/pg-core';
-import { ids, timestamp, timestamps } from '../drizzle';
+import { ids, timestamp, timestamps } from '../drizzle/drizzle.type';
 import { organizationTable } from '../organization/organization.sql';
 import { seasonTable } from '../season/season.sql';
 import { teamTable } from '../team/team.sql';
@@ -56,7 +56,7 @@ export const gameTable = pgTable(
     index('idx_game_date').on(table.gameDate),
     index('idx_game_status').on(table.status),
     index('idx_game_team_date').on(table.teamId, table.gameDate),
-  ],
+  ]
 );
 
 type GameInternal = typeof gameTable.$inferSelect;

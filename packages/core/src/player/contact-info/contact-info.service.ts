@@ -1,7 +1,7 @@
 import { PgDrizzle } from '@effect/sql-drizzle/Pg';
 import { eq } from 'drizzle-orm';
 import { Array as Arr, Effect, Schema } from 'effect';
-import { DatabaseLive } from '../../drizzle';
+import { DatabaseLive } from '../../drizzle/drizzle.service';
 import { type Player, playerTable } from '../player.sql';
 import { PlayerContactInfoError } from './contact-info.error';
 import { GetPlayerContactInfoInput } from './contact-info.schema';
@@ -28,7 +28,7 @@ export class PlayerContactInfoService extends Effect.Service<PlayerContactInfoSe
         getPlayerWithContactInfo: (input: GetPlayerContactInfoInput) =>
           Effect.gen(function* () {
             const validated = yield* Schema.decode(GetPlayerContactInfoInput)(
-              input,
+              input
             );
 
             const result: PlayerWithContactInfoQuery | undefined = yield* db
@@ -51,7 +51,7 @@ export class PlayerContactInfoService extends Effect.Service<PlayerContactInfoSe
               .from(playerTable)
               .leftJoin(
                 playerContactInfoTable,
-                eq(playerTable.id, playerContactInfoTable.playerId),
+                eq(playerTable.id, playerContactInfoTable.playerId)
               )
               .where(eq(playerTable.id, validated.playerId))
               .limit(1)
@@ -59,13 +59,13 @@ export class PlayerContactInfoService extends Effect.Service<PlayerContactInfoSe
                 Effect.flatMap(Arr.head),
                 Effect.tapError(Effect.logError),
                 Effect.mapError(
-                  (cause) => new PlayerContactInfoError({ cause }),
-                ),
+                  (cause) => new PlayerContactInfoError({ cause })
+                )
               );
             return result || null;
           }),
       } as const;
     }),
     dependencies: [DatabaseLive],
-  },
+  }
 ) {}

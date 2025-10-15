@@ -1,12 +1,11 @@
 import { GraduationCap, Star, Target, Trophy } from 'lucide-react';
 
-export const formatDate = (date: Date) => {
-  return new Intl.DateTimeFormat('en-US', {
+export const formatDate = (date: Date) =>
+  new Intl.DateTimeFormat('en-US', {
     month: 'short',
     day: 'numeric',
     year: 'numeric',
   }).format(date);
-};
 
 export const getTrendColor = (trend: string) => {
   switch (trend) {

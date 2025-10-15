@@ -26,11 +26,11 @@ export function QuickActions({
       </CardHeader>
       <CardContent className="space-y-3">
         {permissions.canCreateNotes && (
-          <Button variant="outline" className="w-full justify-start" asChild>
+          <Button asChild className="w-full justify-start" variant="outline">
             <Link
-              to="/$organizationSlug/players/notes/create"
               params={{ organizationSlug }}
               search={{ playerId }}
+              to="/$organizationSlug/players/notes/create"
             >
               <FileText className="mr-2 h-4 w-4" />
               Add Development Note
@@ -39,11 +39,11 @@ export function QuickActions({
         )}
 
         {permissions.canAssess && (
-          <Button variant="outline" className="w-full justify-start" asChild>
+          <Button asChild className="w-full justify-start" variant="outline">
             <Link
-              to="/$organizationSlug/players/assessments/create"
               params={{ organizationSlug }}
               search={{ playerId }}
+              to="/$organizationSlug/players/assessments/create"
             >
               <TrendingUp className="mr-2 h-4 w-4" />
               Create Assessment
@@ -52,11 +52,11 @@ export function QuickActions({
         )}
 
         {permissions.canAssignResources && (
-          <Button variant="outline" className="w-full justify-start" asChild>
+          <Button asChild className="w-full justify-start" variant="outline">
             <Link
-              to="/$organizationSlug/players/resources/create"
               params={{ organizationSlug }}
               search={{ playerId }}
+              to="/$organizationSlug/players/resources/create"
             >
               <BookOpen className="mr-2 h-4 w-4" />
               Assign Resource
@@ -65,11 +65,11 @@ export function QuickActions({
         )}
 
         {permissions.canSetGoals && (
-          <Button variant="outline" className="w-full justify-start" asChild>
+          <Button asChild className="w-full justify-start" variant="outline">
             <Link
-              to="/$organizationSlug/players/goals/create"
               params={{ organizationSlug }}
               search={{ playerId }}
+              to="/$organizationSlug/players/goals/create"
             >
               <Target className="mr-2 h-4 w-4" />
               Set Goal
@@ -77,13 +77,13 @@ export function QuickActions({
           </Button>
         )}
 
-        <Button variant="outline" className="w-full justify-start" asChild>
+        <Button asChild className="w-full justify-start" variant="outline">
           <Link
-            to="/$organizationSlug/players/$playerId/stats"
             params={{
               organizationSlug,
               playerId,
             }}
+            to="/$organizationSlug/players/$playerId/stats"
           >
             <Trophy className="mr-2 h-4 w-4" />
             Detailed Stats

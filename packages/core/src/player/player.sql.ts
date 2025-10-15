@@ -1,5 +1,5 @@
 import { index, integer, pgTable, text } from 'drizzle-orm/pg-core';
-import { ids, timestamps } from '../drizzle';
+import { ids, timestamps } from '../drizzle/drizzle.type';
 import { organizationTable } from '../organization/organization.sql';
 import { teamTable } from '../team/team.sql';
 import { userTable } from '../user/user.sql';
@@ -24,7 +24,7 @@ export const playerTable = pgTable(
     index('idx_player_organization').on(table.organizationId),
     index('idx_player_name').on(table.name),
     index('idx_player_email').on(table.email),
-  ],
+  ]
 );
 
 type PlayerInternal = typeof playerTable.$inferSelect;
@@ -50,7 +50,7 @@ export const teamPlayerTable = pgTable(
     index('idx_team_player_team').on(table.teamId),
     index('idx_team_player_player').on(table.playerId),
     index('idx_team_player_unique').on(table.teamId, table.playerId),
-  ],
+  ]
 );
 
 type TeamPlayerInternal = typeof teamPlayerTable.$inferSelect;

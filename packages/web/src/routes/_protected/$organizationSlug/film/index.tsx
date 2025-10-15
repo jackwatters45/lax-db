@@ -27,7 +27,7 @@ export const Route = createFileRoute('/_protected/$organizationSlug/film/')({
   component: FilmLibraryPage,
 });
 
-interface GameFilm {
+type GameFilm = {
   id: string;
   title: string;
   gameDate: string;
@@ -45,9 +45,9 @@ interface GameFilm {
   events: FilmEvent[];
   views: number;
   isAnalyzed: boolean;
-}
+};
 
-interface FilmEvent {
+type FilmEvent = {
   id: string;
   timestamp: number;
   type:
@@ -61,7 +61,7 @@ interface FilmEvent {
   player?: string;
   description: string;
   quarter: number;
-}
+};
 
 const mockFilms: GameFilm[] = [
   {
@@ -259,7 +259,7 @@ function FilmLibraryPage() {
         film.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         film.opponent.toLowerCase().includes(searchQuery.toLowerCase()) ||
         film.tags.some((tag) =>
-          tag.toLowerCase().includes(searchQuery.toLowerCase()),
+          tag.toLowerCase().includes(searchQuery.toLowerCase())
         );
       const matchesType =
         selectedGameType === 'All Types' || film.gameType === selectedGameType;
@@ -294,13 +294,12 @@ function FilmLibraryPage() {
     return hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+  const formatDate = (dateString: string) =>
+    new Date(dateString).toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
       year: 'numeric',
     });
-  };
 
   const getGameTypeColor = (type: string) => {
     switch (type) {
@@ -385,16 +384,16 @@ function FilmLibraryPage() {
           <div className="relative">
             <Search className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
             <Input
+              className="w-64 pl-10"
+              onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search films, opponents, tags..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-64 pl-10"
             />
           </div>
           <select
-            value={selectedGameType}
-            onChange={(e) => setSelectedGameType(e.target.value)}
             className="w-40 rounded-md border border-input bg-background px-3 py-2 text-sm"
+            onChange={(e) => setSelectedGameType(e.target.value)}
+            value={selectedGameType}
           >
             {gameTypes.map((type) => (
               <option key={type} value={type}>
@@ -404,19 +403,19 @@ function FilmLibraryPage() {
           </select>
           <label className="flex items-center gap-2 text-sm">
             <input
-              type="checkbox"
               checked={showAnalyzedOnly}
-              onChange={(e) => setShowAnalyzedOnly(e.target.checked)}
               className="rounded"
+              onChange={(e) => setShowAnalyzedOnly(e.target.checked)}
+              type="checkbox"
             />
             Analyzed only
           </label>
         </div>
 
         <select
-          value={sortBy}
-          onChange={(e) => setSortBy(e.target.value)}
           className="w-40 rounded-md border border-input bg-background px-3 py-2 text-sm"
+          onChange={(e) => setSortBy(e.target.value)}
+          value={sortBy}
         >
           {sortOptions.map((option) => (
             <option key={option} value={option}>
@@ -429,8 +428,8 @@ function FilmLibraryPage() {
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {filteredFilms.map((film) => (
           <Card
-            key={film.id}
             className="overflow-hidden transition-shadow hover:shadow-lg"
+            key={film.id}
           >
             <div className="relative">
               <div className="flex aspect-video items-center justify-center bg-muted">
@@ -443,15 +442,15 @@ function FilmLibraryPage() {
               </div>
               <div className="absolute top-2 right-2">
                 {film.isAnalyzed && (
-                  <Badge variant="secondary" className="text-xs">
+                  <Badge className="text-xs" variant="secondary">
                     Analyzed
                   </Badge>
                 )}
               </div>
               <div className="absolute right-2 bottom-2">
                 <Badge
-                  variant="outline"
                   className="border-white/20 bg-black/50 text-white text-xs"
+                  variant="outline"
                 >
                   {formatDuration(film.duration)}
                 </Badge>
@@ -484,12 +483,12 @@ function FilmLibraryPage() {
 
               <div className="flex flex-wrap gap-1">
                 {film.tags.slice(0, 3).map((tag) => (
-                  <Badge key={tag} variant="secondary" className="text-xs">
+                  <Badge className="text-xs" key={tag} variant="secondary">
                     {tag}
                   </Badge>
                 ))}
                 {film.tags.length > 3 && (
-                  <Badge variant="outline" className="text-xs">
+                  <Badge className="text-xs" variant="outline">
                     +{film.tags.length - 3}
                   </Badge>
                 )}
@@ -522,15 +521,15 @@ function FilmLibraryPage() {
                   <div className="flex gap-1">
                     {film.events.slice(0, 3).map((event) => (
                       <Badge
+                        className="text-xs"
                         key={event.id}
                         variant="outline"
-                        className="text-xs"
                       >
                         {event.type}
                       </Badge>
                     ))}
                     {film.events.length > 3 && (
-                      <Badge variant="outline" className="text-xs">
+                      <Badge className="text-xs" variant="outline">
                         +{film.events.length - 3}
                       </Badge>
                     )}
@@ -539,14 +538,14 @@ function FilmLibraryPage() {
               )}
 
               <div className="flex gap-2 pt-2">
-                <Button size="sm" className="flex-1">
+                <Button className="flex-1" size="sm">
                   <PlayCircle className="mr-2 h-4 w-4" />
                   Watch
                 </Button>
-                <Button variant="outline" size="sm">
+                <Button size="sm" variant="outline">
                   <Download className="h-4 w-4" />
                 </Button>
-                <Button variant="outline" size="sm">
+                <Button size="sm" variant="outline">
                   <MoreHorizontal className="h-4 w-4" />
                 </Button>
               </div>

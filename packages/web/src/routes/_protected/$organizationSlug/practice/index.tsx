@@ -144,15 +144,13 @@ const getPracticeDashboard = createServerFn().handler(async () => {
 });
 
 // Server function for permissions
-const getPracticePermissions = createServerFn().handler(async () => {
-  return {
-    canCreateDrills: true,
-    canSchedulePractices: true,
-    canManageDrills: true,
-    canViewAnalytics: true,
-    canCreateTemplates: true,
-  };
-});
+const getPracticePermissions = createServerFn().handler(async () => ({
+  canCreateDrills: true,
+  canSchedulePractices: true,
+  canManageDrills: true,
+  canViewAnalytics: true,
+  canCreateTemplates: true,
+}));
 
 export const Route = createFileRoute('/_protected/$organizationSlug/practice/')(
   {
@@ -165,19 +163,18 @@ export const Route = createFileRoute('/_protected/$organizationSlug/practice/')(
 
       return { data, permissions };
     },
-  },
+  }
 );
 
 function PracticeDashboard() {
   const { organizationSlug } = Route.useParams();
   const { data, permissions } = Route.useLoaderData();
 
-  const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat('en-US', {
+  const formatDate = (date: Date) =>
+    new Intl.DateTimeFormat('en-US', {
       month: 'short',
       day: 'numeric',
     }).format(date);
-  };
 
   const formatDateTime = (date: Date, time: string) => {
     const dateStr = new Intl.DateTimeFormat('en-US', {
@@ -212,10 +209,10 @@ function PracticeDashboard() {
 
         <div className="flex gap-2">
           {permissions.canCreateTemplates && (
-            <Button variant="outline" asChild>
+            <Button asChild variant="outline">
               <Link
-                to="/$organizationSlug/practice/templates"
                 params={{ organizationSlug }}
+                to="/$organizationSlug/practice/templates"
               >
                 <Layers className="mr-2 h-4 w-4" />
                 Templates
@@ -225,8 +222,8 @@ function PracticeDashboard() {
           {permissions.canSchedulePractices && (
             <Button asChild>
               <Link
-                to="/$organizationSlug/practice/schedule"
                 params={{ organizationSlug }}
+                to="/$organizationSlug/practice/schedule"
               >
                 <Calendar className="mr-2 h-4 w-4" />
                 Schedule Practice
@@ -301,9 +298,8 @@ function PracticeDashboard() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle>Recently Used Drills</CardTitle>
-                <Button variant="ghost" size="sm" asChild>
+                <Button asChild size="sm" variant="ghost">
                   <Link
-                    to="/$organizationSlug/practice/drills"
                     params={{ organizationSlug }}
                     search={{
                       search: '',
@@ -311,6 +307,7 @@ function PracticeDashboard() {
                       difficulty: 'All',
                       favorites: false,
                     }}
+                    to="/$organizationSlug/practice/drills"
                   >
                     View All
                   </Link>
@@ -321,8 +318,8 @@ function PracticeDashboard() {
               <div className="space-y-3">
                 {data.recentDrills.map((drill) => (
                   <div
-                    key={drill.id}
                     className="flex items-center justify-between rounded border p-3"
+                    key={drill.id}
                   >
                     <div className="flex items-center gap-3">
                       <div
@@ -365,7 +362,7 @@ function PracticeDashboard() {
                       <Badge variant={getDifficultyColor(drill.difficulty)}>
                         {drill.difficulty}
                       </Badge>
-                      <Button variant="ghost" size="sm" disabled>
+                      <Button disabled size="sm" variant="ghost">
                         View
                       </Button>
                     </div>
@@ -380,7 +377,7 @@ function PracticeDashboard() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle>Upcoming Practices</CardTitle>
-                <Button variant="ghost" size="sm" disabled>
+                <Button disabled size="sm" variant="ghost">
                   View Schedule
                 </Button>
               </div>
@@ -389,8 +386,8 @@ function PracticeDashboard() {
               <div className="space-y-3">
                 {data.upcomingPractices.map((practice) => (
                   <div
-                    key={practice.id}
                     className="flex items-center justify-between rounded border p-3"
+                    key={practice.id}
                   >
                     <div className="flex-1">
                       <div className="font-medium">{practice.name}</div>
@@ -401,9 +398,9 @@ function PracticeDashboard() {
                       <div className="mt-1 flex gap-1">
                         {practice.focus.map((focus) => (
                           <Badge
+                            className="text-xs"
                             key={focus}
                             variant="outline"
-                            className="text-xs"
                           >
                             {focus}
                           </Badge>
@@ -424,7 +421,7 @@ function PracticeDashboard() {
                           Drills
                         </div>
                       </div>
-                      <Button variant="ghost" size="sm" disabled>
+                      <Button disabled size="sm" variant="ghost">
                         Edit
                       </Button>
                     </div>
@@ -439,7 +436,7 @@ function PracticeDashboard() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle>Recent Practice Sessions</CardTitle>
-                <Button variant="ghost" size="sm" disabled>
+                <Button disabled size="sm" variant="ghost">
                   View All
                 </Button>
               </div>
@@ -448,8 +445,8 @@ function PracticeDashboard() {
               <div className="space-y-3">
                 {data.recentPractices.map((session) => (
                   <div
-                    key={session.id}
                     className="flex items-center justify-between rounded border p-3"
+                    key={session.id}
                   >
                     <div className="flex-1">
                       <div className="font-medium">{session.name}</div>
@@ -500,8 +497,8 @@ function PracticeDashboard() {
               <div className="space-y-3">
                 {data.drillCategories.map((category) => (
                   <div
-                    key={category.name}
                     className="flex items-center justify-between"
+                    key={category.name}
                   >
                     <div className="flex items-center gap-3">
                       <div
@@ -518,10 +515,10 @@ function PracticeDashboard() {
               </div>
               {permissions.canManageDrills && (
                 <Button
-                  variant="outline"
-                  size="sm"
                   className="mt-4 w-full"
                   disabled
+                  size="sm"
+                  variant="outline"
                 >
                   Manage Categories
                 </Button>
@@ -537,13 +534,13 @@ function PracticeDashboard() {
             <CardContent className="space-y-3">
               {permissions.canCreateDrills && (
                 <Button
-                  variant="outline"
-                  className="w-full justify-start"
                   asChild
+                  className="w-full justify-start"
+                  variant="outline"
                 >
                   <Link
-                    to="/$organizationSlug/practice/drills/create"
                     params={{ organizationSlug }}
+                    to="/$organizationSlug/practice/drills/create"
                   >
                     <Plus className="mr-2 h-4 w-4" />
                     Create New Drill
@@ -552,12 +549,11 @@ function PracticeDashboard() {
               )}
 
               <Button
-                variant="outline"
-                className="w-full justify-start"
                 asChild
+                className="w-full justify-start"
+                variant="outline"
               >
                 <Link
-                  to="/$organizationSlug/practice/drills"
                   params={{ organizationSlug }}
                   search={{
                     search: '',
@@ -565,6 +561,7 @@ function PracticeDashboard() {
                     difficulty: 'All',
                     favorites: false,
                   }}
+                  to="/$organizationSlug/practice/drills"
                 >
                   <Dumbbell className="mr-2 h-4 w-4" />
                   Browse Drill Bank
@@ -573,13 +570,13 @@ function PracticeDashboard() {
 
               {permissions.canSchedulePractices && (
                 <Button
-                  variant="outline"
-                  className="w-full justify-start"
                   asChild
+                  className="w-full justify-start"
+                  variant="outline"
                 >
                   <Link
-                    to="/$organizationSlug/practice/schedule"
                     params={{ organizationSlug }}
+                    to="/$organizationSlug/practice/schedule"
                   >
                     <Calendar className="mr-2 h-4 w-4" />
                     Schedule Practice
@@ -588,9 +585,9 @@ function PracticeDashboard() {
               )}
 
               <Button
-                variant="outline"
                 className="w-full justify-start"
                 disabled
+                variant="outline"
               >
                 <Star className="mr-2 h-4 w-4" />
                 View Favorite Drills
@@ -598,9 +595,9 @@ function PracticeDashboard() {
 
               {permissions.canViewAnalytics && (
                 <Button
-                  variant="outline"
                   className="w-full justify-start"
                   disabled
+                  variant="outline"
                 >
                   <TrendingUp className="mr-2 h-4 w-4" />
                   Practice Analytics

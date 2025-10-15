@@ -18,7 +18,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
 // Types for play creation
-interface PlayStep {
+type PlayStep = {
   id: string;
   stepNumber: number;
   title: string;
@@ -27,9 +27,9 @@ interface PlayStep {
   playerPositions: string[];
   instructions: string;
   keyPoints: string[];
-}
+};
 
-interface PlayFormData {
+type PlayFormData = {
   name: string;
   description: string;
   category: string;
@@ -38,7 +38,7 @@ interface PlayFormData {
   playerPositions: string[];
   tags: string[];
   steps: PlayStep[];
-}
+};
 
 // Mock data for dropdowns
 const mockFormData = {
@@ -83,26 +83,16 @@ const mockFormData = {
 // Server function for creating play
 const createPlay = createServerFn({ method: 'POST' })
   .inputValidator((data: PlayFormData) => data)
-  .handler(async ({ data }) => {
-    // TODO: Replace with actual API call
-    // const { PlaybookAPI } = await import('@lax-db/core/playbook/index');
-    // const request = getRequest();
-    // return await PlaybookAPI.createPlay(teamId, data, request.headers);
-
-    console.log('Creating play:', data);
-    return { success: true, playId: 'new-play-id' };
-  });
+  .handler(async ({ data }) => ({ success: true, playId: 'new-play-id' }));
 
 // Server function for permissions
-const getCreatePermissions = createServerFn().handler(async () => {
-  return {
-    canCreatePlays: true,
-    canEditCategories: true,
-  };
-});
+const getCreatePermissions = createServerFn().handler(async () => ({
+  canCreatePlays: true,
+  canEditCategories: true,
+}));
 
 export const Route = createFileRoute(
-  '/_protected/$organizationSlug/playbook/plays/create',
+  '/_protected/$organizationSlug/playbook/plays/create'
 )({
   component: CreatePlay,
   loader: async () => {
@@ -144,7 +134,7 @@ function CreatePlay() {
 
   const handleBasicInfoChange = (
     field: keyof PlayFormData,
-    value: string | number | string[],
+    value: string | number | string[]
   ) => {
     setPlayData((prev) => ({ ...prev, [field]: value }));
   };
@@ -273,9 +263,7 @@ function CreatePlay() {
           },
         });
       }
-    } catch (error) {
-      console.error('Error creating play:', error);
-    }
+    } catch (_error) {}
   };
 
   const canProceed = () => {
@@ -301,36 +289,36 @@ function CreatePlay() {
                 <Label htmlFor="playName">Play Name *</Label>
                 <Input
                   id="playName"
-                  value={playData.name}
                   onChange={(e) =>
                     handleBasicInfoChange('name', e.target.value)
                   }
                   placeholder="Enter play name"
+                  value={playData.name}
                 />
               </div>
 
               <div>
                 <Label htmlFor="playDescription">Description *</Label>
                 <textarea
+                  className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                   id="playDescription"
-                  value={playData.description}
                   onChange={(e) =>
                     handleBasicInfoChange('description', e.target.value)
                   }
                   placeholder="Describe the purpose and strategy of this play"
-                  className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  value={playData.description}
                 />
               </div>
 
               <div>
                 <Label htmlFor="category">Category *</Label>
                 <select
+                  className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
                   id="category"
-                  value={playData.category}
                   onChange={(e) =>
                     handleBasicInfoChange('category', e.target.value)
                   }
-                  className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                  value={playData.category}
                 >
                   <option value="">Select category</option>
                   {formData.categories.map((category) => (
@@ -344,12 +332,12 @@ function CreatePlay() {
               <div>
                 <Label htmlFor="difficulty">Difficulty Level</Label>
                 <select
+                  className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
                   id="difficulty"
-                  value={playData.difficultyLevel}
                   onChange={(e) =>
                     handleBasicInfoChange('difficultyLevel', e.target.value)
                   }
-                  className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                  value={playData.difficultyLevel}
                 >
                   <option value="beginner">Beginner</option>
                   <option value="intermediate">Intermediate</option>
@@ -361,16 +349,16 @@ function CreatePlay() {
                 <Label htmlFor="duration">Estimated Duration (seconds)</Label>
                 <Input
                   id="duration"
-                  type="number"
-                  value={playData.estimatedDuration}
+                  max="300"
+                  min="10"
                   onChange={(e) =>
                     handleBasicInfoChange(
                       'estimatedDuration',
-                      Number(e.target.value),
+                      Number(e.target.value)
                     )
                   }
-                  min="10"
-                  max="300"
+                  type="number"
+                  value={playData.estimatedDuration}
                 />
               </div>
             </div>
@@ -383,17 +371,17 @@ function CreatePlay() {
                   {formData.positions.map((position) => (
                     <Button
                       key={position}
+                      onClick={() =>
+                        playData.playerPositions.includes(position)
+                          ? removePosition(position)
+                          : addPosition(position)
+                      }
+                      size="sm"
                       type="button"
                       variant={
                         playData.playerPositions.includes(position)
                           ? 'default'
                           : 'outline'
-                      }
-                      size="sm"
-                      onClick={() =>
-                        playData.playerPositions.includes(position)
-                          ? removePosition(position)
-                          : addPosition(position)
                       }
                     >
                       {position}
@@ -406,9 +394,9 @@ function CreatePlay() {
                       <Badge key={position} variant="secondary">
                         {position}
                         <button
-                          type="button"
-                          onClick={() => removePosition(position)}
                           className="ml-1 hover:text-red-500"
+                          onClick={() => removePosition(position)}
+                          type="button"
                         >
                           <X className="h-3 w-3" />
                         </button>
@@ -425,33 +413,33 @@ function CreatePlay() {
               <div className="mt-2 space-y-2">
                 <div className="flex gap-2">
                   <Input
-                    value={newTag}
                     onChange={(e) => setNewTag(e.target.value)}
-                    placeholder="Add a tag"
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') {
                         e.preventDefault();
                         addTag();
                       }
                     }}
+                    placeholder="Add a tag"
+                    value={newTag}
                   />
-                  <Button type="button" onClick={addTag} size="sm">
+                  <Button onClick={addTag} size="sm" type="button">
                     Add
                   </Button>
                 </div>
                 <div className="flex flex-wrap gap-1">
                   {formData.commonTags.map((tag) => (
                     <Button
+                      className="h-auto p-1 text-xs"
+                      disabled={playData.tags.includes(tag)}
                       key={tag}
-                      type="button"
-                      variant="ghost"
-                      size="sm"
                       onClick={() =>
                         !playData.tags.includes(tag) &&
                         handleBasicInfoChange('tags', [...playData.tags, tag])
                       }
-                      className="h-auto p-1 text-xs"
-                      disabled={playData.tags.includes(tag)}
+                      size="sm"
+                      type="button"
+                      variant="ghost"
                     >
                       {tag}
                     </Button>
@@ -463,9 +451,9 @@ function CreatePlay() {
                       <Badge key={tag} variant="outline">
                         {tag}
                         <button
-                          type="button"
-                          onClick={() => removeTag(tag)}
                           className="ml-1 hover:text-red-500"
+                          onClick={() => removeTag(tag)}
+                          type="button"
                         >
                           <X className="h-3 w-3" />
                         </button>
@@ -484,9 +472,9 @@ function CreatePlay() {
             <div className="flex items-center justify-between">
               <h3 className="font-semibold text-lg">Play Steps</h3>
               <Button
-                type="button"
-                onClick={() => setIsCreatingStep(true)}
                 disabled={isCreatingStep}
+                onClick={() => setIsCreatingStep(true)}
+                type="button"
               >
                 <Plus className="mr-2 h-4 w-4" />
                 Add Step
@@ -503,10 +491,10 @@ function CreatePlay() {
                         Step {step.stepNumber}: {step.title}
                       </CardTitle>
                       <Button
+                        onClick={() => removeStep(step.id)}
+                        size="sm"
                         type="button"
                         variant="ghost"
-                        size="sm"
-                        onClick={() => removeStep(step.id)}
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -523,9 +511,9 @@ function CreatePlay() {
                       <div className="mb-2 flex flex-wrap gap-1">
                         {step.playerPositions.map((pos) => (
                           <Badge
+                            className="text-xs"
                             key={pos}
                             variant="outline"
-                            className="text-xs"
                           >
                             {pos}
                           </Badge>
@@ -566,7 +554,6 @@ function CreatePlay() {
                     <Label htmlFor="stepTitle">Step Title *</Label>
                     <Input
                       id="stepTitle"
-                      value={newStep.title || ''}
                       onChange={(e) =>
                         setNewStep((prev) => ({
                           ...prev,
@@ -574,14 +561,15 @@ function CreatePlay() {
                         }))
                       }
                       placeholder="Enter step title"
+                      value={newStep.title || ''}
                     />
                   </div>
 
                   <div>
                     <Label htmlFor="stepDescription">Description *</Label>
                     <textarea
+                      className="flex min-h-[60px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                       id="stepDescription"
-                      value={newStep.description || ''}
                       onChange={(e) =>
                         setNewStep((prev) => ({
                           ...prev,
@@ -589,7 +577,7 @@ function CreatePlay() {
                         }))
                       }
                       placeholder="Describe what happens in this step"
-                      className="flex min-h-[60px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                      value={newStep.description || ''}
                     />
                   </div>
 
@@ -597,16 +585,16 @@ function CreatePlay() {
                     <Label htmlFor="stepDuration">Duration (seconds)</Label>
                     <Input
                       id="stepDuration"
-                      type="number"
-                      value={newStep.duration || 30}
+                      max="120"
+                      min="5"
                       onChange={(e) =>
                         setNewStep((prev) => ({
                           ...prev,
                           duration: Number(e.target.value),
                         }))
                       }
-                      min="5"
-                      max="120"
+                      type="number"
+                      value={newStep.duration || 30}
                     />
                   </div>
 
@@ -616,17 +604,17 @@ function CreatePlay() {
                       {formData.positions.map((position) => (
                         <Button
                           key={position}
+                          onClick={() =>
+                            newStep.playerPositions?.includes(position)
+                              ? removeStepPosition(position)
+                              : addStepPosition(position)
+                          }
+                          size="sm"
                           type="button"
                           variant={
                             newStep.playerPositions?.includes(position)
                               ? 'default'
                               : 'outline'
-                          }
-                          size="sm"
-                          onClick={() =>
-                            newStep.playerPositions?.includes(position)
-                              ? removeStepPosition(position)
-                              : addStepPosition(position)
                           }
                         >
                           {position}
@@ -638,8 +626,8 @@ function CreatePlay() {
                   <div>
                     <Label htmlFor="stepInstructions">Instructions</Label>
                     <textarea
+                      className="flex min-h-[60px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                       id="stepInstructions"
-                      value={newStep.instructions || ''}
                       onChange={(e) =>
                         setNewStep((prev) => ({
                           ...prev,
@@ -647,7 +635,7 @@ function CreatePlay() {
                         }))
                       }
                       placeholder="Detailed instructions for executing this step"
-                      className="flex min-h-[60px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                      value={newStep.instructions || ''}
                     />
                   </div>
 
@@ -656,17 +644,17 @@ function CreatePlay() {
                     <div className="mt-2 space-y-2">
                       <div className="flex gap-2">
                         <Input
-                          value={newKeyPoint}
                           onChange={(e) => setNewKeyPoint(e.target.value)}
-                          placeholder="Add a key point"
                           onKeyDown={(e) => {
                             if (e.key === 'Enter') {
                               e.preventDefault();
                               addKeyPoint();
                             }
                           }}
+                          placeholder="Add a key point"
+                          value={newKeyPoint}
                         />
-                        <Button type="button" onClick={addKeyPoint} size="sm">
+                        <Button onClick={addKeyPoint} size="sm" type="button">
                           Add
                         </Button>
                       </div>
@@ -674,15 +662,15 @@ function CreatePlay() {
                         <div className="space-y-1">
                           {newStep.keyPoints.map((point, index) => (
                             <div
-                              key={point}
                               className="flex items-center justify-between rounded border p-2"
+                              key={point}
                             >
                               <span className="text-sm">{point}</span>
                               <Button
+                                onClick={() => removeKeyPoint(index)}
+                                size="sm"
                                 type="button"
                                 variant="ghost"
-                                size="sm"
-                                onClick={() => removeKeyPoint(index)}
                               >
                                 <X className="h-3 w-3" />
                               </Button>
@@ -694,14 +682,14 @@ function CreatePlay() {
                   </div>
 
                   <div className="flex gap-2">
-                    <Button type="button" onClick={saveStep}>
+                    <Button onClick={saveStep} type="button">
                       <Save className="mr-2 h-4 w-4" />
                       Save Step
                     </Button>
                     <Button
+                      onClick={() => setIsCreatingStep(false)}
                       type="button"
                       variant="outline"
-                      onClick={() => setIsCreatingStep(false)}
                     >
                       Cancel
                     </Button>
@@ -739,7 +727,7 @@ function CreatePlay() {
                   <strong>Category:</strong>{' '}
                   {
                     formData.categories.find(
-                      (c) => c.value === playData.category,
+                      (c) => c.value === playData.category
                     )?.label
                   }
                 </div>
@@ -771,7 +759,7 @@ function CreatePlay() {
               <CardContent>
                 <div className="space-y-3">
                   {playData.steps.map((step) => (
-                    <div key={step.id} className="rounded border p-3">
+                    <div className="rounded border p-3" key={step.id}>
                       <div className="font-medium">
                         Step {step.stepNumber}: {step.title}
                       </div>
@@ -806,9 +794,8 @@ function CreatePlay() {
           </p>
         </div>
 
-        <Button variant="outline" asChild>
+        <Button asChild variant="outline">
           <Link
-            to="/$organizationSlug/playbook/plays"
             params={{ organizationSlug }}
             search={{
               search: '',
@@ -816,6 +803,7 @@ function CreatePlay() {
               difficulty: 'All',
               favorites: false,
             }}
+            to="/$organizationSlug/playbook/plays"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Plays
@@ -827,7 +815,7 @@ function CreatePlay() {
       <div className="mb-8">
         <div className="flex items-center justify-center space-x-4">
           {[1, 2, 3].map((step) => (
-            <div key={step} className="flex items-center">
+            <div className="flex items-center" key={step}>
               <div
                 className={`flex h-8 w-8 items-center justify-center rounded-full ${
                   step === currentStep
@@ -865,9 +853,9 @@ function CreatePlay() {
       {/* Navigation */}
       <div className="mt-8 flex items-center justify-between">
         <Button
-          variant="outline"
-          onClick={() => setCurrentStep((prev) => Math.max(1, prev - 1))}
           disabled={currentStep === 1}
+          onClick={() => setCurrentStep((prev) => Math.max(1, prev - 1))}
+          variant="outline"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Previous
@@ -876,14 +864,14 @@ function CreatePlay() {
         <div className="flex gap-2">
           {currentStep < totalSteps ? (
             <Button
-              onClick={() => setCurrentStep((prev) => prev + 1)}
               disabled={!canProceed()}
+              onClick={() => setCurrentStep((prev) => prev + 1)}
             >
               Next
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           ) : (
-            <Button onClick={handleSubmit} disabled={!canProceed()}>
+            <Button disabled={!canProceed()} onClick={handleSubmit}>
               <BookOpen className="mr-2 h-4 w-4" />
               Create Play
             </Button>

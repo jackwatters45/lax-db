@@ -163,17 +163,15 @@ const getDrillsData = createServerFn().handler(async () => {
 });
 
 // Server function for permissions
-const getDrillsPermissions = createServerFn().handler(async () => {
-  return {
-    canCreateDrills: true,
-    canEditDrills: true,
-    canDeleteDrills: true,
-    canManageCategories: true,
-  };
-});
+const getDrillsPermissions = createServerFn().handler(async () => ({
+  canCreateDrills: true,
+  canEditDrills: true,
+  canDeleteDrills: true,
+  canManageCategories: true,
+}));
 
 export const Route = createFileRoute(
-  '/_protected/$organizationSlug/practice/drills/',
+  '/_protected/$organizationSlug/practice/drills/'
 )({
   component: DrillsList,
   validateSearch: (search: Record<string, unknown>) => ({
@@ -197,13 +195,12 @@ function DrillsList() {
   const { data, permissions } = Route.useLoaderData();
   const search = Route.useSearch();
 
-  const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat('en-US', {
+  const formatDate = (date: Date) =>
+    new Intl.DateTimeFormat('en-US', {
       month: 'short',
       day: 'numeric',
       year: 'numeric',
     }).format(date);
-  };
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
@@ -218,9 +215,8 @@ function DrillsList() {
     }
   };
 
-  const formatPlayerCount = (min: number, max: number | null) => {
-    return max ? `${min}-${max}` : `${min}+`;
-  };
+  const formatPlayerCount = (min: number, max: number | null) =>
+    max ? `${min}-${max}` : `${min}+`;
 
   // Filter drills based on search criteria
   const filteredDrills = data.drills.filter((drill) => {
@@ -229,7 +225,7 @@ function DrillsList() {
       drill.name.toLowerCase().includes(search.search.toLowerCase()) ||
       drill.description.toLowerCase().includes(search.search.toLowerCase()) ||
       drill.tags.some((tag) =>
-        tag.toLowerCase().includes(search.search.toLowerCase()),
+        tag.toLowerCase().includes(search.search.toLowerCase())
       );
 
     const matchesCategory =
@@ -257,10 +253,10 @@ function DrillsList() {
         </div>
 
         <div className="flex gap-2">
-          <Button variant="outline" asChild>
+          <Button asChild variant="outline">
             <Link
-              to="/$organizationSlug/practice"
               params={{ organizationSlug }}
+              to="/$organizationSlug/practice"
             >
               <Target className="mr-2 h-4 w-4" />
               Dashboard
@@ -269,8 +265,8 @@ function DrillsList() {
           {permissions.canCreateDrills && (
             <Button asChild>
               <Link
-                to="/$organizationSlug/practice/drills/create"
                 params={{ organizationSlug }}
+                to="/$organizationSlug/practice/drills/create"
               >
                 <Plus className="mr-2 h-4 w-4" />
                 New Drill
@@ -293,7 +289,7 @@ function DrillsList() {
             {/* Search */}
             <div className="relative">
               <Search className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
-              <Input placeholder="Search drills..." className="pl-10" />
+              <Input className="pl-10" placeholder="Search drills..." />
             </div>
 
             {/* Category Filter */}
@@ -317,11 +313,11 @@ function DrillsList() {
             {/* Favorites Toggle */}
             <div className="flex items-center gap-2">
               <input
-                type="checkbox"
-                id="favorites"
                 className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                id="favorites"
+                type="checkbox"
               />
-              <label htmlFor="favorites" className="font-medium text-sm">
+              <label className="font-medium text-sm" htmlFor="favorites">
                 Favorites only
               </label>
             </div>
@@ -338,8 +334,8 @@ function DrillsList() {
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {filteredDrills.map((drill) => (
           <Card
-            key={drill.id}
             className="group transition-shadow hover:shadow-lg"
+            key={drill.id}
           >
             <CardHeader>
               <div className="flex items-start justify-between">
@@ -385,7 +381,7 @@ function DrillsList() {
                   <div className="font-bold text-sm">
                     {formatPlayerCount(
                       drill.playerCountMin,
-                      drill.playerCountMax,
+                      drill.playerCountMax
                     )}
                   </div>
                   <div className="text-muted-foreground text-xs">Players</div>
@@ -403,12 +399,12 @@ function DrillsList() {
                 <div className="mb-1 font-medium text-xs">Equipment:</div>
                 <div className="flex flex-wrap gap-1">
                   {drill.equipment.slice(0, 3).map((item) => (
-                    <Badge key={item} variant="outline" className="text-xs">
+                    <Badge className="text-xs" key={item} variant="outline">
                       {item}
                     </Badge>
                   ))}
                   {drill.equipment.length > 3 && (
-                    <Badge variant="outline" className="text-xs">
+                    <Badge className="text-xs" variant="outline">
                       +{drill.equipment.length - 3}
                     </Badge>
                   )}
@@ -420,12 +416,12 @@ function DrillsList() {
                 <div className="mb-1 font-medium text-xs">Skills:</div>
                 <div className="flex flex-wrap gap-1">
                   {drill.skillsFocus.slice(0, 2).map((skill) => (
-                    <Badge key={skill} variant="secondary" className="text-xs">
+                    <Badge className="text-xs" key={skill} variant="secondary">
                       {skill}
                     </Badge>
                   ))}
                   {drill.skillsFocus.length > 2 && (
-                    <Badge variant="secondary" className="text-xs">
+                    <Badge className="text-xs" variant="secondary">
                       +{drill.skillsFocus.length - 2}
                     </Badge>
                   )}
@@ -444,11 +440,11 @@ function DrillsList() {
 
               {/* Actions */}
               <div className="flex gap-2">
-                <Button size="sm" className="flex-1" disabled>
+                <Button className="flex-1" disabled size="sm">
                   View Details
                 </Button>
                 {permissions.canEditDrills && (
-                  <Button size="sm" variant="outline" disabled>
+                  <Button disabled size="sm" variant="outline">
                     Edit
                   </Button>
                 )}

@@ -1,3 +1,6 @@
-import { Runtime } from 'effect';
+import { Layer, ManagedRuntime } from 'effect';
+import { RpcGameClient } from './rpc/client';
 
-export const RuntimeClient = Runtime.defaultRuntime;
+const MainLayer = Layer.mergeAll(RpcGameClient.Default);
+
+export const RuntimeClient = ManagedRuntime.make(MainLayer);

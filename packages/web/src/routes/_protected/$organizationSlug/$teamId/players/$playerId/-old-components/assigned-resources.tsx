@@ -24,8 +24,8 @@ export function AssignedResources({
           <div className="space-y-2">
             {player.assignedResources.slice(0, 3).map((resource) => (
               <div
-                key={resource.id}
                 className="flex items-center justify-between text-sm"
+                key={resource.id}
               >
                 <div className="flex-1">
                   <div className="font-medium">{resource.title}</div>
@@ -39,13 +39,13 @@ export function AssignedResources({
               </div>
             ))}
             {player.assignedResources.length > 3 && (
-              <Button variant="ghost" size="sm" className="w-full" asChild>
+              <Button asChild className="w-full" size="sm" variant="ghost">
                 <Link
-                  to="/$organizationSlug/players/$playerId/resources"
                   params={{
                     organizationSlug,
                     playerId: player.id,
                   }}
+                  to="/$organizationSlug/players/$playerId/resources"
                 >
                   View All ({player.assignedResources.length})
                 </Link>

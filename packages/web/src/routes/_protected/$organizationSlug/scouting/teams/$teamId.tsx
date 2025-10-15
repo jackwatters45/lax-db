@@ -122,7 +122,6 @@ const mockTeamDetails = {
 const getOpposingTeamDetails = createServerFn({ method: 'GET' })
   .inputValidator((data: { teamId: string }) => data)
   .handler(async ({ data }) => {
-    console.log('Getting team details for:', data.teamId);
     // TODO: Replace with actual API call
     // const { ScoutingAPI } = await import('@lax-db/core/scouting/index');
     // return await ScoutingAPI.getOpposingTeam(data.teamId, headers);
@@ -131,16 +130,14 @@ const getOpposingTeamDetails = createServerFn({ method: 'GET' })
   });
 
 // Server function for permissions
-const getScoutingPermissions = createServerFn().handler(async () => {
-  return {
-    canEdit: true,
-    canCreateReports: true,
-    canManagePlayers: true,
-  };
-});
+const getScoutingPermissions = createServerFn().handler(async () => ({
+  canEdit: true,
+  canCreateReports: true,
+  canManagePlayers: true,
+}));
 
 export const Route = createFileRoute(
-  '/_protected/$organizationSlug/scouting/teams/$teamId',
+  '/_protected/$organizationSlug/scouting/teams/$teamId'
 )({
   component: OpposingTeamDetailsPage,
   loader: async ({ params }) => {
@@ -157,17 +154,18 @@ function OpposingTeamDetailsPage() {
   const { organizationSlug } = Route.useParams();
   const { team, permissions } = Route.useLoaderData();
 
-  const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat('en-US', {
+  const formatDate = (date: Date) =>
+    new Intl.DateTimeFormat('en-US', {
       month: 'short',
       day: 'numeric',
       year: 'numeric',
     }).format(date);
-  };
 
   const getWinPercentage = (wins: number, losses: number, ties: number) => {
     const total = wins + losses + ties;
-    if (total === 0) return 0;
+    if (total === 0) {
+      return 0;
+    }
     return Math.round(((wins + ties * 0.5) / total) * 100);
   };
 
@@ -233,10 +231,10 @@ function OpposingTeamDetailsPage() {
               {getStyleLabel(team.typicalStyle)}
             </Badge>
             {permissions.canEdit && (
-              <Button variant="outline" size="sm" asChild>
+              <Button asChild size="sm" variant="outline">
                 <Link
-                  to="/$organizationSlug/scouting/teams/create"
                   params={{ organizationSlug }}
+                  to="/$organizationSlug/scouting/teams/create"
                 >
                   <Edit className="mr-2 h-4 w-4" />
                   Edit Team
@@ -310,7 +308,7 @@ function OpposingTeamDetailsPage() {
                 <h4 className="mb-2 font-medium text-green-700">Strengths</h4>
                 <div className="space-y-1">
                   {team.strengths.map((strength) => (
-                    <div key={strength} className="text-sm">
+                    <div className="text-sm" key={strength}>
                       • {strength}
                     </div>
                   ))}
@@ -321,7 +319,7 @@ function OpposingTeamDetailsPage() {
                 <h4 className="mb-2 font-medium text-red-700">Weaknesses</h4>
                 <div className="space-y-1">
                   {team.weaknesses.map((weakness) => (
-                    <div key={weakness} className="text-sm">
+                    <div className="text-sm" key={weakness}>
                       • {weakness}
                     </div>
                   ))}
@@ -332,7 +330,7 @@ function OpposingTeamDetailsPage() {
                 <h4 className="mb-2 font-medium">Key Players</h4>
                 <div className="space-y-1">
                   {team.keyPlayers.map((player) => (
-                    <div key={player} className="text-sm">
+                    <div className="text-sm" key={player}>
                       • {player}
                     </div>
                   ))}
@@ -354,10 +352,10 @@ function OpposingTeamDetailsPage() {
               <div className="flex items-center justify-between">
                 <CardTitle>Recent Scouting Reports</CardTitle>
                 {permissions.canCreateReports && (
-                  <Button variant="outline" size="sm" asChild>
+                  <Button asChild size="sm" variant="outline">
                     <Link
-                      to="/$organizationSlug/scouting/teams/create"
                       params={{ organizationSlug }}
+                      to="/$organizationSlug/scouting/teams/create"
                     >
                       <Plus className="mr-2 h-4 w-4" />
                       New Report
@@ -371,8 +369,8 @@ function OpposingTeamDetailsPage() {
                 <div className="space-y-3">
                   {team.recentReports.map((report) => (
                     <div
-                      key={report.id}
                       className="flex items-center justify-between rounded border p-3"
+                      key={report.id}
                     >
                       <div className="flex-1">
                         <div className="font-medium text-sm">
@@ -392,10 +390,10 @@ function OpposingTeamDetailsPage() {
                             {report.confidenceLevel}/10
                           </div>
                         </div>
-                        <Button variant="ghost" size="sm" asChild>
+                        <Button asChild size="sm" variant="ghost">
                           <Link
-                            to="/$organizationSlug/scouting/teams"
                             params={{ organizationSlug }}
+                            to="/$organizationSlug/scouting/teams"
                           >
                             View
                           </Link>
@@ -410,14 +408,14 @@ function OpposingTeamDetailsPage() {
                   <p>No scouting reports yet</p>
                   {permissions.canCreateReports && (
                     <Button
-                      variant="outline"
-                      size="sm"
-                      className="mt-2"
                       asChild
+                      className="mt-2"
+                      size="sm"
+                      variant="outline"
                     >
                       <Link
-                        to="/$organizationSlug/scouting/teams/create"
                         params={{ organizationSlug }}
+                        to="/$organizationSlug/scouting/teams/create"
                       >
                         Create First Report
                       </Link>
@@ -448,7 +446,7 @@ function OpposingTeamDetailsPage() {
                   <div>
                     <div>Assistant Coaches:</div>
                     {team.assistantCoaches.map((coach) => (
-                      <div key={coach} className="text-muted-foreground">
+                      <div className="text-muted-foreground" key={coach}>
                         • {coach}
                       </div>
                     ))}
@@ -471,8 +469,8 @@ function OpposingTeamDetailsPage() {
                 <div className="flex items-center gap-2 text-sm">
                   <Mail className="h-4 w-4 text-muted-foreground" />
                   <a
-                    href={`mailto:${team.coachEmail}`}
                     className="text-blue-600 hover:underline"
+                    href={`mailto:${team.coachEmail}`}
                   >
                     {team.coachEmail}
                   </a>
@@ -483,8 +481,8 @@ function OpposingTeamDetailsPage() {
                 <div className="flex items-center gap-2 text-sm">
                   <Phone className="h-4 w-4 text-muted-foreground" />
                   <a
-                    href={`tel:${team.coachPhone}`}
                     className="text-blue-600 hover:underline"
+                    href={`tel:${team.coachPhone}`}
                   >
                     {team.coachPhone}
                   </a>
@@ -495,10 +493,10 @@ function OpposingTeamDetailsPage() {
                 <div className="flex items-center gap-2 text-sm">
                   <Globe className="h-4 w-4 text-muted-foreground" />
                   <a
-                    href={team.teamWebsite}
-                    target="_blank"
-                    rel="noopener noreferrer"
                     className="text-blue-600 hover:underline"
+                    href={team.teamWebsite}
+                    rel="noopener noreferrer"
+                    target="_blank"
                   >
                     Team Website
                   </a>
@@ -515,13 +513,13 @@ function OpposingTeamDetailsPage() {
             <CardContent className="space-y-3">
               {permissions.canCreateReports && (
                 <Button
-                  variant="outline"
-                  className="w-full justify-start"
                   asChild
+                  className="w-full justify-start"
+                  variant="outline"
                 >
                   <Link
-                    to="/$organizationSlug/scouting/teams/create"
                     params={{ organizationSlug }}
+                    to="/$organizationSlug/scouting/teams/create"
                   >
                     <FileText className="mr-2 h-4 w-4" />
                     Create Scouting Report
@@ -531,13 +529,13 @@ function OpposingTeamDetailsPage() {
 
               {permissions.canManagePlayers && (
                 <Button
-                  variant="outline"
-                  className="w-full justify-start"
                   asChild
+                  className="w-full justify-start"
+                  variant="outline"
                 >
                   <Link
-                    to="/$organizationSlug/scouting/teams"
                     params={{ organizationSlug }}
+                    to="/$organizationSlug/scouting/teams"
                   >
                     <Users className="mr-2 h-4 w-4" />
                     Manage Players
@@ -546,13 +544,13 @@ function OpposingTeamDetailsPage() {
               )}
 
               <Button
-                variant="outline"
-                className="w-full justify-start"
                 asChild
+                className="w-full justify-start"
+                variant="outline"
               >
                 <Link
-                  to="/$organizationSlug/scouting/teams"
                   params={{ organizationSlug }}
+                  to="/$organizationSlug/scouting/teams"
                 >
                   <Target className="mr-2 h-4 w-4" />
                   View Patterns
@@ -581,8 +579,8 @@ function OpposingTeamDetailsPage() {
                 <div className="space-y-2">
                   {team.headToHeadHistory.map((game) => (
                     <div
-                      key={game.date.getTime()}
                       className="flex items-center justify-between text-sm"
+                      key={game.date.getTime()}
                     >
                       <div className="flex items-center gap-2">
                         <Badge

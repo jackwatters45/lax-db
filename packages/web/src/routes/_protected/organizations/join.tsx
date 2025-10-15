@@ -26,14 +26,14 @@ const AcceptInvitationSchema = Schema.Struct({
     Schema.minLength(1, { message: () => 'Invitation code is required' }),
     Schema.minLength(10, {
       message: () => 'Invitation code must be at least 10 characters',
-    }),
+    })
   ),
 });
 type FormData = typeof AcceptInvitationSchema.Type;
 
 const acceptInvitation = createServerFn({ method: 'POST' })
   .inputValidator((data: typeof AcceptInvitationSchema.Type) =>
-    Schema.decodeSync(AcceptInvitationSchema)(data),
+    Schema.decodeSync(AcceptInvitationSchema)(data)
   )
   .handler(async ({ data }) =>
     RuntimeServer.runPromise(
@@ -42,10 +42,10 @@ const acceptInvitation = createServerFn({ method: 'POST' })
         const request = getRequest();
         return yield* organiationService.acceptInvitation(
           data,
-          request.headers,
+          request.headers
         );
-      }),
-    ),
+      })
+    )
   );
 
 export const Route = createFileRoute('/_protected/organizations/join')({
@@ -73,11 +73,10 @@ function JoinOrganizationPage() {
       //   params: { organizationSlug },
       // });
     },
-    onError: (error) => {
+    onError: (_error) => {
       toast.error(
-        'Failed to join organization. Please check your invitation code.',
+        'Failed to join organization. Please check your invitation code.'
       );
-      console.error('Join organization error:', error);
     },
   });
 
@@ -104,7 +103,7 @@ function JoinOrganizationPage() {
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
               <FormField
                 control={form.control}
                 name="invitationId"
@@ -127,9 +126,9 @@ function JoinOrganizationPage() {
 
               <div className="flex gap-4 pt-4">
                 <Button
-                  type="submit"
-                  disabled={joinOrgMutation.isPending}
                   className="flex-1"
+                  disabled={joinOrgMutation.isPending}
+                  type="submit"
                 >
                   {joinOrgMutation.isPending ? 'Joining...' : 'Join Club'}
                 </Button>

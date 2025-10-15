@@ -1,5 +1,5 @@
 import { pgTable, text } from 'drizzle-orm/pg-core';
-import { ids, timestamps } from '../drizzle';
+import { ids, timestamps } from '../drizzle/drizzle.type';
 
 export const feedbackTable = pgTable('feedback', {
   ...ids,
