@@ -5,20 +5,19 @@
 // ---------------------------------------------
 
 import { Rpc, RpcGroup } from '@effect/rpc';
-import { Game } from '@lax-db/core/api/game.schema';
+import { GameContract } from '@lax-db/core/api/game.contract';
 import { GamesService } from '@lax-db/core/api/game.service';
-import { NotFoundError, ValidationError } from '@lax-db/core/error';
-import { Effect, Layer, Schema } from 'effect';
+import { Effect, Layer } from 'effect';
 
 export class GameRpcs extends RpcGroup.make(
   Rpc.make('GameList', {
-    success: Schema.Array(Game),
-    error: Schema.Union(NotFoundError, ValidationError),
+    success: GameContract.list.success,
+    error: GameContract.list.error,
   }),
   Rpc.make('GameById', {
-    success: Game,
-    error: Schema.Union(NotFoundError, ValidationError),
-    payload: { id: Schema.Number },
+    success: GameContract.getById.success,
+    error: GameContract.getById.error,
+    payload: GameContract.getById.payload,
   })
 ) {}
 

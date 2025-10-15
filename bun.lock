@@ -24,6 +24,7 @@
       "name": "@lax-db/api",
       "version": "0.0.0",
       "dependencies": {
+        "@effect-atom/atom-react": "^0.3.2",
         "@effect/platform": "^0.92.1",
         "@effect/platform-bun": "^0.81.1",
         "@effect/rpc": "^0.71.0",

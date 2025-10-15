@@ -1,9 +1,7 @@
-import { PgDrizzle } from '@effect/sql-drizzle/Pg';
-import { and, eq, getTableColumns, isNull } from 'drizzle-orm';
-import { Array as Arr, Effect } from 'effect';
-import { DatabaseLive } from '../drizzle/drizzle.service';
+import { Effect } from 'effect';
+import { NotFoundError } from '../error';
 import { decodeArguments } from '../util';
-import { ErrorInvalidSeason } from './season.error';
+import { SeasonRepo } from './season.repo';
 import {
   CreateSeasonInput,
   DeleteSeasonInput,
@@ -11,117 +9,104 @@ import {
   GetSeasonInput,
   UpdateSeasonInput,
 } from './season.schema';
-import { type SeasonSelect, seasonTable } from './season.sql';
 
 export class SeasonService extends Effect.Service<SeasonService>()(
   'SeasonService',
   {
     effect: Effect.gen(function* () {
-      const db = yield* PgDrizzle;
-
-      const { id: _, ...rest } = getTableColumns(seasonTable);
+      const seasonRepo = yield* SeasonRepo;
 
       return {
-        getAll: (input: GetAllSeasonsInput) =>
+        list: (input: GetAllSeasonsInput) =>
           Effect.gen(function* () {
             const decoded = yield* decodeArguments(GetAllSeasonsInput, input);
-
-            const seasons: SeasonSelect[] = yield* db
-              .select(rest)
-              .from(seasonTable)
-              .where(
-                and(
-                  eq(seasonTable.organizationId, decoded.organizationId),
-                  // TODO: add nullish team id to this...
-                  // ...{ decoded.teamId && { ...eq(seasonTable.teamId, decoded.teamId) } },
-                  isNull(seasonTable.deletedAt)
-                )
-              )
-              .pipe(
-                Effect.tapError(Effect.logError),
-                Effect.mapError((cause) => new ErrorInvalidSeason({ cause }))
-              );
-
-            return seasons;
-          }),
+            return yield* seasonRepo.list(decoded);
+          }).pipe(
+            Effect.tap((seasons) =>
+              Effect.log(`Found ${seasons.length} seasons`)
+            ),
+            Effect.tapError((error) =>
+              Effect.logError('Failed to list seasons', error)
+            )
+          ),
 
         get: (input: GetSeasonInput) =>
           Effect.gen(function* () {
             const decoded = yield* decodeArguments(GetSeasonInput, input);
-
-            const season: SeasonSelect = yield* db
-              .select(rest)
-              .from(seasonTable)
-              .where(
-                and(
-                  eq(seasonTable.publicId, decoded.publicId),
-                  eq(seasonTable.organizationId, decoded.organizationId),
-                  // TODO: add nullish team id to this...
-                  // ...{ decoded.teamId && { ...eq(seasonTable.teamId, decoded.teamId) } },
-                  isNull(seasonTable.deletedAt)
-                )
-              )
-              .pipe(
-                Effect.flatMap(Arr.head),
-                Effect.tapError(Effect.logError),
-                Effect.mapError((cause) => new ErrorInvalidSeason({ cause }))
-              );
-
+            const season = yield* seasonRepo.get(decoded);
             return season;
-          }),
+          }).pipe(
+            Effect.catchTag('NoSuchElementException', () =>
+              Effect.fail(
+                new NotFoundError({ domain: 'Season', id: input.publicId })
+              )
+            ),
+            Effect.tap((season) => Effect.log(`Found season: ${season.name}`)),
+            Effect.tapError((error) =>
+              Effect.logError('Failed to get season', error)
+            )
+          ),
 
         create: (input: CreateSeasonInput) =>
           Effect.gen(function* () {
             const decoded = yield* decodeArguments(CreateSeasonInput, input);
 
-            yield* db.insert(seasonTable).values(decoded);
-          }),
+            if (decoded.endDate && decoded.startDate >= decoded.endDate) {
+              return yield* Effect.fail(
+                new NotFoundError({
+                  domain: 'Validation',
+                  id: 'End date must be after start date',
+                })
+              );
+            }
+
+            return yield* seasonRepo.create(decoded);
+          }).pipe(
+            Effect.tap((season) =>
+              Effect.log(`Created season: ${season.name}`)
+            ),
+            Effect.tapError((error) =>
+              Effect.logError('Failed to create season', error)
+            )
+          ),
 
         update: (input: UpdateSeasonInput) =>
           Effect.gen(function* () {
             const decoded = yield* decodeArguments(UpdateSeasonInput, input);
-
-            yield* db
-              .update(seasonTable)
-              // TODO: what to update
-              .set({})
-              .where(
-                and(
-                  eq(seasonTable.publicId, decoded.publicId),
-                  eq(seasonTable.organizationId, decoded.organizationId),
-                  // TODO: add nullish team id to this...
-                  // ...{ decoded.teamId && { ...eq(seasonTable.teamId, decoded.teamId) } },
-                  isNull(seasonTable.deletedAt)
-                )
+            return yield* seasonRepo.update(decoded);
+          }).pipe(
+            Effect.catchTag('NoSuchElementException', () =>
+              Effect.fail(
+                new NotFoundError({ domain: 'Season', id: input.publicId })
               )
-              .pipe(
-                Effect.tapError(Effect.logError),
-                Effect.mapError((cause) => new ErrorInvalidSeason({ cause }))
-              );
-          }),
+            ),
+            Effect.tap((season) =>
+              Effect.log(`Updated season: ${season.name}`)
+            ),
+            Effect.tapError((error) =>
+              Effect.logError('Failed to update season', error)
+            )
+          ),
 
         delete: (input: DeleteSeasonInput) =>
           Effect.gen(function* () {
             const decoded = yield* decodeArguments(DeleteSeasonInput, input);
-
-            yield* db
-              .delete(seasonTable)
-              .where(
-                and(
-                  eq(seasonTable.publicId, decoded.publicId),
-                  eq(seasonTable.organizationId, decoded.organizationId),
-                  // TODO: add nullish team id to this...
-                  // ...{ decoded.teamId && { ...eq(seasonTable.teamId, decoded.teamId) } },
-                  isNull(seasonTable.deletedAt)
-                )
+            return yield* seasonRepo.delete(decoded);
+          }).pipe(
+            Effect.catchTag('NoSuchElementException', () =>
+              Effect.fail(
+                new NotFoundError({ domain: 'Season', id: input.publicId })
               )
-              .pipe(
-                Effect.tapError(Effect.logError),
-                Effect.mapError((cause) => new ErrorInvalidSeason({ cause }))
-              );
-          }),
+            ),
+            Effect.tap((season) =>
+              Effect.log(`Deleted season: ${season.name}`)
+            ),
+            Effect.tapError((error) =>
+              Effect.logError('Failed to delete season', error)
+            )
+          ),
       } as const;
     }),
-    dependencies: [DatabaseLive],
+    dependencies: [SeasonRepo.Default],
   }
 ) {}
