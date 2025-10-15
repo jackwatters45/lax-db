@@ -1,67 +1,98 @@
-import {
-  FetchHttpClient,
-  HttpApi,
-  HttpApiBuilder,
-  HttpApiClient,
-  HttpApiEndpoint,
-  HttpApiGroup,
-  HttpApiSwagger,
-  HttpMiddleware,
-  HttpServer,
-} from '@effect/platform';
-import { BunHttpServer, BunRuntime } from '@effect/platform-bun';
-import { Effect, Layer, Schema } from 'effect';
+// ---------------------------------------------
+// Architecture Summary
+// ---------------------------------------------
 
-// Define our API with one group named "Greetings" and one endpoint called "hello-world"
-const MyApi = HttpApi.make('MyApi').add(
-  HttpApiGroup.make('Greetings').add(
-    HttpApiEndpoint.get('hello-world')`/`.addSuccess(Schema.String)
-  )
-);
+/*
 
-// Implement the "Greetings" group
-const GreetingsLive = HttpApiBuilder.group(MyApi, 'Greetings', (handlers) =>
-  handlers.handle('hello-world', () => Effect.succeed('Hello, World!'))
-);
+KEY IMPROVEMENTS OVER PREVIOUS VERSION:
 
-// Provide the implementation for the API
-const MyApiLive = HttpApiBuilder.api(MyApi).pipe(Layer.provide(GreetingsLive));
+1. **Shared Business Logic Layer**
+   - GamesService contains ALL business logic
+   - Both RPC and HTTP API handlers delegate to this service
+   - Zero duplication of validation, error handling, logging, etc.
 
-// Set up the server using NodeHttpServer on port 3000
-const ServerLive = HttpApiBuilder.serve().pipe(
-  Layer.provide(HttpApiSwagger.layer()),
-  Layer.provide(MyApiLive),
-  Layer.provide(BunHttpServer.layer({ port: 3002 }))
-);
+2. **Same Resource Exposed via Both Protocols**
+   - Games: Available via RPC (GameList, GameById) AND HTTP API (GET /api/games, GET /api/games/:id)
+   - Both protocols use the EXACT same underlying service methods!
+   - listGames() is called by both RPC GameList and HTTP GET /api/games
+   - getGameById() is called by both RPC GameById and HTTP GET /api/games/:id
 
-// Launch the server
-Layer.launch(ServerLive).pipe(BunRuntime.runMain);
+3. **Thin Handler Layer**
+   - RPC handlers: Just map RPC calls → service methods
+   - HTTP API handlers: Just map HTTP requests → service methods
+   - Handlers are now 1-2 lines each - pure protocol adaptation
+   - Compare to previous version where logic was duplicated in each handler!
 
-// Create a program that derives and uses the client
-const program = Effect.gen(function* () {
-  // Derive the client
-  const client = yield* HttpApiClient.make(MyApi, {
-    baseUrl: 'http://localhost:3000',
-  });
-  // Call the "hello-world" endpoint
-  const _hello = yield* client.Greetings['hello-world']();
-});
+4. **Unified Error Handling**
+   - NotFoundError and ValidationError used by both protocols
+   - Consistent error experience across RPC and HTTP API
+   - Validation happens once in the service layer
 
-// Provide a Fetch-based HTTP client and run the program
-Effect.runFork(program.pipe(Effect.provide(FetchHttpClient.layer)));
-// Output: Hello, World!
+5. **Easy to Test**
+   - Test business logic once in the service layer
+   - Mock the service for handler tests
+   - Protocol handlers become trivial to test
 
-// Configure and serve the API
-const HttpLive = HttpApiBuilder.serve(HttpMiddleware.logger).pipe(
-  // Add CORS middleware to handle cross-origin requests
-  Layer.provide(HttpApiBuilder.middlewareCors()),
-  // Provide the API implementation
-  Layer.provide(MyApiLive),
-  // Log the server's listening address
-  HttpServer.withLogAddress,
-  // Set up the Node.js HTTP server
-  Layer.provide(BunHttpServer.layer({ port: 3002 }))
-);
+6. **Easy to Extend**
+   - Add new business logic? Add to service layer (ONE place)
+   - Want to expose via RPC? Add thin RPC handler (1-2 lines)
+   - Want to expose via HTTP? Add thin HTTP handler (1-2 lines)
+   - Want both? Add both handlers - they share the same service method!
 
-// Launch the server
-Layer.launch(HttpLive).pipe(BunRuntime.runMain);
+ARCHITECTURE LAYERS:
+
+┌─────────────────────────────────────┐
+│   RPC Handlers    │  HTTP Handlers  │  ← Thin protocol adapters (1-2 lines each)
+├───────────────────┴─────────────────┤
+│   Services / Use Cases              │  ← ALL business logic (shared)
+├─────────────────────────────────────┤
+│   Repositories                      │  ← Data access (shared)
+├─────────────────────────────────────┤
+│   Database / External Services      │
+└─────────────────────────────────────┘
+
+This is Hexagonal Architecture (Ports & Adapters) with Effect!
+- Core: Services + Repositories (protocol-agnostic)
+- Adapters: RPC + HTTP API handlers (protocol-specific, thin)
+- Same business logic, multiple interfaces
+
+FILE STRUCTURE RECOMMENDATION:
+
+packages/core/src/
+├── domain/
+│   ├── schemas/
+│   │   ├── game.schema.ts       # Game schema
+│   │   └── user.schema.ts       # User schema
+│   └── errors/
+│       └── api-errors.ts        # NotFoundError, ValidationError, etc.
+│
+├── application/
+│   ├── repositories/
+│   │   ├── games.repo.ts        # GamesRepo
+│   │   └── users.repo.ts        # UsersRepo
+│   └── services/
+│       ├── games.service.ts     # GamesService (use cases)
+│       └── users.service.ts     # UsersService (use cases)
+│
+├── infrastructure/
+│   ├── rpc/
+│   │   ├── games.rpc.ts         # GameRpcs + thin handlers
+│   │   ├── users.rpc.ts         # UserRpcs + thin handlers
+│   │   └── index.ts
+│   ├── http/
+│   │   ├── games.api.ts         # GamesApi + thin handlers
+│   │   ├── users.api.ts         # UsersApi + thin handlers
+│   │   └── index.ts
+│   └── server.ts                # Server setup
+│
+└── clients/
+    ├── rpc-client.ts
+    ├── http-client.ts
+    └── combined-client.ts
+
+This is Domain-Driven Design structure:
+- domain/: Pure business entities (schemas, errors)
+- application/: Business logic (services, repos)
+- infrastructure/: Technical details (RPC, HTTP, database)
+
+*/

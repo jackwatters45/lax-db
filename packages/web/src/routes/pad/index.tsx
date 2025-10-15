@@ -1,6 +1,6 @@
+import { RpcGameClient } from '@lax-db/api/client';
 import { GetAllGamesInput } from '@lax-db/core/game/game.schema';
 import { GameService } from '@lax-db/core/game/game.service';
-import { RpcGameClient } from '@lax-db/core/rpc/client';
 import { RuntimeServer } from '@lax-db/core/runtime.server';
 import { GetAllSeasonsInput } from '@lax-db/core/season/season.schema';
 import { SeasonService } from '@lax-db/core/season/season.service';
@@ -61,6 +61,9 @@ export const Route = createFileRoute('/pad/')({
 
 import { Atom, useAtomValue } from '@effect-atom/atom-react';
 
+// const gameRpcClient = yield* RpcClient.make(GameRpcs);
+
+// const runtimeAtom = Atom.runtime(RpcGameClient.Default);
 const runtimeAtom = Atom.runtime(RpcGameClient.Default);
 
 const gameAtom = runtimeAtom.atom(
@@ -74,7 +77,9 @@ const gameAtom = runtimeAtom.atom(
 function RouteComponent() {
   const data = Route.useLoaderData();
 
-  const _gameRpcResult = useAtomValue(gameAtom);
+  const gameRpcResult = useAtomValue(gameAtom);
+
+  console.log({ gameRpcResult });
 
   return (
     <div>

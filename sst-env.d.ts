@@ -5,6 +5,11 @@
 
 declare module "sst" {
   export interface Resource {
+    "Api": {
+      "service": string
+      "type": "sst.aws.Service"
+      "url": string
+    }
     "BetterAuthSecret": {
       "type": "sst.sst.Secret"
       "value": string

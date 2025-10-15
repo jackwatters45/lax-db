@@ -21,11 +21,12 @@ export default $config({
   async run() {
     const infra = await import('./infra');
     return {
+      vpc: infra.vpc.id,
       database: infra.database.getSSTLink(),
       redisClusterId: infra.redis.clusterId,
-      storage: infra.bucket.name,
-      vpc: infra.vpc.id,
+      api: infra.api.url,
       web: infra.web.url,
+      storage: infra.bucket.name,
       email: infra.email.sender,
     };
   },
