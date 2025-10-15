@@ -4,14 +4,14 @@ import {
   HttpApiEndpoint,
   HttpApiGroup,
 } from '@effect/platform';
-import { ContactInfoContract } from '@lax-db/core/player/contact-info/contact-info.contract';
-import { PlayerContactInfoService } from '@lax-db/core/player/contact-info/contact-info.service';
 import {
   ConstraintViolationError,
   DatabaseError,
   NotFoundError,
   ValidationError,
 } from '@lax-db/core/error';
+import { ContactInfoContract } from '@lax-db/core/player/contact-info/contact-info.contract';
+import { PlayerContactInfoService } from '@lax-db/core/player/contact-info/contact-info.service';
 import { Effect, Layer } from 'effect';
 
 export const ContactInfoApi = HttpApi.make('ContactInfoApi').add(

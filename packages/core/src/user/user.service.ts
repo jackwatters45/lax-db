@@ -1,39 +1,31 @@
-import { randomUUID } from 'node:crypto';
-import { PgDrizzle } from '@effect/sql-drizzle/Pg';
-import { eq } from 'drizzle-orm';
 import { Effect, Schema } from 'effect';
-import { DatabaseLive } from '../drizzle/drizzle.service';
-import { UserError } from './user.error';
-import { CreateInput, FromEmailInput } from './user.schema';
-import { userTable } from './user.sql';
+import { NotFoundError } from '../error';
+import { parsePostgresError } from '../util';
+import { UserRepo } from './user.repo';
+import { GetUserFromEmailInput } from './user.schema';
 
 export class UserService extends Effect.Service<UserService>()('UserService', {
   effect: Effect.gen(function* () {
-    const db = yield* PgDrizzle;
+    const userRepo = yield* UserRepo;
 
     return {
-      create: (input: CreateInput) =>
+      fromEmail: (input: GetUserFromEmailInput) =>
         Effect.gen(function* () {
-          const validated = yield* Schema.decode(CreateInput)(input);
-          return yield* db.insert(userTable).values({
-            id: randomUUID(),
-            email: validated.email.toLowerCase(),
-            name: validated.name,
-          });
-        }),
-      fromEmail: (input: FromEmailInput) =>
-        Effect.gen(function* () {
-          const validated = yield* Schema.decode(FromEmailInput)(input);
-          return yield* db
-            .select()
-            .from(userTable)
-            .where(eq(userTable.email, validated.email))
-            .pipe(
-              Effect.tapError(Effect.logError),
-              Effect.mapError((cause) => new UserError({ cause }))
-            );
-        }),
+          const decoded = yield* Schema.decode(GetUserFromEmailInput)(input);
+          return yield* userRepo.get(decoded);
+        }).pipe(
+          Effect.catchTag('NoSuchElementException', () =>
+            Effect.fail(new NotFoundError({ domain: 'User', id: input.email }))
+          ),
+          Effect.catchTag('SqlError', (error) =>
+            Effect.fail(parsePostgresError(error))
+          ),
+          Effect.tap((user) => Effect.log(`Found user: ${user.email}`)),
+          Effect.tapError((error) =>
+            Effect.logError('Failed to get user', error)
+          )
+        ),
     } as const;
   }),
-  dependencies: [DatabaseLive],
+  dependencies: [UserRepo.Default],
 }) {}

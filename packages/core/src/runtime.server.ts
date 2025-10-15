@@ -7,7 +7,6 @@ import { PlayerContactInfoService } from './player/contact-info/contact-info.ser
 import { PlayerService } from './player/player.service';
 import { SeasonService } from './season/season.service';
 import { TeamService } from './team/team.service';
-import { UserService } from './user/user.service';
 
 const MainLayer = Layer.mergeAll(
   AuthService.Default,
@@ -15,7 +14,6 @@ const MainLayer = Layer.mergeAll(
   TeamService.Default,
   SeasonService.Default,
   GameService.Default,
-  UserService.Default,
   PlayerService.Default,
   PlayerContactInfoService.Default,
   FeedbackService.Default

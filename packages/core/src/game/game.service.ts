@@ -32,8 +32,7 @@ export class GameService extends Effect.Service<GameService>()('GameService', {
       get: (input: GetGameInput) =>
         Effect.gen(function* () {
           const decoded = yield* decodeArguments(GetGameInput, input);
-          const game = yield* gameRepo.get(decoded);
-          return game;
+          return yield* gameRepo.get(decoded);
         }).pipe(
           Effect.catchTag('NoSuchElementException', () =>
             Effect.fail(
