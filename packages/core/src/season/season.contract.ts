@@ -1,5 +1,10 @@
 import { Schema } from 'effect';
-import { NotFoundError, ValidationError } from '../error';
+import {
+  ConstraintViolationError,
+  DatabaseError,
+  NotFoundError,
+  ValidationError,
+} from '../error';
 import {
   CreateSeasonInput,
   DeleteSeasonInput,
@@ -9,7 +14,12 @@ import {
   UpdateSeasonInput,
 } from './season.schema';
 
-export const SeasonErrors = Schema.Union(NotFoundError, ValidationError);
+export const SeasonErrors = Schema.Union(
+  NotFoundError,
+  ValidationError,
+  DatabaseError,
+  ConstraintViolationError
+);
 
 export const SeasonContract = {
   list: {

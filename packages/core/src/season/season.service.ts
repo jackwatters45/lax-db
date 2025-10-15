@@ -1,6 +1,6 @@
 import { Effect } from 'effect';
-import { NotFoundError } from '../error';
-import { decodeArguments } from '../util';
+import { NotFoundError, ValidationError } from '../error';
+import { decodeArguments, parsePostgresError } from '../util';
 import { SeasonRepo } from './season.repo';
 import {
   CreateSeasonInput,
@@ -22,6 +22,9 @@ export class SeasonService extends Effect.Service<SeasonService>()(
             const decoded = yield* decodeArguments(GetAllSeasonsInput, input);
             return yield* seasonRepo.list(decoded);
           }).pipe(
+            Effect.catchTag('SqlError', (error) =>
+              Effect.fail(parsePostgresError(error))
+            ),
             Effect.tap((seasons) =>
               Effect.log(`Found ${seasons.length} seasons`)
             ),
@@ -41,6 +44,9 @@ export class SeasonService extends Effect.Service<SeasonService>()(
                 new NotFoundError({ domain: 'Season', id: input.publicId })
               )
             ),
+            Effect.catchTag('SqlError', (error) =>
+              Effect.fail(parsePostgresError(error))
+            ),
             Effect.tap((season) => Effect.log(`Found season: ${season.name}`)),
             Effect.tapError((error) =>
               Effect.logError('Failed to get season', error)
@@ -52,16 +58,17 @@ export class SeasonService extends Effect.Service<SeasonService>()(
             const decoded = yield* decodeArguments(CreateSeasonInput, input);
 
             if (decoded.endDate && decoded.startDate >= decoded.endDate) {
-              return yield* Effect.fail(
-                new NotFoundError({
-                  domain: 'Validation',
-                  id: 'End date must be after start date',
-                })
-              );
+              return yield* Effect.fail(new ValidationError());
             }
 
             return yield* seasonRepo.create(decoded);
           }).pipe(
+            Effect.catchTag('NoSuchElementException', () =>
+              Effect.fail(new ValidationError())
+            ),
+            Effect.catchTag('SqlError', (error) =>
+              Effect.fail(parsePostgresError(error))
+            ),
             Effect.tap((season) =>
               Effect.log(`Created season: ${season.name}`)
             ),
@@ -80,6 +87,9 @@ export class SeasonService extends Effect.Service<SeasonService>()(
                 new NotFoundError({ domain: 'Season', id: input.publicId })
               )
             ),
+            Effect.catchTag('SqlError', (error) =>
+              Effect.fail(parsePostgresError(error))
+            ),
             Effect.tap((season) =>
               Effect.log(`Updated season: ${season.name}`)
             ),
@@ -97,6 +107,9 @@ export class SeasonService extends Effect.Service<SeasonService>()(
               Effect.fail(
                 new NotFoundError({ domain: 'Season', id: input.publicId })
               )
+            ),
+            Effect.catchTag('SqlError', (error) =>
+              Effect.fail(parsePostgresError(error))
             ),
             Effect.tap((season) =>
               Effect.log(`Deleted season: ${season.name}`)
