@@ -6,9 +6,17 @@ import {
   TeamIdSchema,
   TimestampsSchema,
 } from '../schema';
+import { seasonStatusEnum } from './season.sql';
 
 export class Season extends Schema.Class<Season>('Season')({
   ...IdsSchema,
+  ...OrganizationIdSchema,
+  ...TeamIdSchema,
+  name: Schema.String,
+  startDate: Schema.DateFromSelf,
+  endDate: Schema.NullOr(Schema.DateFromSelf),
+  status: Schema.Literal(...seasonStatusEnum.enumValues),
+  division: Schema.NullOr(Schema.String),
   ...TimestampsSchema,
 }) {}
 
@@ -34,16 +42,14 @@ export class CreateSeasonInput extends Schema.Class<CreateSeasonInput>(
   ...TeamIdSchema,
   name: Schema.String.pipe(
     Schema.minLength(1, { message: () => 'Season name is required' }),
-    Schema.maxLength(100, {
-      message: () => 'Season name must be 100 characters or less',
+    Schema.maxLength(60, {
+      message: () => 'Season name must be 60 characters or less',
     }),
     Schema.trimmed()
   ),
   startDate: Schema.DateFromSelf,
   endDate: Schema.NullOr(Schema.DateFromSelf),
-  status: Schema.Literal('active', 'completed', 'upcoming').pipe(
-    Schema.optional
-  ),
+  status: Schema.Literal(...seasonStatusEnum.enumValues).pipe(Schema.optional),
   division: Schema.NullOr(Schema.String),
 }) {}
 
@@ -51,14 +57,27 @@ export class UpdateSeasonInput extends Schema.Class<UpdateSeasonInput>(
   'UpdateSeasonInput'
 )({
   ...OrganizationIdSchema,
-  ...TeamIdSchema,
+  ...NullableTeamIdSchema,
   publicId: IdsSchema.publicId,
+  name: Schema.optional(
+    Schema.String.pipe(
+      Schema.minLength(1, { message: () => 'Season name is required' }),
+      Schema.maxLength(60, {
+        message: () => 'Season name must be 60 characters or less',
+      }),
+      Schema.trimmed()
+    )
+  ),
+  startDate: Schema.optional(Schema.DateFromSelf),
+  endDate: Schema.optional(Schema.NullOr(Schema.DateFromSelf)),
+  status: Schema.optional(Schema.Literal(...seasonStatusEnum.enumValues)),
+  division: Schema.optional(Schema.NullOr(Schema.String)),
 }) {}
 
 export class DeleteSeasonInput extends Schema.Class<DeleteSeasonInput>(
   'DeleteSeasonInput'
 )({
   ...OrganizationIdSchema,
-  ...TeamIdSchema,
+  ...NullableTeamIdSchema,
   publicId: IdsSchema.publicId,
 }) {}

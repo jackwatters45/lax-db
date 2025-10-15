@@ -10,25 +10,25 @@ import {
   HttpApiEndpoint,
   HttpApiGroup,
 } from '@effect/platform';
-import { Game } from '@lax-db/core/api/game.schema';
+import { GameContract } from '@lax-db/core/api/game.contract';
 import { GamesService } from '@lax-db/core/api/game.service';
 import { NotFoundError, ValidationError } from '@lax-db/core/error';
-import { Effect, Layer, Schema } from 'effect';
+import { Effect, Layer } from 'effect';
 
 export const GamesApi = HttpApi.make('GamesApi').add(
   HttpApiGroup.make('Games')
     .add(
       HttpApiEndpoint.get('getGames', '/api/games')
-        .addSuccess(Schema.Array(Game))
+        .addSuccess(GameContract.list.success)
         .addError(NotFoundError)
         .addError(ValidationError)
     )
     .add(
       HttpApiEndpoint.get('getGameById', '/api/games/:id')
-        .addSuccess(Game)
+        .addSuccess(GameContract.getById.success)
         .addError(NotFoundError)
         .addError(ValidationError)
-        .setPath(Schema.Struct({ id: Schema.NumberFromString }))
+        .setPath(GameContract.getById.path)
     )
 );
 

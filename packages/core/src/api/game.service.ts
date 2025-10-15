@@ -36,7 +36,7 @@ export class GamesService extends Effect.Service<GamesService>()(
 
             if (!game) {
               return yield* Effect.fail(
-                new NotFoundError({ entity: 'Game', id })
+                new NotFoundError({ domain: 'Game', id })
               );
             }
 

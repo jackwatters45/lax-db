@@ -44,7 +44,7 @@
         "noAlert": "warn"
       },
       "complexity": {
-        "noVoid": "warn",
+        "noVoid": "info",
         "noBannedTypes": "warn",
         "noExcessiveCognitiveComplexity": "warn"
       },

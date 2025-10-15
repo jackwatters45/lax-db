@@ -1,18 +1,15 @@
-import { Data, Schema } from 'effect';
-
-export class ErrorInvalidArgs extends Data.TaggedError(
-  'ErrorInvalidArgs'
-)<{}> {}
+import { Schema } from 'effect';
 
 export class NotFoundError extends Schema.TaggedError<NotFoundError>(
   'NotFoundError'
 )('NotFoundError', {
-  entity: Schema.String,
-  id: Schema.Number,
+  domain: Schema.String,
+  id: Schema.Union(Schema.Number, Schema.String),
 }) {}
 
 export class ValidationError extends Schema.TaggedError<ValidationError>(
   'ValidationError'
 )('ValidationError', {
-  message: Schema.String,
+  domain: Schema.optional(Schema.String),
+  message: Schema.optional(Schema.String),
 }) {}

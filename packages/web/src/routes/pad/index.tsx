@@ -1,4 +1,9 @@
-import { RpcGameClient } from '@lax-db/api/client';
+import { Result, useAtomValue } from '@effect-atom/atom-react';
+import {
+  HttpGameClientAtom,
+  RpcGameClient,
+  RpcGameClientAtom,
+} from '@lax-db/api/game/game.client';
 import { GetAllGamesInput } from '@lax-db/core/game/game.schema';
 import { GameService } from '@lax-db/core/game/game.service';
 import { RuntimeServer } from '@lax-db/core/runtime.server';
@@ -6,7 +11,8 @@ import { GetAllSeasonsInput } from '@lax-db/core/season/season.schema';
 import { SeasonService } from '@lax-db/core/season/season.service';
 import { createFileRoute } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
-import { Effect, Schema } from 'effect';
+import { Cause, Effect, Schema } from 'effect';
+import { RuntimeAtom } from '@/lib/runtime.atom';
 import { CreateGameForm } from './-create-game-form';
 import { CreateSeasonForm } from './-create-season-form';
 
@@ -21,7 +27,7 @@ const getAllSeasons = createServerFn({ method: 'GET' })
     RuntimeServer.runPromise(
       Effect.gen(function* () {
         const seasonService = yield* SeasonService;
-        return yield* seasonService.getAll(data);
+        return yield* seasonService.list(data);
       })
     )
   );
@@ -59,14 +65,7 @@ export const Route = createFileRoute('/pad/')({
   },
 });
 
-import { Atom, useAtomValue } from '@effect-atom/atom-react';
-
-// const gameRpcClient = yield* RpcClient.make(GameRpcs);
-
-// const runtimeAtom = Atom.runtime(RpcGameClient.Default);
-const runtimeAtom = Atom.runtime(RpcGameClient.Default);
-
-const gameAtom = runtimeAtom.atom(
+const gameAtom = RuntimeAtom.atom(
   Effect.gen(function* () {
     const client = yield* RpcGameClient;
     return yield* client.GameList();
@@ -79,13 +78,75 @@ function RouteComponent() {
 
   const gameRpcResult = useAtomValue(gameAtom);
 
-  console.log({ gameRpcResult });
+  const gameRpcResultAtomic = useAtomValue(
+    RpcGameClientAtom.query('GameList', void 0, {
+      reactivityKeys: ['GameList'],
+    })
+  );
+
+  const gameRpcResultHttp = useAtomValue(
+    HttpGameClientAtom.query('Games', 'getGames', {
+      // You can register reactivity keys, which can be used to invalidate
+      // the query
+      reactivityKeys: ['GameList'],
+    })
+  );
+
+  console.log({ gameRpcResultHttp });
 
   return (
     <div>
       <section>
         <div>Results</div>
         <div>{JSON.stringify(data, null, 4)}</div>
+      </section>
+      <section>
+        <div>Atom Results</div>
+        {Result.match(gameRpcResult, {
+          onInitial: () => <div>Loading...</div>,
+          onFailure: (error) => <div>Error: {Cause.pretty(error.cause)}</div>,
+          onSuccess: (success) => (
+            <div>
+              <ul>
+                {success.value.map((game) => (
+                  <li key={game.id}>{game.name}</li>
+                ))}
+              </ul>
+            </div>
+          ),
+        })}
+      </section>
+      <section>
+        <div>Atom Results</div>
+        {Result.match(gameRpcResultAtomic, {
+          onInitial: () => <div>Loading...</div>,
+          onFailure: (error) => <div>Error: {Cause.pretty(error.cause)}</div>,
+          onSuccess: (success) => (
+            <div>
+              <ul>
+                {success.value.map((game) => (
+                  <li key={game.id}>{game.name}</li>
+                ))}
+              </ul>
+            </div>
+          ),
+        })}
+      </section>
+      <section>
+        <div>Http Results</div>
+        {Result.match(gameRpcResultHttp, {
+          onInitial: () => <div>Loading...</div>,
+          onFailure: (error) => <div>Error: {Cause.pretty(error.cause)}</div>,
+          onSuccess: (success) => (
+            <div>
+              <ul>
+                {success.value.map((game) => (
+                  <li key={game.id}>{game.name}</li>
+                ))}
+              </ul>
+            </div>
+          ),
+        })}
       </section>
       <CreateSeasonForm organizationId={ORG_ID} teamId={TEAM_ID} />
       <CreateGameForm organizationId={ORG_ID} />
