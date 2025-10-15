@@ -1,71 +1,42 @@
-import { PgDrizzle } from '@effect/sql-drizzle/Pg';
-import { eq } from 'drizzle-orm';
-import { Array as Arr, Effect, Schema } from 'effect';
-import { DatabaseLive } from '../../drizzle/drizzle.service';
-import { type Player, playerTable } from '../player.sql';
-import { PlayerContactInfoError } from './contact-info.error';
+import { Effect } from 'effect';
+import { decodeArguments, parsePostgresError } from '../../util';
+import { ContactInfoRepo } from './contact-info.repo';
 import { GetPlayerContactInfoInput } from './contact-info.schema';
-import {
-  type PlayerContactInfo,
-  playerContactInfoTable,
-} from './contact-info.sql';
-
-type PlayerWithContactInfoQuery = Pick<Player, 'name'> &
-  Omit<
-    PlayerContactInfo,
-    'publicId' | 'playerId' | 'createdAt' | 'deletedAt' | 'updatedAt'
-  > & {
-    playerId: string; // player publicId
-  };
 
 export class PlayerContactInfoService extends Effect.Service<PlayerContactInfoService>()(
   'PlayerContactInfoService',
   {
     effect: Effect.gen(function* () {
-      const db = yield* PgDrizzle;
+      const contactInfoRepo = yield* ContactInfoRepo;
 
       return {
         getPlayerWithContactInfo: (input: GetPlayerContactInfoInput) =>
           Effect.gen(function* () {
-            const validated = yield* Schema.decode(GetPlayerContactInfoInput)(
+            const decoded = yield* decodeArguments(
+              GetPlayerContactInfoInput,
               input
             );
-
-            const result: PlayerWithContactInfoQuery | undefined = yield* db
-              .select({
-                playerId: playerTable.publicId,
-                name: playerTable.name,
-                id: playerContactInfoTable.id,
-                email: playerContactInfoTable.email,
-                phone: playerContactInfoTable.phone,
-                facebook: playerContactInfoTable.facebook,
-                instagram: playerContactInfoTable.instagram,
-                whatsapp: playerContactInfoTable.whatsapp,
-                linkedin: playerContactInfoTable.linkedin,
-                groupme: playerContactInfoTable.groupme,
-                emergencyContactName:
-                  playerContactInfoTable.emergencyContactName,
-                emergencyContactPhone:
-                  playerContactInfoTable.emergencyContactPhone,
-              })
-              .from(playerTable)
-              .leftJoin(
-                playerContactInfoTable,
-                eq(playerTable.id, playerContactInfoTable.playerId)
+            return yield* contactInfoRepo.getPlayerWithContactInfo(decoded);
+          }).pipe(
+            Effect.catchTag('NoSuchElementException', () =>
+              Effect.succeed(null)
+            ),
+            Effect.catchTag('SqlError', (error) =>
+              Effect.fail(parsePostgresError(error))
+            ),
+            Effect.tap((result) =>
+              Effect.log(
+                result
+                  ? `Found contact info for player ${result.playerId}`
+                  : `No contact info found for player ${input.playerId}`
               )
-              .where(eq(playerTable.id, validated.playerId))
-              .limit(1)
-              .pipe(
-                Effect.flatMap(Arr.head),
-                Effect.tapError(Effect.logError),
-                Effect.mapError(
-                  (cause) => new PlayerContactInfoError({ cause })
-                )
-              );
-            return result || null;
-          }),
+            ),
+            Effect.tapError((error) =>
+              Effect.logError('Failed to get player contact info', error)
+            )
+          ),
       } as const;
     }),
-    dependencies: [DatabaseLive],
+    dependencies: [ContactInfoRepo.Default],
   }
 ) {}

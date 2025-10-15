@@ -1,0 +1,44 @@
+import {
+  HttpApi,
+  HttpApiBuilder,
+  HttpApiEndpoint,
+  HttpApiGroup,
+} from '@effect/platform';
+import { ContactInfoContract } from '@lax-db/core/player/contact-info/contact-info.contract';
+import { PlayerContactInfoService } from '@lax-db/core/player/contact-info/contact-info.service';
+import {
+  ConstraintViolationError,
+  DatabaseError,
+  NotFoundError,
+  ValidationError,
+} from '@lax-db/core/error';
+import { Effect, Layer } from 'effect';
+
+export const ContactInfoApi = HttpApi.make('ContactInfoApi').add(
+  HttpApiGroup.make('ContactInfo').add(
+    HttpApiEndpoint.post('getPlayerWithContactInfo', '/api/contact-info/player')
+      .addSuccess(ContactInfoContract.getPlayerWithContactInfo.success)
+      .addError(NotFoundError)
+      .addError(ValidationError)
+      .addError(DatabaseError)
+      .addError(ConstraintViolationError)
+      .setPayload(ContactInfoContract.getPlayerWithContactInfo.payload)
+  )
+);
+
+const ContactInfoApiHandlers = HttpApiBuilder.group(
+  ContactInfoApi,
+  'ContactInfo',
+  (handlers) =>
+    Effect.gen(function* () {
+      const service = yield* PlayerContactInfoService;
+
+      return handlers.handle('getPlayerWithContactInfo', ({ payload }) =>
+        service.getPlayerWithContactInfo(payload)
+      );
+    })
+).pipe(Layer.provide(PlayerContactInfoService.Default));
+
+export const ContactInfoApiLive = HttpApiBuilder.api(ContactInfoApi).pipe(
+  Layer.provide(ContactInfoApiHandlers)
+);

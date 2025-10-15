@@ -10,6 +10,11 @@ import { RpcSerialization, RpcServer } from '@effect/rpc';
 import { DateTime, Layer } from 'effect';
 import { GamesApiLive } from './game/game.api';
 import { GameHandlers, GameRpcs } from './game/game.rpc';
+import { ContactInfoApiLive } from './player/contact-info/contact-info.api';
+import {
+  ContactInfoHandlers,
+  ContactInfoRpcs,
+} from './player/contact-info/contact-info.rpc';
 import { PlayersApiLive } from './player/player.api';
 import { PlayerHandlers, PlayerRpcs } from './player/player.rpc';
 import { SeasonsApiLive } from './season/season.api';
@@ -18,10 +23,16 @@ import { SeasonHandlers, SeasonRpcs } from './season/season.rpc';
 const AllRpcs = Layer.mergeAll(
   RpcServer.layer(SeasonRpcs).pipe(Layer.provide(SeasonHandlers)),
   RpcServer.layer(GameRpcs).pipe(Layer.provide(GameHandlers)),
-  RpcServer.layer(PlayerRpcs).pipe(Layer.provide(PlayerHandlers))
+  RpcServer.layer(PlayerRpcs).pipe(Layer.provide(PlayerHandlers)),
+  RpcServer.layer(ContactInfoRpcs).pipe(Layer.provide(ContactInfoHandlers))
 );
 
-const AllApis = Layer.mergeAll(SeasonsApiLive, GamesApiLive, PlayersApiLive);
+const AllApis = Layer.mergeAll(
+  SeasonsApiLive,
+  GamesApiLive,
+  PlayersApiLive,
+  ContactInfoApiLive
+);
 
 const RpcProtocol = RpcServer.layerProtocolHttp({
   path: '/rpc',
