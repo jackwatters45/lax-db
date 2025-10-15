@@ -32,9 +32,7 @@ export class CreateGameInput extends Schema.Class<CreateGameInput>(
 )({
   ...OrganizationIdSchema,
   ...TeamIdSchema,
-  opponentName: Schema.String.pipe(Schema.minLength(2)).pipe(
-    Schema.maxLength(100)
-  ),
+  opponentName: Schema.String.pipe(Schema.minLength(2), Schema.maxLength(100)),
 }) {}
 
 export class UpdateGameInput extends Schema.Class<UpdateGameInput>(

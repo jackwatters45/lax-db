@@ -16,7 +16,7 @@ const Breadcrumb = ({
   ...props
 }: React.ComponentPropsWithoutRef<'nav'> & {
   separator?: React.ReactNode;
-} & { ref?: React.RefObject<HTMLElement | null> }) => (
+} & { ref?: React.Ref<HTMLElement> }) => (
   <nav aria-label="breadcrumb" ref={ref} {...props} />
 );
 Breadcrumb.displayName = 'Breadcrumb';
@@ -26,7 +26,7 @@ const BreadcrumbList = ({
   ref,
   ...props
 }: React.ComponentPropsWithoutRef<'ol'> & {
-  ref?: React.RefObject<HTMLOListElement | null>;
+  ref?: React.Ref<HTMLOListElement>;
 }) => (
   <ol
     className={cn(
@@ -44,7 +44,7 @@ const BreadcrumbItem = ({
   ref,
   ...props
 }: React.ComponentPropsWithoutRef<'li'> & {
-  ref?: React.RefObject<HTMLLIElement | null>;
+  ref?: React.Ref<HTMLLIElement>;
 }) => (
   <li
     className={cn('inline-flex items-center gap-1.5', className)}
@@ -61,7 +61,7 @@ const BreadcrumbLink = ({
   ...props
 }: React.ComponentPropsWithoutRef<'a'> & {
   asChild?: boolean;
-} & { ref?: React.RefObject<HTMLAnchorElement | null> }) => {
+} & { ref?: React.Ref<HTMLAnchorElement> }) => {
   const Comp = asChild ? Slot : 'a';
 
   return (
@@ -79,7 +79,7 @@ const BreadcrumbPage = ({
   ref,
   ...props
 }: React.ComponentPropsWithoutRef<'span'> & {
-  ref?: React.RefObject<HTMLSpanElement | null>;
+  ref?: React.Ref<HTMLSpanElement>;
 }) => (
   <span
     aria-current="page"
@@ -130,7 +130,7 @@ const BreadcrumbDropdownTrigger = ({
   ref,
   ...props
 }: React.ComponentPropsWithoutRef<typeof DropdownMenuTrigger> & {
-  ref?: React.RefObject<React.ComponentRef<typeof DropdownMenuTrigger> | null>;
+  ref?: React.Ref<React.ComponentRef<typeof DropdownMenuTrigger>>;
 }) => (
   <DropdownMenuTrigger
     className={cn(
@@ -155,7 +155,7 @@ const BreadcrumbDropdownItem = ({
 }: React.ComponentPropsWithoutRef<typeof DropdownMenuItem> & {
   asChild?: boolean;
 } & {
-  ref?: React.RefObject<React.ComponentRef<typeof DropdownMenuItem> | null>;
+  ref?: React.Ref<React.ComponentRef<typeof DropdownMenuItem>>;
 }) => <DropdownMenuItem asChild={asChild} ref={ref} {...props} />;
 BreadcrumbDropdownItem.displayName = 'BreadcrumbDropdownItem';
 

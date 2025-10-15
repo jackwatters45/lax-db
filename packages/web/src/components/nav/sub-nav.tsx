@@ -8,7 +8,7 @@ const NavbarRoot = ({
   ref,
   ...props
 }: React.HTMLAttributes<HTMLDivElement> & {
-  ref?: React.RefObject<HTMLDivElement | null>;
+  ref?: React.Ref<HTMLDivElement>;
 }) => (
   <div
     className={cn('flex h-[46px] items-center [&>*]:shrink-0', className)}
@@ -28,7 +28,7 @@ const NavbarItem = ({
   ...props
 }: React.HTMLAttributes<HTMLDivElement> & {
   asChild?: boolean;
-} & { ref?: React.RefObject<HTMLDivElement | null> }) => {
+} & { ref?: React.Ref<HTMLDivElement> }) => {
   const Comp = asChild ? Slot : 'div';
   return (
     <Comp

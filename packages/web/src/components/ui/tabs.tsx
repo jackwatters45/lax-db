@@ -10,7 +10,7 @@ const TabsList = ({
   ref,
   ...props
 }: React.ComponentPropsWithoutRef<typeof TabsPrimitive.List> & {
-  ref?: React.RefObject<React.ComponentRef<typeof TabsPrimitive.List> | null>;
+  ref?: React.Ref<React.ComponentRef<typeof TabsPrimitive.List>>;
 }) => (
   <TabsPrimitive.List
     className={cn(
@@ -28,9 +28,7 @@ const TabsTrigger = ({
   ref,
   ...props
 }: React.ComponentPropsWithoutRef<typeof TabsPrimitive.Trigger> & {
-  ref?: React.RefObject<React.ComponentRef<
-    typeof TabsPrimitive.Trigger
-  > | null>;
+  ref?: React.Ref<React.ComponentRef<typeof TabsPrimitive.Trigger>>;
 }) => (
   <TabsPrimitive.Trigger
     className={cn(
@@ -48,9 +46,7 @@ const TabsContent = ({
   ref,
   ...props
 }: React.ComponentPropsWithoutRef<typeof TabsPrimitive.Content> & {
-  ref?: React.RefObject<React.ComponentRef<
-    typeof TabsPrimitive.Content
-  > | null>;
+  ref?: React.Ref<React.ComponentRef<typeof TabsPrimitive.Content>>;
 }) => (
   <TabsPrimitive.Content
     className={cn(

@@ -16,9 +16,7 @@ const PopoverContent = ({
   ref,
   ...props
 }: React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Content> & {
-  ref?: React.RefObject<React.ComponentRef<
-    typeof PopoverPrimitive.Content
-  > | null>;
+  ref?: React.Ref<React.ComponentRef<typeof PopoverPrimitive.Content>>;
 }) => (
   <PopoverPrimitive.Portal>
     <PopoverPrimitive.Content

@@ -7,7 +7,7 @@ const Table = ({
   ref,
   ...props
 }: React.HTMLAttributes<HTMLTableElement> & {
-  ref?: React.RefObject<HTMLTableElement | null>;
+  ref?: React.Ref<HTMLTableElement>;
 }) => (
   <div className="relative w-full overflow-auto">
     <table
@@ -24,7 +24,7 @@ const TableHeader = ({
   ref,
   ...props
 }: React.HTMLAttributes<HTMLTableSectionElement> & {
-  ref?: React.RefObject<HTMLTableSectionElement | null>;
+  ref?: React.Ref<HTMLTableSectionElement>;
 }) => (
   <thead className={cn('[&_tr]:border-b', className)} ref={ref} {...props} />
 );
@@ -35,7 +35,7 @@ const TableBody = ({
   ref,
   ...props
 }: React.HTMLAttributes<HTMLTableSectionElement> & {
-  ref?: React.RefObject<HTMLTableSectionElement | null>;
+  ref?: React.Ref<HTMLTableSectionElement>;
 }) => (
   <tbody
     className={cn('[&_tr:last-child]:border-0', className)}
@@ -50,7 +50,7 @@ const TableFooter = ({
   ref,
   ...props
 }: React.HTMLAttributes<HTMLTableSectionElement> & {
-  ref?: React.RefObject<HTMLTableSectionElement | null>;
+  ref?: React.Ref<HTMLTableSectionElement>;
 }) => (
   <tfoot
     className={cn(
@@ -68,7 +68,7 @@ const TableRow = ({
   ref,
   ...props
 }: React.HTMLAttributes<HTMLTableRowElement> & {
-  ref?: React.RefObject<HTMLTableRowElement | null>;
+  ref?: React.Ref<HTMLTableRowElement>;
 }) => (
   <tr
     className={cn(
@@ -86,7 +86,7 @@ const TableHead = ({
   ref,
   ...props
 }: React.ThHTMLAttributes<HTMLTableCellElement> & {
-  ref?: React.RefObject<HTMLTableCellElement | null>;
+  ref?: React.Ref<HTMLTableCellElement>;
 }) => (
   <th
     className={cn(
@@ -104,7 +104,7 @@ const TableCell = ({
   ref,
   ...props
 }: React.TdHTMLAttributes<HTMLTableCellElement> & {
-  ref?: React.RefObject<HTMLTableCellElement | null>;
+  ref?: React.Ref<HTMLTableCellElement>;
 }) => (
   <td
     className={cn(
@@ -122,7 +122,7 @@ const TableCaption = ({
   ref,
   ...props
 }: React.HTMLAttributes<HTMLTableCaptionElement> & {
-  ref?: React.RefObject<HTMLTableCaptionElement | null>;
+  ref?: React.Ref<HTMLTableCaptionElement>;
 }) => (
   <caption
     className={cn('mt-4 text-muted-foreground text-sm', className)}

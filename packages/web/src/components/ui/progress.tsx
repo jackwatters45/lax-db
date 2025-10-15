@@ -9,9 +9,7 @@ const Progress = ({
   ref,
   ...props
 }: React.ComponentPropsWithoutRef<typeof ProgressPrimitive.Root> & {
-  ref?: React.RefObject<React.ComponentRef<
-    typeof ProgressPrimitive.Root
-  > | null>;
+  ref?: React.Ref<React.ComponentRef<typeof ProgressPrimitive.Root>>;
 }) => (
   <ProgressPrimitive.Root
     className={cn(
