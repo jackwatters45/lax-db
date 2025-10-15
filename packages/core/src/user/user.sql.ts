@@ -1,5 +1,5 @@
 import { boolean, index, pgTable, text } from 'drizzle-orm/pg-core';
-import { timestamp, timestamps } from '../drizzle';
+import { timestamp, timestamps } from '../drizzle/drizzle.type';
 
 // Better Auth
 export const userTable = pgTable(
@@ -19,6 +19,6 @@ export const userTable = pgTable(
   (table) => [
     index('user_email_idx').on(table.email),
     index('user_name_idx').on(table.name),
-  ],
+  ]
 );
 export type User = typeof userTable.$inferSelect;

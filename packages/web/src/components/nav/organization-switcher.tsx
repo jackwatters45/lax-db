@@ -26,13 +26,13 @@ export function OrganizationSwitcher() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
-              size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              size="lg"
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage
-                  src={activeOrganization.logo ?? undefined}
                   alt={activeOrganization.name ?? 'No Organization'}
+                  src={activeOrganization.logo ?? undefined}
                 />
                 <AvatarFallback className="rounded-lg uppercase">
                   {activeOrganization.name?.slice(0, 2)}
@@ -47,8 +47,8 @@ export function OrganizationSwitcher() {
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
             align="start"
+            className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
             side="right"
             sideOffset={4}
           >
@@ -60,9 +60,9 @@ export function OrganizationSwitcher() {
 
               return (
                 <DropdownMenuItem
+                  className="flex w-full items-center justify-between gap-2 p-2"
                   key={org.id}
                   onClick={() => !isActive && switchOrg.mutate(org.id)}
-                  className="flex w-full items-center justify-between gap-2 p-2"
                 >
                   <div className="flex items-center gap-2">
                     <div className="flex size-6 items-center justify-center rounded-sm border bg-background">
@@ -81,9 +81,9 @@ export function OrganizationSwitcher() {
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
               <Link
-                to="/$organizationSlug/organization/create"
-                params={{ organizationSlug: activeOrganization.slug }}
                 className="flex items-center gap-2 p-2"
+                params={{ organizationSlug: activeOrganization.slug }}
+                to="/$organizationSlug/organization/create"
               >
                 <div className="flex size-6 items-center justify-center rounded-md border bg-background">
                   <Plus className="h-4" />
@@ -95,9 +95,9 @@ export function OrganizationSwitcher() {
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
               <Link
-                to="/$organizationSlug/organization/join"
-                params={{ organizationSlug: activeOrganization.slug }}
                 className="flex items-center gap-2 p-2"
+                params={{ organizationSlug: activeOrganization.slug }}
+                to="/$organizationSlug/organization/join"
               >
                 <div className="flex size-6 items-center justify-center rounded-md border bg-background">
                   <Plus className="h-4" />

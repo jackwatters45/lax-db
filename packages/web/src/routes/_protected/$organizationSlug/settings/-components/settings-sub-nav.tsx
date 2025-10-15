@@ -10,24 +10,24 @@ export function SettingsSubNav({ organizationSlug }: SettingsHeaderProps) {
     <Navbar className="border-b">
       <NavbarItem asChild>
         <Link
-          to="/$organizationSlug/settings/general"
           params={{ organizationSlug }}
+          to="/$organizationSlug/settings/general"
         >
           General
         </Link>
       </NavbarItem>
       <NavbarItem asChild>
         <Link
-          to="/$organizationSlug/settings/users"
           params={{ organizationSlug }}
+          to="/$organizationSlug/settings/users"
         >
           Users
         </Link>
       </NavbarItem>
       <NavbarItem asChild>
         <Link
-          to="/$organizationSlug/settings/billing"
           params={{ organizationSlug }}
+          to="/$organizationSlug/settings/billing"
         >
           Billing
         </Link>

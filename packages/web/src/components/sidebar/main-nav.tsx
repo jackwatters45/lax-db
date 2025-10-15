@@ -43,9 +43,9 @@ export function MainNav() {
         <SidebarMenuItem>
           <SidebarMenuButton asChild tooltip={'Teams'}>
             <Link
-              to={'/$organizationSlug'}
-              params={{ organizationSlug: activeOrganization.slug }}
               className={cn(isTeams && 'bg-muted shadow')}
+              params={{ organizationSlug: activeOrganization.slug }}
+              to={'/$organizationSlug'}
             >
               <Users />
               <span>Teams</span>
@@ -55,9 +55,9 @@ export function MainNav() {
         <SidebarMenuItem>
           <SidebarMenuButton asChild tooltip={'Players'}>
             <Link
-              to={'/$organizationSlug/players'}
-              params={{ organizationSlug: activeOrganization.slug }}
               activeProps={{ className: 'bg-muted shadow' }}
+              params={{ organizationSlug: activeOrganization.slug }}
+              to={'/$organizationSlug/players'}
             >
               <User />
               <span>Players</span>
@@ -67,9 +67,9 @@ export function MainNav() {
         <SidebarMenuItem>
           <SidebarMenuButton asChild tooltip={'Games'}>
             <Link
-              to={'/$organizationSlug/games'}
-              params={{ organizationSlug: activeOrganization.slug }}
               activeProps={{ className: 'bg-muted shadow' }}
+              params={{ organizationSlug: activeOrganization.slug }}
+              to={'/$organizationSlug/games'}
             >
               <Trophy />
               <span>Games</span>
@@ -123,9 +123,9 @@ export function MainNav() {
         <SidebarMenuItem>
           <SidebarMenuButton asChild tooltip={'Settings'}>
             <Link
-              to={'/$organizationSlug/settings/general'}
-              params={{ organizationSlug: activeOrganization.slug }}
               className={cn(isSettings && 'bg-muted shadow')}
+              params={{ organizationSlug: activeOrganization.slug }}
+              to={'/$organizationSlug/settings/general'}
             >
               <Settings />
               <span>Settings</span>

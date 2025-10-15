@@ -15,7 +15,7 @@ export const authMiddleware = createMiddleware({
       const { headers } = request;
 
       const session = yield* Effect.promise(() =>
-        auth.auth.api.getSession({ headers }),
+        auth.auth.api.getSession({ headers })
       );
 
       if (!session) {
@@ -34,8 +34,8 @@ export const authMiddleware = createMiddleware({
           headers,
         },
       });
-    }),
-  ),
+    })
+  )
 );
 
 const preLogMiddleware = createMiddleware({ type: 'function' })
@@ -68,12 +68,7 @@ export const logMiddleware = createMiddleware({ type: 'function' })
   .client(async (ctx) => {
     const res = await ctx.next();
 
-    const now = new Date();
-    console.log('Client Req/Res:', {
-      duration: now.getTime() - res.context.clientTime.getTime(),
-      durationToServer: res.context.durationToServer,
-      durationFromServer: now.getTime() - res.context.serverTime.getTime(),
-    });
+    const _now = new Date();
 
     return res;
   });

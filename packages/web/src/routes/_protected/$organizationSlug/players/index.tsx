@@ -30,15 +30,15 @@ const GetPlayers = Schema.Struct({
 const getPlayers = createServerFn({ method: 'GET' })
   .middleware([authMiddleware])
   .inputValidator((data: typeof GetPlayers.Type) =>
-    Schema.decodeSync(GetPlayers)(data),
+    Schema.decodeSync(GetPlayers)(data)
   )
   .handler(async ({ data }) =>
     RuntimeServer.runPromise(
       Effect.gen(function* () {
         const playerService = yield* PlayerService;
         return yield* playerService.getAll(data);
-      }),
-    ),
+      })
+    )
   );
 
 export const Route = createFileRoute('/_protected/$organizationSlug/players/')({
@@ -83,7 +83,7 @@ function PlayersDataTable() {
         organizationId: activeOrganization.id,
         organizationSlug,
       }),
-    [activeOrganization.id, organizationSlug],
+    [activeOrganization.id, organizationSlug]
   );
 
   return (
@@ -96,7 +96,7 @@ function PlayersDataTable() {
             <DataTableBody />
           </DataTableContent>
         </TabsContent>
-        <TabsContent value="cards" className="container">
+        <TabsContent className="container" value="cards">
           Cards
           {/*<PlayerCards players={players} />*/}
         </TabsContent>
@@ -112,8 +112,8 @@ function Header() {
   return (
     <PlayersHeader organizationSlug={organizationSlug}>
       <BreadcrumbItem>
-        <BreadcrumbLink className="max-w-full truncate" title="Players" asChild>
-          <Link to="/$organizationSlug/players" params={{ organizationSlug }}>
+        <BreadcrumbLink asChild className="max-w-full truncate" title="Players">
+          <Link params={{ organizationSlug }} to="/$organizationSlug/players">
             Players
           </Link>
         </BreadcrumbLink>

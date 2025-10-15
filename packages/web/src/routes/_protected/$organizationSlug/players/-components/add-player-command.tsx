@@ -53,14 +53,16 @@ export function AddPlayerCommand({
   };
 
   const handleCreate = () => {
-    if (!searchQuery.trim()) return;
+    if (!searchQuery.trim()) {
+      return;
+    }
     handleCreateNewPlayer(searchQuery);
     setOpen(false);
     setSearchQuery('');
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog onOpenChange={setOpen} open={open}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="p-0">
         <DialogHeader className="px-4 pt-4">
@@ -68,9 +70,9 @@ export function AddPlayerCommand({
         </DialogHeader>
         <Command shouldFilter={false}>
           <CommandInput
+            onValueChange={setSearchQuery}
             placeholder="Search or create player..."
             value={searchQuery}
-            onValueChange={setSearchQuery}
           />
           <CommandList>
             {isLoading ? (

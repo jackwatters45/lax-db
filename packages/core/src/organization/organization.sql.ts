@@ -1,5 +1,5 @@
 import { index, pgTable, text } from 'drizzle-orm/pg-core';
-import { timestamp } from '../drizzle';
+import { timestamp } from '../drizzle/drizzle.type';
 import { userTable } from '../user/user.sql';
 
 // Better Auth
@@ -13,7 +13,7 @@ export const organizationTable = pgTable(
     createdAt: timestamp('created_at').notNull(),
     metadata: text('metadata'),
   },
-  (table) => [index('organization_slug_idx').on(table.slug)],
+  (table) => [index('organization_slug_idx').on(table.slug)]
 );
 
 // Better Auth
@@ -33,7 +33,7 @@ export const memberTable = pgTable(
   (table) => [
     index('member_organization_id_idx').on(table.organizationId),
     index('member_user_id_idx').on(table.userId),
-  ],
+  ]
 );
 
 // Better Auth
@@ -56,5 +56,5 @@ export const invitationTable = pgTable(
   (table) => [
     index('invitation_organization_id_idx').on(table.organizationId),
     index('invitation_email_idx').on(table.email),
-  ],
+  ]
 );

@@ -12,7 +12,7 @@ export const TOPIC_ENUM = [
 export const RATING_ENUM = ['positive', 'neutral', 'negative'];
 
 export class CreateFeedbackInput extends Schema.Class<CreateFeedbackInput>(
-  'CreateFeedbackInput',
+  'CreateFeedbackInput'
 )({
   topic: Schema.Union(Schema.Literal(...TOPIC_ENUM)),
   rating: Schema.Union(Schema.Literal(...RATING_ENUM)),

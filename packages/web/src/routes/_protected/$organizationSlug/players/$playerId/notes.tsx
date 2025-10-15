@@ -56,7 +56,6 @@ const mockPlayerNotes = [
 const getPlayerNotes = createServerFn({ method: 'GET' })
   .inputValidator((data: { playerId: string }) => data)
   .handler(async ({ data }) => {
-    console.log('Getting player notes for:', data.playerId);
     // TODO: Replace with actual API call
     return {
       playerName: 'Alex Johnson',
@@ -64,16 +63,14 @@ const getPlayerNotes = createServerFn({ method: 'GET' })
     };
   });
 
-const getPlayerPermissions = createServerFn().handler(async () => {
-  return {
-    canCreateNotes: true,
-    canEditNotes: true,
-    canDeleteNotes: true,
-  };
-});
+const getPlayerPermissions = createServerFn().handler(async () => ({
+  canCreateNotes: true,
+  canEditNotes: true,
+  canDeleteNotes: true,
+}));
 
 export const Route = createFileRoute(
-  '/_protected/$organizationSlug/players/$playerId/notes',
+  '/_protected/$organizationSlug/players/$playerId/notes'
 )({
   component: PlayerNotesPage,
   loader: async ({ params }) => {
@@ -90,14 +87,13 @@ function PlayerNotesPage() {
   const { playerName, notes, permissions } = Route.useLoaderData();
   const { organizationSlug, playerId } = Route.useParams();
 
-  const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat('en-US', {
+  const formatDate = (date: Date) =>
+    new Intl.DateTimeFormat('en-US', {
       weekday: 'short',
       month: 'short',
       day: 'numeric',
       year: 'numeric',
     }).format(date);
-  };
 
   const getPriorityColor = (priority: 'low' | 'medium' | 'high') => {
     switch (priority) {
@@ -129,10 +125,10 @@ function PlayerNotesPage() {
     <div className="container mx-auto py-8">
       <div className="mb-8">
         <Link
-          to="/$organizationSlug/players/$playerId"
           params={{ organizationSlug, playerId }}
+          to="/$organizationSlug/players/$playerId"
         >
-          <Button variant="ghost" className="mb-4">
+          <Button className="mb-4" variant="ghost">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to {playerName}
           </Button>
@@ -149,9 +145,9 @@ function PlayerNotesPage() {
           {permissions.canCreateNotes && (
             <Button asChild>
               <Link
-                to="/$organizationSlug/players/notes/create"
                 params={{ organizationSlug }}
                 search={{ playerId }}
+                to="/$organizationSlug/players/notes/create"
               >
                 <Plus className="mr-2 h-4 w-4" />
                 Add Note
@@ -193,7 +189,7 @@ function PlayerNotesPage() {
                 {note.tags && note.tags.length > 0 && (
                   <div className="flex flex-wrap gap-1">
                     {note.tags.map((tag) => (
-                      <Badge key={tag} variant="secondary" className="text-xs">
+                      <Badge className="text-xs" key={tag} variant="secondary">
                         {tag}
                       </Badge>
                     ))}
@@ -213,9 +209,9 @@ function PlayerNotesPage() {
           {permissions.canCreateNotes && (
             <Button asChild>
               <Link
-                to="/$organizationSlug/players/notes/create"
                 params={{ organizationSlug }}
                 search={{ playerId }}
+                to="/$organizationSlug/players/notes/create"
               >
                 <Plus className="mr-2 h-4 w-4" />
                 Add First Note

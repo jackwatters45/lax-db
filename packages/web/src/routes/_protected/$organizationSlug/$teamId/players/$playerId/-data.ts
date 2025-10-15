@@ -354,7 +354,7 @@ export const playerSeasonStatsMock: typeof playerSeasonStats = {
   faceoffPercentage: 0,
 };
 
-export const gamesMock: Array<typeof game> = [
+export const gamesMock: (typeof game)[] = [
   {
     date: '2024-09-05',
     opponentId: '2',

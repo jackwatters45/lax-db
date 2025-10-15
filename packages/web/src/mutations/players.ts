@@ -26,7 +26,7 @@ export const getOrgPlayersQK = (organizationId: string) =>
   [organizationId, 'players'] as const;
 
 export class UpdatePlayerAndTeamInput extends Schema.Class<UpdatePlayerAndTeamInput>(
-  'UpdatePlayerAndTeamInput',
+  'UpdatePlayerAndTeamInput'
 )({
   ...PlayerIdSchema,
   ...TeamIdSchema,
@@ -41,7 +41,7 @@ export class UpdatePlayerAndTeamInput extends Schema.Class<UpdatePlayerAndTeamIn
 export const updatePlayerFn = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
   .inputValidator((data: typeof UpdatePlayerAndTeamInput.Type) =>
-    Schema.decodeSync(UpdatePlayerAndTeamInput)(data),
+    Schema.decodeSync(UpdatePlayerAndTeamInput)(data)
   )
   .handler(async ({ data }) =>
     RuntimeServer.runPromise(
@@ -61,15 +61,15 @@ export const updatePlayerFn = createServerFn({ method: 'POST' })
               playerId: data.playerId,
               jerseyNumber,
               position,
-            }),
+            })
           );
         }
 
         if (updates.length > 0) {
           yield* Effect.all(updates, { concurrency: 'unbounded' });
         }
-      }),
-    ),
+      })
+    )
   );
 
 export function useUpdatePlayerBase(queryKey: readonly string[]) {
@@ -87,8 +87,8 @@ export function useUpdatePlayerBase(queryKey: readonly string[]) {
         old.map((player) =>
           player.publicId === variables.playerId
             ? { ...player, ...variables }
-            : player,
-        ),
+            : player
+        )
       );
 
       return { previousPlayers };
@@ -105,15 +105,15 @@ export function useUpdatePlayerBase(queryKey: readonly string[]) {
 export const bulkDeletePlayersFn = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
   .inputValidator((data: typeof BulkDeletePlayersInput.Type) =>
-    Schema.decodeSync(BulkDeletePlayersInput)(data),
+    Schema.decodeSync(BulkDeletePlayersInput)(data)
   )
   .handler(async ({ data }) =>
     RuntimeServer.runPromise(
       Effect.gen(function* () {
         const playerService = yield* PlayerService;
         return yield* playerService.bulkDeletePlayers(data);
-      }),
-    ),
+      })
+    )
   );
 
 export function useBulkDeletePlayersBase(queryKey: readonly string[]) {
@@ -129,7 +129,7 @@ export function useBulkDeletePlayersBase(queryKey: readonly string[]) {
         ctx.client.getQueryData<TeamPlayerWithInfo[]>(queryKey);
 
       ctx.client.setQueryData<TeamPlayerWithInfo[]>(queryKey, (old = []) =>
-        old.filter((p) => !variables.playerIds.includes(p.publicId)),
+        old.filter((p) => !variables.playerIds.includes(p.publicId))
       );
 
       return { previousPlayers };
@@ -150,15 +150,15 @@ export function useBulkDeletePlayersBase(queryKey: readonly string[]) {
 export const deletePlayerFn = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
   .inputValidator((data: typeof DeletePlayerInput.Type) =>
-    Schema.decodeSync(DeletePlayerInput)(data),
+    Schema.decodeSync(DeletePlayerInput)(data)
   )
   .handler(async ({ data }) =>
     RuntimeServer.runPromise(
       Effect.gen(function* () {
         const playerService = yield* PlayerService;
         return yield* playerService.deletePlayer(data);
-      }),
-    ),
+      })
+    )
   );
 
 export function useDeletePlayerBase(queryKey: readonly string[]) {
@@ -174,7 +174,7 @@ export function useDeletePlayerBase(queryKey: readonly string[]) {
         ctx.client.getQueryData<TeamPlayerWithInfo[]>(queryKey);
 
       ctx.client.setQueryData<TeamPlayerWithInfo[]>(queryKey, (old = []) =>
-        old.filter((p) => p.publicId !== variables.playerId),
+        old.filter((p) => p.publicId !== variables.playerId)
       );
 
       return { previousPlayers };

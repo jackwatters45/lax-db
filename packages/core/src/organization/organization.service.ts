@@ -17,11 +17,11 @@ export class OrganizationService extends Effect.Service<OrganizationService>()(
       return {
         createOrganization: (
           input: CreateOrganizationInput,
-          headers: Headers,
+          headers: Headers
         ) =>
           Effect.gen(function* () {
             const validated = yield* Schema.decode(CreateOrganizationInput)(
-              input,
+              input
             );
 
             yield* Effect.tryPromise(() =>
@@ -29,7 +29,7 @@ export class OrganizationService extends Effect.Service<OrganizationService>()(
                 body: {
                   slug: validated.slug,
                 },
-              }),
+              })
             ).pipe(
               Effect.tapError(Effect.logError),
               Effect.mapError(
@@ -37,8 +37,8 @@ export class OrganizationService extends Effect.Service<OrganizationService>()(
                   new OrganizationError({
                     cause,
                     message: 'Slug is not available',
-                  }),
-              ),
+                  })
+              )
             );
 
             const result = yield* Effect.tryPromise(() =>
@@ -48,7 +48,7 @@ export class OrganizationService extends Effect.Service<OrganizationService>()(
                   name: validated.name,
                   slug: validated.slug,
                 },
-              }),
+              })
             ).pipe(
               Effect.tapError(Effect.logError),
               Effect.mapError(
@@ -56,8 +56,8 @@ export class OrganizationService extends Effect.Service<OrganizationService>()(
                   new OrganizationError({
                     cause,
                     message: 'Failed to create organization',
-                  }),
-              ),
+                  })
+              )
             );
 
             const organizationId = result?.id;
@@ -66,7 +66,7 @@ export class OrganizationService extends Effect.Service<OrganizationService>()(
                 new OrganizationError({
                   cause: 'No organization ID returned',
                   message: 'Failed to create organization',
-                }),
+                })
               );
             }
 
@@ -76,7 +76,7 @@ export class OrganizationService extends Effect.Service<OrganizationService>()(
                 body: {
                   organizationId,
                 },
-              }),
+              })
             ).pipe(
               Effect.tapError(Effect.logError),
 
@@ -85,8 +85,8 @@ export class OrganizationService extends Effect.Service<OrganizationService>()(
                   new OrganizationError({
                     cause,
                     message: 'Organization created but failed to set as active',
-                  }),
-              ),
+                  })
+              )
             );
 
             const teams = yield* Effect.tryPromise(() =>
@@ -95,7 +95,7 @@ export class OrganizationService extends Effect.Service<OrganizationService>()(
                 query: {
                   organizationId,
                 },
-              }),
+              })
             ).pipe(
               Effect.tapError(Effect.logError),
 
@@ -105,8 +105,8 @@ export class OrganizationService extends Effect.Service<OrganizationService>()(
                     cause,
                     message:
                       'Organization created but failed to get default team',
-                  }),
-              ),
+                  })
+              )
             );
 
             const team = teams.find((t) => t.organizationId === organizationId);
@@ -115,7 +115,7 @@ export class OrganizationService extends Effect.Service<OrganizationService>()(
                 new OrganizationError({
                   cause: 'No default team found',
                   message: 'Organization created but no default team found',
-                }),
+                })
               );
             }
 
@@ -125,7 +125,7 @@ export class OrganizationService extends Effect.Service<OrganizationService>()(
         acceptInvitation: (input: AcceptInvitationInput, headers: Headers) =>
           Effect.gen(function* () {
             const validated = yield* Schema.decode(AcceptInvitationInput)(
-              input,
+              input
             );
 
             yield* Effect.tryPromise(() =>
@@ -134,30 +134,30 @@ export class OrganizationService extends Effect.Service<OrganizationService>()(
                 body: {
                   invitationId: validated.invitationId,
                 },
-              }),
+              })
             ).pipe(
               Effect.mapError(
                 (cause) =>
                   new OrganizationError({
                     cause,
                     message: 'Failed to accept invitation',
-                  }),
-              ),
+                  })
+              )
             );
           }),
 
         getUserOrganizationContext: (headers: Headers) =>
           Effect.gen(function* () {
             const session = yield* Effect.tryPromise(() =>
-              auth.auth.api.getSession({ headers }),
+              auth.auth.api.getSession({ headers })
             ).pipe(
               Effect.mapError(
                 (cause) =>
                   new OrganizationError({
                     cause,
                     message: 'Failed to get session',
-                  }),
-              ),
+                  })
+              )
             );
 
             if (!session?.user) {
@@ -170,29 +170,29 @@ export class OrganizationService extends Effect.Service<OrganizationService>()(
             const [activeOrganization, teams] = yield* Effect.all(
               [
                 Effect.tryPromise(() =>
-                  auth.auth.api.getFullOrganization({ headers }),
+                  auth.auth.api.getFullOrganization({ headers })
                 ).pipe(
                   Effect.mapError(
                     (cause) =>
                       new OrganizationError({
                         cause,
                         message: 'Failed to get active organization',
-                      }),
-                  ),
+                      })
+                  )
                 ),
                 Effect.tryPromise(() =>
-                  auth.auth.api.listOrganizationTeams({ headers }),
+                  auth.auth.api.listOrganizationTeams({ headers })
                 ).pipe(
                   Effect.mapError(
                     (cause) =>
                       new OrganizationError({
                         cause,
                         message: 'Failed to get teams',
-                      }),
-                  ),
+                      })
+                  )
                 ),
               ],
-              { concurrency: 'unbounded' },
+              { concurrency: 'unbounded' }
             );
 
             if (!activeOrganization) {
@@ -211,14 +211,13 @@ export class OrganizationService extends Effect.Service<OrganizationService>()(
                     query: {
                       teamId: team.id,
                     },
-                  }),
+                  })
                 ).pipe(
                   Effect.mapError((cause) => {
                     // If the user is not a member of the team, return empty array
                     // This can happen right after creating a team
                     const errorMessage = cause?.toString() || '';
                     if (errorMessage.includes('not a member of the team')) {
-                      console.warn(`User not a member of team ${team.id} yet`);
                       return null; // Will be handled by orElse below
                     }
                     return new OrganizationError({
@@ -227,10 +226,10 @@ export class OrganizationService extends Effect.Service<OrganizationService>()(
                     });
                   }),
                   Effect.orElse(() => Effect.succeed([])), // Return empty array on error
-                  Effect.map((members) => ({ ...team, members })),
-                ),
+                  Effect.map((members) => ({ ...team, members }))
+                )
               ),
-              { concurrency: 'unbounded' },
+              { concurrency: 'unbounded' }
             );
 
             // Better Auth doesn't expose listTeams or getActiveMember APIs yet
@@ -251,5 +250,5 @@ export class OrganizationService extends Effect.Service<OrganizationService>()(
       } as const;
     }),
     dependencies: [AuthService.Default],
-  },
+  }
 ) {}

@@ -37,7 +37,7 @@ function useSearchCombobox<TItem>(): SearchComboboxContextValue<TItem> {
   const context = React.useContext(SearchComboboxContext);
   if (!context) {
     throw new Error(
-      'useSearchCombobox must be used within a SearchComboboxProvider',
+      'useSearchCombobox must be used within a SearchComboboxProvider'
     );
   }
   return context as SearchComboboxContextValue<TItem>;
@@ -88,7 +88,7 @@ function SearchComboboxProvider<TItem>({
       getItemValue,
       open,
       closeOnSelect,
-    ],
+    ]
   );
 
   return (
@@ -108,7 +108,7 @@ function SearchComboboxRoot({ children }: SearchComboboxRootProps) {
   const { open, setOpen } = useSearchCombobox();
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover onOpenChange={setOpen} open={open}>
       {children}
     </Popover>
   );
@@ -129,13 +129,13 @@ function SearchComboboxTrigger({
     <PopoverTrigger asChild>
       {/* biome-ignore lint/a11y/useSemanticElements: <> */}
       <Button
-        variant="ghost"
-        role="combobox"
         aria-expanded={open}
         className={cn(
           'h-9 w-full justify-between border-0 px-2 font-normal hover:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0',
-          className,
+          className
         )}
+        role="combobox"
+        variant="ghost"
       >
         <span className={cn(!selectedValue && 'text-muted-foreground')}>
           {selectedValue || placeholder}
@@ -158,7 +158,7 @@ function SearchComboboxContent({
   className,
 }: SearchComboboxContentProps) {
   return (
-    <PopoverContent className={cn('w-[300px] p-0', className)} align={align}>
+    <PopoverContent align={align} className={cn('w-[300px] p-0', className)}>
       <Command shouldFilter={false}>{children}</Command>
     </PopoverContent>
   );
@@ -175,9 +175,9 @@ function SearchComboboxInput({
 
   return (
     <CommandInput
+      onValueChange={setSearchQuery}
       placeholder={placeholder}
       value={searchQuery}
-      onValueChange={setSearchQuery}
     />
   );
 }
@@ -248,7 +248,6 @@ function SearchComboboxItem<TItem>({
 
   return (
     <CommandItem
-      value={itemValue}
       onSelect={() => {
         onSelect(item);
         if (closeOnSelect) {
@@ -256,12 +255,13 @@ function SearchComboboxItem<TItem>({
           setSearchQuery('');
         }
       }}
+      value={itemValue}
     >
       {!closeOnSelect && (
         <Check
           className={cn(
             'mr-2 h-4 w-4',
-            isSelected ? 'opacity-100' : 'opacity-0',
+            isSelected ? 'opacity-100' : 'opacity-0'
           )}
         />
       )}

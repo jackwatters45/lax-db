@@ -1,11 +1,11 @@
 import '@tanstack/react-table';
 
 declare module '@tanstack/react-table' {
-  interface ColumnMeta<_TData extends RowData, _TValue> {
+  type ColumnMeta<_TData extends RowData, _TValue> = {
     className?: string;
     displayName: string;
-  }
-  interface TableMeta {
+  };
+  type TableMeta = {
     excludePlayerIds?: string[];
-  }
+  };
 }

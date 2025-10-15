@@ -13,14 +13,14 @@ export class Season extends Schema.Class<Season>('Season')({
 }) {}
 
 export class GetAllSeasonsInput extends Schema.Class<GetAllSeasonsInput>(
-  'GetAllSeasonsInput',
+  'GetAllSeasonsInput'
 )({
   ...OrganizationIdSchema,
   ...NullableTeamIdSchema,
 }) {}
 
 export class GetSeasonInput extends Schema.Class<GetSeasonInput>(
-  'GetSeasonInput',
+  'GetSeasonInput'
 )({
   ...OrganizationIdSchema,
   ...NullableTeamIdSchema,
@@ -28,7 +28,7 @@ export class GetSeasonInput extends Schema.Class<GetSeasonInput>(
 }) {}
 
 export class CreateSeasonInput extends Schema.Class<CreateSeasonInput>(
-  'CreateSeasonInput',
+  'CreateSeasonInput'
 )({
   ...OrganizationIdSchema,
   ...TeamIdSchema,
@@ -37,18 +37,18 @@ export class CreateSeasonInput extends Schema.Class<CreateSeasonInput>(
     Schema.maxLength(100, {
       message: () => 'Season name must be 100 characters or less',
     }),
-    Schema.trimmed(),
+    Schema.trimmed()
   ),
   startDate: Schema.DateFromSelf,
   endDate: Schema.NullOr(Schema.DateFromSelf),
   status: Schema.Literal('active', 'completed', 'upcoming').pipe(
-    Schema.optional,
+    Schema.optional
   ),
   division: Schema.NullOr(Schema.String),
 }) {}
 
 export class UpdateSeasonInput extends Schema.Class<UpdateSeasonInput>(
-  'UpdateSeasonInput',
+  'UpdateSeasonInput'
 )({
   ...OrganizationIdSchema,
   ...TeamIdSchema,
@@ -56,7 +56,7 @@ export class UpdateSeasonInput extends Schema.Class<UpdateSeasonInput>(
 }) {}
 
 export class DeleteSeasonInput extends Schema.Class<DeleteSeasonInput>(
-  'DeleteSeasonInput',
+  'DeleteSeasonInput'
 )({
   ...OrganizationIdSchema,
   ...TeamIdSchema,

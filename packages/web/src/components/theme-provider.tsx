@@ -36,7 +36,9 @@ const getSystemTheme = (e?: MediaQueryList | MediaQueryListEvent) => {
 };
 
 const getTheme = (key: string, fallback?: string) => {
-  if (typeof window === 'undefined') return undefined;
+  if (typeof window === 'undefined') {
+    return;
+  }
   try {
     return localStorage.getItem(key) || fallback;
   } catch {
@@ -48,8 +50,8 @@ const disableAnimation = () => {
   const css = document.createElement('style');
   css.appendChild(
     document.createTextNode(
-      '*,*::before,*::after{-webkit-transition:none!important;-moz-transition:none!important;-o-transition:none!important;-ms-transition:none!important;transition:none!important}',
-    ),
+      '*,*::before,*::after{-webkit-transition:none!important;-moz-transition:none!important;-o-transition:none!important;-ms-transition:none!important;transition:none!important}'
+    )
   );
   document.head.appendChild(css);
 
@@ -62,7 +64,7 @@ const disableAnimation = () => {
 };
 
 const ThemeProviderContext = createContext<ThemeProviderState | undefined>(
-  undefined,
+  undefined
 );
 
 function ThemeScript({
@@ -122,10 +124,10 @@ export function ThemeProvider({
   ...props
 }: ThemeProviderProps) {
   const [theme, setThemeState] = useState<Theme>(
-    () => getTheme(storageKey, defaultTheme) as Theme,
+    () => getTheme(storageKey, defaultTheme) as Theme
   );
   const [resolvedTheme, setResolvedTheme] = useState<Theme>(() =>
-    theme === 'system' ? getSystemTheme() : theme,
+    theme === 'system' ? getSystemTheme() : theme
   );
 
   const applyTheme = useCallback(
@@ -151,7 +153,7 @@ export function ThemeProvider({
 
       enable?.();
     },
-    [attribute, enableSystem, disableTransitionOnChange],
+    [attribute, enableSystem, disableTransitionOnChange]
   );
 
   const setTheme = useCallback(
@@ -163,7 +165,7 @@ export function ThemeProvider({
         // Unsupported
       }
     },
-    [storageKey],
+    [storageKey]
   );
 
   const handleMediaQuery = useCallback(
@@ -175,7 +177,7 @@ export function ThemeProvider({
         applyTheme('system');
       }
     },
-    [theme, enableSystem, applyTheme],
+    [theme, enableSystem, applyTheme]
   );
 
   // Listen to system preference changes
@@ -189,7 +191,9 @@ export function ThemeProvider({
   // Listen to localStorage changes
   useEffect(() => {
     const handleStorage = (e: StorageEvent) => {
-      if (e.key !== storageKey) return;
+      if (e.key !== storageKey) {
+        return;
+      }
       setThemeState((e.newValue as Theme) || defaultTheme);
     };
 
@@ -213,16 +217,16 @@ export function ThemeProvider({
           : resolvedTheme
         : undefined,
     }),
-    [theme, setTheme, resolvedTheme, enableSystem],
+    [theme, setTheme, resolvedTheme, enableSystem]
   );
 
   return (
     <ThemeProviderContext.Provider {...props} value={value}>
       <ThemeScript
-        storageKey={storageKey}
-        defaultTheme={defaultTheme}
         attribute={attribute}
+        defaultTheme={defaultTheme}
         enableSystem={enableSystem}
+        storageKey={storageKey}
       />
       {children}
     </ThemeProviderContext.Provider>

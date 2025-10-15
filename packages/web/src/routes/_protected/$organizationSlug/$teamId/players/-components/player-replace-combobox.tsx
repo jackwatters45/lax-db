@@ -40,18 +40,18 @@ export function PlayerReplaceCombobox({
 
   const filteredPlayers = useMemo(() => {
     const availablePlayers = allPlayers.filter(
-      (player) => !excludePlayerIds.includes(player.publicId),
+      (player) => !excludePlayerIds.includes(player.publicId)
     );
     return availablePlayers;
   }, [allPlayers, excludePlayerIds]);
 
   return (
     <SearchComboboxProvider
-      items={filteredPlayers}
-      isLoading={isLoading}
-      value={value}
-      onSelect={onSelect}
       getItemValue={(player) => player.name || ''}
+      isLoading={isLoading}
+      items={filteredPlayers}
+      onSelect={onSelect}
+      value={value}
     >
       <SearchComboboxRoot>
         <SearchComboboxTrigger placeholder={'Search or swap player...'} />
@@ -84,23 +84,27 @@ function FilteredPlayerItemsWithGroup() {
   const { items, searchQuery } = useSearchCombobox<Player>();
 
   const filtered = useMemo(() => {
-    if (!searchQuery.trim()) return items;
+    if (!searchQuery.trim()) {
+      return items;
+    }
 
     const query = searchQuery.toLowerCase();
     return items.filter(
       (player) =>
         player.name?.toLowerCase().includes(query) ||
         player.email?.toLowerCase().includes(query) ||
-        player.phone?.toLowerCase().includes(query),
+        player.phone?.toLowerCase().includes(query)
     );
   }, [items, searchQuery]);
 
-  if (filtered.length === 0) return null;
+  if (filtered.length === 0) {
+    return null;
+  }
 
   return (
     <SearchComboboxGroup heading="Organization Players">
       {filtered.map((player) => (
-        <SearchComboboxItem key={player.publicId} item={player}>
+        <SearchComboboxItem item={player} key={player.publicId}>
           {(player) => (
             <div className="flex flex-col">
               <span>{player.name || 'Unnamed'}</span>
@@ -124,7 +128,9 @@ function RenamePlayerOption({
 }) {
   const { searchQuery } = useSearchCombobox();
 
-  if (!searchQuery.trim()) return null;
+  if (!searchQuery.trim()) {
+    return null;
+  }
 
   return (
     <>

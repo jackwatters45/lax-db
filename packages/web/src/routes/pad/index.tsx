@@ -15,31 +15,31 @@ const TEAM_ID = 'zMdIMZuQEfe0ec3lsK6a8YhwHysRcvq5';
 
 const getAllSeasons = createServerFn({ method: 'GET' })
   .inputValidator((data: GetAllSeasonsInput) =>
-    Schema.decodeSync(GetAllSeasonsInput)(data),
+    Schema.decodeSync(GetAllSeasonsInput)(data)
   )
   .handler(async ({ data }) =>
     RuntimeServer.runPromise(
       Effect.gen(function* () {
         const seasonService = yield* SeasonService;
         return yield* seasonService.getAll(data);
-      }),
-    ),
+      })
+    )
   );
 
 const getAllGames = createServerFn({ method: 'GET' })
   .inputValidator((data: GetAllGamesInput) =>
-    Schema.decodeSync(GetAllGamesInput)(data),
+    Schema.decodeSync(GetAllGamesInput)(data)
   )
   .handler(async ({ data }) =>
     RuntimeServer.runPromise(
       Effect.gen(function* () {
         const gameService = yield* GameService;
         return yield* gameService.getAll(data);
-      }),
-    ),
+      })
+    )
   );
 
-export const Route = createFileRoute('/scratch/')({
+export const Route = createFileRoute('/pad/')({
   component: RouteComponent,
   loader: async () => {
     const seasons = await getAllSeasons({
@@ -67,16 +67,14 @@ const gameAtom = runtimeAtom.atom(
   Effect.gen(function* () {
     const client = yield* RpcGameClient;
     return yield* client.GameList();
-  }),
+  })
 );
 
 // add players selector for like quick adding to seasons, teams when creating
 function RouteComponent() {
   const data = Route.useLoaderData();
 
-  const gameRpcResult = useAtomValue(gameAtom);
-
-  console.log({ gameRpcResult });
+  const _gameRpcResult = useAtomValue(gameAtom);
 
   return (
     <div>

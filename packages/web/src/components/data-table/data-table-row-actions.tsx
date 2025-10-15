@@ -37,7 +37,7 @@ type RowActionsContextValue<TData = unknown> = {
 };
 
 const RowActionsContext = React.createContext<RowActionsContextValue | null>(
-  null,
+  null
 );
 
 function useRowActions<TData = unknown>(): RowActionsContextValue<TData> {
@@ -64,7 +64,7 @@ function RowActionsProvider<TData>({
       row,
       actions,
     }),
-    [row, actions],
+    [row, actions]
   );
 
   return (
@@ -84,15 +84,15 @@ function RowActionsDropdown({ children, className }: RowActionsDropdownProps) {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
-          variant="ghost"
           className={cn(
             'group aspect-square p-1.5 hover:border hover:border-border data-[state=open]:border-border data-[state=open]:bg-muted',
-            className,
+            className
           )}
+          variant="ghost"
         >
           <RiMoreFill
-            className="size-4 shrink-0 text-muted-foreground group-hover:text-foreground group-data-[state=open]:text-foreground"
             aria-hidden="true"
+            className="size-4 shrink-0 text-muted-foreground group-hover:text-foreground group-data-[state=open]:text-foreground"
           />
         </Button>
       </DropdownMenuTrigger>
@@ -120,12 +120,12 @@ function RowActionItem({
 }: RowActionItemProps) {
   return (
     <DropdownMenuItem
-      onClick={onClick}
       className={cn(
         'gap-2',
         variant === 'destructive' && 'text-destructive focus:text-destructive',
-        className,
+        className
       )}
+      onClick={onClick}
     >
       {Icon && <Icon className="h-4 w-4" />}
       {children}
@@ -138,15 +138,15 @@ function RowActionEditItem({ className, children }: ClassNameChildrenProp) {
 
   if (!actions?.onEdit) {
     throw new Error(
-      'RowActionEditItem requires onEdit action to be provided to RowActionsProvider',
+      'RowActionEditItem requires onEdit action to be provided to RowActionsProvider'
     );
   }
 
   return (
     <RowActionItem
+      className={className}
       icon={RiEdit2Line}
       onClick={() => actions.onEdit?.(row)}
-      className={className}
     >
       {children}
     </RowActionItem>
@@ -161,7 +161,7 @@ function RowActionDeleteItem({
 
   if (!actions?.onDelete) {
     throw new Error(
-      'RowActionDeleteItem requires onDelete action to be provided to RowActionsProvider',
+      'RowActionDeleteItem requires onDelete action to be provided to RowActionsProvider'
     );
   }
 
@@ -185,15 +185,15 @@ function RowActionRemoveItem({
 
   if (!actions?.onRemove) {
     throw new Error(
-      'RowActionAlertItem requires onRemove action to be provided to RowActionsProvider',
+      'RowActionAlertItem requires onRemove action to be provided to RowActionsProvider'
     );
   }
 
   return (
     <RowActionAlertItem
       {...props}
-      onClick={() => actions.onRemove?.(row)}
       icon={UserMinus}
+      onClick={() => actions.onRemove?.(row)}
       variant="destructive"
     >
       {children}
@@ -232,14 +232,14 @@ function RowActionAlertItem({
   };
 
   return (
-    <AlertDialog open={open} onOpenChange={setOpen}>
+    <AlertDialog onOpenChange={setOpen} open={open}>
       <AlertDialogTrigger asChild>
         <DropdownMenuItem
+          className={cn('gap-2', className)}
           onSelect={(e) => {
             e.preventDefault();
             setOpen(true);
           }}
-          className={cn('gap-2', className)}
         >
           {Icon && <Icon className="h-4 w-4" />}
           {children}
@@ -253,11 +253,11 @@ function RowActionAlertItem({
         <AlertDialogFooter>
           <AlertDialogCancel>{alertCancelText}</AlertDialogCancel>
           <AlertDialogAction
-            onClick={handleConfirm}
             className={cn(
               variant === 'destructive' &&
-                'bg-destructive text-destructive-foreground hover:bg-destructive/90',
+                'bg-destructive text-destructive-foreground hover:bg-destructive/90'
             )}
+            onClick={handleConfirm}
           >
             {alertActionText}
           </AlertDialogAction>

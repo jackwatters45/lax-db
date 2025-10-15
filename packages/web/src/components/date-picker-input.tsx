@@ -35,22 +35,20 @@ function isValidDate(date: Date | undefined) {
 export default function Calendar28() {
   const [open, setOpen] = React.useState(false);
   const [date, setDate] = React.useState<Date | undefined>(
-    new Date('2025-06-01'),
+    new Date('2025-06-01')
   );
   const [month, setMonth] = React.useState<Date | undefined>(date);
   const [value, setValue] = React.useState(formatDate(date));
 
   return (
     <div className="flex flex-col gap-3">
-      <Label htmlFor="date" className="px-1">
+      <Label className="px-1" htmlFor="date">
         Subscription Date
       </Label>
       <div className="relative flex gap-2">
         <Input
-          id="date"
-          value={value}
-          placeholder="June 01, 2025"
           className="bg-background pr-10"
+          id="date"
           onChange={(e) => {
             const date = new Date(e.target.value);
             setValue(e.target.value);
@@ -65,29 +63,30 @@ export default function Calendar28() {
               setOpen(true);
             }
           }}
+          placeholder="June 01, 2025"
+          value={value}
         />
-        <Popover open={open} onOpenChange={setOpen}>
+        <Popover onOpenChange={setOpen} open={open}>
           <PopoverTrigger asChild>
             <Button
-              id="date-picker"
-              variant="ghost"
-              size="icon"
               className="-translate-y-1/2 absolute top-1/2 right-2 h-6 w-6"
+              id="date-picker"
+              size="icon"
+              variant="ghost"
             >
               <CalendarIcon className="size-3" />
               <span className="sr-only">Select date</span>
             </Button>
           </PopoverTrigger>
           <PopoverContent
-            className="w-auto overflow-hidden p-0"
             align="end"
             alignOffset={-8}
+            className="w-auto overflow-hidden p-0"
             sideOffset={10}
           >
             <Calendar
-              mode="single"
-              selected={date}
               captionLayout="dropdown"
+              mode="single"
               month={month}
               onMonthChange={setMonth}
               onSelect={(date) => {
@@ -95,6 +94,7 @@ export default function Calendar28() {
                 setValue(formatDate(date));
                 setOpen(false);
               }}
+              selected={date}
             />
           </PopoverContent>
         </Popover>

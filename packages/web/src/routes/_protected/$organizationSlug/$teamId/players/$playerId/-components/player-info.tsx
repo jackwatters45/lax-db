@@ -26,12 +26,12 @@ export function PlayerInfo({
             <div className="flex items-center gap-2 text-muted-foreground">
               {[
                 playerInfo.primaryPosition && (
-                  <span key="position" className="capitalize">
+                  <span className="capitalize" key="position">
                     {playerInfo.primaryPosition}
                   </span>
                 ),
                 playerInfo.gradeLevel && (
-                  <span key="grade" className="capitalize">
+                  <span className="capitalize" key="grade">
                     {playerInfo.gradeLevel}
                   </span>
                 ),
@@ -62,14 +62,14 @@ export function PlayerInfo({
             <Badge className="capitalize">{playerInfo.developmentTrend}</Badge>
           )}
           {canEdit && (
-            <Button variant="outline" size="sm" asChild>
+            <Button asChild size="sm" variant="outline">
               <Link
-                to="/$organizationSlug/$teamId/players/$playerId/edit"
                 params={{
                   organizationSlug,
                   teamId,
                   playerId: playerInfo.id,
                 }}
+                to="/$organizationSlug/$teamId/players/$playerId/edit"
               >
                 <Edit className="mr-2 h-4 w-4" />
                 Edit Profile

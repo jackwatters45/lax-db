@@ -38,20 +38,20 @@ export function FacetedColumnHeader<TData, TValue>({
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
-          variant="ghost"
-          size="sm"
           className="-ml-3 h-8 data-[state=open]:bg-accent"
+          size="sm"
+          variant="ghost"
         >
           <DataTableColumnHeader
+            className="hover:bg-transparent"
             column={column}
             title={title}
-            className="hover:bg-transparent"
           />
-          <Separator orientation="vertical" className="h-4" />
+          <Separator className="h-4" orientation="vertical" />
           {selectedValues?.size > 0 && (
             <Badge
-              variant="secondary"
               className="ml-2 rounded-sm px-1 font-normal lg:hidden"
+              variant="secondary"
             >
               {selectedValues.size}
             </Badge>
@@ -61,7 +61,7 @@ export function FacetedColumnHeader<TData, TValue>({
               'h-3 w-3',
               selectedValues?.size > 0
                 ? 'text-primary'
-                : 'text-muted-foreground',
+                : 'text-muted-foreground'
             )}
           />
         </Button>
@@ -72,8 +72,8 @@ export function FacetedColumnHeader<TData, TValue>({
             const isSelected = selectedValues.has(option.value);
             return (
               <div
-                key={option.value}
                 className="flex items-center space-x-2 p-2"
+                key={option.value}
               >
                 <Checkbox
                   checked={isSelected}
@@ -85,7 +85,7 @@ export function FacetedColumnHeader<TData, TValue>({
                     }
                     const filterValues = Array.from(selectedValues);
                     column.setFilterValue(
-                      filterValues.length ? filterValues : undefined,
+                      filterValues.length ? filterValues : undefined
                     );
                   }}
                 />
@@ -102,10 +102,10 @@ export function FacetedColumnHeader<TData, TValue>({
             <DropdownMenuSeparator />
             <div className="p-2">
               <Button
-                variant="outline"
-                size="sm"
                 className="w-full"
                 onClick={() => column.setFilterValue(undefined)}
+                size="sm"
+                variant="outline"
               >
                 Clear filters
               </Button>

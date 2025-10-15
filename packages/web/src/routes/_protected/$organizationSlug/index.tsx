@@ -38,15 +38,15 @@ const DeleteTeamSchema = Schema.Struct({
 const deleteTeam = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
   .inputValidator((data: typeof DeleteTeamSchema.Type) =>
-    Schema.decodeSync(DeleteTeamSchema)(data),
+    Schema.decodeSync(DeleteTeamSchema)(data)
   )
   .handler(async ({ data, context }) =>
     RuntimeServer.runPromise(
       Effect.gen(function* () {
         const teamService = yield* TeamService;
         return yield* teamService.deleteTeam(data, context.headers);
-      }),
-    ),
+      })
+    )
   );
 
 export const Route = createFileRoute('/_protected/$organizationSlug/')({
@@ -65,8 +65,8 @@ function TeamsOverviewPage() {
     <>
       <DashboardHeader>
         <BreadcrumbItem>
-          <BreadcrumbLink title="Teams" asChild>
-            <Link to="/$organizationSlug" params={{ organizationSlug }}>
+          <BreadcrumbLink asChild title="Teams">
+            <Link params={{ organizationSlug }} to="/$organizationSlug">
               Teams
             </Link>
           </BreadcrumbLink>
@@ -84,8 +84,8 @@ function TeamsOverviewPage() {
           {canManageTeams && (
             <Button asChild>
               <Link
-                to="/$organizationSlug/teams/create"
                 params={{ organizationSlug }}
+                to="/$organizationSlug/teams/create"
               >
                 <Plus className="mr-2 h-4 w-4" />
                 Create Team
@@ -98,9 +98,9 @@ function TeamsOverviewPage() {
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {teams.map((team) => (
               <TeamOverviewCard
+                canManage={canManageTeams}
                 key={team.id}
                 team={team}
-                canManage={canManageTeams}
               />
             ))}
           </div>
@@ -161,9 +161,9 @@ function TeamOverviewCard({
               <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <Button
-                    variant="ghost"
-                    size="sm"
                     className="text-destructive hover:text-destructive"
+                    size="sm"
+                    variant="ghost"
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
@@ -179,8 +179,8 @@ function TeamOverviewCard({
                   <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
                     <AlertDialogAction
-                      onClick={handleDeleteTeam}
                       className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                      onClick={handleDeleteTeam}
                     >
                       Delete Team
                     </AlertDialogAction>
@@ -206,13 +206,13 @@ function TeamOverviewCard({
 
         <div className="space-y-2">
           <Link
-            to="/$organizationSlug/$teamId"
             params={{
               organizationSlug,
               teamId: team.id,
             }}
+            to="/$organizationSlug/$teamId"
           >
-            <Button variant="outline" className="w-full" size="sm">
+            <Button className="w-full" size="sm" variant="outline">
               Manage Team
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>

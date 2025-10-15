@@ -19,14 +19,14 @@ type ContactEditCardContextType<T extends FieldValues = any> = {
 };
 
 const ContactEditCardContext = createContext<ContactEditCardContextType | null>(
-  null,
+  null
 );
 
 function useContactEditCard<T extends FieldValues = any>() {
   const context = useContext(ContactEditCardContext);
   if (!context) {
     throw new Error(
-      'ContactEditCard components must be used within ContactEditCard',
+      'ContactEditCard components must be used within ContactEditCard'
     );
   }
   return context as ContactEditCardContextType<T>;
@@ -64,7 +64,7 @@ function ContactEditCardField() {
       render={({ field }) => (
         <FormItem>
           <ContactEditCardLabel />
-          <ContactEditCardInput icon={null} prefix={prefix} field={field} />
+          <ContactEditCardInput field={field} icon={null} prefix={prefix} />
           <FormMessage />
         </FormItem>
       )}
@@ -75,7 +75,7 @@ function ContactEditCardField() {
 function ContactEditCardLabel() {
   const { label } = useContactEditCard();
   return (
-    <FormLabel className="text-xs font-medium text-muted-foreground">
+    <FormLabel className="font-medium text-muted-foreground text-xs">
       {label}
     </FormLabel>
   );
@@ -97,13 +97,13 @@ function ContactEditCardInput({
       {icon}
       <FormControl>
         {prefix ? (
-          <div className="flex flex-1 items-center border rounded-md">
-            <span className="px-3 text-sm text-muted-foreground bg-muted border-r h-8 flex items-center">
+          <div className="flex flex-1 items-center rounded-md border">
+            <span className="flex h-8 items-center border-r bg-muted px-3 text-muted-foreground text-sm">
               {prefix}
             </span>
             <Input
               {...field}
-              className="h-8 text-sm border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+              className="h-8 border-0 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
             />
           </div>
         ) : (
@@ -128,7 +128,7 @@ function ContactEditCardIcon({ children }: ContactEditCardIconProps) {
       render={({ field }) => (
         <FormItem>
           <ContactEditCardLabel />
-          <ContactEditCardInput icon={children} prefix={prefix} field={field} />
+          <ContactEditCardInput field={field} icon={children} prefix={prefix} />
           <FormMessage />
         </FormItem>
       )}
@@ -145,7 +145,7 @@ export function EmailEditCard<T extends FieldValues>({
   form,
 }: EmailEditCardProps<T>) {
   return (
-    <ContactEditCard form={form} name={'email' as keyof T} label="Email">
+    <ContactEditCard form={form} label="Email" name={'email' as keyof T}>
       <ContactEditCardIcon>
         <Mail className="h-4 w-4 text-muted-foreground" />
       </ContactEditCardIcon>
@@ -161,7 +161,7 @@ export function PhoneEditCard<T extends FieldValues>({
   form,
 }: PhoneEditCardProps<T>) {
   return (
-    <ContactEditCard form={form} name={'phone' as keyof T} label="Phone">
+    <ContactEditCard form={form} label="Phone" name={'phone' as keyof T}>
       <ContactEditCardIcon>
         <Phone className="h-4 w-4 text-muted-foreground" />
       </ContactEditCardIcon>
@@ -179,8 +179,8 @@ export function FacebookEditCard<T extends FieldValues>({
   return (
     <ContactEditCard
       form={form}
-      name={'facebook' as keyof T}
       label="Facebook"
+      name={'facebook' as keyof T}
       prefix={SOCIAL_PLATFORM_CONFIG.facebook.prefix}
     >
       <ContactEditCardIcon>
@@ -200,8 +200,8 @@ export function InstagramEditCard<T extends FieldValues>({
   return (
     <ContactEditCard
       form={form}
-      name={'instagram' as keyof T}
       label="Instagram"
+      name={'instagram' as keyof T}
       prefix={SOCIAL_PLATFORM_CONFIG.instagram.prefix}
     >
       <ContactEditCardIcon>
@@ -221,8 +221,8 @@ export function WhatsAppEditCard<T extends FieldValues>({
   return (
     <ContactEditCard
       form={form}
-      name={'whatsapp' as keyof T}
       label="WhatsApp"
+      name={'whatsapp' as keyof T}
       prefix={SOCIAL_PLATFORM_CONFIG.whatsapp.prefix}
     >
       <ContactEditCardIcon>
@@ -242,8 +242,8 @@ export function GroupMeEditCard<T extends FieldValues>({
   return (
     <ContactEditCard
       form={form}
-      name={'groupme' as keyof T}
       label="GroupMe"
+      name={'groupme' as keyof T}
       prefix={SOCIAL_PLATFORM_CONFIG.groupme.prefix}
     >
       <ContactEditCardIcon>
@@ -263,8 +263,8 @@ export function LinkedInEditCard<T extends FieldValues>({
   return (
     <ContactEditCard
       form={form}
-      name={'linkedin' as keyof T}
       label="LinkedIn"
+      name={'linkedin' as keyof T}
       prefix={SOCIAL_PLATFORM_CONFIG.linkedin.prefix}
     >
       <ContactEditCardIcon>
@@ -284,8 +284,8 @@ export function EmergencyContactNameEditCard<T extends FieldValues>({
   return (
     <ContactEditCard
       form={form}
-      name={'emergencyContactName' as keyof T}
       label="Emergency Contact Name"
+      name={'emergencyContactName' as keyof T}
     >
       <ContactEditCardIcon>
         <Phone className="h-4 w-4 text-muted-foreground" />
@@ -304,8 +304,8 @@ export function EmergencyContactPhoneEditCard<T extends FieldValues>({
   return (
     <ContactEditCard
       form={form}
-      name={'emergencyContactPhone' as keyof T}
       label="Emergency Contact Phone"
+      name={'emergencyContactPhone' as keyof T}
     >
       <ContactEditCardIcon>
         <Phone className="h-4 w-4 text-muted-foreground" />

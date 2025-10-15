@@ -27,14 +27,14 @@ const AcceptInvitationSchema = Schema.Struct({
     Schema.minLength(1, { message: () => 'Invitation code is required' }),
     Schema.minLength(10, {
       message: () => 'Invitation code must be at least 10 characters',
-    }),
+    })
   ),
 });
 type FormData = typeof AcceptInvitationSchema.Type;
 
 const acceptInvitation = createServerFn({ method: 'POST' })
   .inputValidator((data: typeof AcceptInvitationSchema.Type) =>
-    Schema.decodeSync(AcceptInvitationSchema)(data),
+    Schema.decodeSync(AcceptInvitationSchema)(data)
   )
   .handler(async ({ data }) =>
     RuntimeServer.runPromise(
@@ -43,8 +43,8 @@ const acceptInvitation = createServerFn({ method: 'POST' })
         const headers = getRequestHeaders();
 
         return yield* organizationService.acceptInvitation(data, headers);
-      }),
-    ),
+      })
+    )
   );
 
 export function JoinOrganizationForm({
@@ -73,11 +73,10 @@ export function JoinOrganizationForm({
       //   params: { organizationSlug },
       // });
     },
-    onError: (error) => {
+    onError: (_error) => {
       toast.error(
-        'Failed to join organization. Please check your invitation code.',
+        'Failed to join organization. Please check your invitation code.'
       );
-      console.error('Join organization error:', error);
     },
   });
 
@@ -104,7 +103,7 @@ export function JoinOrganizationForm({
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
               <FormField
                 control={form.control}
                 name="invitationId"
@@ -127,22 +126,22 @@ export function JoinOrganizationForm({
 
               <div className="flex gap-4 pt-4">
                 {organizationSlug ? (
-                  <Button type="button" variant="outline" asChild>
+                  <Button asChild type="button" variant="outline">
                     <Link
-                      to="/$organizationSlug"
-                      params={{ organizationSlug }}
                       onClick={(e) => {
                         if (canGoBack) {
                           e.preventDefault();
                           router.history.back();
                         }
                       }}
+                      params={{ organizationSlug }}
+                      to="/$organizationSlug"
                     >
                       Cancel
                     </Link>
                   </Button>
                 ) : null}
-                <Button type="submit" disabled={joinOrgMutation.isPending}>
+                <Button disabled={joinOrgMutation.isPending} type="submit">
                   {joinOrgMutation.isPending ? 'Joining...' : 'Join Club'}
                 </Button>
               </div>

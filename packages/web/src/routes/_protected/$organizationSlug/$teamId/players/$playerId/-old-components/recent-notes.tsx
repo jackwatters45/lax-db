@@ -23,11 +23,11 @@ export function RecentNotes({
         <div className="flex items-center justify-between">
           <CardTitle>Recent Development Notes</CardTitle>
           {canCreateNotes && (
-            <Button variant="outline" size="sm" asChild>
+            <Button asChild size="sm" variant="outline">
               <Link
-                to="/$organizationSlug/players/notes/create"
                 params={{ organizationSlug }}
                 search={{ playerId: player.id }}
+                to="/$organizationSlug/players/notes/create"
               >
                 <Plus className="mr-2 h-4 w-4" />
                 Add Note
@@ -41,8 +41,8 @@ export function RecentNotes({
           <div className="space-y-3">
             {player.recentNotes.map((note) => (
               <div
-                key={note.id}
                 className="flex items-center justify-between rounded border p-3"
+                key={note.id}
               >
                 <div className="flex-1">
                   <div className="font-medium text-sm">{note.title}</div>
@@ -54,13 +54,13 @@ export function RecentNotes({
                   <Badge variant={getPriorityColor(note.priority)}>
                     {note.priority}
                   </Badge>
-                  <Button variant="ghost" size="sm" asChild>
+                  <Button asChild size="sm" variant="ghost">
                     <Link
-                      to="/$organizationSlug/players/$playerId/notes"
                       params={{
                         organizationSlug,
                         playerId: player.id,
                       }}
+                      to="/$organizationSlug/players/$playerId/notes"
                     >
                       View All
                     </Link>

@@ -11,8 +11,8 @@ export const getUserOrganizationContext = createServerFn()
       Effect.gen(function* () {
         const organizationService = yield* OrganizationService;
         return yield* organizationService.getUserOrganizationContext(
-          context.headers,
+          context.headers
         );
-      }),
-    ),
+      })
+    )
   );

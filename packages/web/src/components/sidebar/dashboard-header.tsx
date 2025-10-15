@@ -35,25 +35,25 @@ export function DashboardHeader({ children }: { children: React.ReactNode }) {
             <TooltipContent side="bottom">Toggle Sidebar (⌘+B)</TooltipContent>
           </Tooltip>
         </TooltipProvider>
-        <Separator orientation="vertical" className="mr-2 h-4" />
+        <Separator className="mr-2 h-4" orientation="vertical" />
         <Breadcrumb className="min-w-0 flex-1">
           <BreadcrumbList className="flex-nowrap">{children}</BreadcrumbList>
         </Breadcrumb>
       </div>
       <div className="flex items-center gap-2">
         <Link
-          to="/$organizationSlug/plan"
           params={{ organizationSlug: activeOrganization.slug }}
+          to="/$organizationSlug/plan"
         >
-          <Button variant="outline" size={'sm'}>
+          <Button size={'sm'} variant="outline">
             Plan
           </Button>
         </Link>
         <Link
-          to="/$organizationSlug/feedback"
           params={{ organizationSlug: activeOrganization.slug }}
+          to="/$organizationSlug/feedback"
         >
-          <Button variant="outline" size={'sm'}>
+          <Button size={'sm'} variant="outline">
             Feedback
           </Button>
         </Link>
@@ -63,12 +63,12 @@ export function DashboardHeader({ children }: { children: React.ReactNode }) {
   );
 }
 
-interface DashboardHeaderProps {
+type DashboardHeaderProps = {
   breadcrumbItems: {
     label: string;
     href: string | null;
   }[];
-}
+};
 
 export function DashboardHeaderOld(props: DashboardHeaderProps) {
   return (
@@ -82,7 +82,7 @@ export function DashboardHeaderOld(props: DashboardHeaderProps) {
             <TooltipContent side="bottom">Toggle Sidebar (⌘+B)</TooltipContent>
           </Tooltip>
         </TooltipProvider>
-        <Separator orientation="vertical" className="mr-2 h-4" />
+        <Separator className="mr-2 h-4" orientation="vertical" />
         <Breadcrumb className="min-w-0 flex-1">
           <BreadcrumbList className="flex-nowrap">
             {props.breadcrumbItems.map((item, i) => (
@@ -96,8 +96,8 @@ export function DashboardHeaderOld(props: DashboardHeaderProps) {
                 >
                   {item.href ? (
                     <BreadcrumbLink
-                      href={item.href}
                       className={`truncate ${i === props.breadcrumbItems.length - 1 ? 'max-w-full' : ''}`}
+                      href={item.href}
                       title={item.label}
                     >
                       {item.label}

@@ -111,17 +111,15 @@ const getScheduleData = createServerFn().handler(async () => {
 });
 
 // Server function for permissions
-const getSchedulePermissions = createServerFn().handler(async () => {
-  return {
-    canSchedulePractices: true,
-    canEditPractices: true,
-    canCancelPractices: true,
-    canViewAttendance: true,
-  };
-});
+const getSchedulePermissions = createServerFn().handler(async () => ({
+  canSchedulePractices: true,
+  canEditPractices: true,
+  canCancelPractices: true,
+  canViewAttendance: true,
+}));
 
 export const Route = createFileRoute(
-  '/_protected/$organizationSlug/practice/schedule/',
+  '/_protected/$organizationSlug/practice/schedule/'
 )({
   component: PracticeSchedule,
   loader: async () => {
@@ -139,13 +137,12 @@ function PracticeSchedule() {
   const { data, permissions } = Route.useLoaderData();
   const [currentWeek, setCurrentWeek] = useState(data.currentWeek.start);
 
-  const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat('en-US', {
+  const formatDate = (date: Date) =>
+    new Intl.DateTimeFormat('en-US', {
       weekday: 'short',
       month: 'short',
       day: 'numeric',
     }).format(date);
-  };
 
   const formatTime = (time: string) => {
     const [hours, minutes] = time.split(':');
@@ -178,12 +175,11 @@ function PracticeSchedule() {
     return days;
   };
 
-  const getPracticesForDate = (date: Date) => {
-    return data.practices.filter((practice) => {
+  const getPracticesForDate = (date: Date) =>
+    data.practices.filter((practice) => {
       const practiceDate = new Date(practice.date);
       return practiceDate.toDateString() === date.toDateString();
     });
-  };
 
   const navigateWeek = (direction: 'prev' | 'next') => {
     const newWeek = new Date(currentWeek);
@@ -205,10 +201,10 @@ function PracticeSchedule() {
         </div>
 
         <div className="flex gap-2">
-          <Button variant="outline" asChild>
+          <Button asChild variant="outline">
             <Link
-              to="/$organizationSlug/practice"
               params={{ organizationSlug }}
+              to="/$organizationSlug/practice"
             >
               <Calendar className="mr-2 h-4 w-4" />
               Dashboard
@@ -217,8 +213,8 @@ function PracticeSchedule() {
           {permissions.canSchedulePractices && (
             <Button asChild>
               <Link
-                to="/$organizationSlug/practice/schedule/create"
                 params={{ organizationSlug }}
+                to="/$organizationSlug/practice/schedule/create"
               >
                 <Plus className="mr-2 h-4 w-4" />
                 Schedule Practice
@@ -234,9 +230,9 @@ function PracticeSchedule() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Button
-                variant="outline"
-                size="sm"
                 onClick={() => navigateWeek('prev')}
+                size="sm"
+                variant="outline"
               >
                 <ChevronLeft className="h-4 w-4" />
               </Button>
@@ -248,7 +244,7 @@ function PracticeSchedule() {
                   })}{' '}
                   -{' '}
                   {new Date(
-                    currentWeek.getTime() + 6 * 24 * 60 * 60 * 1000,
+                    currentWeek.getTime() + 6 * 24 * 60 * 60 * 1000
                   ).toLocaleDateString('en-US', {
                     month: 'long',
                     day: 'numeric',
@@ -260,17 +256,17 @@ function PracticeSchedule() {
                 </div>
               </div>
               <Button
-                variant="outline"
-                size="sm"
                 onClick={() => navigateWeek('next')}
+                size="sm"
+                variant="outline"
               >
                 <ChevronRight className="h-4 w-4" />
               </Button>
             </div>
             <Button
-              variant="outline"
-              size="sm"
               onClick={() => setCurrentWeek(new Date())}
+              size="sm"
+              variant="outline"
             >
               Today
             </Button>
@@ -287,8 +283,8 @@ function PracticeSchedule() {
 
           return (
             <Card
-              key={day.getTime()}
               className={`min-h-[200px] ${isToday ? 'ring-2 ring-primary' : ''}`}
+              key={day.getTime()}
             >
               <CardHeader className="pb-3">
                 <div className="text-center">
@@ -298,7 +294,7 @@ function PracticeSchedule() {
                     {formatDate(day)}
                   </div>
                   {isToday && (
-                    <Badge variant="default" className="mt-1 text-xs">
+                    <Badge className="mt-1 text-xs" variant="default">
                       Today
                     </Badge>
                   )}
@@ -308,18 +304,18 @@ function PracticeSchedule() {
                 <div className="space-y-2">
                   {practices.map((practice) => (
                     <div
-                      key={practice.id}
                       className={`cursor-pointer rounded border p-2 hover:bg-muted/50 ${
                         isPast ? 'opacity-60' : ''
                       }`}
+                      key={practice.id}
                     >
                       <div className="flex items-center justify-between">
                         <div className="font-medium text-sm">
                           {practice.name}
                         </div>
                         <Badge
-                          variant={getStatusColor(practice.status)}
                           className="text-xs"
+                          variant={getStatusColor(practice.status)}
                         >
                           {practice.status}
                         </Badge>
@@ -341,15 +337,15 @@ function PracticeSchedule() {
                       <div className="mt-2 flex flex-wrap gap-1">
                         {practice.focus.slice(0, 2).map((focus) => (
                           <Badge
+                            className="text-xs"
                             key={focus}
                             variant="outline"
-                            className="text-xs"
                           >
                             {focus}
                           </Badge>
                         ))}
                         {practice.focus.length > 2 && (
-                          <Badge variant="outline" className="text-xs">
+                          <Badge className="text-xs" variant="outline">
                             +{practice.focus.length - 2}
                           </Badge>
                         )}
@@ -366,10 +362,10 @@ function PracticeSchedule() {
                   {permissions.canSchedulePractices &&
                     practices.length === 0 && (
                       <Button
-                        variant="ghost"
-                        size="sm"
                         className="w-full border border-dashed"
                         disabled
+                        size="sm"
+                        variant="ghost"
                       >
                         <Plus className="mr-2 h-3 w-3" />
                         Add Practice
@@ -393,19 +389,19 @@ function PracticeSchedule() {
               .filter(
                 (practice) =>
                   new Date(practice.date) >= today &&
-                  practice.status === 'scheduled',
+                  practice.status === 'scheduled'
               )
               .slice(0, 5)
               .map((practice) => (
                 <div
-                  key={practice.id}
                   className="flex items-center justify-between rounded border p-3"
+                  key={practice.id}
                 >
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
                       <span className="font-medium">{practice.name}</span>
                       {practice.templateUsed && (
-                        <Badge variant="outline" className="text-xs">
+                        <Badge className="text-xs" variant="outline">
                           Template: {practice.templateUsed}
                         </Badge>
                       )}
@@ -422,9 +418,9 @@ function PracticeSchedule() {
                     <div className="mt-2 flex gap-1">
                       {practice.focus.map((focus) => (
                         <Badge
+                          className="text-xs"
                           key={focus}
                           variant="secondary"
-                          className="text-xs"
                         >
                           {focus}
                         </Badge>
@@ -455,11 +451,11 @@ function PracticeSchedule() {
                     </div>
                     <div className="flex gap-2">
                       {permissions.canEditPractices && (
-                        <Button variant="ghost" size="sm" disabled>
+                        <Button disabled size="sm" variant="ghost">
                           Edit
                         </Button>
                       )}
-                      <Button variant="ghost" size="sm" disabled>
+                      <Button disabled size="sm" variant="ghost">
                         View
                       </Button>
                     </div>
@@ -471,7 +467,7 @@ function PracticeSchedule() {
           {data.practices.filter(
             (practice) =>
               new Date(practice.date) >= today &&
-              practice.status === 'scheduled',
+              practice.status === 'scheduled'
           ).length === 0 && (
             <div className="py-8 text-center text-muted-foreground">
               <Calendar className="mx-auto mb-4 h-12 w-12" />

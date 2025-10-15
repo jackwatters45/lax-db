@@ -2,7 +2,7 @@ import { type Effect, Schema } from 'effect';
 import type { PlayerContactInfoService } from './contact-info.service';
 
 export class GetPlayerContactInfoInput extends Schema.Class<GetPlayerContactInfoInput>(
-  'GetPlayerContactInfoInput',
+  'GetPlayerContactInfoInput'
 )({
   playerId: Schema.Number,
 }) {}

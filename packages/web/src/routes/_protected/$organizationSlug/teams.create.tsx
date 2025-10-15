@@ -35,15 +35,15 @@ const CreateTeamSchema = Schema.Struct({
 const createTeam = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
   .inputValidator((data: typeof CreateTeamSchema.Type) =>
-    Schema.decodeSync(CreateTeamSchema)(data),
+    Schema.decodeSync(CreateTeamSchema)(data)
   )
   .handler(async ({ data, context }) =>
     RuntimeServer.runPromise(
       Effect.gen(function* () {
         const teamService = yield* TeamService;
         return yield* teamService.createTeam(data, context.headers);
-      }),
-    ),
+      })
+    )
   );
 
 const formSchema = Schema.Struct({
@@ -54,21 +54,21 @@ const formSchema = Schema.Struct({
     }),
     Schema.maxLength(100, {
       message: () => 'Team name must be less than 100 characters',
-    }),
+    })
   ),
   description: Schema.optional(
     Schema.String.pipe(
       Schema.maxLength(500, {
         message: () => 'Description must be less than 500 characters',
-      }),
-    ),
+      })
+    )
   ),
 });
 
 type FormData = typeof formSchema.Type;
 
 export const Route = createFileRoute(
-  '/_protected/$organizationSlug/teams/create',
+  '/_protected/$organizationSlug/teams/create'
 )({
   component: CreateTeamPage,
 });
@@ -101,9 +101,8 @@ function CreateTeamPage() {
         },
       });
     },
-    onError: (error) => {
+    onError: (_error) => {
       toast.error('Failed to create team. Please try again.');
-      console.error('Create team error:', error);
     },
   });
 
@@ -115,18 +114,18 @@ function CreateTeamPage() {
     <>
       <DashboardHeader>
         <BreadcrumbItem>
-          <BreadcrumbLink title="Teams" asChild>
-            <Link to="/$organizationSlug" params={{ organizationSlug }}>
+          <BreadcrumbLink asChild title="Teams">
+            <Link params={{ organizationSlug }} to="/$organizationSlug">
               Teams
             </Link>
           </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         <BreadcrumbItem>
-          <BreadcrumbLink title="Create" asChild>
+          <BreadcrumbLink asChild title="Create">
             <Link
-              to="/$organizationSlug/teams/create"
               params={{ organizationSlug }}
+              to="/$organizationSlug/teams/create"
             >
               Create
             </Link>
@@ -148,8 +147,8 @@ function CreateTeamPage() {
           <CardContent>
             <Form {...form}>
               <form
-                onSubmit={form.handleSubmit(onSubmit)}
                 className="space-y-6"
+                onSubmit={form.handleSubmit(onSubmit)}
               >
                 <FormField
                   control={form.control}
@@ -188,19 +187,19 @@ function CreateTeamPage() {
 
                 <div className="flex gap-4 pt-4">
                   <Button
+                    asChild
+                    className="flex-1"
                     type="button"
                     variant="outline"
-                    className="flex-1"
-                    asChild
                   >
-                    <Link to="/$organizationSlug" params={{ organizationSlug }}>
+                    <Link params={{ organizationSlug }} to="/$organizationSlug">
                       Cancel
                     </Link>
                   </Button>
                   <Button
-                    type="submit"
-                    disabled={createTeamMutation.isPending}
                     className="flex-1"
+                    disabled={createTeamMutation.isPending}
+                    type="submit"
                   >
                     {createTeamMutation.isPending
                       ? 'Creating...'

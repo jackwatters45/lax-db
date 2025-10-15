@@ -9,7 +9,7 @@ import { authMiddleware } from '@/lib/middleware';
 const getTeamDashboardData = createServerFn({ method: 'GET' })
   .middleware([authMiddleware])
   .inputValidator(
-    (data: { activeOrganizationId: string; teamId: string }) => data,
+    (data: { activeOrganizationId: string; teamId: string }) => data
   )
   .handler(async ({ data, context }) =>
     RuntimeServer.runPromise(
@@ -30,15 +30,15 @@ const getTeamDashboardData = createServerFn({ method: 'GET' })
               organizationId: data.activeOrganizationId,
             },
             headers,
-          }),
+          })
         ).pipe(
           Effect.mapError(
             (cause) =>
               new TeamError({
                 cause,
                 message: 'Failed to list organization teams',
-              }),
-          ),
+              })
+          )
         );
 
         // Find the active team from the teamId parameter
@@ -55,8 +55,8 @@ const getTeamDashboardData = createServerFn({ method: 'GET' })
           teams,
           activeTeam,
         };
-      }),
-    ),
+      })
+    )
   );
 
 export const Route = createFileRoute('/_protected/$organizationSlug/$teamId')({
@@ -86,12 +86,11 @@ export const Route = createFileRoute('/_protected/$organizationSlug/$teamId')({
       activeTeam,
     };
   },
-  loader: async ({ params, context }) => {
-    return await getTeamDashboardData({
+  loader: async ({ params, context }) =>
+    await getTeamDashboardData({
       data: {
         activeOrganizationId: context.activeOrganization.id,
         teamId: params.teamId,
       },
-    });
-  },
+    }),
 });

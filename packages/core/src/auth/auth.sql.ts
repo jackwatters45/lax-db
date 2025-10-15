@@ -1,5 +1,5 @@
 import { index, pgTable, text } from 'drizzle-orm/pg-core';
-import { timestamp } from '../drizzle';
+import { timestamp } from '../drizzle/drizzle.type';
 import { userTable } from '../user/user.sql';
 
 // Better Auth
@@ -22,7 +22,7 @@ export const sessionTable = pgTable(
   (table) => [
     index('session_user_id_idx').on(table.userId),
     index('session_token_idx').on(table.token),
-  ],
+  ]
 );
 
 // Better Auth
@@ -45,7 +45,7 @@ export const accountTable = pgTable(
     createdAt: timestamp('created_at').notNull(),
     updatedAt: timestamp('updated_at').notNull(),
   },
-  (table) => [index('account_user_id_idx').on(table.userId)],
+  (table) => [index('account_user_id_idx').on(table.userId)]
 );
 
 // Better Auth
@@ -57,11 +57,11 @@ export const verificationTable = pgTable(
     value: text('value').notNull(),
     expiresAt: timestamp('expires_at').notNull(),
     createdAt: timestamp('created_at').$defaultFn(
-      () => /* @__PURE__ */ new Date(),
+      () => /* @__PURE__ */ new Date()
     ),
     updatedAt: timestamp('updated_at').$defaultFn(
-      () => /* @__PURE__ */ new Date(),
+      () => /* @__PURE__ */ new Date()
     ),
   },
-  (table) => [index('verification_identifier_idx').on(table.identifier)],
+  (table) => [index('verification_identifier_idx').on(table.identifier)]
 );

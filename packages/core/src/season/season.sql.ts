@@ -1,5 +1,5 @@
 import { index, pgEnum, pgTable, text } from 'drizzle-orm/pg-core';
-import { ids, timestamp, timestamps } from '../drizzle';
+import { ids, timestamp, timestamps } from '../drizzle/drizzle.type';
 import { organizationTable } from '../organization/organization.sql';
 import { teamTable } from '../team/team.sql';
 
@@ -29,7 +29,7 @@ export const seasonTable = pgTable(
   (table) => [
     index('idx_season_organization').on(table.organizationId),
     index('idx_season_team').on(table.teamId),
-  ],
+  ]
 );
 
 type SeasonInternal = typeof seasonTable.$inferSelect;

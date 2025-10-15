@@ -17,7 +17,7 @@ const buttonGroupVariants = cva(
     defaultVariants: {
       orientation: 'horizontal',
     },
-  },
+  }
 );
 
 function ButtonGroup({
@@ -28,9 +28,9 @@ function ButtonGroup({
   VariantProps<typeof buttonGroupVariants>) {
   return (
     <fieldset
-      data-slot="button-group"
-      data-orientation={orientation}
       className={cn(buttonGroupVariants({ orientation }), className)}
+      data-orientation={orientation}
+      data-slot="button-group"
       {...props}
     />
   );
@@ -49,7 +49,7 @@ function ButtonGroupText({
     <Comp
       className={cn(
         "flex items-center gap-2 rounded-md border bg-muted px-4 font-medium text-sm shadow-xs [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none",
-        className,
+        className
       )}
       {...props}
     />
@@ -63,12 +63,12 @@ function ButtonGroupSeparator({
 }: React.ComponentProps<typeof Separator>) {
   return (
     <Separator
-      data-slot="button-group-separator"
-      orientation={orientation}
       className={cn(
         '!m-0 relative self-stretch bg-input data-[orientation=vertical]:h-auto',
-        className,
+        className
       )}
+      data-slot="button-group-separator"
+      orientation={orientation}
       {...props}
     />
   );

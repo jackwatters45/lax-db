@@ -16,7 +16,7 @@ const SwitchActiveOrganizationSchema = Schema.Struct({
 const switchActiveOrganization = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
   .inputValidator((data: typeof SwitchActiveOrganizationSchema.Type) =>
-    Schema.decodeSync(SwitchActiveOrganizationSchema)(data),
+    Schema.decodeSync(SwitchActiveOrganizationSchema)(data)
   )
   .handler(async ({ data, context }) =>
     RuntimeServer.runPromise(
@@ -28,12 +28,12 @@ const switchActiveOrganization = createServerFn({ method: 'POST' })
             body: {
               organizationId: data.organizationId,
             },
-          }),
+          })
         );
 
         return { organizationSlug: organization?.slug };
-      }),
-    ),
+      })
+    )
   );
 
 type SwitchOrgMutation = {
@@ -45,9 +45,8 @@ export const useSwitchOrganization = ({ setOpen, router }: SwitchOrgMutation) =>
   useMutation({
     mutationFn: (organizationId: string) =>
       switchActiveOrganization({ data: { organizationId } }),
-    onError: (error) => {
+    onError: (_error) => {
       toast.error('Failed to switch organization');
-      console.error('Switch organization error:', error);
     },
     onSuccess: (data, _variables, _result, context) => {
       context.client.invalidateQueries();

@@ -32,8 +32,8 @@ export function PlayersFilterBar({
           {table.getColumn('position')?.getIsVisible() && (
             <FilterCheckbox
               column={table.getColumn('position')}
-              title="Position"
               options={POSITION_SELECT_FIELDS}
+              title="Position"
             />
           )}
           <FilterClear />

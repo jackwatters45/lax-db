@@ -60,7 +60,6 @@ const mockGameDetails = {
 const getGameDetails = createServerFn({ method: 'GET' })
   .inputValidator((data: { gameId: string }) => data)
   .handler(async ({ data }) => {
-    console.log('Getting game details for:', data.gameId);
     // TODO: Replace with actual API call
     // const { GamesAPI } = await import('@lax-db/core/games/index');
     // return await GamesAPI.getGame(data.gameId, headers);
@@ -69,16 +68,14 @@ const getGameDetails = createServerFn({ method: 'GET' })
   });
 
 // Server function for permissions
-const getGamePermissions = createServerFn().handler(async () => {
-  return {
-    canEdit: true,
-    canManageRoster: true,
-    canViewStats: true,
-  };
-});
+const getGamePermissions = createServerFn().handler(async () => ({
+  canEdit: true,
+  canManageRoster: true,
+  canViewStats: true,
+}));
 
 export const Route = createFileRoute(
-  '/_protected/$organizationSlug/games/$gameId/',
+  '/_protected/$organizationSlug/games/$gameId/'
 )({
   component: GameDetailsPage,
   loader: async ({ params }) => {
@@ -95,8 +92,8 @@ function GameDetailsPage() {
   const { organizationSlug } = Route.useParams();
   const { game, permissions } = Route.useLoaderData();
 
-  const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat('en-US', {
+  const formatDate = (date: Date) =>
+    new Intl.DateTimeFormat('en-US', {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
@@ -104,7 +101,6 @@ function GameDetailsPage() {
       hour: 'numeric',
       minute: '2-digit',
     }).format(date);
-  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -143,8 +139,8 @@ function GameDetailsPage() {
   return (
     <div className="container mx-auto py-8">
       <div className="mb-8">
-        <Link to="/$organizationSlug/games" params={{ organizationSlug }}>
-          <Button variant="ghost" className="mb-4">
+        <Link params={{ organizationSlug }} to="/$organizationSlug/games">
+          <Button className="mb-4" variant="ghost">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Games
           </Button>
@@ -163,13 +159,13 @@ function GameDetailsPage() {
               {game.status.replace('_', ' ').toUpperCase()}
             </Badge>
             {permissions.canEdit && game.status !== 'completed' && (
-              <Button variant="outline" size="sm" asChild>
+              <Button asChild size="sm" variant="outline">
                 <Link
-                  to="/$organizationSlug/games/$gameId/edit"
                   params={{
                     organizationSlug,
                     gameId: game.id,
                   }}
+                  to="/$organizationSlug/games/$gameId/edit"
                 >
                   <Edit className="mr-2 h-4 w-4" />
                   Edit Game
@@ -197,7 +193,7 @@ function GameDetailsPage() {
               <div className="flex items-center gap-2">
                 <MapPin className="h-4 w-4 text-muted-foreground" />
                 <span>{game.venue}</span>
-                <Badge variant="outline" className="ml-auto">
+                <Badge className="ml-auto" variant="outline">
                   {game.isHomeGame ? 'HOME' : 'AWAY'}
                 </Badge>
               </div>
@@ -232,13 +228,13 @@ function GameDetailsPage() {
               <div className="flex items-center justify-between">
                 <CardTitle>Game Roster</CardTitle>
                 {permissions.canManageRoster && (
-                  <Button variant="outline" size="sm" asChild>
+                  <Button asChild size="sm" variant="outline">
                     <Link
-                      to="/$organizationSlug/games/$gameId/roster"
                       params={{
                         organizationSlug,
                         gameId: game.id,
                       }}
+                      to="/$organizationSlug/games/$gameId/roster"
                     >
                       <Users className="mr-2 h-4 w-4" />
                       Manage Roster
@@ -252,8 +248,8 @@ function GameDetailsPage() {
                 <div className="space-y-2">
                   {game.roster.map((player) => (
                     <div
-                      key={player.id}
                       className="flex items-center justify-between rounded border p-3"
+                      key={player.id}
                     >
                       <div className="flex items-center gap-3">
                         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary font-bold text-primary-foreground text-sm">
@@ -278,17 +274,17 @@ function GameDetailsPage() {
                   <p>No players added to roster yet</p>
                   {permissions.canManageRoster && (
                     <Button
-                      variant="outline"
-                      size="sm"
-                      className="mt-2"
                       asChild
+                      className="mt-2"
+                      size="sm"
+                      variant="outline"
                     >
                       <Link
-                        to="/$organizationSlug/games/$gameId/roster"
                         params={{
                           organizationSlug,
                           gameId: game.id,
                         }}
+                        to="/$organizationSlug/games/$gameId/roster"
                       >
                         Add Players
                       </Link>
@@ -309,16 +305,16 @@ function GameDetailsPage() {
             <CardContent className="space-y-3">
               {permissions.canManageRoster && (
                 <Button
-                  variant="outline"
-                  className="w-full justify-start"
                   asChild
+                  className="w-full justify-start"
+                  variant="outline"
                 >
                   <Link
-                    to="/$organizationSlug/games/$gameId/roster"
                     params={{
                       organizationSlug,
                       gameId: game.id,
                     }}
+                    to="/$organizationSlug/games/$gameId/roster"
                   >
                     <Users className="mr-2 h-4 w-4" />
                     Manage Roster
@@ -328,16 +324,16 @@ function GameDetailsPage() {
 
               {permissions.canViewStats && (
                 <Button
-                  variant="outline"
-                  className="w-full justify-start"
                   asChild
+                  className="w-full justify-start"
+                  variant="outline"
                 >
                   <Link
-                    to="/$organizationSlug/games/$gameId/stats"
                     params={{
                       organizationSlug,
                       gameId: game.id,
                     }}
+                    to="/$organizationSlug/games/$gameId/stats"
                   >
                     <Trophy className="mr-2 h-4 w-4" />
                     {game.status === 'completed' ? 'View Stats' : 'Enter Stats'}
@@ -347,16 +343,16 @@ function GameDetailsPage() {
 
               {permissions.canEdit && game.status !== 'completed' && (
                 <Button
-                  variant="outline"
-                  className="w-full justify-start"
                   asChild
+                  className="w-full justify-start"
+                  variant="outline"
                 >
                   <Link
-                    to="/$organizationSlug/games/$gameId/edit"
                     params={{
                       organizationSlug,
                       gameId: game.id,
                     }}
+                    to="/$organizationSlug/games/$gameId/edit"
                   >
                     <Edit className="mr-2 h-4 w-4" />
                     Edit Game

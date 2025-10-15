@@ -1,5 +1,5 @@
 import { index, integer, pgTable, text } from 'drizzle-orm/pg-core';
-import { ids, timestamps } from '../../drizzle';
+import { ids, timestamps } from '../../drizzle/drizzle.type';
 import { playerTable } from '../player.sql';
 
 export const playerContactInfoTable = pgTable(
@@ -21,7 +21,7 @@ export const playerContactInfoTable = pgTable(
     emergencyContactPhone: text('emergency_contact_phone'),
     ...timestamps,
   },
-  (table) => [index('idx_player_contact_info_player').on(table.playerId)],
+  (table) => [index('idx_player_contact_info_player').on(table.playerId)]
 );
 
 type PlayerContactInfoInternal = typeof playerContactInfoTable.$inferSelect;

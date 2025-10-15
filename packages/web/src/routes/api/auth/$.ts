@@ -11,14 +11,14 @@ export const Route = createFileRoute('/api/auth/$')({
           Effect.gen(function* () {
             const auth = yield* AuthService;
             return yield* Effect.promise(() => auth.auth.handler(request));
-          }),
+          })
         ),
       POST: ({ request }) =>
         RuntimeServer.runPromise(
           Effect.gen(function* () {
             const auth = yield* AuthService;
             return yield* Effect.promise(() => auth.auth.handler(request));
-          }),
+          })
         ),
     },
   },

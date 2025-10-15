@@ -25,15 +25,15 @@ import { authMiddleware } from '@/lib/middleware';
 const createGame = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
   .inputValidator((data: typeof CreateGameInput.Type) =>
-    Schema.decodeSync(CreateGameInput)(data),
+    Schema.decodeSync(CreateGameInput)(data)
   )
   .handler(async ({ data }) =>
     RuntimeServer.runPromise(
       Effect.gen(function* () {
         const gameService = yield* GameService;
         return yield* gameService.create(data);
-      }),
-    ),
+      })
+    )
   );
 
 type FormData = typeof CreateGameInput.Type;
@@ -44,7 +44,7 @@ export function CreateGameForm({ organizationId }: { organizationId: string }) {
   const form = useForm<FormData>({
     resolver: effectTsResolver(CreateGameInput),
     defaultValues: {
-      organizationId: organizationId,
+      organizationId,
     },
   });
 
@@ -77,7 +77,7 @@ export function CreateGameForm({ organizationId }: { organizationId: string }) {
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
               <FormField
                 control={form.control}
                 name="opponentName"
@@ -97,7 +97,7 @@ export function CreateGameForm({ organizationId }: { organizationId: string }) {
               />
 
               <div className="flex gap-4 pt-4">
-                <Button type="submit" disabled={createGameMutation.isPending}>
+                <Button disabled={createGameMutation.isPending} type="submit">
                   {createGameMutation.isPending ? 'Creating...' : 'Create Game'}
                 </Button>
               </div>

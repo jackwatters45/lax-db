@@ -23,7 +23,7 @@ import { SettingsHeader } from '../-components/settings-header';
 import { roles } from '../-data';
 
 export const Route = createFileRoute(
-  '/_protected/$organizationSlug/settings/general/',
+  '/_protected/$organizationSlug/settings/general/'
 )({
   component: General,
 });
@@ -39,8 +39,8 @@ function General() {
               <div className="grid grid-cols-1 gap-x-14 gap-y-8 md:grid-cols-3">
                 <div>
                   <h2
-                    id="personal-information"
                     className="scroll-mt-10 font-semibold text-foreground"
+                    id="personal-information"
                   >
                     Personal information
                   </h2>
@@ -51,70 +51,70 @@ function General() {
                 <div className="md:col-span-2">
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-6">
                     <div className="col-span-full sm:col-span-3">
-                      <Label htmlFor="first-name" className="font-medium">
+                      <Label className="font-medium" htmlFor="first-name">
                         First name
                       </Label>
                       <Input
-                        type="text"
+                        autoComplete="given-name"
+                        className="mt-2"
                         id="first-name"
                         name="first-name"
-                        autoComplete="given-name"
                         placeholder="Emma"
-                        className="mt-2"
+                        type="text"
                       />
                     </div>
                     <div className="col-span-full sm:col-span-3">
-                      <Label htmlFor="last-name" className="font-medium">
+                      <Label className="font-medium" htmlFor="last-name">
                         Last name
                       </Label>
                       <Input
-                        type="text"
+                        autoComplete="family-name"
+                        className="mt-2"
                         id="last-name"
                         name="last-name"
-                        autoComplete="family-name"
                         placeholder="Stone"
-                        className="mt-2"
+                        type="text"
                       />
                     </div>
                     <div className="col-span-full">
-                      <Label htmlFor="email" className="font-medium">
+                      <Label className="font-medium" htmlFor="email">
                         Email
                       </Label>
                       <Input
-                        type="email"
+                        autoComplete="email"
+                        className="mt-2"
                         id="email"
                         name="email"
-                        autoComplete="email"
                         placeholder="emma@acme.com"
-                        className="mt-2"
+                        type="email"
                       />
                     </div>
                     <div className="col-span-full sm:col-span-3">
-                      <Label htmlFor="year" className="font-medium">
+                      <Label className="font-medium" htmlFor="year">
                         Birth year
                       </Label>
                       <Input
                         autoComplete="off"
-                        id="birthyear"
-                        name="year"
-                        type="number"
-                        placeholder="1994"
                         className="mt-2"
-                        min="1900"
+                        id="birthyear"
                         max={new Date().getFullYear()}
+                        min="1900"
+                        name="year"
+                        placeholder="1994"
                         step="1"
+                        type="number"
                       />
                     </div>
                     <div className="col-span-full sm:col-span-3">
-                      <Label htmlFor="email" className="font-medium">
+                      <Label className="font-medium" htmlFor="email">
                         Role
                       </Label>
                       <Select defaultValue="member">
                         <SelectTrigger
-                          name="role"
-                          id="role"
                           className="mt-2"
                           disabled
+                          id="role"
+                          name="role"
                         >
                           <SelectValue />
                         </SelectTrigger>
@@ -144,8 +144,8 @@ function General() {
               <div className="grid grid-cols-1 gap-x-14 gap-y-8 md:grid-cols-3">
                 <div>
                   <h2
-                    id="notification-settings"
                     className="scroll-mt-10 font-semibold text-foreground"
+                    id="notification-settings"
                   >
                     Notification settings
                   </h2>
@@ -164,9 +164,9 @@ function General() {
                     <ul className="mt-4 divide-y divide-border">
                       <li className="flex items-center gap-x-3 py-3">
                         <Checkbox
+                          defaultChecked
                           id="team-requests"
                           name="team-requests"
-                          defaultChecked
                         />
                         <Label htmlFor="team-requests">
                           Team join requests
@@ -203,16 +203,16 @@ function General() {
                       </li>
                       <li className="flex items-center gap-x-3 py-3">
                         <Checkbox
+                          defaultChecked
                           id="query-caching"
                           name="query-caching"
-                          defaultChecked
                         />
                         <Label htmlFor="query-caching">
                           Payment transactions
                         </Label>
                       </li>
                       <li className="flex items-center gap-x-3 py-3">
-                        <Checkbox id="storage" name="storage" defaultChecked />
+                        <Checkbox defaultChecked id="storage" name="storage" />
                         <Label htmlFor="storage">User behavior</Label>
                       </li>
                     </ul>
@@ -230,8 +230,8 @@ function General() {
               <div className="grid grid-cols-1 gap-x-14 gap-y-8 md:grid-cols-3">
                 <div>
                   <h2
-                    id="danger-zone"
                     className="scroll-mt-10 font-semibold text-foreground"
+                    id="danger-zone"
                   >
                     Danger zone
                   </h2>
@@ -239,13 +239,13 @@ function General() {
                     Manage general workspace. Contact system admin for more
                     information.{' '}
                     <a
-                      href="#"
                       className="inline-flex items-center gap-1 text-indigo-600 hover:underline hover:underline-offset-4 dark:text-indigo-400"
+                      href="#"
                     >
                       Learn more
                       <RiExternalLinkLine
-                        className="size-4 shrink-0"
                         aria-hidden="true"
+                        className="size-4 shrink-0"
                       />
                     </a>
                   </p>
@@ -263,8 +263,8 @@ function General() {
                         </p>
                       </div>
                       <Button
-                        variant="secondary"
                         className="text-red-600 dark:text-red-500"
+                        variant="secondary"
                       >
                         Leave
                       </Button>
@@ -282,9 +282,9 @@ function General() {
                         </p>
                       </div>
                       <Button
-                        variant="secondary"
-                        disabled
                         className="whitespace-nowrap text-red-600 disabled:text-red-300 disabled:opacity-50 dark:text-red-500 disabled:dark:text-red-700"
+                        disabled
+                        variant="secondary"
                       >
                         Delete workspace
                       </Button>
@@ -312,10 +312,10 @@ function Header() {
   return (
     <SettingsHeader organizationSlug={organizationSlug}>
       <BreadcrumbItem>
-        <BreadcrumbLink title="Settings" asChild>
+        <BreadcrumbLink asChild title="Settings">
           <Link
-            to="/$organizationSlug/settings/general"
             params={{ organizationSlug }}
+            to="/$organizationSlug/settings/general"
           >
             Settings
           </Link>
@@ -323,10 +323,10 @@ function Header() {
       </BreadcrumbItem>
       <BreadcrumbSeparator />
       <BreadcrumbItem>
-        <BreadcrumbLink title="General" asChild>
+        <BreadcrumbLink asChild title="General">
           <Link
-            to="/$organizationSlug/settings/general"
             params={{ organizationSlug }}
+            to="/$organizationSlug/settings/general"
           >
             General
           </Link>

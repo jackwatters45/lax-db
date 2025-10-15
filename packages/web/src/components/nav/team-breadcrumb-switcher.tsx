@@ -31,8 +31,8 @@ export function TeamBreadcrumbSwitcher({
       <BreadcrumbDropdown>
         <BreadcrumbLink asChild>
           <Link
-            to="/$organizationSlug/$teamId"
             params={{ organizationSlug, teamId: activeTeam.id }}
+            to="/$organizationSlug/$teamId"
           >
             {activeTeam.name}
           </Link>

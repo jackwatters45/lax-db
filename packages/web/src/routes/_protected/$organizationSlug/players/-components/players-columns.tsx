@@ -45,6 +45,7 @@ export function createEditablePlayerColumns({
       id: 'select',
       header: ({ table }) => (
         <Checkbox
+          aria-label="Select all"
           checked={
             table.getIsAllPageRowsSelected()
               ? true
@@ -52,17 +53,16 @@ export function createEditablePlayerColumns({
                 ? 'indeterminate'
                 : false
           }
-          onCheckedChange={() => table.toggleAllPageRowsSelected()}
           className="translate-y-0.5"
-          aria-label="Select all"
+          onCheckedChange={() => table.toggleAllPageRowsSelected()}
         />
       ),
       cell: ({ row }) => (
         <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={() => row.toggleSelected()}
-          className="translate-y-0.5"
           aria-label="Select row"
+          checked={row.getIsSelected()}
+          className="translate-y-0.5"
+          onCheckedChange={() => row.toggleSelected()}
         />
       ),
       enableSorting: false,
@@ -87,9 +87,6 @@ export function createEditablePlayerColumns({
         return (
           <ControlledInput
             key={`jersey-${player.publicId}`}
-            variant="data"
-            type="number"
-            value={player.jerseyNumber ?? ''}
             onUpdate={(newValue) => {
               const numValue = newValue ? Number(newValue) : null;
 
@@ -105,6 +102,9 @@ export function createEditablePlayerColumns({
               // handleUpdate(player.publicId, { jerseyNumber: numValue });
             }}
             placeholder="#"
+            type="number"
+            value={player.jerseyNumber ?? ''}
+            variant="data"
           />
         );
       },
@@ -127,9 +127,6 @@ export function createEditablePlayerColumns({
         return (
           <ControlledInput
             key={`playerId-${player.publicId}`}
-            variant="data"
-            type="text"
-            value={player.name ?? ''}
             onUpdate={(newName) => {
               const nameValue = newName || null;
 
@@ -139,7 +136,7 @@ export function createEditablePlayerColumns({
 
                 if (result._tag === 'Left') {
                   toast.error(
-                    'Player name must be between 1 and 100 characters',
+                    'Player name must be between 1 and 100 characters'
                   );
                   return;
                 }
@@ -148,6 +145,9 @@ export function createEditablePlayerColumns({
               // mutation.mutate(player.publicId, { name: nameValue });
             }}
             placeholder="Player name"
+            type="text"
+            value={player.name ?? ''}
+            variant="data"
           />
         );
         // const mutations = usePlayerMutations(organizationId, teamId);
@@ -201,10 +201,10 @@ export function createEditablePlayerColumns({
 
         return (
           <Select
-            value={player.position || ''}
             onValueChange={(_value) => {
               // handleUpdate(player.publicId, { position: value });
             }}
+            value={player.position || ''}
           >
             <SelectTrigger variant="data">
               <SelectValue placeholder="Select position" />
@@ -237,9 +237,6 @@ export function createEditablePlayerColumns({
         return (
           <ControlledInput
             key={`email-${player.publicId}`}
-            variant="data"
-            type="email"
-            value={player.email || ''}
             onUpdate={(newValue) => {
               const emailValue = newValue || null;
 
@@ -255,6 +252,9 @@ export function createEditablePlayerColumns({
               // handleUpdate(player.publicId, { email: emailValue });
             }}
             placeholder="email@example.com"
+            type="email"
+            value={player.email || ''}
+            variant="data"
           />
         );
       },
@@ -275,26 +275,26 @@ export function createEditablePlayerColumns({
 
         return (
           <RowActionsProvider
-            row={row}
             actions={{
               onDelete: () =>
                 mutations.delete.mutate({ playerId: player.publicId }),
             }}
+            row={row}
           >
             <RowActionsDropdown>
               <Link
-                to="/$organizationSlug/players/$playerId"
                 params={{
-                  organizationSlug: organizationSlug,
+                  organizationSlug,
                   playerId: player.publicId,
                 }}
+                to="/$organizationSlug/players/$playerId"
               >
                 <RowActionItem icon={User2}>View</RowActionItem>
               </Link>
               <RowActionSeparator />
               <RowActionDeleteItem
-                alertTitle="Permanently Delete Player from Organization"
                 alertDescription="Are you sure you want to remove this player from the organization? This action cannot be undone."
+                alertTitle="Permanently Delete Player from Organization"
               >
                 Delete Player
               </RowActionDeleteItem>

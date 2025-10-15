@@ -158,15 +158,13 @@ const getPlaybookDashboard = createServerFn().handler(async () => {
 });
 
 // Server function for permissions
-const getPlaybookPermissions = createServerFn().handler(async () => {
-  return {
-    canCreatePlays: true,
-    canEditPlays: true,
-    canAssignPlays: true,
-    canViewAnalytics: true,
-    canManageCategories: true,
-  };
-});
+const getPlaybookPermissions = createServerFn().handler(async () => ({
+  canCreatePlays: true,
+  canEditPlays: true,
+  canAssignPlays: true,
+  canViewAnalytics: true,
+  canManageCategories: true,
+}));
 
 export const Route = createFileRoute('/_protected/$organizationSlug/playbook/')(
   {
@@ -179,19 +177,18 @@ export const Route = createFileRoute('/_protected/$organizationSlug/playbook/')(
 
       return { data, permissions };
     },
-  },
+  }
 );
 
 function PlaybookDashboard() {
   const { organizationSlug } = Route.useParams();
   const { data, permissions } = Route.useLoaderData();
 
-  const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat('en-US', {
+  const formatDate = (date: Date) =>
+    new Intl.DateTimeFormat('en-US', {
       month: 'short',
       day: 'numeric',
     }).format(date);
-  };
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
@@ -246,10 +243,10 @@ function PlaybookDashboard() {
 
         <div className="flex gap-2">
           {permissions.canManageCategories && (
-            <Button variant="outline" asChild>
+            <Button asChild variant="outline">
               <Link
-                to="/$organizationSlug/playbook/categories"
                 params={{ organizationSlug }}
+                to="/$organizationSlug/playbook/categories"
               >
                 <Layers className="mr-2 h-4 w-4" />
                 Categories
@@ -259,8 +256,8 @@ function PlaybookDashboard() {
           {permissions.canCreatePlays && (
             <Button asChild>
               <Link
-                to="/$organizationSlug/playbook/plays/create"
                 params={{ organizationSlug }}
+                to="/$organizationSlug/playbook/plays/create"
               >
                 <Plus className="mr-2 h-4 w-4" />
                 New Play
@@ -341,9 +338,8 @@ function PlaybookDashboard() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle>Recently Used Plays</CardTitle>
-                <Button variant="ghost" size="sm" asChild>
+                <Button asChild size="sm" variant="ghost">
                   <Link
-                    to="/$organizationSlug/playbook/plays"
                     params={{ organizationSlug }}
                     search={{
                       search: '',
@@ -351,6 +347,7 @@ function PlaybookDashboard() {
                       difficulty: 'All',
                       favorites: false,
                     }}
+                    to="/$organizationSlug/playbook/plays"
                   >
                     View All
                   </Link>
@@ -361,8 +358,8 @@ function PlaybookDashboard() {
               <div className="space-y-3">
                 {data.recentPlays.map((play) => (
                   <div
-                    key={play.id}
                     className="flex items-center justify-between rounded border p-3"
+                    key={play.id}
                   >
                     <div className="flex items-center gap-3">
                       <div
@@ -405,10 +402,10 @@ function PlaybookDashboard() {
                       <Badge variant={getDifficultyColor(play.difficultyLevel)}>
                         {play.difficultyLevel}
                       </Badge>
-                      <Button variant="ghost" size="sm" asChild>
+                      <Button asChild size="sm" variant="ghost">
                         <Link
-                          to="/$organizationSlug/playbook/plays/$playId"
                           params={{ organizationSlug, playId: play.id }}
+                          to="/$organizationSlug/playbook/plays/$playId"
                         >
                           View
                         </Link>
@@ -425,10 +422,10 @@ function PlaybookDashboard() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle>Recent Practice Sessions</CardTitle>
-                <Button variant="ghost" size="sm" asChild>
+                <Button asChild size="sm" variant="ghost">
                   <Link
-                    to="/$organizationSlug/playbook/practice"
                     params={{ organizationSlug }}
+                    to="/$organizationSlug/playbook/practice"
                   >
                     View All
                   </Link>
@@ -439,8 +436,8 @@ function PlaybookDashboard() {
               <div className="space-y-3">
                 {data.recentPracticeSessions.map((session) => (
                   <div
-                    key={session.id}
                     className="flex items-center justify-between rounded border p-3"
+                    key={session.id}
                   >
                     <div className="flex-1">
                       <div className="font-medium">{session.playName}</div>
@@ -470,7 +467,7 @@ function PlaybookDashboard() {
                       <div className="text-center">
                         <div className="font-bold">
                           {Math.round(
-                            (session.successfulReps / session.totalReps) * 100,
+                            (session.successfulReps / session.totalReps) * 100
                           )}
                           %
                         </div>
@@ -497,8 +494,8 @@ function PlaybookDashboard() {
               <div className="space-y-3">
                 {data.playCategories.map((category) => (
                   <div
-                    key={category.name}
                     className="flex items-center justify-between"
+                    key={category.name}
                   >
                     <div className="flex items-center gap-3">
                       <div
@@ -515,14 +512,14 @@ function PlaybookDashboard() {
               </div>
               {permissions.canManageCategories && (
                 <Button
-                  variant="outline"
-                  size="sm"
-                  className="mt-4 w-full"
                   asChild
+                  className="mt-4 w-full"
+                  size="sm"
+                  variant="outline"
                 >
                   <Link
-                    to="/$organizationSlug/playbook/categories"
                     params={{ organizationSlug }}
+                    to="/$organizationSlug/playbook/categories"
                   >
                     Manage Categories
                   </Link>
@@ -536,10 +533,10 @@ function PlaybookDashboard() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle>Player Progress</CardTitle>
-                <Button variant="ghost" size="sm" asChild>
+                <Button asChild size="sm" variant="ghost">
                   <Link
-                    to="/$organizationSlug/playbook/assignments"
                     params={{ organizationSlug }}
+                    to="/$organizationSlug/playbook/assignments"
                   >
                     View All
                   </Link>
@@ -549,7 +546,7 @@ function PlaybookDashboard() {
             <CardContent>
               <div className="space-y-3">
                 {data.playerAssignments.slice(0, 3).map((assignment) => (
-                  <div key={assignment.playerId} className="space-y-2">
+                  <div className="space-y-2" key={assignment.playerId}>
                     <div className="flex items-center justify-between">
                       <span className="font-medium text-sm">
                         {assignment.playerName}
@@ -592,7 +589,7 @@ function PlaybookDashboard() {
             <CardContent>
               <div className="space-y-3">
                 {data.upcomingEvents.map((event) => (
-                  <div key={event.title} className="rounded border p-3">
+                  <div className="rounded border p-3" key={event.title}>
                     <div className="mb-2 flex items-center gap-2">
                       <Calendar className="h-4 w-4 text-muted-foreground" />
                       <span className="font-medium text-sm">{event.title}</span>
@@ -602,7 +599,7 @@ function PlaybookDashboard() {
                     </div>
                     <div className="space-y-1">
                       {event.plays.slice(0, 2).map((play) => (
-                        <div key={play} className="text-xs">
+                        <div className="text-xs" key={play}>
                           • {play}
                         </div>
                       ))}
@@ -626,13 +623,13 @@ function PlaybookDashboard() {
             <CardContent className="space-y-3">
               {permissions.canCreatePlays && (
                 <Button
-                  variant="outline"
-                  className="w-full justify-start"
                   asChild
+                  className="w-full justify-start"
+                  variant="outline"
                 >
                   <Link
-                    to="/$organizationSlug/playbook/plays/create"
                     params={{ organizationSlug }}
+                    to="/$organizationSlug/playbook/plays/create"
                   >
                     <Plus className="mr-2 h-4 w-4" />
                     Create New Play
@@ -641,12 +638,11 @@ function PlaybookDashboard() {
               )}
 
               <Button
-                variant="outline"
-                className="w-full justify-start"
                 asChild
+                className="w-full justify-start"
+                variant="outline"
               >
                 <Link
-                  to="/$organizationSlug/playbook/plays"
                   params={{ organizationSlug }}
                   search={{
                     search: '',
@@ -654,6 +650,7 @@ function PlaybookDashboard() {
                     difficulty: 'All',
                     favorites: true,
                   }}
+                  to="/$organizationSlug/playbook/plays"
                 >
                   <Star className="mr-2 h-4 w-4" />
                   View Favorite Plays
@@ -662,13 +659,13 @@ function PlaybookDashboard() {
 
               {permissions.canAssignPlays && (
                 <Button
-                  variant="outline"
-                  className="w-full justify-start"
                   asChild
+                  className="w-full justify-start"
+                  variant="outline"
                 >
                   <Link
-                    to="/$organizationSlug/playbook/assignments"
                     params={{ organizationSlug }}
+                    to="/$organizationSlug/playbook/assignments"
                   >
                     <Users className="mr-2 h-4 w-4" />
                     Manage Assignments
@@ -678,13 +675,13 @@ function PlaybookDashboard() {
 
               {permissions.canViewAnalytics && (
                 <Button
-                  variant="outline"
-                  className="w-full justify-start"
                   asChild
+                  className="w-full justify-start"
+                  variant="outline"
                 >
                   <Link
-                    to="/$organizationSlug/playbook/analytics"
                     params={{ organizationSlug }}
+                    to="/$organizationSlug/playbook/analytics"
                   >
                     <TrendingUp className="mr-2 h-4 w-4" />
                     View Analytics

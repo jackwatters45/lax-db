@@ -30,7 +30,6 @@ import {
 const createGame = createServerFn({ method: 'POST' })
   .inputValidator((data: CreateGameInput) => data)
   .handler(async ({ data }) => {
-    console.log('Creating game:', data);
     // TODO: Replace with actual API call
     // const { GamesAPI } = await import('@lax-db/core/games/index');
     // const request = getRequest();
@@ -51,13 +50,13 @@ const createGame = createServerFn({ method: 'POST' })
 // Form schema
 const createGameSchema = Schema.Struct({
   opponentName: Schema.String.pipe(
-    Schema.minLength(1, { message: () => 'Opponent name is required' }),
+    Schema.minLength(1, { message: () => 'Opponent name is required' })
   ),
   gameDate: Schema.String.pipe(
-    Schema.minLength(1, { message: () => 'Date and time is required' }),
+    Schema.minLength(1, { message: () => 'Date and time is required' })
   ),
   venue: Schema.String.pipe(
-    Schema.minLength(1, { message: () => 'Venue is required' }),
+    Schema.minLength(1, { message: () => 'Venue is required' })
   ),
   isHomeGame: Schema.Boolean,
   gameType: Schema.Literal(
@@ -65,7 +64,7 @@ const createGameSchema = Schema.Struct({
     'playoff',
     'tournament',
     'friendly',
-    'practice',
+    'practice'
   ),
 });
 
@@ -81,7 +80,7 @@ const formatDateTimeForInput = () => {
 };
 
 export const Route = createFileRoute(
-  '/_protected/$organizationSlug/games/create',
+  '/_protected/$organizationSlug/games/create'
 )({
   component: CreateGamePage,
 });
@@ -107,7 +106,7 @@ function CreateGamePage() {
     mutationFn: (data: CreateGameInput) => createGame({ data }),
     onSuccess: (game) => {
       toast.success(
-        `Game against ${game.opponentName} scheduled successfully!`,
+        `Game against ${game.opponentName} scheduled successfully!`
       );
       router.invalidate();
       router.navigate({
@@ -115,9 +114,8 @@ function CreateGamePage() {
         params: { organizationSlug },
       });
     },
-    onError: (error) => {
+    onError: (_error) => {
       toast.error('Failed to schedule game. Please try again.');
-      console.error('Create game error:', error);
     },
   });
 
@@ -128,8 +126,8 @@ function CreateGamePage() {
   return (
     <div className="container mx-auto max-w-2xl py-8">
       <div className="mb-8">
-        <Link to="/$organizationSlug/games" params={{ organizationSlug }}>
-          <Button variant="ghost" className="mb-4">
+        <Link params={{ organizationSlug }} to="/$organizationSlug/games">
+          <Button className="mb-4" variant="ghost">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Games
           </Button>
@@ -147,7 +145,7 @@ function CreateGamePage() {
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
               <FormField
                 control={form.control}
                 name="opponentName"
@@ -210,18 +208,18 @@ function CreateGamePage() {
                     <FormLabel>Game Location</FormLabel>
                     <FormControl>
                       <RadioGroup
+                        className="grid grid-cols-2 gap-4"
                         onValueChange={(value) =>
                           field.onChange(value === 'true')
                         }
                         value={field.value ? 'true' : 'false'}
-                        className="grid grid-cols-2 gap-4"
                       >
                         <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="true" id="home" />
+                          <RadioGroupItem id="home" value="true" />
                           <label htmlFor="home">Home Game</label>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="false" id="away" />
+                          <RadioGroupItem id="away" value="false" />
                           <label htmlFor="away">Away Game</label>
                         </div>
                       </RadioGroup>
@@ -238,8 +236,8 @@ function CreateGamePage() {
                   <FormItem>
                     <FormLabel>Game Type</FormLabel>
                     <Select
-                      onValueChange={field.onChange}
                       defaultValue={field.value}
+                      onValueChange={field.onChange}
                     >
                       <FormControl>
                         <SelectTrigger>
@@ -261,24 +259,24 @@ function CreateGamePage() {
 
               <div className="flex gap-4 pt-4">
                 <Button
-                  type="button"
-                  variant="outline"
+                  className="flex-1"
                   onClick={() =>
                     router.navigate({
                       to: '/$organizationSlug/games',
                       params: { organizationSlug },
                     })
                   }
-                  className="flex-1"
+                  type="button"
+                  variant="outline"
                 >
                   Cancel
                 </Button>
                 <Button
-                  type="submit"
+                  className="flex-1"
                   disabled={
                     form.formState.isSubmitting || createGameMutation.isPending
                   }
-                  className="flex-1"
+                  type="submit"
                 >
                   {createGameMutation.isPending
                     ? 'Scheduling...'

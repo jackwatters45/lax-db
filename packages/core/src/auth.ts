@@ -20,7 +20,7 @@ import {
   parent,
   player,
 } from './auth/permissions';
-import { DatabaseLive } from './drizzle';
+import { DatabaseLive } from './drizzle/drizzle.service';
 import {
   invitationTable,
   memberTable,
@@ -41,7 +41,7 @@ import { userTable } from './user/user.sql';
 // });
 
 const runtime = ManagedRuntime.make(
-  Layer.mergeAll(RedisService.Default, DatabaseLive),
+  Layer.mergeAll(RedisService.Default, DatabaseLive)
 );
 
 export class AuthError extends Data.TaggedError('AuthError')<{}> {}
@@ -90,15 +90,10 @@ export class AuthService extends Effect.Service<AuthService>()('AuthService', {
         storage: 'secondary-storage',
       },
       secondaryStorage: {
-        get: async (key) => {
-          return await runtime.runPromise(redis.get(key));
-        },
-        set: async (key, value, ttl) => {
-          return await runtime.runPromise(redis.set(key, value, ttl));
-        },
-        delete: async (key) => {
-          return await runtime.runPromise(redis.delete(key));
-        },
+        get: async (key) => await runtime.runPromise(redis.get(key)),
+        set: async (key, value, ttl) =>
+          await runtime.runPromise(redis.set(key, value, ttl)),
+        delete: async (key) => await runtime.runPromise(redis.delete(key)),
       },
       databaseHooks: {
         session: {
@@ -117,7 +112,7 @@ export class AuthService extends Effect.Service<AuthService>()('AuthService', {
                   .pipe(
                     Effect.flatMap(Arr.head),
                     Effect.tapError(Effect.logError),
-                    Effect.mapError(() => new AuthError()),
+                    Effect.mapError(() => new AuthError())
                   );
 
                 if (sessionFromDb?.activeOrganizationId) {
@@ -134,7 +129,7 @@ export class AuthService extends Effect.Service<AuthService>()('AuthService', {
                   .pipe(
                     Effect.flatMap(Arr.head),
                     Effect.tapError(Effect.logError),
-                    Effect.mapError(() => new AuthError()),
+                    Effect.mapError(() => new AuthError())
                   );
 
                 if (!membership) {
@@ -200,15 +195,8 @@ export class AuthService extends Effect.Service<AuthService>()('AuthService', {
           creatorRole: 'headCoach', // Club creator becomes head coach
           allowUserToCreateOrganization: true, // Allow creating new clubs
           sendInvitationEmail: async (data) => {
-            const inviteLink = `${process.env.APP_URL || 'http://localhost:3000'}/accept-invitation/${data.id}`;
-
-            console.log('Invitation email would be sent:', {
-              to: data.email,
-              subject: `Join ${data.organization.name} on LaxDB`,
-              inviteLink,
-              clubName: data.organization.name,
-              role: data.role,
-            });
+            const _ = await Promise.resolve();
+            const _inviteLink = `${process.env.APP_URL || 'http://localhost:3000'}/accept-invitation/${data.id}`;
 
             // TODO: Implement actual email sending
             // await sendEmail({

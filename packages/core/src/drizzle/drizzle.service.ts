@@ -12,7 +12,7 @@ const PgLive = PgClient.layerConfig({
   database: Config.succeed(Resource.Database.database),
 }).pipe(
   Layer.tapErrorCause((cause) => Console.log(Cause.pretty(cause))),
-  Layer.orDie,
+  Layer.orDie
 );
 
 const DrizzleLive = PgDrizzle.layer.pipe(Layer.provide(PgLive));

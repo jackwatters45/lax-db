@@ -1,7 +1,7 @@
 import type { TeamMember } from 'better-auth/plugins';
 import { Effect, Schema } from 'effect';
 import { AuthService } from '../auth';
-import { DatabaseLive } from '../drizzle';
+import { DatabaseLive } from '../drizzle/drizzle.service';
 import { TeamError } from './team.error';
 import {
   CreateTeamInput,
@@ -23,7 +23,7 @@ export class TeamService extends Effect.Service<TeamService>()('TeamService', {
           const validated = yield* Schema.decode(CreateTeamInput)(input);
 
           const session = yield* Effect.tryPromise(() =>
-            auth.auth.api.getSession({ headers }),
+            auth.auth.api.getSession({ headers })
           ).pipe(
             Effect.tapError(Effect.logError),
             Effect.mapError(
@@ -31,8 +31,8 @@ export class TeamService extends Effect.Service<TeamService>()('TeamService', {
                 new TeamError({
                   cause,
                   message: 'Failed to get session',
-                }),
-            ),
+                })
+            )
           );
 
           if (!session?.user) {
@@ -40,20 +40,20 @@ export class TeamService extends Effect.Service<TeamService>()('TeamService', {
               new TeamError({
                 cause: 'No user in session',
                 message: 'User not authenticated',
-              }),
+              })
             );
           }
 
           const activeOrganization = yield* Effect.tryPromise(() =>
-            auth.auth.api.getFullOrganization({ headers }),
+            auth.auth.api.getFullOrganization({ headers })
           ).pipe(
             Effect.mapError(
               (cause) =>
                 new TeamError({
                   cause,
                   message: 'Active organization not found',
-                }),
-            ),
+                })
+            )
           );
 
           if (!activeOrganization) {
@@ -61,25 +61,25 @@ export class TeamService extends Effect.Service<TeamService>()('TeamService', {
               new TeamError({
                 cause: 'No active organization',
                 message: 'No active organization found for user',
-              }),
+              })
             );
           }
 
-          const result = yield* Effect.tryPromise(() => {
-            return auth.auth.api.createTeam({
+          const result = yield* Effect.tryPromise(() =>
+            auth.auth.api.createTeam({
               headers,
               body: {
                 name: validated.name,
               },
-            });
-          }).pipe(
+            })
+          ).pipe(
             Effect.mapError(
               (cause) =>
                 new TeamError({
                   cause,
                   message: 'Failed to create team',
-                }),
-            ),
+                })
+            )
           );
 
           return result;
@@ -89,8 +89,8 @@ export class TeamService extends Effect.Service<TeamService>()('TeamService', {
         Effect.gen(function* () {
           const validated = yield* Schema.decode(UpdateTeamInput)(input);
 
-          const result = yield* Effect.tryPromise(() => {
-            return auth.auth.api.updateTeam({
+          const result = yield* Effect.tryPromise(() =>
+            auth.auth.api.updateTeam({
               headers,
               body: {
                 teamId: validated.teamId,
@@ -98,15 +98,15 @@ export class TeamService extends Effect.Service<TeamService>()('TeamService', {
                   name: validated.name,
                 },
               },
-            });
-          }).pipe(
+            })
+          ).pipe(
             Effect.mapError(
               (cause) =>
                 new TeamError({
                   cause,
                   message: 'Failed to update team',
-                }),
-            ),
+                })
+            )
           );
 
           if (!result) {
@@ -114,7 +114,7 @@ export class TeamService extends Effect.Service<TeamService>()('TeamService', {
               new TeamError({
                 cause: 'No result from update',
                 message: 'Failed to update team',
-              }),
+              })
             );
           }
 
@@ -131,15 +131,15 @@ export class TeamService extends Effect.Service<TeamService>()('TeamService', {
               body: {
                 teamId: validated.teamId,
               },
-            }),
+            })
           ).pipe(
             Effect.mapError(
               (cause) =>
                 new TeamError({
                   cause,
                   message: 'Failed to delete team',
-                }),
-            ),
+                })
+            )
           );
         }),
 
@@ -153,16 +153,13 @@ export class TeamService extends Effect.Service<TeamService>()('TeamService', {
               query: {
                 teamId: validated.teamId,
               },
-            }),
+            })
           ).pipe(
             Effect.mapError((cause) => {
               // If the user is not a member of the team, return empty array
               // This can happen right after creating a team
               const errorMessage = cause?.toString() || '';
               if (errorMessage.includes('not a member of the team')) {
-                console.warn(
-                  `User not a member of team ${validated.teamId} yet`,
-                );
                 return null; // Will be handled by orElse below
               }
               return new TeamError({
@@ -170,7 +167,7 @@ export class TeamService extends Effect.Service<TeamService>()('TeamService', {
                 message: 'Failed to get team members',
               });
             }),
-            Effect.orElse(() => Effect.succeed([])), // Return empty array on error
+            Effect.orElse(() => Effect.succeed([])) // Return empty array on error
           );
 
           return (result || []) as TeamMember[];
@@ -187,15 +184,15 @@ export class TeamService extends Effect.Service<TeamService>()('TeamService', {
                 role: validated.role,
                 teamId: validated.teamId,
               },
-            }),
+            })
           ).pipe(
             Effect.mapError(
               (cause) =>
                 new TeamError({
                   cause,
                   message: 'Failed to invite player',
-                }),
-            ),
+                })
+            )
           );
         }),
 
@@ -209,15 +206,15 @@ export class TeamService extends Effect.Service<TeamService>()('TeamService', {
                 teamId: validated.teamId,
                 userId: validated.userId,
               },
-            }),
+            })
           ).pipe(
             Effect.mapError(
               (cause) =>
                 new TeamError({
                   cause,
                   message: 'Failed to remove team member',
-                }),
-            ),
+                })
+            )
           );
         }),
     } as const;

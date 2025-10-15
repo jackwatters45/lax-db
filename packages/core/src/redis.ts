@@ -19,7 +19,7 @@ export class RedisService extends Effect.Service<RedisService>()(
       };
 
       if (Resource.Redis.host !== 'localhost') {
-        redisConfig.tls = { checkServerIdentity: () => undefined };
+        redisConfig.tls = {};
       }
 
       // Create Redis client
@@ -31,15 +31,15 @@ export class RedisService extends Effect.Service<RedisService>()(
             Effect.tapError(Effect.logError),
             Effect.mapError(
               (cause) =>
-                new RedisError({ msg: `Failed to get key: ${key}`, cause }),
-            ),
+                new RedisError({ msg: `Failed to get key: ${key}`, cause })
+            )
           );
         }),
 
         set: Effect.fn('Redis:set')(function* (
           key: string,
           value: string,
-          ttlSeconds?: number,
+          ttlSeconds?: number
         ) {
           return yield* Effect.tryPromise(() => {
             if (ttlSeconds) {
@@ -49,9 +49,9 @@ export class RedisService extends Effect.Service<RedisService>()(
           }).pipe(
             Effect.mapError(
               (cause) =>
-                new RedisError({ msg: `Failed to set key: ${key}`, cause }),
+                new RedisError({ msg: `Failed to set key: ${key}`, cause })
             ),
-            Effect.asVoid,
+            Effect.asVoid
           );
         }),
 
@@ -62,9 +62,9 @@ export class RedisService extends Effect.Service<RedisService>()(
                 new RedisError({
                   msg: `Failed to delete key: ${key}`,
                   cause,
-                }),
+                })
             ),
-            Effect.asVoid,
+            Effect.asVoid
           );
         }),
 
@@ -77,5 +77,5 @@ export class RedisService extends Effect.Service<RedisService>()(
         }),
       };
     }),
-  },
+  }
 ) {}

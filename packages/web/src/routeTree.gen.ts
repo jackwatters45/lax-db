@@ -10,7 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProtectedRouteImport } from './routes/_protected'
-import { Route as ScratchIndexRouteImport } from './routes/scratch/index'
+import { Route as PadIndexRouteImport } from './routes/pad/index'
 import { Route as marketingIndexRouteImport } from './routes/(marketing)/index'
 import { Route as ProtectedRedirectRouteImport } from './routes/_protected/redirect'
 import { Route as ProtectedOrganizationSlugRouteImport } from './routes/_protected/$organizationSlug'
@@ -85,9 +85,9 @@ const ProtectedRoute = ProtectedRouteImport.update({
   id: '/_protected',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ScratchIndexRoute = ScratchIndexRouteImport.update({
-  id: '/scratch/',
-  path: '/scratch/',
+const PadIndexRoute = PadIndexRouteImport.update({
+  id: '/pad/',
+  path: '/pad/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const marketingIndexRoute = marketingIndexRouteImport.update({
@@ -506,7 +506,7 @@ export interface FileRoutesByFullPath {
   '/$organizationSlug': typeof ProtectedOrganizationSlugRouteWithChildren
   '/redirect': typeof ProtectedRedirectRoute
   '/': typeof marketingIndexRoute
-  '/scratch': typeof ScratchIndexRoute
+  '/pad': typeof PadIndexRoute
   '/$organizationSlug/$teamId': typeof ProtectedOrganizationSlugTeamIdRouteWithChildren
   '/$organizationSlug/feedback': typeof ProtectedOrganizationSlugFeedbackRoute
   '/$organizationSlug/plan': typeof ProtectedOrganizationSlugPlanRoute
@@ -577,7 +577,7 @@ export interface FileRoutesByTo {
   '/register': typeof authRegisterRoute
   '/redirect': typeof ProtectedRedirectRoute
   '/': typeof marketingIndexRoute
-  '/scratch': typeof ScratchIndexRoute
+  '/pad': typeof PadIndexRoute
   '/$organizationSlug/feedback': typeof ProtectedOrganizationSlugFeedbackRoute
   '/$organizationSlug/plan': typeof ProtectedOrganizationSlugPlanRoute
   '/organizations/create': typeof ProtectedOrganizationsCreateRoute
@@ -650,7 +650,7 @@ export interface FileRoutesById {
   '/_protected/$organizationSlug': typeof ProtectedOrganizationSlugRouteWithChildren
   '/_protected/redirect': typeof ProtectedRedirectRoute
   '/(marketing)/': typeof marketingIndexRoute
-  '/scratch/': typeof ScratchIndexRoute
+  '/pad/': typeof PadIndexRoute
   '/_protected/$organizationSlug/$teamId': typeof ProtectedOrganizationSlugTeamIdRouteWithChildren
   '/_protected/$organizationSlug/feedback': typeof ProtectedOrganizationSlugFeedbackRoute
   '/_protected/$organizationSlug/plan': typeof ProtectedOrganizationSlugPlanRoute
@@ -724,7 +724,7 @@ export interface FileRouteTypes {
     | '/$organizationSlug'
     | '/redirect'
     | '/'
-    | '/scratch'
+    | '/pad'
     | '/$organizationSlug/$teamId'
     | '/$organizationSlug/feedback'
     | '/$organizationSlug/plan'
@@ -795,7 +795,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/redirect'
     | '/'
-    | '/scratch'
+    | '/pad'
     | '/$organizationSlug/feedback'
     | '/$organizationSlug/plan'
     | '/organizations/create'
@@ -867,7 +867,7 @@ export interface FileRouteTypes {
     | '/_protected/$organizationSlug'
     | '/_protected/redirect'
     | '/(marketing)/'
-    | '/scratch/'
+    | '/pad/'
     | '/_protected/$organizationSlug/$teamId'
     | '/_protected/$organizationSlug/feedback'
     | '/_protected/$organizationSlug/plan'
@@ -939,7 +939,7 @@ export interface RootRouteChildren {
   authLogoutRoute: typeof authLogoutRoute
   authRegisterRoute: typeof authRegisterRoute
   marketingIndexRoute: typeof marketingIndexRoute
-  ScratchIndexRoute: typeof ScratchIndexRoute
+  PadIndexRoute: typeof PadIndexRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
@@ -952,11 +952,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/scratch/': {
-      id: '/scratch/'
-      path: '/scratch'
-      fullPath: '/scratch'
-      preLoaderRoute: typeof ScratchIndexRouteImport
+    '/pad/': {
+      id: '/pad/'
+      path: '/pad'
+      fullPath: '/pad'
+      preLoaderRoute: typeof PadIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/(marketing)/': {
@@ -1683,7 +1683,7 @@ const rootRouteChildren: RootRouteChildren = {
   authLogoutRoute: authLogoutRoute,
   authRegisterRoute: authRegisterRoute,
   marketingIndexRoute: marketingIndexRoute,
-  ScratchIndexRoute: ScratchIndexRoute,
+  PadIndexRoute: PadIndexRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport

@@ -1,7 +1,7 @@
 import { PgDrizzle } from '@effect/sql-drizzle/Pg';
 import { and, eq, getTableColumns, isNull } from 'drizzle-orm';
 import { Array as Arr, Effect } from 'effect';
-import { DatabaseLive } from '../drizzle';
+import { DatabaseLive } from '../drizzle/drizzle.service';
 import { decodeArguments } from '../util';
 import { ErrorInvalidSeason } from './season.error';
 import {
@@ -26,7 +26,7 @@ export class SeasonService extends Effect.Service<SeasonService>()(
           Effect.gen(function* () {
             const decoded = yield* decodeArguments(GetAllSeasonsInput, input);
 
-            const seasons: Array<SeasonSelect> = yield* db
+            const seasons: SeasonSelect[] = yield* db
               .select(rest)
               .from(seasonTable)
               .where(
@@ -34,12 +34,12 @@ export class SeasonService extends Effect.Service<SeasonService>()(
                   eq(seasonTable.organizationId, decoded.organizationId),
                   // TODO: add nullish team id to this...
                   // ...{ decoded.teamId && { ...eq(seasonTable.teamId, decoded.teamId) } },
-                  isNull(seasonTable.deletedAt),
-                ),
+                  isNull(seasonTable.deletedAt)
+                )
               )
               .pipe(
                 Effect.tapError(Effect.logError),
-                Effect.mapError((cause) => new ErrorInvalidSeason({ cause })),
+                Effect.mapError((cause) => new ErrorInvalidSeason({ cause }))
               );
 
             return seasons;
@@ -58,13 +58,13 @@ export class SeasonService extends Effect.Service<SeasonService>()(
                   eq(seasonTable.organizationId, decoded.organizationId),
                   // TODO: add nullish team id to this...
                   // ...{ decoded.teamId && { ...eq(seasonTable.teamId, decoded.teamId) } },
-                  isNull(seasonTable.deletedAt),
-                ),
+                  isNull(seasonTable.deletedAt)
+                )
               )
               .pipe(
                 Effect.flatMap(Arr.head),
                 Effect.tapError(Effect.logError),
-                Effect.mapError((cause) => new ErrorInvalidSeason({ cause })),
+                Effect.mapError((cause) => new ErrorInvalidSeason({ cause }))
               );
 
             return season;
@@ -91,12 +91,12 @@ export class SeasonService extends Effect.Service<SeasonService>()(
                   eq(seasonTable.organizationId, decoded.organizationId),
                   // TODO: add nullish team id to this...
                   // ...{ decoded.teamId && { ...eq(seasonTable.teamId, decoded.teamId) } },
-                  isNull(seasonTable.deletedAt),
-                ),
+                  isNull(seasonTable.deletedAt)
+                )
               )
               .pipe(
                 Effect.tapError(Effect.logError),
-                Effect.mapError((cause) => new ErrorInvalidSeason({ cause })),
+                Effect.mapError((cause) => new ErrorInvalidSeason({ cause }))
               );
           }),
 
@@ -112,16 +112,16 @@ export class SeasonService extends Effect.Service<SeasonService>()(
                   eq(seasonTable.organizationId, decoded.organizationId),
                   // TODO: add nullish team id to this...
                   // ...{ decoded.teamId && { ...eq(seasonTable.teamId, decoded.teamId) } },
-                  isNull(seasonTable.deletedAt),
-                ),
+                  isNull(seasonTable.deletedAt)
+                )
               )
               .pipe(
                 Effect.tapError(Effect.logError),
-                Effect.mapError((cause) => new ErrorInvalidSeason({ cause })),
+                Effect.mapError((cause) => new ErrorInvalidSeason({ cause }))
               );
           }),
       } as const;
     }),
     dependencies: [DatabaseLive],
-  },
+  }
 ) {}

@@ -23,12 +23,12 @@ import {
 import { Input } from '@/components/ui/input';
 
 export const Route = createFileRoute(
-  '/_protected/$organizationSlug/practice/templates/',
+  '/_protected/$organizationSlug/practice/templates/'
 )({
   component: PracticeTemplatesPage,
 });
 
-interface PracticeTemplate {
+type PracticeTemplate = {
   id: string;
   name: string;
   description: string;
@@ -47,7 +47,7 @@ interface PracticeTemplate {
     duration: number;
     category: string;
   }[];
-}
+};
 
 const mockTemplates: PracticeTemplate[] = [
   {
@@ -254,7 +254,7 @@ function PracticeTemplatesPage() {
           .toLowerCase()
           .includes(searchQuery.toLowerCase()) ||
         template.focus.some((f) =>
-          f.toLowerCase().includes(searchQuery.toLowerCase()),
+          f.toLowerCase().includes(searchQuery.toLowerCase())
         );
       const matchesCategory =
         selectedCategory === 'All Categories' ||
@@ -268,9 +268,15 @@ function PracticeTemplatesPage() {
     .sort((a, b) => {
       switch (sortBy) {
         case 'recent':
-          if (!a.lastUsed && !b.lastUsed) return 0;
-          if (!a.lastUsed) return 1;
-          if (!b.lastUsed) return -1;
+          if (!(a.lastUsed || b.lastUsed)) {
+            return 0;
+          }
+          if (!a.lastUsed) {
+            return 1;
+          }
+          if (!b.lastUsed) {
+            return -1;
+          }
           return (
             new Date(b.lastUsed).getTime() - new Date(a.lastUsed).getTime()
           );
@@ -311,8 +317,8 @@ function PracticeTemplatesPage() {
         </div>
         <Button asChild>
           <Link
-            to="/$organizationSlug/practice/templates/create"
             params={{ organizationSlug }}
+            to="/$organizationSlug/practice/templates/create"
           >
             <Plus className="mr-2 h-4 w-4" />
             Create Template
@@ -325,18 +331,18 @@ function PracticeTemplatesPage() {
           <div className="relative">
             <Search className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
             <Input
+              className="w-64 pl-10"
+              onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search templates..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-64 pl-10"
             />
           </div>
           <div className="relative">
             <Filter className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
             <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
               className="w-48 rounded-md border border-input bg-background py-2 pr-4 pl-10 text-sm"
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              value={selectedCategory}
             >
               {categories.map((category) => (
                 <option key={category} value={category}>
@@ -346,9 +352,9 @@ function PracticeTemplatesPage() {
             </select>
           </div>
           <select
-            value={selectedDifficulty}
-            onChange={(e) => setSelectedDifficulty(e.target.value)}
             className="w-32 rounded-md border border-input bg-background px-3 py-2 text-sm"
+            onChange={(e) => setSelectedDifficulty(e.target.value)}
+            value={selectedDifficulty}
           >
             {difficulties.map((difficulty) => (
               <option key={difficulty} value={difficulty}>
@@ -359,9 +365,9 @@ function PracticeTemplatesPage() {
         </div>
 
         <select
-          value={sortBy}
-          onChange={(e) => setSortBy(e.target.value)}
           className="w-40 rounded-md border border-input bg-background px-3 py-2 text-sm"
+          onChange={(e) => setSortBy(e.target.value)}
+          value={sortBy}
         >
           <option value="recent">Recently Used</option>
           <option value="rating">Highest Rated</option>
@@ -373,14 +379,14 @@ function PracticeTemplatesPage() {
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {filteredTemplates.map((template) => (
-          <Card key={template.id} className="transition-shadow hover:shadow-md">
+          <Card className="transition-shadow hover:shadow-md" key={template.id}>
             <CardHeader className="pb-3">
               <div className="flex items-start justify-between">
                 <div className="space-y-1">
                   <CardTitle className="text-lg leading-tight">
                     {template.name}
                     {template.isDefault && (
-                      <Badge variant="secondary" className="ml-2 text-xs">
+                      <Badge className="ml-2 text-xs" variant="secondary">
                         Default
                       </Badge>
                     )}
@@ -392,7 +398,7 @@ function PracticeTemplatesPage() {
               </div>
 
               <div className="flex items-center gap-2 pt-2">
-                <Badge variant="outline" className="text-xs">
+                <Badge className="text-xs" variant="outline">
                   {template.category}
                 </Badge>
                 <Badge
@@ -427,7 +433,7 @@ function PracticeTemplatesPage() {
                 <p className="font-medium text-sm">Focus Areas:</p>
                 <div className="flex flex-wrap gap-1">
                   {template.focus.map((focus) => (
-                    <Badge key={focus} variant="secondary" className="text-xs">
+                    <Badge className="text-xs" key={focus} variant="secondary">
                       {focus}
                     </Badge>
                   ))}
@@ -441,20 +447,20 @@ function PracticeTemplatesPage() {
               )}
 
               <div className="flex gap-2 pt-2">
-                <Button variant="outline" size="sm" className="flex-1" asChild>
+                <Button asChild className="flex-1" size="sm" variant="outline">
                   <Link
-                    to="/$organizationSlug/practice/templates/$templateId"
                     params={{ organizationSlug, templateId: template.id }}
+                    to="/$organizationSlug/practice/templates/$templateId"
                   >
                     <Eye className="mr-2 h-4 w-4" />
                     View
                   </Link>
                 </Button>
-                <Button size="sm" className="flex-1" asChild>
+                <Button asChild className="flex-1" size="sm">
                   <Link
-                    to="/$organizationSlug/practice/schedule/create"
                     params={{ organizationSlug }}
                     search={{ templateId: template.id }}
+                    to="/$organizationSlug/practice/schedule/create"
                   >
                     <Calendar className="mr-2 h-4 w-4" />
                     Schedule
@@ -477,8 +483,8 @@ function PracticeTemplatesPage() {
           </p>
           <Button asChild>
             <Link
-              to="/$organizationSlug/practice/templates/create"
               params={{ organizationSlug }}
+              to="/$organizationSlug/practice/templates/create"
             >
               <Plus className="mr-2 h-4 w-4" />
               Create Template

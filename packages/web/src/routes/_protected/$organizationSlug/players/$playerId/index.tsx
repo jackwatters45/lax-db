@@ -198,7 +198,6 @@ const mockPlayerDetails = {
 const getPlayerDetails = createServerFn({ method: 'GET' })
   .inputValidator((data: { playerId: string }) => data)
   .handler(async ({ data }) => {
-    console.log('Getting player details for:', data.playerId);
     // TODO: Replace with actual API call
     // const { PlayerDevelopmentAPI } = await import('@lax-db/core/player-development/index');
     // return await PlayerDevelopmentAPI.getPlayerProfile(data.playerId, headers);
@@ -207,19 +206,17 @@ const getPlayerDetails = createServerFn({ method: 'GET' })
   });
 
 // Server function for permissions
-const getPlayerPermissions = createServerFn().handler(async () => {
-  return {
-    canEdit: true,
-    canCreateNotes: true,
-    canAssess: true,
-    canAssignResources: true,
-    canSetGoals: true,
-    canViewSensitive: true,
-  };
-});
+const getPlayerPermissions = createServerFn().handler(async () => ({
+  canEdit: true,
+  canCreateNotes: true,
+  canAssess: true,
+  canAssignResources: true,
+  canSetGoals: true,
+  canViewSensitive: true,
+}));
 
 export const Route = createFileRoute(
-  '/_protected/$organizationSlug/players/$playerId/',
+  '/_protected/$organizationSlug/players/$playerId/'
 )({
   component: PlayerDetailsPage,
   loader: async ({ params }) => {
@@ -236,13 +233,12 @@ function PlayerDetailsPage() {
   const { organizationSlug } = Route.useParams();
   const { player, permissions } = Route.useLoaderData();
 
-  const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat('en-US', {
+  const formatDate = (date: Date) =>
+    new Intl.DateTimeFormat('en-US', {
       month: 'short',
       day: 'numeric',
       year: 'numeric',
     }).format(date);
-  };
 
   const getTrendColor = (trend: string) => {
     switch (trend) {
@@ -312,8 +308,8 @@ function PlayerDetailsPage() {
   return (
     <div className="container mx-auto py-8">
       <div className="mb-8">
-        <Link to="/$organizationSlug/players" params={{ organizationSlug }}>
-          <Button variant="ghost" className="mb-4">
+        <Link params={{ organizationSlug }} to="/$organizationSlug/players">
+          <Button className="mb-4" variant="ghost">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Players
           </Button>
@@ -349,13 +345,13 @@ function PlayerDetailsPage() {
               {getTrendLabel(player.developmentTrend)}
             </Badge>
             {permissions.canEdit && (
-              <Button variant="outline" size="sm" asChild>
+              <Button asChild size="sm" variant="outline">
                 <Link
-                  to="/$organizationSlug/players/$playerId/edit"
                   params={{
                     organizationSlug,
                     playerId: player.id,
                   }}
+                  to="/$organizationSlug/players/$playerId/edit"
                 >
                   <Edit className="mr-2 h-4 w-4" />
                   Edit Profile
@@ -423,11 +419,11 @@ function PlayerDetailsPage() {
               <div className="flex items-center justify-between">
                 <CardTitle>Active Goals</CardTitle>
                 {permissions.canSetGoals && (
-                  <Button variant="outline" size="sm" asChild>
+                  <Button asChild size="sm" variant="outline">
                     <Link
-                      to="/$organizationSlug/players/goals/create"
                       params={{ organizationSlug }}
                       search={{ playerId: player.id }}
+                      to="/$organizationSlug/players/goals/create"
                     >
                       <Plus className="mr-2 h-4 w-4" />
                       Set Goal
@@ -440,7 +436,7 @@ function PlayerDetailsPage() {
               {player.activeGoals.length > 0 ? (
                 <div className="space-y-4">
                   {player.activeGoals.map((goal) => (
-                    <div key={goal.id} className="rounded border p-3">
+                    <div className="rounded border p-3" key={goal.id}>
                       <div className="mb-2 flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           {getGoalCategoryIcon(goal.category)}
@@ -482,11 +478,11 @@ function PlayerDetailsPage() {
               <div className="flex items-center justify-between">
                 <CardTitle>Recent Development Notes</CardTitle>
                 {permissions.canCreateNotes && (
-                  <Button variant="outline" size="sm" asChild>
+                  <Button asChild size="sm" variant="outline">
                     <Link
-                      to="/$organizationSlug/players/notes/create"
                       params={{ organizationSlug }}
                       search={{ playerId: player.id }}
+                      to="/$organizationSlug/players/notes/create"
                     >
                       <Plus className="mr-2 h-4 w-4" />
                       Add Note
@@ -500,8 +496,8 @@ function PlayerDetailsPage() {
                 <div className="space-y-3">
                   {player.recentNotes.map((note) => (
                     <div
-                      key={note.id}
                       className="flex items-center justify-between rounded border p-3"
+                      key={note.id}
                     >
                       <div className="flex-1">
                         <div className="font-medium text-sm">{note.title}</div>
@@ -513,13 +509,13 @@ function PlayerDetailsPage() {
                         <Badge variant={getPriorityColor(note.priority)}>
                           {note.priority}
                         </Badge>
-                        <Button variant="ghost" size="sm" asChild>
+                        <Button asChild size="sm" variant="ghost">
                           <Link
-                            to="/$organizationSlug/players/$playerId/notes"
                             params={{
                               organizationSlug,
                               playerId: player.id,
                             }}
+                            to="/$organizationSlug/players/$playerId/notes"
                           >
                             View All
                           </Link>
@@ -592,14 +588,14 @@ function PlayerDetailsPage() {
             <CardContent className="space-y-3">
               {permissions.canCreateNotes && (
                 <Button
-                  variant="outline"
-                  className="w-full justify-start"
                   asChild
+                  className="w-full justify-start"
+                  variant="outline"
                 >
                   <Link
-                    to="/$organizationSlug/players/notes/create"
                     params={{ organizationSlug }}
                     search={{ playerId: player.id }}
+                    to="/$organizationSlug/players/notes/create"
                   >
                     <FileText className="mr-2 h-4 w-4" />
                     Add Development Note
@@ -609,14 +605,14 @@ function PlayerDetailsPage() {
 
               {permissions.canAssess && (
                 <Button
-                  variant="outline"
-                  className="w-full justify-start"
                   asChild
+                  className="w-full justify-start"
+                  variant="outline"
                 >
                   <Link
-                    to="/$organizationSlug/players/assessments/create"
                     params={{ organizationSlug }}
                     search={{ playerId: player.id }}
+                    to="/$organizationSlug/players/assessments/create"
                   >
                     <TrendingUp className="mr-2 h-4 w-4" />
                     Create Assessment
@@ -626,14 +622,14 @@ function PlayerDetailsPage() {
 
               {permissions.canAssignResources && (
                 <Button
-                  variant="outline"
-                  className="w-full justify-start"
                   asChild
+                  className="w-full justify-start"
+                  variant="outline"
                 >
                   <Link
-                    to="/$organizationSlug/players/resources/create"
                     params={{ organizationSlug }}
                     search={{ playerId: player.id }}
+                    to="/$organizationSlug/players/resources/create"
                   >
                     <BookOpen className="mr-2 h-4 w-4" />
                     Assign Resource
@@ -643,14 +639,14 @@ function PlayerDetailsPage() {
 
               {permissions.canSetGoals && (
                 <Button
-                  variant="outline"
-                  className="w-full justify-start"
                   asChild
+                  className="w-full justify-start"
+                  variant="outline"
                 >
                   <Link
-                    to="/$organizationSlug/players/goals/create"
                     params={{ organizationSlug }}
                     search={{ playerId: player.id }}
+                    to="/$organizationSlug/players/goals/create"
                   >
                     <Target className="mr-2 h-4 w-4" />
                     Set Goal
@@ -659,16 +655,16 @@ function PlayerDetailsPage() {
               )}
 
               <Button
-                variant="outline"
-                className="w-full justify-start"
                 asChild
+                className="w-full justify-start"
+                variant="outline"
               >
                 <Link
-                  to="/$organizationSlug/players/$playerId/stats"
                   params={{
                     organizationSlug,
                     playerId: player.id,
                   }}
+                  to="/$organizationSlug/players/$playerId/stats"
                 >
                   <Trophy className="mr-2 h-4 w-4" />
                   Detailed Stats
@@ -687,8 +683,8 @@ function PlayerDetailsPage() {
                 <div className="space-y-2">
                   {player.assignedResources.slice(0, 3).map((resource) => (
                     <div
-                      key={resource.id}
                       className="flex items-center justify-between text-sm"
+                      key={resource.id}
                     >
                       <div className="flex-1">
                         <div className="font-medium">{resource.title}</div>
@@ -703,17 +699,17 @@ function PlayerDetailsPage() {
                   ))}
                   {player.assignedResources.length > 3 && (
                     <Button
-                      variant="ghost"
-                      size="sm"
-                      className="w-full"
                       asChild
+                      className="w-full"
+                      size="sm"
+                      variant="ghost"
                     >
                       <Link
-                        to="/$organizationSlug/players/$playerId/resources"
                         params={{
                           organizationSlug,
                           playerId: player.id,
                         }}
+                        to="/$organizationSlug/players/$playerId/resources"
                       >
                         View All ({player.assignedResources.length})
                       </Link>
@@ -747,8 +743,8 @@ function PlayerDetailsPage() {
                   <div className="flex items-center gap-2">
                     <Phone className="h-4 w-4 text-muted-foreground" />
                     <a
-                      href={`tel:${player.emergencyContactPhone}`}
                       className="text-blue-600 hover:underline"
+                      href={`tel:${player.emergencyContactPhone}`}
                     >
                       {player.emergencyContactPhone}
                     </a>

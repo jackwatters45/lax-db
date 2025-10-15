@@ -25,17 +25,17 @@ const resourceFormSchema = Schema.Struct({
     Schema.minLength(1, { message: () => 'Title is required' }),
     Schema.maxLength(100, {
       message: () => 'Title must be less than 100 characters',
-    }),
+    })
   ),
   description: Schema.String.pipe(
     Schema.minLength(1, { message: () => 'Description is required' }),
     Schema.maxLength(500, {
       message: () => 'Description must be less than 500 characters',
-    }),
+    })
   ),
   type: Schema.Literal('drill', 'video', 'article', 'program'),
   dueDate: Schema.String.pipe(
-    Schema.minLength(1, { message: () => 'Due date is required' }),
+    Schema.minLength(1, { message: () => 'Due date is required' })
   ),
   priority: Schema.Literal('low', 'medium', 'high'),
 });
@@ -52,10 +52,9 @@ const assignPlayerResource = createServerFn({ method: 'POST' })
       type: string;
       dueDate: string;
       priority: string;
-    }) => data,
+    }) => data
   )
   .handler(async ({ data }) => {
-    console.log('Assigning resource:', data);
     // TODO: Replace with actual API call
     return { success: true, resourceId: 'resource-123' };
   });
@@ -64,7 +63,6 @@ const assignPlayerResource = createServerFn({ method: 'POST' })
 const getPlayerInfo = createServerFn({ method: 'GET' })
   .inputValidator((data: { playerId: string }) => data)
   .handler(async ({ data }) => {
-    console.log('Getting player info for:', data.playerId);
     // TODO: Replace with actual API call
     return {
       id: data.playerId,
@@ -75,7 +73,7 @@ const getPlayerInfo = createServerFn({ method: 'GET' })
   });
 
 export const Route = createFileRoute(
-  '/_protected/$organizationSlug/players/resources/create',
+  '/_protected/$organizationSlug/players/resources/create'
 )({
   component: CreateResourcePage,
   validateSearch: (search: Record<string, unknown>) => ({
@@ -123,12 +121,10 @@ function CreateResourcePage() {
         to: '/$organizationSlug/players/$playerId',
         params: {
           organizationSlug,
-          playerId: playerId,
+          playerId,
         },
       });
-    } catch (error) {
-      console.error('Failed to assign resource:', error);
-    }
+    } catch (_error) {}
   };
 
   const resourceTypes = [
@@ -168,13 +164,13 @@ function CreateResourcePage() {
     <div className="container mx-auto max-w-2xl py-8">
       <div className="mb-8">
         <Link
-          to={'/$organizationSlug/players/$playerId'}
           params={{
             organizationSlug,
-            playerId: playerId,
+            playerId,
           }}
+          to={'/$organizationSlug/players/$playerId'}
         >
-          <Button variant="ghost" className="mb-4">
+          <Button className="mb-4" variant="ghost">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to {player.name}
           </Button>
@@ -197,7 +193,7 @@ function CreateResourcePage() {
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
               {/* Title */}
               <FormField
                 control={form.control}
@@ -250,14 +246,14 @@ function CreateResourcePage() {
                       <div className="grid grid-cols-2 gap-3">
                         {resourceTypes.map((type) => (
                           <button
-                            key={type.value}
-                            type="button"
-                            onClick={() => field.onChange(type.value)}
                             className={`flex flex-col items-start gap-2 rounded-md border p-4 text-left transition-colors ${
                               field.value === type.value
                                 ? 'border-primary bg-primary/5'
                                 : 'border-input hover:bg-muted'
                             }`}
+                            key={type.value}
+                            onClick={() => field.onChange(type.value)}
+                            type="button"
                           >
                             <div className="flex items-center gap-2">
                               <span className="text-lg">{type.icon}</span>
@@ -287,7 +283,7 @@ function CreateResourcePage() {
                     <FormControl>
                       <div className="relative">
                         <Calendar className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
-                        <Input type="date" className="pl-10" {...field} />
+                        <Input className="pl-10" type="date" {...field} />
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -306,16 +302,16 @@ function CreateResourcePage() {
                       <div className="flex gap-2">
                         {priorities.map((priority) => (
                           <button
-                            key={priority.value}
-                            type="button"
-                            onClick={() => field.onChange(priority.value)}
                             className={`flex-1 rounded-md border p-2 text-center transition-colors ${
                               field.value === priority.value
                                 ? 'border-primary bg-primary/5'
                                 : 'border-input hover:bg-muted'
                             }`}
+                            key={priority.value}
+                            onClick={() => field.onChange(priority.value)}
+                            type="button"
                           >
-                            <Badge variant={priority.color} className="w-full">
+                            <Badge className="w-full" variant={priority.color}>
                               {priority.label}
                             </Badge>
                           </button>
@@ -330,25 +326,25 @@ function CreateResourcePage() {
               {/* Actions */}
               <div className="flex gap-3 pt-4">
                 <Button
+                  asChild
+                  className="flex-1"
                   type="button"
                   variant="outline"
-                  className="flex-1"
-                  asChild
                 >
                   <Link
-                    to={'/$organizationSlug/players/$playerId'}
                     params={{
                       organizationSlug,
                       playerId,
                     }}
+                    to={'/$organizationSlug/players/$playerId'}
                   >
                     Cancel
                   </Link>
                 </Button>
                 <Button
-                  type="submit"
                   className="flex-1"
                   disabled={form.formState.isSubmitting}
+                  type="submit"
                 >
                   {form.formState.isSubmitting
                     ? 'Assigning...'

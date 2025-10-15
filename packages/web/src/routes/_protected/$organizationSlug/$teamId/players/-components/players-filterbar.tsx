@@ -37,8 +37,8 @@ export function PlayersFilterBar({
           {table.getColumn('position')?.getIsVisible() && (
             <FilterCheckbox
               column={table.getColumn('position')}
-              title="Position"
               options={POSITION_SELECT_FIELDS}
+              title="Position"
             />
           )}
           <FilterClear />
@@ -52,9 +52,9 @@ export function PlayersFilterBar({
           </ButtonGroup>
           <ButtonGroup>
             <AddPlayerCommand
+              excludePlayerIds={excludePlayerIds}
               organizationId={organizationId}
               teamId={teamId}
-              excludePlayerIds={excludePlayerIds}
             >
               <Button size="sm">
                 <Plus className="size-4" />

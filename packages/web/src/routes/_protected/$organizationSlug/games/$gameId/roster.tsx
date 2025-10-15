@@ -31,7 +31,6 @@ const mockGameRoster = [
 const getGameRoster = createServerFn({ method: 'GET' })
   .inputValidator((data: { gameId: string }) => data)
   .handler(async ({ data }) => {
-    console.log('Getting roster for game:', data.gameId);
     // TODO: Replace with actual API
     return mockGameRoster;
   });
@@ -44,7 +43,6 @@ const getTeamPlayers = createServerFn().handler(async () => {
 const updateGameRoster = createServerFn({ method: 'POST' })
   .inputValidator((data: { gameId: string; roster: RosterPlayer[] }) => data)
   .handler(async ({ data }) => {
-    console.log('Updating roster:', data);
     // TODO: Replace with actual API
     await new Promise((resolve) => setTimeout(resolve, 500));
     return { success: true };
@@ -57,7 +55,7 @@ type RosterPlayer = {
 };
 
 export const Route = createFileRoute(
-  '/_protected/$organizationSlug/games/$gameId/roster',
+  '/_protected/$organizationSlug/games/$gameId/roster'
 )({
   component: RosterManagementPage,
   loader: async ({ params }) => {
@@ -89,13 +87,11 @@ function RosterManagementPage() {
     },
   });
 
-  const isPlayerInRoster = (playerId: string) => {
-    return roster.some((r) => r.playerId === playerId);
-  };
+  const isPlayerInRoster = (playerId: string) =>
+    roster.some((r) => r.playerId === playerId);
 
-  const _getPlayerRosterInfo = (playerId: string) => {
-    return roster.find((r) => r.playerId === playerId);
-  };
+  const _getPlayerRosterInfo = (playerId: string) =>
+    roster.find((r) => r.playerId === playerId);
 
   const addPlayerToRoster = (playerId: string) => {
     if (!isPlayerInRoster(playerId)) {
@@ -116,10 +112,10 @@ function RosterManagementPage() {
 
   const updatePlayerRosterInfo = (
     playerId: string,
-    updates: Partial<RosterPlayer>,
+    updates: Partial<RosterPlayer>
   ) => {
     setRoster((prev) =>
-      prev.map((r) => (r.playerId === playerId ? { ...r, ...updates } : r)),
+      prev.map((r) => (r.playerId === playerId ? { ...r, ...updates } : r))
     );
   };
 
@@ -140,13 +136,13 @@ function RosterManagementPage() {
     <div className="container mx-auto py-8">
       <div className="mb-8">
         <Link
-          to="/$organizationSlug/games/$gameId"
           params={{
             organizationSlug,
             gameId,
           }}
+          to="/$organizationSlug/games/$gameId"
         >
-          <Button variant="ghost" className="mb-4">
+          <Button className="mb-4" variant="ghost">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Game
           </Button>
@@ -161,8 +157,8 @@ function RosterManagementPage() {
           </div>
 
           <Button
-            onClick={handleSave}
             disabled={updateRosterMutation.isPending}
+            onClick={handleSave}
           >
             <Save className="mr-2 h-4 w-4" />
             {updateRosterMutation.isPending ? 'Saving...' : 'Save Roster'}
@@ -184,8 +180,8 @@ function RosterManagementPage() {
               <div className="space-y-3">
                 {rosterPlayers.map((player) => (
                   <div
-                    key={player.id}
                     className="flex items-center justify-between rounded border p-3"
+                    key={player.id}
                   >
                     <div className="flex items-center gap-3">
                       <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary font-bold text-primary-foreground">
@@ -203,8 +199,8 @@ function RosterManagementPage() {
                       <div className="flex flex-col gap-1">
                         <div className="flex items-center gap-1 text-xs">
                           <Checkbox
-                            id={`starter-${player.id}`}
                             checked={player.isStarter}
+                            id={`starter-${player.id}`}
                             onCheckedChange={(checked) =>
                               updatePlayerRosterInfo(player.id, {
                                 isStarter: checked === true,
@@ -217,8 +213,8 @@ function RosterManagementPage() {
                         </div>
                         <div className="flex items-center gap-1 text-xs">
                           <Checkbox
-                            id={`captain-${player.id}`}
                             checked={player.isCaptain}
+                            id={`captain-${player.id}`}
                             onCheckedChange={(checked) =>
                               updatePlayerRosterInfo(player.id, {
                                 isCaptain: checked === true,
@@ -232,9 +228,9 @@ function RosterManagementPage() {
                       </div>
 
                       <Button
-                        variant="ghost"
-                        size="sm"
                         onClick={() => removePlayerFromRoster(player.id)}
+                        size="sm"
+                        variant="ghost"
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -265,8 +261,8 @@ function RosterManagementPage() {
               <div className="space-y-2">
                 {availablePlayers.map((player) => (
                   <div
-                    key={player.id}
                     className="flex items-center justify-between rounded border p-3"
+                    key={player.id}
                   >
                     <div className="flex items-center gap-3">
                       <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted font-bold text-sm">
@@ -281,9 +277,9 @@ function RosterManagementPage() {
                     </div>
 
                     <Button
-                      variant="outline"
-                      size="sm"
                       onClick={() => addPlayerToRoster(player.id)}
+                      size="sm"
+                      variant="outline"
                     >
                       <Plus className="h-3 w-3" />
                     </Button>

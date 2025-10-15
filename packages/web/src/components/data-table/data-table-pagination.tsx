@@ -15,9 +15,9 @@ import {
 } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 
-interface DataTablePaginationProps<TData> {
+type DataTablePaginationProps<TData> = {
   table: Table<TData>;
-}
+};
 
 function PaginationSelectedCount<TData>({ table }: { table: Table<TData> }) {
   const totalRows = table.getFilteredRowModel().rows.length;
@@ -35,10 +35,10 @@ function PaginationPageSizeSelect<TData>({ table }: { table: Table<TData> }) {
     <div className="flex items-center space-x-2">
       <p className="font-medium text-muted-foreground text-sm">Rows per page</p>
       <Select
-        value={`${table.getState().pagination.pageSize}`}
         onValueChange={(value) => {
           table.setPageSize(Number(value));
         }}
+        value={`${table.getState().pagination.pageSize}`}
       >
         <SelectTrigger className="h-7 w-[70px]">
           <SelectValue placeholder={table.getState().pagination.pageSize} />
@@ -109,18 +109,18 @@ function PaginationControls<TData>({ table }: { table: Table<TData> }) {
     <div className="flex items-center gap-x-1.5">
       {paginationButtons.map((button) => (
         <Button
-          key={button.srText}
-          variant="outline"
-          size="sm"
           className={cn(button.mobileView, 'h-7 px-1.5')}
+          disabled={button.disabled}
+          key={button.srText}
           onClick={() => {
             button.onClick();
             table.resetRowSelection();
           }}
-          disabled={button.disabled}
+          size="sm"
+          variant="outline"
         >
           <span className="sr-only">{button.srText}</span>
-          <button.icon className="size-4 shrink-0" aria-hidden="true" />
+          <button.icon aria-hidden="true" className="size-4 shrink-0" />
         </Button>
       ))}
     </div>

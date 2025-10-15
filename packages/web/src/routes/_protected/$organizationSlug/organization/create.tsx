@@ -5,7 +5,7 @@ import { DashboardHeader } from '@/components/sidebar/dashboard-header';
 import { BreadcrumbItem, BreadcrumbLink } from '@/components/ui/breadcrumb';
 
 export const Route = createFileRoute(
-  '/_protected/$organizationSlug/organization/create',
+  '/_protected/$organizationSlug/organization/create'
 )({
   component: CreateOrganizationPage,
 });
@@ -29,10 +29,10 @@ function Header() {
   return (
     <DashboardHeader>
       <BreadcrumbItem>
-        <BreadcrumbLink title="Create Organization" asChild>
+        <BreadcrumbLink asChild title="Create Organization">
           <Link
-            to="/$organizationSlug/organization/create"
             params={{ organizationSlug }}
+            to="/$organizationSlug/organization/create"
           >
             Create Organization
           </Link>

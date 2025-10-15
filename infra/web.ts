@@ -10,7 +10,7 @@ const webDomain = `app.${domain}`;
 
 export const web = new sst.aws.TanStackStart('Web', {
   path: 'packages/web',
-  vpc: vpc,
+  vpc,
   domain: {
     name: webDomain,
     redirects: [`www.${webDomain}`],

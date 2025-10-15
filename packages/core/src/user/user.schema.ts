@@ -6,7 +6,7 @@ export class CreateInput extends Schema.Class<CreateInput>('CreateInput')({
 }) {}
 
 export class FromEmailInput extends Schema.Class<FromEmailInput>(
-  'FromEmailInput',
+  'FromEmailInput'
 )({
   email: Schema.String,
 }) {}

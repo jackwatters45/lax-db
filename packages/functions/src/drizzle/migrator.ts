@@ -20,7 +20,7 @@ export const handler = async () => {
             user: Resource.Database.username,
             password: Resource.Database.password,
             database: Resource.Database.database,
-          }),
+          })
       ),
       (client) =>
         Effect.gen(function* () {
@@ -29,10 +29,10 @@ export const handler = async () => {
           yield* Effect.promise(() =>
             migrate(db, {
               migrationsFolder: 'packages/core/migrations',
-            }),
+            })
           );
         }),
-      (client) => Effect.promise(() => client.end()),
-    ),
+      (client) => Effect.promise(() => client.end())
+    )
   );
 };

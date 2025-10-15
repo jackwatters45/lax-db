@@ -45,41 +45,41 @@ import { Textarea } from '@/components/ui/textarea';
 
 const templateFormSchema = Schema.Struct({
   name: Schema.String.pipe(
-    Schema.minLength(1, { message: () => 'Template name is required' }),
+    Schema.minLength(1, { message: () => 'Template name is required' })
   ),
   description: Schema.String.pipe(
-    Schema.minLength(1, { message: () => 'Description is required' }),
+    Schema.minLength(1, { message: () => 'Description is required' })
   ),
   category: Schema.String.pipe(
-    Schema.minLength(1, { message: () => 'Category is required' }),
+    Schema.minLength(1, { message: () => 'Category is required' })
   ),
   difficulty: Schema.String.pipe(
-    Schema.minLength(1, { message: () => 'Difficulty level is required' }),
+    Schema.minLength(1, { message: () => 'Difficulty level is required' })
   ),
   duration: Schema.Number.pipe(
     Schema.greaterThanOrEqualTo(1, {
       message: () => 'Duration must be at least 1 minute',
-    }),
+    })
   ),
   focus: Schema.Array(Schema.String).pipe(
     Schema.minItems(1, {
       message: () => 'At least one focus area is required',
-    }),
+    })
   ),
   notes: Schema.optional(Schema.String),
 });
 
 type TemplateFormData = typeof templateFormSchema.Type;
 
-interface SelectedDrill {
+type SelectedDrill = {
   id: string;
   name: string;
   category: string;
   duration: number;
   order: number;
-}
+};
 
-interface Drill {
+type Drill = {
   id: string;
   name: string;
   description: string;
@@ -90,7 +90,7 @@ interface Drill {
   skills: string[];
   playerCount: { min: number; max: number };
   effectiveness: number;
-}
+};
 
 type TemplateSubmitData = TemplateFormData & {
   selectedDrills: SelectedDrill[];
@@ -100,12 +100,11 @@ const createTemplate = createServerFn({ method: 'POST' })
   .inputValidator((data: TemplateSubmitData) => data)
   .handler(async ({ data }) => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
-    console.log('Creating template:', data);
     return { success: true, templateId: 'new-template-id' };
   });
 
 export const Route = createFileRoute(
-  '/_protected/$organizationSlug/practice/templates/create',
+  '/_protected/$organizationSlug/practice/templates/create'
 )({
   component: CreateTemplatePage,
 });
@@ -281,7 +280,7 @@ function CreateTemplatePage() {
       selectedDrillCategory === 'All Categories' ||
       drill.category === selectedDrillCategory;
     const notAlreadySelected = !selectedDrills.some(
-      (selected) => selected.id === drill.id,
+      (selected) => selected.id === drill.id
     );
 
     return matchesSearch && matchesCategory && notAlreadySelected;
@@ -304,9 +303,11 @@ function CreateTemplatePage() {
 
   const moveDrill = (drillId: string, direction: 'up' | 'down') => {
     const currentIndex = selectedDrills.findIndex(
-      (drill) => drill.id === drillId,
+      (drill) => drill.id === drillId
     );
-    if (currentIndex === -1) return;
+    if (currentIndex === -1) {
+      return;
+    }
 
     const newDrills = [...selectedDrills];
     const targetIndex =
@@ -333,13 +334,13 @@ function CreateTemplatePage() {
     const currentFocusAreas = form.getValues('focus');
     form.setValue(
       'focus',
-      currentFocusAreas.filter((focus) => focus !== focusToRemove),
+      currentFocusAreas.filter((focus) => focus !== focusToRemove)
     );
   };
 
   const totalDuration = selectedDrills.reduce(
     (sum, drill) => sum + drill.duration,
-    0,
+    0
   );
 
   const onSubmit = async (data: TemplateFormData) => {
@@ -364,8 +365,7 @@ function CreateTemplatePage() {
           params: { organizationSlug },
         });
       }
-    } catch (error) {
-      console.error('Failed to create template:', error);
+    } catch (_error) {
       form.setError('root', {
         type: 'manual',
         message: 'Failed to create template. Please try again.',
@@ -389,10 +389,10 @@ function CreateTemplatePage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Button variant="outline" size="sm" asChild>
+        <Button asChild size="sm" variant="outline">
           <Link
-            to="/$organizationSlug/practice/templates"
             params={{ organizationSlug }}
+            to="/$organizationSlug/practice/templates"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Templates
@@ -407,7 +407,7 @@ function CreateTemplatePage() {
       </div>
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
           <div className="grid gap-6 lg:grid-cols-3">
             <div className="space-y-6 lg:col-span-2">
               <Card>
@@ -442,8 +442,8 @@ function CreateTemplatePage() {
                         <FormItem>
                           <FormLabel>Category</FormLabel>
                           <Select
-                            onValueChange={field.onChange}
                             defaultValue={field.value}
+                            onValueChange={field.onChange}
                           >
                             <FormControl>
                               <SelectTrigger>
@@ -490,8 +490,8 @@ function CreateTemplatePage() {
                         <FormItem>
                           <FormLabel>Difficulty Level</FormLabel>
                           <Select
-                            onValueChange={field.onChange}
                             defaultValue={field.value}
+                            onValueChange={field.onChange}
                           >
                             <FormControl>
                               <SelectTrigger>
@@ -518,8 +518,8 @@ function CreateTemplatePage() {
                           <FormLabel>Target Duration (minutes)</FormLabel>
                           <FormControl>
                             <Input
-                              type="number"
                               placeholder="90"
+                              type="number"
                               {...field}
                               onChange={(e) =>
                                 field.onChange(Number(e.target.value))
@@ -540,8 +540,8 @@ function CreateTemplatePage() {
                         <FormLabel>Focus Areas</FormLabel>
                         <div className="mb-2 flex gap-2">
                           <Select
-                            value={currentFocus}
                             onValueChange={setCurrentFocus}
+                            value={currentFocus}
                           >
                             <SelectTrigger className="flex-1">
                               <SelectValue placeholder="Select focus area..." />
@@ -555,10 +555,10 @@ function CreateTemplatePage() {
                             </SelectContent>
                           </Select>
                           <Button
-                            type="button"
-                            onClick={addFocusArea}
                             disabled={!currentFocus}
+                            onClick={addFocusArea}
                             size="sm"
+                            type="button"
                           >
                             <Plus className="h-4 w-4" />
                           </Button>
@@ -566,15 +566,15 @@ function CreateTemplatePage() {
                         <div className="flex flex-wrap gap-2">
                           {field.value.map((focus) => (
                             <Badge
+                              className="text-xs"
                               key={focus}
                               variant="secondary"
-                              className="text-xs"
                             >
                               {focus}
                               <button
-                                type="button"
-                                onClick={() => removeFocusArea(focus)}
                                 className="ml-1 hover:text-destructive"
+                                onClick={() => removeFocusArea(focus)}
+                                type="button"
                               >
                                 <X className="h-3 w-3" />
                               </button>
@@ -592,7 +592,7 @@ function CreateTemplatePage() {
                 <CardHeader>
                   <CardTitle className="flex items-center justify-between">
                     <span>Practice Drills</span>
-                    <Badge variant="outline" className="text-sm">
+                    <Badge className="text-sm" variant="outline">
                       {selectedDrills.length} drills, {totalDuration} min
                     </Badge>
                   </CardTitle>
@@ -613,27 +613,27 @@ function CreateTemplatePage() {
                     <div className="space-y-2">
                       {selectedDrills.map((drill, index) => (
                         <div
-                          key={drill.id}
                           className="flex items-center gap-3 rounded-lg border p-3"
+                          key={drill.id}
                         >
                           <div className="flex flex-col gap-1">
                             <Button
+                              className="h-6 w-6 p-0"
+                              disabled={index === 0}
+                              onClick={() => moveDrill(drill.id, 'up')}
+                              size="sm"
                               type="button"
                               variant="outline"
-                              size="sm"
-                              onClick={() => moveDrill(drill.id, 'up')}
-                              disabled={index === 0}
-                              className="h-6 w-6 p-0"
                             >
                               <ChevronUp className="h-3 w-3" />
                             </Button>
                             <Button
+                              className="h-6 w-6 p-0"
+                              disabled={index === selectedDrills.length - 1}
+                              onClick={() => moveDrill(drill.id, 'down')}
+                              size="sm"
                               type="button"
                               variant="outline"
-                              size="sm"
-                              onClick={() => moveDrill(drill.id, 'down')}
-                              disabled={index === selectedDrills.length - 1}
-                              className="h-6 w-6 p-0"
                             >
                               <ChevronDown className="h-3 w-3" />
                             </Button>
@@ -642,7 +642,7 @@ function CreateTemplatePage() {
                           <div className="flex-1">
                             <div className="mb-1 flex items-center gap-2">
                               <span className="font-medium">{drill.name}</span>
-                              <Badge variant="outline" className="text-xs">
+                              <Badge className="text-xs" variant="outline">
                                 {drill.category}
                               </Badge>
                             </div>
@@ -653,11 +653,11 @@ function CreateTemplatePage() {
                           </div>
 
                           <Button
+                            className="text-destructive hover:text-destructive"
+                            onClick={() => removeDrill(drill.id)}
+                            size="sm"
                             type="button"
                             variant="outline"
-                            size="sm"
-                            onClick={() => removeDrill(drill.id)}
-                            className="text-destructive hover:text-destructive"
                           >
                             <X className="h-4 w-4" />
                           </Button>
@@ -668,10 +668,10 @@ function CreateTemplatePage() {
 
                   <div className="border-t pt-4">
                     <Button
+                      className="w-full"
+                      onClick={() => setShowDrillSelector(!showDrillSelector)}
                       type="button"
                       variant="outline"
-                      onClick={() => setShowDrillSelector(!showDrillSelector)}
-                      className="w-full"
                     >
                       <Plus className="mr-2 h-4 w-4" />
                       {showDrillSelector ? 'Hide' : 'Add'} Drill Selector
@@ -683,18 +683,18 @@ function CreateTemplatePage() {
                           <div className="relative flex-1">
                             <Search className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
                             <Input
+                              className="pl-10"
+                              onChange={(e) => setSearchQuery(e.target.value)}
                               placeholder="Search drills..."
                               value={searchQuery}
-                              onChange={(e) => setSearchQuery(e.target.value)}
-                              className="pl-10"
                             />
                           </div>
                           <select
-                            value={selectedDrillCategory}
+                            className="w-48 rounded-md border border-input bg-background px-3 py-2 text-sm"
                             onChange={(e) =>
                               setSelectedDrillCategory(e.target.value)
                             }
-                            className="w-48 rounded-md border border-input bg-background px-3 py-2 text-sm"
+                            value={selectedDrillCategory}
                           >
                             {drillCategories.map((category) => (
                               <option key={category} value={category}>
@@ -707,15 +707,15 @@ function CreateTemplatePage() {
                         <div className="grid max-h-64 gap-3 overflow-y-auto">
                           {filteredDrills.map((drill) => (
                             <div
-                              key={drill.id}
                               className="flex items-center gap-3 rounded-lg border p-3 hover:bg-muted/50"
+                              key={drill.id}
                             >
                               <div className="flex-1">
                                 <div className="mb-1 flex items-center gap-2">
                                   <span className="font-medium">
                                     {drill.name}
                                   </span>
-                                  <Badge variant="outline" className="text-xs">
+                                  <Badge className="text-xs" variant="outline">
                                     {drill.category}
                                   </Badge>
                                   <Badge
@@ -742,9 +742,9 @@ function CreateTemplatePage() {
                                 </div>
                               </div>
                               <Button
-                                type="button"
-                                size="sm"
                                 onClick={() => addDrill(drill)}
+                                size="sm"
+                                type="button"
                               >
                                 <Plus className="h-4 w-4" />
                               </Button>
@@ -849,9 +849,9 @@ function CreateTemplatePage() {
                     <div className="flex flex-wrap gap-1">
                       {form.watch('focus').map((focus) => (
                         <Badge
+                          className="text-xs"
                           key={focus}
                           variant="secondary"
-                          className="text-xs"
                         >
                           {focus}
                         </Badge>
@@ -873,9 +873,9 @@ function CreateTemplatePage() {
                   </div>
                 )}
                 <Button
-                  type="submit"
-                  disabled={form.formState.isSubmitting}
                   className="w-full"
+                  disabled={form.formState.isSubmitting}
+                  type="submit"
                 >
                   <Check className="mr-2 h-4 w-4" />
                   {form.formState.isSubmitting
@@ -883,14 +883,14 @@ function CreateTemplatePage() {
                     : 'Create Template'}
                 </Button>
                 <Button
+                  asChild
+                  className="w-full"
                   type="button"
                   variant="outline"
-                  className="w-full"
-                  asChild
                 >
                   <Link
-                    to="/$organizationSlug/practice/templates"
                     params={{ organizationSlug }}
+                    to="/$organizationSlug/practice/templates"
                   >
                     Cancel
                   </Link>

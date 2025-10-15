@@ -45,6 +45,7 @@ export function createEditablePlayerColumns({
       id: 'select',
       header: ({ table }) => (
         <Checkbox
+          aria-label="Select all"
           checked={
             table.getIsAllPageRowsSelected()
               ? true
@@ -52,17 +53,16 @@ export function createEditablePlayerColumns({
                 ? 'indeterminate'
                 : false
           }
-          onCheckedChange={() => table.toggleAllPageRowsSelected()}
           className="translate-y-0.5"
-          aria-label="Select all"
+          onCheckedChange={() => table.toggleAllPageRowsSelected()}
         />
       ),
       cell: ({ row }) => (
         <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={() => row.toggleSelected()}
-          className="translate-y-0.5"
           aria-label="Select row"
+          checked={row.getIsSelected()}
+          className="translate-y-0.5"
+          onCheckedChange={() => row.toggleSelected()}
         />
       ),
       enableSorting: false,
@@ -87,9 +87,6 @@ export function createEditablePlayerColumns({
         return (
           <ControlledInput
             key={`jersey-${player.publicId}`}
-            variant="data"
-            type="number"
-            value={player.jerseyNumber ?? ''}
             onUpdate={(newValue) => {
               const numValue = newValue ? Number(newValue) : null;
 
@@ -105,6 +102,9 @@ export function createEditablePlayerColumns({
               handleUpdate(player.publicId, { jerseyNumber: numValue });
             }}
             placeholder="#"
+            type="number"
+            value={player.jerseyNumber ?? ''}
+            variant="data"
           />
         );
       },
@@ -130,9 +130,10 @@ export function createEditablePlayerColumns({
 
         return (
           <PlayerReplaceCombobox
-            organizationId={organizationId}
-            value={player.name ?? ''}
             excludePlayerIds={excludePlayerIds ?? []}
+            onRename={(newName) => {
+              handleUpdate(player.publicId, { name: newName });
+            }}
             onSelect={(selectedPlayer) => {
               linkPlayer.mutate({
                 currentPlayerId: player.publicId,
@@ -148,9 +149,8 @@ export function createEditablePlayerColumns({
                 position: player.position ?? null,
               });
             }}
-            onRename={(newName) => {
-              handleUpdate(player.publicId, { name: newName });
-            }}
+            organizationId={organizationId}
+            value={player.name ?? ''}
           />
         );
       },
@@ -173,10 +173,10 @@ export function createEditablePlayerColumns({
 
         return (
           <Select
-            value={player.position || ''}
             onValueChange={(value) => {
               handleUpdate(player.publicId, { position: value });
             }}
+            value={player.position || ''}
           >
             <SelectTrigger variant="data">
               <SelectValue placeholder="Select position" />
@@ -209,9 +209,6 @@ export function createEditablePlayerColumns({
         return (
           <ControlledInput
             key={`email-${player.publicId}`}
-            variant="data"
-            type="email"
-            value={player.email || ''}
             onUpdate={(newValue) => {
               const emailValue = newValue || null;
 
@@ -227,6 +224,9 @@ export function createEditablePlayerColumns({
               handleUpdate(player.publicId, { email: emailValue });
             }}
             placeholder="email@example.com"
+            type="email"
+            value={player.email || ''}
+            variant="data"
           />
         );
       },
@@ -247,31 +247,31 @@ export function createEditablePlayerColumns({
 
         return (
           <RowActionsProvider
-            row={row}
             actions={{
               onDelete: () =>
                 mutations.delete.mutate({ playerId: player.publicId }),
               onRemove: () =>
                 mutations.remove.mutate({ teamId, playerId: player.publicId }),
             }}
+            row={row}
           >
             <RowActionsDropdown>
               <Link
-                to="/$organizationSlug/$teamId/players/$playerId"
                 params={{ organizationSlug, teamId, playerId: player.publicId }}
+                to="/$organizationSlug/$teamId/players/$playerId"
               >
                 <RowActionItem icon={User2}>View</RowActionItem>
               </Link>
               <RowActionSeparator />
               <RowActionRemoveItem
-                alertTitle="Remove Player from Team"
                 alertDescription="Are you sure you want to remove this player from the team?"
+                alertTitle="Remove Player from Team"
               >
                 Remove From Team
               </RowActionRemoveItem>
               <RowActionDeleteItem
-                alertTitle="Permanently Delete Player from Organization"
                 alertDescription="Are you sure you want to remove this player from the organization? This action cannot be undone."
+                alertTitle="Permanently Delete Player from Organization"
               >
                 Delete Player
               </RowActionDeleteItem>

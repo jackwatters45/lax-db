@@ -47,13 +47,13 @@ export class EmailService extends Effect.Service<EmailService>()(
             });
 
             yield* Effect.tryPromise(() => sesClient.send(command)).pipe(
-              Effect.mapError((cause) => new EmailError({ cause })),
+              Effect.mapError((cause) => new EmailError({ cause }))
             );
           }),
         sendFeedbackNotification: (input: SendFeedbackEmailInput) =>
           Effect.gen(function* () {
             const validated = yield* Schema.decode(SendFeedbackEmailInput)(
-              input,
+              input
             );
 
             const ratingEmoji =
@@ -122,7 +122,7 @@ export class EmailService extends Effect.Service<EmailService>()(
               process.env.SUPPORT_EMAIL || 'support@laxdb.io';
 
             const command = new SendEmailCommand({
-              FromEmailAddress: FromEmailAddress,
+              FromEmailAddress,
               Destination: {
                 ToAddresses: [toEmailAddress],
               },
@@ -147,10 +147,10 @@ export class EmailService extends Effect.Service<EmailService>()(
             });
 
             yield* Effect.tryPromise(() => sesClient.send(command)).pipe(
-              Effect.mapError((cause) => new EmailError({ cause })),
+              Effect.mapError((cause) => new EmailError({ cause }))
             );
           }),
       } as const;
     }),
-  },
+  }
 ) {}

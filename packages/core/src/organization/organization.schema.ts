@@ -7,7 +7,7 @@ import type {
 import { Schema } from 'effect';
 
 export class CreateOrganizationInput extends Schema.Class<CreateOrganizationInput>(
-  'CreateOrganizationInput',
+  'CreateOrganizationInput'
 )({
   name: Schema.String.pipe(
     Schema.minLength(1, { message: () => 'Club name is required' }),
@@ -16,7 +16,7 @@ export class CreateOrganizationInput extends Schema.Class<CreateOrganizationInpu
     }),
     Schema.maxLength(100, {
       message: () => 'Club name must be less than 100 characters',
-    }),
+    })
   ),
   slug: Schema.String.pipe(
     Schema.minLength(1, { message: () => 'Club slug is required' }),
@@ -29,12 +29,12 @@ export class CreateOrganizationInput extends Schema.Class<CreateOrganizationInpu
     Schema.filter((slug) => /^[a-z0-9-]+$/.test(slug), {
       message: () =>
         'Club slug can only contain lowercase letters, numbers, and hyphens',
-    }),
+    })
   ),
 }) {}
 
 export class AcceptInvitationInput extends Schema.Class<AcceptInvitationInput>(
-  'AcceptInvitationInput',
+  'AcceptInvitationInput'
 )({
   invitationId: Schema.String,
 }) {}

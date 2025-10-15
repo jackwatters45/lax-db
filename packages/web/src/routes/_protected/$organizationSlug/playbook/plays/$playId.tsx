@@ -178,28 +178,18 @@ const mockPlayData = {
 // Server function for getting play details
 const getPlayDetails = createServerFn({ method: 'GET' })
   .inputValidator((data: { playId: string }) => data)
-  .handler(async ({ data }) => {
-    // TODO: Replace with actual API call
-    // const { PlaybookAPI } = await import('@lax-db/core/playbook/index');
-    // const request = getRequest();
-    // return await PlaybookAPI.getPlayDetails(teamId, data.playId, request.headers);
-
-    console.log('Getting play details for:', data.playId);
-    return mockPlayData;
-  });
+  .handler(async ({ data }) => mockPlayData);
 
 // Server function for permissions
-const getPlayPermissions = createServerFn().handler(async () => {
-  return {
-    canEditPlay: true,
-    canDeletePlay: true,
-    canAssignPlay: true,
-    canViewStats: true,
-  };
-});
+const getPlayPermissions = createServerFn().handler(async () => ({
+  canEditPlay: true,
+  canDeletePlay: true,
+  canAssignPlay: true,
+  canViewStats: true,
+}));
 
 export const Route = createFileRoute(
-  '/_protected/$organizationSlug/playbook/plays/$playId',
+  '/_protected/$organizationSlug/playbook/plays/$playId'
 )({
   component: PlayDetails,
   loader: async ({ params }) => {
@@ -217,13 +207,12 @@ function PlayDetails() {
   const { data, permissions } = Route.useLoaderData();
   const { play, stats, assignments } = data;
 
-  const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat('en-US', {
+  const formatDate = (date: Date) =>
+    new Intl.DateTimeFormat('en-US', {
       month: 'short',
       day: 'numeric',
       year: 'numeric',
     }).format(date);
-  };
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
@@ -273,9 +262,8 @@ function PlayDetails() {
       {/* Header */}
       <div className="mb-8 flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Button variant="outline" size="sm" asChild>
+          <Button asChild size="sm" variant="outline">
             <Link
-              to="/$organizationSlug/playbook/plays"
               params={{ organizationSlug }}
               search={{
                 search: '',
@@ -283,6 +271,7 @@ function PlayDetails() {
                 difficulty: 'All',
                 favorites: false,
               }}
+              to="/$organizationSlug/playbook/plays"
             >
               <ArrowLeft className="h-4 w-4" />
             </Link>
@@ -312,17 +301,17 @@ function PlayDetails() {
 
         <div className="flex gap-2">
           {permissions.canEditPlay && (
-            <Button variant="outline" asChild>
+            <Button asChild variant="outline">
               <Link
-                to="/$organizationSlug/playbook/plays/$playId/edit"
                 params={{ organizationSlug, playId: play.id }}
+                to="/$organizationSlug/playbook/plays/$playId/edit"
               >
                 <Edit className="mr-2 h-4 w-4" />
                 Edit
               </Link>
             </Button>
           )}
-          <Button variant="ghost" size="icon" disabled>
+          <Button disabled size="icon" variant="ghost">
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </div>
@@ -397,7 +386,7 @@ function PlayDetails() {
             <CardContent>
               <div className="space-y-6">
                 {play.steps.map((step, index) => (
-                  <div key={step.id} className="relative">
+                  <div className="relative" key={step.id}>
                     {index < play.steps.length - 1 && (
                       <div className="absolute top-12 left-6 h-full w-px bg-border" />
                     )}
@@ -466,8 +455,8 @@ function PlayDetails() {
                     <div className="space-y-2">
                       {stats.lastFiveGames.map((game) => (
                         <div
-                          key={`${game.gameDate}-${game.opponent}`}
                           className="flex items-center justify-between rounded border p-3"
+                          key={`${game.gameDate}-${game.opponent}`}
                         >
                           <div className="flex items-center gap-3">
                             <div
@@ -505,8 +494,8 @@ function PlayDetails() {
                     <div className="space-y-2">
                       {stats.practiceData.map((session) => (
                         <div
-                          key={session.date.getTime()}
                           className="flex items-center justify-between rounded border p-3"
+                          key={session.date.getTime()}
                         >
                           <div>
                             <div className="font-medium text-sm">
@@ -522,7 +511,7 @@ function PlayDetails() {
                             </div>
                             <div className="text-muted-foreground text-xs">
                               {Math.round(
-                                (session.successfulReps / session.reps) * 100,
+                                (session.successfulReps / session.reps) * 100
                               )}
                               % success
                             </div>
@@ -613,7 +602,7 @@ function PlayDetails() {
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle>Player Assignments</CardTitle>
-                  <Button size="sm" variant="outline" disabled>
+                  <Button disabled size="sm" variant="outline">
                     <Users className="mr-2 h-4 w-4" />
                     Manage
                   </Button>
@@ -623,8 +612,8 @@ function PlayDetails() {
                 <div className="space-y-3">
                   {assignments.map((assignment) => (
                     <div
-                      key={assignment.playerId}
                       className="rounded border p-3"
+                      key={assignment.playerId}
                     >
                       <div className="flex items-center justify-between">
                         <div>
@@ -664,13 +653,13 @@ function PlayDetails() {
             <CardContent className="space-y-3">
               {permissions.canEditPlay && (
                 <Button
-                  variant="outline"
-                  className="w-full justify-start"
                   asChild
+                  className="w-full justify-start"
+                  variant="outline"
                 >
                   <Link
-                    to="/$organizationSlug/playbook/plays/$playId/edit"
                     params={{ organizationSlug, playId: play.id }}
+                    to="/$organizationSlug/playbook/plays/$playId/edit"
                   >
                     <Edit className="mr-2 h-4 w-4" />
                     Edit Play
@@ -679,27 +668,27 @@ function PlayDetails() {
               )}
 
               <Button
-                variant="outline"
                 className="w-full justify-start"
                 disabled
+                variant="outline"
               >
                 <Calendar className="mr-2 h-4 w-4" />
                 Schedule Practice
               </Button>
 
               <Button
-                variant="outline"
                 className="w-full justify-start"
                 disabled
+                variant="outline"
               >
                 <TrendingUp className="mr-2 h-4 w-4" />
                 View Analytics
               </Button>
 
               <Button
-                variant="outline"
                 className="w-full justify-start"
                 disabled
+                variant="outline"
               >
                 <Star className="mr-2 h-4 w-4" />
                 {play.isFavorite ? 'Remove from Favorites' : 'Add to Favorites'}

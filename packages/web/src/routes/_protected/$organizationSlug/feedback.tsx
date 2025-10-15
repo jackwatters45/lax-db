@@ -38,7 +38,7 @@ const FeedbackSchema = Schema.Struct({
   feedback: Schema.String.pipe(
     Schema.minLength(10, {
       message: () => 'Feedback must be at least 10 characters long',
-    }),
+    })
   ),
 });
 
@@ -48,7 +48,7 @@ type FeedbackFormValues = typeof FeedbackSchema.Type;
 const submitFeedback = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
   .inputValidator((data: FeedbackFormValues) =>
-    Schema.decodeSync(FeedbackSchema)(data),
+    Schema.decodeSync(FeedbackSchema)(data)
   )
   .handler(async ({ data, context: { session } }) =>
     RuntimeServer.runPromise(
@@ -62,8 +62,8 @@ const submitFeedback = createServerFn({ method: 'POST' })
         };
 
         return yield* feedbackService.create(feedbackData);
-      }),
-    ),
+      })
+    )
   );
 
 export const Route = createFileRoute('/_protected/$organizationSlug/feedback')({
@@ -80,10 +80,9 @@ function FeedbackPage() {
       // TODO: eventually just go back to previous page
       router.navigate({ href: '/teams' });
     },
-    onError: (error) => {
-      console.error('Feedback submission error:', error);
+    onError: (_error) => {
       toast.error(
-        'There was an error submitting your feedback. Please try again.',
+        'There was an error submitting your feedback. Please try again.'
       );
     },
   });
@@ -114,8 +113,8 @@ function FeedbackPage() {
             <CardContent>
               <Form {...form}>
                 <form
-                  onSubmit={form.handleSubmit(onSubmit)}
                   className="space-y-6"
+                  onSubmit={form.handleSubmit(onSubmit)}
                 >
                   <FormField
                     control={form.control}
@@ -124,8 +123,8 @@ function FeedbackPage() {
                       <FormItem>
                         <FormLabel>Topic</FormLabel>
                         <Select
-                          onValueChange={field.onChange}
                           defaultValue={field.value}
+                          onValueChange={field.onChange}
                         >
                           <FormControl>
                             <SelectTrigger>
@@ -164,9 +163,9 @@ function FeedbackPage() {
                         <FormLabel>Rating</FormLabel>
                         <FormControl>
                           <RadioGroup
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
                             className="flex flex-col"
+                            defaultValue={field.value}
+                            onValueChange={field.onChange}
                           >
                             <FormItem className="flex items-center gap-3">
                               <FormControl>
@@ -208,8 +207,8 @@ function FeedbackPage() {
                         <FormLabel>Your Feedback</FormLabel>
                         <FormControl>
                           <Textarea
-                            placeholder="Tell us about your experience, suggestions, or any issues you've encountered..."
                             className="resize-none"
+                            placeholder="Tell us about your experience, suggestions, or any issues you've encountered..."
                             rows={6}
                             {...field}
                           />
@@ -220,9 +219,9 @@ function FeedbackPage() {
                   />
 
                   <Button
-                    type="submit"
-                    disabled={submitFeedbackMutation.isPending}
                     className="w-full"
+                    disabled={submitFeedbackMutation.isPending}
+                    type="submit"
                   >
                     {submitFeedbackMutation.isPending
                       ? 'Submitting...'
@@ -244,8 +243,8 @@ function Header() {
   return (
     <DashboardHeader>
       <BreadcrumbItem>
-        <BreadcrumbLink title="Feedback" asChild>
-          <Link to="/$organizationSlug/feedback" params={{ organizationSlug }}>
+        <BreadcrumbLink asChild title="Feedback">
+          <Link params={{ organizationSlug }} to="/$organizationSlug/feedback">
             Feedback
           </Link>
         </BreadcrumbLink>

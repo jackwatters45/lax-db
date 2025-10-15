@@ -7,6 +7,7 @@ import { Effect, Schema } from 'effect';
 import { AlertTriangle, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -40,7 +41,7 @@ const deleteOrganization = createServerFn({ method: 'POST' })
         try {
           // Get user's organizations before deleting
           const organizationsResult = yield* Effect.tryPromise(() =>
-            auth.auth.api.listOrganizations({ headers }),
+            auth.auth.api.listOrganizations({ headers })
           );
 
           // Check if this is the last organization
@@ -57,12 +58,12 @@ const deleteOrganization = createServerFn({ method: 'POST' })
             auth.auth.api.deleteOrganization({
               body: { organizationId: data.organizationId },
               headers,
-            }),
+            })
           );
 
           // Find remaining organizations (excluding the one we just deleted)
           const remainingOrgs = organizationsResult.filter(
-            (org) => org.id !== data.organizationId,
+            (org) => org.id !== data.organizationId
           );
 
           // Set the first remaining organization as active
@@ -71,13 +72,12 @@ const deleteOrganization = createServerFn({ method: 'POST' })
               auth.auth.api.setActiveOrganization({
                 body: { organizationId: remainingOrgs[0]?.id },
                 headers,
-              }),
+              })
             );
           }
 
           return { success: true, redirectPath: '/teams' };
         } catch (error) {
-          console.error('Error deleting organization:', error);
           return {
             success: false,
             error:
@@ -86,8 +86,8 @@ const deleteOrganization = createServerFn({ method: 'POST' })
                 : 'Failed to delete organization',
           };
         }
-      }),
-    ),
+      })
+    )
   );
 
 // Server function to get dashboard data including organization count
@@ -101,10 +101,10 @@ const getDashboardData = createServerFn()
         try {
           const [organization, organizations] = yield* Effect.all([
             Effect.tryPromise(() =>
-              auth.auth.api.getFullOrganization({ headers: context.headers }),
+              auth.auth.api.getFullOrganization({ headers: context.headers })
             ),
             Effect.tryPromise(() =>
-              auth.auth.api.listOrganizations({ headers: context.headers }),
+              auth.auth.api.listOrganizations({ headers: context.headers })
             ),
           ]);
 
@@ -113,25 +113,22 @@ const getDashboardData = createServerFn()
             canDeleteOrganization: organizations.length > 1,
             organizationCount: organizations.length,
           };
-        } catch (error) {
-          console.error('Error getting dashboard data:', error);
+        } catch (_error) {
           return {
             organization: null,
             canDeleteOrganization: false,
             organizationCount: 0,
           };
         }
-      }),
-    ),
+      })
+    )
   );
 
 export const Route = createFileRoute(
-  '/_protected/$organizationSlug/settings/settings-old',
+  '/_protected/$organizationSlug/settings/settings-old'
 )({
   component: SettingsPage,
-  loader: async () => {
-    return await getDashboardData();
-  },
+  loader: async () => await getDashboardData(),
 });
 
 // Form schema for confirmation
@@ -139,7 +136,7 @@ const confirmDeleteSchema = Schema.Struct({
   confirmText: Schema.String.pipe(
     Schema.minLength(1, {
       message: () => 'Please enter the organization name',
-    }),
+    })
   ),
 });
 
@@ -167,11 +164,10 @@ function SettingsPage() {
         // Redirect based on server response
         window.location.href = result.redirectPath || '/';
       } else {
-        alert(result.error || 'Failed to delete organization');
+        toast.error(result.error || 'Failed to delete organization');
       }
-    } catch (error) {
-      console.error('Error deleting organization:', error);
-      alert('Failed to delete organization. Please try again.');
+    } catch (_error) {
+      toast.error('Failed to delete organization. Please try again.');
     } finally {
       setIsDeleting(false);
       setShowConfirmDialog(false);
@@ -268,10 +264,10 @@ function SettingsPage() {
                 </div>
               )}
               <Button
-                variant="destructive"
-                onClick={() => setShowConfirmDialog(true)}
-                disabled={!canDeleteOrganization}
                 className="gap-2"
+                disabled={!canDeleteOrganization}
+                onClick={() => setShowConfirmDialog(true)}
+                variant="destructive"
               >
                 <Trash2 className="h-4 w-4" />
                 Delete Organization
@@ -285,10 +281,10 @@ function SettingsPage() {
       {/* Confirmation Dialog */}
       {showConfirmDialog && organization && canDeleteOrganization && (
         <ConfirmDeleteDialog
-          organization={organization}
           isDeleting={isDeleting}
           onCancel={() => setShowConfirmDialog(false)}
           onConfirm={handleDeleteOrganization}
+          organization={organization}
         />
       )}
     </div>
@@ -311,8 +307,8 @@ function ConfirmDeleteDialog({
       confirmDeleteSchema.pipe(
         Schema.filter((data) => data.confirmText === organization.name, {
           message: () => `Please type "${organization.name}" exactly`,
-        }),
-      ),
+        })
+      )
     ),
     defaultValues: {
       confirmText: '',
@@ -350,8 +346,8 @@ function ConfirmDeleteDialog({
 
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(handleSubmit)}
             className="space-y-6"
+            onSubmit={form.handleSubmit(handleSubmit)}
           >
             <FormField
               control={form.control}
@@ -364,9 +360,9 @@ function ConfirmDeleteDialog({
                   <FormControl>
                     <Input
                       {...field}
-                      placeholder={organization.name}
-                      disabled={isDeleting}
                       autoComplete="off"
+                      disabled={isDeleting}
+                      placeholder={organization.name}
                     />
                   </FormControl>
                   <FormMessage />
@@ -376,19 +372,19 @@ function ConfirmDeleteDialog({
 
             <div className="flex gap-3">
               <Button
-                type="button"
-                variant="outline"
-                onClick={handleCancel}
                 className="flex-1"
                 disabled={isDeleting}
+                onClick={handleCancel}
+                type="button"
+                variant="outline"
               >
                 Cancel
               </Button>
               <Button
+                className="flex-1"
+                disabled={isDeleting || !form.formState.isValid}
                 type="submit"
                 variant="destructive"
-                disabled={isDeleting || !form.formState.isValid}
-                className="flex-1"
               >
                 {isDeleting ? 'Deleting...' : 'Delete Organization'}
               </Button>

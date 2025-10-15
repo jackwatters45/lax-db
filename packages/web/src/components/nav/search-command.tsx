@@ -284,11 +284,11 @@ export function SearchCommand() {
     <>
       <Button
         className="h-8 w-full cursor-text justify-between pr-1 pl-2 font-normal text-foreground focus:border-ring focus:ring-0 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-2"
-        variant="outline"
         onClick={(e) => {
           e.preventDefault();
           setOpen(true);
         }}
+        variant="outline"
       >
         <div className="flex items-center gap-2 text-sm">
           <Search className="size-3 transform text-muted-foreground" />
@@ -299,7 +299,7 @@ export function SearchCommand() {
         </kbd>
       </Button>
 
-      <CommandDialog open={open} onOpenChange={setOpen}>
+      <CommandDialog onOpenChange={setOpen} open={open}>
         <CommandInput placeholder="Type a command or search..." />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
@@ -332,8 +332,8 @@ export function SearchCommand() {
               })}
               <CommandItem asChild onSelect={() => setOpen(false)}>
                 <Link
-                  to="/$organizationSlug/organization/create"
                   params={{ organizationSlug: activeOrganization.slug }}
+                  to="/$organizationSlug/organization/create"
                 >
                   <Plus className="mr-2 h-4 w-4" />
                   <span>Create Organization</span>
@@ -341,8 +341,8 @@ export function SearchCommand() {
               </CommandItem>
               <CommandItem asChild onSelect={() => setOpen(false)}>
                 <Link
-                  to="/$organizationSlug/organization/join"
                   params={{ organizationSlug: activeOrganization.slug }}
+                  to="/$organizationSlug/organization/join"
                 >
                   <Plus className="mr-2 h-4 w-4" />
                   <span>Join Organization</span>
@@ -356,8 +356,8 @@ export function SearchCommand() {
           <CommandGroup heading="Navigation">
             {navigationItems.map((item) => (
               <CommandItem
-                key={item.href}
                 asChild
+                key={item.href}
                 onSelect={() => setOpen(false)}
               >
                 <Link to={item.href}>
@@ -377,8 +377,8 @@ export function SearchCommand() {
               <CommandGroup heading="General">
                 {generalItems.map((item) => (
                   <CommandItem
-                    key={item.href}
                     asChild
+                    key={item.href}
                     onSelect={() => setOpen(false)}
                   >
                     <Link to={item.href}>
@@ -400,8 +400,8 @@ export function SearchCommand() {
               <CommandGroup heading="Settings">
                 {settingsItems.map((item) => (
                   <CommandItem
-                    key={item.href}
                     asChild
+                    key={item.href}
                     onSelect={() => setOpen(false)}
                   >
                     <Link to={item.href}>

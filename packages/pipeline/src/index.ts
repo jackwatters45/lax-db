@@ -11,13 +11,13 @@ const program = Effect.gen(function* () {
   const result = yield* scraper.scrapePlayerStats(
     '0-1064-0-646412-0',
     '1001',
-    '0',
+    '0'
   );
 
   yield* Console.log(`Successfully scraped ${result.players.length} players`);
   yield* Console.log(
     'Sample data:',
-    JSON.stringify(result.players.slice(0, 3), null, 2),
+    JSON.stringify(result.players.slice(0, 3), null, 2)
   );
 
   return result;
@@ -27,16 +27,16 @@ const MainLayer = ScraperServiceLive.pipe(
   Layer.provide(
     Layer.mergeAll(
       FetchHttpClient.layer,
-      layerFileSystem('./.kv-store').pipe(Layer.provide(NodeContext.layer)),
-    ),
-  ),
+      layerFileSystem('./.kv-store').pipe(Layer.provide(NodeContext.layer))
+    )
+  )
 );
 
 NodeRuntime.runMain(
   program.pipe(
     Effect.provide(MainLayer),
-    Logger.withMinimumLogLevel(LogLevel.Info),
-  ),
+    Logger.withMinimumLogLevel(LogLevel.Info)
+  )
 );
 
 // https://websites.mygameday.app/comp_info.cgi?c=0-1064-0-646412-0&pool=1001&round=0&a=FIXTURE

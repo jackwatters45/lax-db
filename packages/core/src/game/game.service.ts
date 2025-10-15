@@ -1,7 +1,7 @@
 import { PgDrizzle } from '@effect/sql-drizzle/Pg';
 import { and, eq, getTableColumns, isNull } from 'drizzle-orm';
 import { Array as Arr, Effect } from 'effect';
-import { DatabaseLive } from '../drizzle';
+import { DatabaseLive } from '../drizzle/drizzle.service';
 import { decodeArguments } from '../util';
 import { ErrorInvalidGame } from './game.error';
 import {
@@ -30,7 +30,7 @@ export class GameService extends Effect.Service<GameService>()('GameService', {
             .where(isNull(gameTable.deletedAt))
             .pipe(
               Effect.tapError(Effect.logError),
-              Effect.mapError((cause) => new ErrorInvalidGame({ cause })),
+              Effect.mapError((cause) => new ErrorInvalidGame({ cause }))
               // TODO: better error
               // TODO: add cron job to delete deleted players etc after a certain time
             );
@@ -46,13 +46,13 @@ export class GameService extends Effect.Service<GameService>()('GameService', {
             .where(
               and(
                 eq(gameTable.publicId, decoded.publicId),
-                isNull(gameTable.deletedAt),
-              ),
+                isNull(gameTable.deletedAt)
+              )
             )
             .pipe(
               Effect.flatMap(Arr.head),
               Effect.tapError(Effect.logError),
-              Effect.mapError((cause) => new ErrorInvalidGame({ cause })),
+              Effect.mapError((cause) => new ErrorInvalidGame({ cause }))
             );
 
           return game;
@@ -81,12 +81,12 @@ export class GameService extends Effect.Service<GameService>()('GameService', {
                 eq(gameTable.organizationId, decoded.organizationId),
                 // TODO: add nullish team id to this...
                 // ...{ decoded.teamId && { ...eq(gameTable.teamId, decoded.teamId) } },
-                isNull(gameTable.deletedAt),
-              ),
+                isNull(gameTable.deletedAt)
+              )
             )
             .pipe(
               Effect.tapError(Effect.logError),
-              Effect.mapError((cause) => new ErrorInvalidGame({ cause })),
+              Effect.mapError((cause) => new ErrorInvalidGame({ cause }))
             );
         }),
 
@@ -102,12 +102,12 @@ export class GameService extends Effect.Service<GameService>()('GameService', {
                 eq(gameTable.organizationId, decoded.organizationId),
                 // TODO: add nullish team id to this...
                 // ...{ decoded.teamId && { ...eq(gameTable.teamId, decoded.teamId) } },
-                isNull(gameTable.deletedAt),
-              ),
+                isNull(gameTable.deletedAt)
+              )
             )
             .pipe(
               Effect.tapError(Effect.logError),
-              Effect.mapError((cause) => new ErrorInvalidGame({ cause })),
+              Effect.mapError((cause) => new ErrorInvalidGame({ cause }))
             );
         }),
     } as const;
