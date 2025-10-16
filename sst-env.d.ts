@@ -51,6 +51,10 @@ declare module "sst" {
       "type": "sst.sst.Secret"
       "value": string
     }
+    "Marketing": {
+      "type": "sst.aws.Nextjs"
+      "url": string
+    }
     "PlanetScaleHost": {
       "type": "sst.sst.Secret"
       "value": string

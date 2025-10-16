@@ -2,6 +2,9 @@
 
 - health check
 - season rpc + http
+- fix casing + biome issues for marketing
+- add rest to rpc + api
+
 - how to handle teamId + org in core repo
 - update rest of core to use new patterns and add rpc + api
 

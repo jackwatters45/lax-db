@@ -25,6 +25,7 @@ export default $config({
       database: infra.database.getSSTLink(),
       redisClusterId: infra.redis.clusterId,
       api: infra.api.url,
+      marketing: infra.marketing.url,
       web: infra.web.url,
       storage: infra.bucket.name,
       email: infra.email.sender,
