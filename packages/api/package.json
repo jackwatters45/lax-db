@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "bun run --watch ./src/index.ts",
     "build": "bun build --target bun index.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "check": "npx ultracite@latest check",
+    "fix": "npx ultracite@latest fix --unsafe"
   },
   "devDependencies": {},
   "dependencies": {

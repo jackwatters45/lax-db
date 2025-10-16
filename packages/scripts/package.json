@@ -5,7 +5,9 @@
   "scripts": {
     "shell": "sst shell",
     "script": "sst shell -- bun",
-    "typecheck": "sst shell -- tsc --noEmit"
+    "typecheck": "sst shell -- tsc --noEmit",
+    "check": "npx ultracite@latest check",
+    "fix": "npx ultracite@latest fix --unsafe"
   },
   "devDependencies": {
     "@vitest/ui": "^3.2.4"

@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "check": "npx ultracite@latest check",
+    "fix": "npx ultracite@latest fix --unsafe"
   },
   "dependencies": {
     "@lax-db/core": "*",
