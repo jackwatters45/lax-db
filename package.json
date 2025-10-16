@@ -10,7 +10,7 @@
     "deploy": "sst deploy",
     "typecheck": "turbo typecheck",
     "check": "npx ultracite@latest check",
-    "fix": "npx ultracite@latest fix",
+    "fix": "npx ultracite@latest fix --unsafe",
     "sso": "aws sso login --sso-session=laxdb"
   },
   "devDependencies": {

@@ -6,9 +6,11 @@
     "./*": "./src/*.ts"
   },
   "scripts": {
-    "typecheck": "tsc --noEmit",
     "db": "sst shell drizzle-kit",
-    "better-auth:gen": "sst shell npx @better-auth/cli@latest generate"
+    "better-auth:gen": "sst shell npx @better-auth/cli@latest generate",
+    "typecheck": "sst shell -- tsc --noEmit",
+    "check": "npx ultracite@latest check",
+    "fix": "npx ultracite@latest fix --unsafe"
   },
   "dependencies": {
     "@aws-sdk/client-sesv2": "^3.908.0",
