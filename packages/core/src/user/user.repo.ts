@@ -1,5 +1,5 @@
 import { PgDrizzle } from '@effect/sql-drizzle/Pg';
-import { eq, getTableColumns } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import { Array as Arr, Effect } from 'effect';
 import { DatabaseLive } from '../drizzle/drizzle.service';
 import type { GetUserFromEmailInput } from './user.schema';
@@ -8,8 +8,6 @@ import { type UserSelect, userTable } from './user.sql';
 export class UserRepo extends Effect.Service<UserRepo>()('UserRepo', {
   effect: Effect.gen(function* () {
     const db = yield* PgDrizzle;
-
-    const { id: _, ...rest } = getTableColumns(userTable);
 
     return {
       get: (input: GetUserFromEmailInput) =>

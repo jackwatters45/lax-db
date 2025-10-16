@@ -1,5 +1,5 @@
 import { PgDrizzle } from '@effect/sql-drizzle/Pg';
-import { betterAuth } from 'better-auth';
+import { betterAuth, type Session, type User } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import {
   admin,
@@ -9,8 +9,9 @@ import {
 } from 'better-auth/plugins';
 import { reactStartCookies } from 'better-auth/react-start';
 import { desc, eq } from 'drizzle-orm';
-import { Array as Arr, Data, Effect, Layer, ManagedRuntime } from 'effect';
+import { Array as Arr, Effect, Layer, ManagedRuntime } from 'effect';
 import { Resource } from 'sst';
+import { OrganizationMembershipError } from './auth/auth.error';
 import * as authSchema from './auth/auth.sql';
 import {
   ac,
@@ -21,6 +22,7 @@ import {
   player,
 } from './auth/permissions';
 import { DatabaseLive } from './drizzle/drizzle.service';
+import { AuthenticationError, DatabaseError } from './error';
 import {
   invitationTable,
   memberTable,
@@ -39,12 +41,12 @@ import { userTable } from './user/user.sql';
 //   // Access tokens obtained in Production are for instance not usable in the Sandbox environment.
 //   server: 'sandbox',
 // });
+//
+//
 
 const runtime = ManagedRuntime.make(
   Layer.mergeAll(RedisService.Default, DatabaseLive)
 );
-
-export class AuthError extends Data.TaggedError('AuthError')<{}> {}
 
 export class AuthService extends Effect.Service<AuthService>()('AuthService', {
   effect: Effect.gen(function* () {
@@ -100,7 +102,6 @@ export class AuthService extends Effect.Service<AuthService>()('AuthService', {
           create: {
             before: async (session) => {
               const effect = Effect.gen(function* () {
-                // First, try to get the active organization from session
                 const sessionFromDb = yield* db
                   .select({
                     activeOrganizationId:
@@ -112,14 +113,20 @@ export class AuthService extends Effect.Service<AuthService>()('AuthService', {
                   .pipe(
                     Effect.flatMap(Arr.head),
                     Effect.tapError(Effect.logError),
-                    Effect.mapError(() => new AuthError())
+                    Effect.mapError(
+                      (cause) =>
+                        new DatabaseError({
+                          message:
+                            'Failed to retrieve existing session from database',
+                          cause,
+                        })
+                    )
                   );
 
                 if (sessionFromDb?.activeOrganizationId) {
                   return sessionFromDb?.activeOrganizationId;
                 }
 
-                // No active org found, get user's first organization
                 const membership = yield* db
                   .select({ organizationId: memberTable.organizationId })
                   .from(memberTable)
@@ -129,7 +136,14 @@ export class AuthService extends Effect.Service<AuthService>()('AuthService', {
                   .pipe(
                     Effect.flatMap(Arr.head),
                     Effect.tapError(Effect.logError),
-                    Effect.mapError(() => new AuthError())
+                    Effect.mapError(
+                      (cause) =>
+                        new OrganizationMembershipError({
+                          message:
+                            'Failed to retrieve user organization membership',
+                          cause,
+                        })
+                    )
                   );
 
                 if (!membership) {
@@ -219,7 +233,71 @@ export class AuthService extends Effect.Service<AuthService>()('AuthService', {
     });
 
     return {
-      auth,
+      auth, // export base auth
+      getSession: (headers: Headers) =>
+        Effect.tryPromise(async () => {
+          const session: { session: Session; user: User } | null =
+            await auth.api.getSession({ headers });
+
+          return session;
+        }).pipe(
+          Effect.mapError(
+            (cause) =>
+              new AuthenticationError({
+                cause,
+                message: 'Failed to get session',
+              })
+          )
+        ),
+      getSessionOrThrow: (headers: Headers) =>
+        Effect.tryPromise(async () => {
+          const session: { session: Session; user: User } | null =
+            await auth.api.getSession({ headers });
+
+          return session;
+        }).pipe(
+          Effect.mapError(
+            (cause) =>
+              new AuthenticationError({
+                cause,
+                message: 'Failed to get session',
+              })
+          ),
+          Effect.filterOrFail(
+            (session) => !!session,
+            () =>
+              new AuthenticationError({
+                message: 'Session is not valid',
+              })
+          )
+        ),
+      getActiveOrganization: (headers: Headers) =>
+        Effect.tryPromise(() => auth.api.getFullOrganization({ headers })).pipe(
+          Effect.mapError(
+            (cause) =>
+              new OrganizationMembershipError({
+                message: 'Failed to retrieve active organization from session',
+                cause,
+              })
+          )
+        ),
+      getActiveOrganizationOrThrow: (headers: Headers) =>
+        Effect.tryPromise(() => auth.api.getFullOrganization({ headers })).pipe(
+          Effect.mapError(
+            (cause) =>
+              new OrganizationMembershipError({
+                message: 'Failed to retrieve active organization from session',
+                cause,
+              })
+          ),
+          Effect.filterOrFail(
+            (org) => !!org,
+            () =>
+              new OrganizationMembershipError({
+                message: 'No active organization found for the current session',
+              })
+          )
+        ),
     };
   }),
   dependencies: [DatabaseLive, RedisService.Default],

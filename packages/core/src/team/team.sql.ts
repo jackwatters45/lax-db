@@ -8,7 +8,7 @@ export const teamTable = pgTable(
   'team',
   {
     id: text('id').primaryKey(),
-    name: text('name').notNull(),
+    name: text('name').notNull().unique(),
     organizationId: text('organization_id')
       .notNull()
       .references(() => organizationTable.id, { onDelete: 'cascade' }),

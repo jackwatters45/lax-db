@@ -1,12 +1,15 @@
 # TODO
 
-- health check
-- season rpc + http
-- fix casing + biome issues for marketing
+// TODO: error handling
+// TODO: this just needs to be auth repo -> no repo for orgs or team?
 - add rest to rpc + api
 
+
+-- update team + org of core to use new patterns and add rpc + api
+-- wrap auth methods in a service (still include auth but generally want to wrap ones that are used)
+
 - how to handle teamId + org in core repo
-- update rest of core to use new patterns and add rpc + api
+- biome errors
 
 ## Pressing things to eventually do..
 
@@ -16,4 +19,3 @@
 ## Rando
 
 - Remove warns from biome and fix issues
-- Implement strict null checks

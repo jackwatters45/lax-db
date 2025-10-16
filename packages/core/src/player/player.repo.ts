@@ -72,7 +72,7 @@ export class PlayerRepo extends Effect.Service<PlayerRepo>()('PlayerRepo', {
           })
           .where(
             and(
-              eq(playerTable.publicId, input.playerId),
+              eq(playerTable.publicId, input.publicPlayerId),
               isNull(playerTable.deletedAt)
             )
           )

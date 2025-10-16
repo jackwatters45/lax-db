@@ -1,7 +1,9 @@
 import type { Member } from 'better-auth/plugins/organization';
-import { Effect, Schema } from 'effect';
+import { Array as Arr, Effect, Option, Schema } from 'effect';
 import { AuthService } from '../auth';
-import { OrganizationError } from './organization.error';
+import { NotFoundError } from '../error';
+import { OrganizationNotFoundError } from './organization.error';
+import { OrganizationRepo } from './organization.repo';
 import {
   AcceptInvitationInput,
   CreateOrganizationInput,
@@ -13,6 +15,7 @@ export class OrganizationService extends Effect.Service<OrganizationService>()(
   {
     effect: Effect.gen(function* () {
       const auth = yield* AuthService;
+      const repo = yield* OrganizationRepo;
 
       return {
         createOrganization: (
@@ -24,102 +27,37 @@ export class OrganizationService extends Effect.Service<OrganizationService>()(
               input
             );
 
-            yield* Effect.tryPromise(() =>
-              auth.auth.api.checkOrganizationSlug({
-                body: {
-                  slug: validated.slug,
-                },
-              })
-            ).pipe(
-              Effect.tapError(Effect.logError),
-              Effect.mapError(
-                (cause) =>
-                  new OrganizationError({
-                    cause,
-                    message: 'Slug is not available',
-                  })
-              )
-            );
+            yield* repo.checkOrganizationSlug(validated.slug);
 
-            const result = yield* Effect.tryPromise(() =>
-              auth.auth.api.createOrganization({
-                headers,
-                body: {
-                  name: validated.name,
-                  slug: validated.slug,
-                },
-              })
-            ).pipe(
-              Effect.tapError(Effect.logError),
-              Effect.mapError(
-                (cause) =>
-                  new OrganizationError({
-                    cause,
-                    message: 'Failed to create organization',
-                  })
-              )
-            );
+            const org = yield* repo.createOrganization(headers, validated);
 
-            const organizationId = result?.id;
-            if (!organizationId) {
-              yield* Effect.fail(
-                new OrganizationError({
-                  cause: 'No organization ID returned',
-                  message: 'Failed to create organization',
-                })
+            yield* repo.setActiveOrganization(headers, org.id);
+
+            const team = yield* repo
+              .listOrganizationTeams(headers, org.id)
+              .pipe(
+                Effect.flatMap((teams) =>
+                  Option.match(
+                    Arr.findFirst(
+                      teams,
+                      (team) => team.name === validated.name
+                    ),
+                    {
+                      onNone: () =>
+                        Effect.fail(
+                          new NotFoundError({
+                            domain: 'organization',
+                            id: org.id,
+                            message: 'Team not found',
+                          })
+                        ),
+                      onSome: Effect.succeed,
+                    }
+                  )
+                )
               );
-            }
 
-            yield* Effect.tryPromise(() =>
-              auth.auth.api.setActiveOrganization({
-                headers,
-                body: {
-                  organizationId,
-                },
-              })
-            ).pipe(
-              Effect.tapError(Effect.logError),
-
-              Effect.mapError(
-                (cause) =>
-                  new OrganizationError({
-                    cause,
-                    message: 'Organization created but failed to set as active',
-                  })
-              )
-            );
-
-            const teams = yield* Effect.tryPromise(() =>
-              auth.auth.api.listOrganizationTeams({
-                headers,
-                query: {
-                  organizationId,
-                },
-              })
-            ).pipe(
-              Effect.tapError(Effect.logError),
-
-              Effect.mapError(
-                (cause) =>
-                  new OrganizationError({
-                    cause,
-                    message:
-                      'Organization created but failed to get default team',
-                  })
-              )
-            );
-
-            const team = teams.find((t) => t.organizationId === organizationId);
-            if (!team) {
-              return yield* Effect.fail(
-                new OrganizationError({
-                  cause: 'No default team found',
-                  message: 'Organization created but no default team found',
-                })
-              );
-            }
-
-            return { teamId: 'team.id' };
+            return { teamId: team.id };
           }),
 
         acceptInvitation: (input: AcceptInvitationInput, headers: Headers) =>
@@ -128,106 +66,39 @@ export class OrganizationService extends Effect.Service<OrganizationService>()(
               input
             );
 
-            yield* Effect.tryPromise(() =>
-              auth.auth.api.acceptInvitation({
-                headers,
-                body: {
-                  invitationId: validated.invitationId,
-                },
-              })
-            ).pipe(
-              Effect.mapError(
-                (cause) =>
-                  new OrganizationError({
-                    cause,
-                    message: 'Failed to accept invitation',
-                  })
-              )
+            return yield* repo.acceptInvitation(
+              headers,
+              validated.invitationId
             );
           }),
 
         getUserOrganizationContext: (headers: Headers) =>
           Effect.gen(function* () {
-            const session = yield* Effect.tryPromise(() =>
-              auth.auth.api.getSession({ headers })
-            ).pipe(
-              Effect.mapError(
-                (cause) =>
-                  new OrganizationError({
-                    cause,
-                    message: 'Failed to get session',
-                  })
-              )
-            );
-
-            if (!session?.user) {
-              throw new OrganizationError({
-                cause: 'No user in session',
-                message: 'User not authenticated',
-              });
-            }
+            yield* auth.getSessionOrThrow(headers);
 
             const [activeOrganization, teams] = yield* Effect.all(
               [
-                Effect.tryPromise(() =>
-                  auth.auth.api.getFullOrganization({ headers })
-                ).pipe(
-                  Effect.mapError(
-                    (cause) =>
-                      new OrganizationError({
-                        cause,
-                        message: 'Failed to get active organization',
-                      })
-                  )
-                ),
-                Effect.tryPromise(() =>
-                  auth.auth.api.listOrganizationTeams({ headers })
-                ).pipe(
-                  Effect.mapError(
-                    (cause) =>
-                      new OrganizationError({
-                        cause,
-                        message: 'Failed to get teams',
-                      })
-                  )
-                ),
+                auth.getActiveOrganization(headers),
+                repo.listOrganizationTeams(headers),
               ],
               { concurrency: 'unbounded' }
+            ).pipe(
+              Effect.flatMap(([org, teams]) =>
+                org
+                  ? Effect.succeed([org, teams] as const)
+                  : Effect.fail(
+                      new OrganizationNotFoundError({
+                        message: 'User has no active organization',
+                      })
+                    )
+              )
             );
 
-            if (!activeOrganization) {
-              throw new OrganizationError({
-                cause: 'No active organization',
-                message: 'User has no active organization',
-              });
-            }
-
-            // Get members for all teams concurrently
             const teamsWithMembers = yield* Effect.all(
               teams.map((team) =>
-                Effect.tryPromise(() =>
-                  auth.auth.api.listTeamMembers({
-                    headers,
-                    query: {
-                      teamId: team.id,
-                    },
-                  })
-                ).pipe(
-                  Effect.mapError((cause) => {
-                    // If the user is not a member of the team, return empty array
-                    // This can happen right after creating a team
-                    const errorMessage = cause?.toString() || '';
-                    if (errorMessage.includes('not a member of the team')) {
-                      return null; // Will be handled by orElse below
-                    }
-                    return new OrganizationError({
-                      cause,
-                      message: 'Failed to get team members',
-                    });
-                  }),
-                  Effect.orElse(() => Effect.succeed([])), // Return empty array on error
-                  Effect.map((members) => ({ ...team, members }))
-                )
+                repo
+                  .getTeamMembers(headers, team.id)
+                  .pipe(Effect.map((members) => ({ ...team, members })))
               ),
               { concurrency: 'unbounded' }
             );
@@ -249,6 +120,6 @@ export class OrganizationService extends Effect.Service<OrganizationService>()(
           }),
       } as const;
     }),
-    dependencies: [AuthService.Default],
+    dependencies: [OrganizationRepo.Default, AuthService.Default],
   }
 ) {}

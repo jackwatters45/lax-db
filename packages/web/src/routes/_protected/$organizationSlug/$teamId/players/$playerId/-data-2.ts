@@ -15,10 +15,11 @@ export const playerInfo = {
 export type PlayerInfoType = typeof playerInfo;
 
 export const contactInfo: PlayerWithContactInfoNonNullable = {
-  playerId: '1',
+  publicId: '1',
+  publicPlayerId: '1',
   name: 'Jack Watters',
-  email: 'jack.watters@example.com',
   // contact info
+  email: 'jack.watters@example.com',
   phone: '9544949167',
   facebook: 'jack.watters45',
   groupme: '9544949167',

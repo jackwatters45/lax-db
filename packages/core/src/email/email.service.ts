@@ -1,7 +1,7 @@
 import { SESv2Client, SendEmailCommand } from '@aws-sdk/client-sesv2';
 import { Effect, Schema } from 'effect';
 import { Resource } from 'sst';
-import { EmailError } from './email.error';
+import { EmailSendError } from './email.error';
 import { SendEmailInput, SendFeedbackEmailInput } from './email.schema';
 
 export class EmailService extends Effect.Service<EmailService>()(
@@ -47,7 +47,14 @@ export class EmailService extends Effect.Service<EmailService>()(
             });
 
             yield* Effect.tryPromise(() => sesClient.send(command)).pipe(
-              Effect.mapError((cause) => new EmailError({ cause }))
+              Effect.mapError(
+                (cause) =>
+                  new EmailSendError({
+                    message: 'Failed to send email via SES',
+                    recipient: validated.to.join(', '),
+                    cause,
+                  })
+              )
             );
           }),
         sendFeedbackNotification: (input: SendFeedbackEmailInput) =>
@@ -147,7 +154,13 @@ export class EmailService extends Effect.Service<EmailService>()(
             });
 
             yield* Effect.tryPromise(() => sesClient.send(command)).pipe(
-              Effect.mapError((cause) => new EmailError({ cause }))
+              Effect.mapError(
+                (cause) =>
+                  new EmailSendError({
+                    message: 'Failed to send feedback notification email',
+                    cause,
+                  })
+              )
             );
           }),
       } as const;

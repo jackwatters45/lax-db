@@ -27,7 +27,7 @@ export class PlayerContactInfoService extends Effect.Service<PlayerContactInfoSe
             Effect.tap((result) =>
               Effect.log(
                 result
-                  ? `Found contact info for player ${result.playerId}`
+                  ? `Found contact info for player ${input.playerId}`
                   : `No contact info found for player ${input.playerId}`
               )
             ),

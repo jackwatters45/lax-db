@@ -80,7 +80,10 @@ export class PlayerService extends Effect.Service<PlayerService>()(
           }).pipe(
             Effect.catchTag('NoSuchElementException', () =>
               Effect.fail(
-                new NotFoundError({ domain: 'Player', id: input.playerId })
+                new NotFoundError({
+                  domain: 'Player',
+                  id: input.publicPlayerId,
+                })
               )
             ),
             Effect.catchTag('SqlError', (error) =>
@@ -102,7 +105,7 @@ export class PlayerService extends Effect.Service<PlayerService>()(
             );
 
             const playerIdResult = yield* playerRepo.getPlayerIdByPublicId(
-              decoded.playerId
+              decoded.publicPlayerId
             );
 
             return yield* playerRepo.updateTeamPlayer(
@@ -112,14 +115,17 @@ export class PlayerService extends Effect.Service<PlayerService>()(
           }).pipe(
             Effect.catchTag('NoSuchElementException', () =>
               Effect.fail(
-                new NotFoundError({ domain: 'Player', id: input.playerId })
+                new NotFoundError({
+                  domain: 'Player',
+                  id: input.publicPlayerId,
+                })
               )
             ),
             Effect.catchTag('SqlError', (error) =>
               Effect.fail(parsePostgresError(error))
             ),
             Effect.tap(() =>
-              Effect.log(`Updated team player: ${input.playerId}`)
+              Effect.log(`Updated team player: ${input.publicPlayerId}`)
             ),
             Effect.tapError((error) =>
               Effect.logError('Failed to update team player', error)
@@ -131,7 +137,7 @@ export class PlayerService extends Effect.Service<PlayerService>()(
             const decoded = yield* decodeArguments(AddPlayerToTeamInput, input);
 
             const playerIdResult = yield* playerRepo.getPlayerIdByPublicId(
-              decoded.playerId
+              decoded.publicPlayerId
             );
 
             return yield* playerRepo.addPlayerToTeam(
@@ -141,7 +147,10 @@ export class PlayerService extends Effect.Service<PlayerService>()(
           }).pipe(
             Effect.catchTag('NoSuchElementException', () =>
               Effect.fail(
-                new NotFoundError({ domain: 'Player', id: input.playerId })
+                new NotFoundError({
+                  domain: 'Player',
+                  id: input.publicPlayerId,
+                })
               )
             ),
             Effect.catchTag('SqlError', (error) =>
@@ -149,7 +158,7 @@ export class PlayerService extends Effect.Service<PlayerService>()(
             ),
             Effect.tap(() =>
               Effect.log(
-                `Added player ${input.playerId} to team ${input.teamId}`
+                `Added player ${input.publicPlayerId} to team ${input.teamId}`
               )
             ),
             Effect.tapError((error) =>
