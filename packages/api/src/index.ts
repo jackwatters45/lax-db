@@ -19,12 +19,21 @@ import { PlayersApiLive } from './player/player.api';
 import { PlayerHandlers, PlayerRpcs } from './player/player.rpc';
 import { SeasonsApiLive } from './season/season.api';
 import { SeasonHandlers, SeasonRpcs } from './season/season.rpc';
+import { AuthHandlers, AuthRpcs } from './auth/auth.rpc';
+import {
+  OrganizationHandlers,
+  OrganizationRpcs,
+} from './organization/organization.rpc';
+import { TeamHandlers, TeamRpcs } from './team/team.rpc';
 
 const AllRpcs = Layer.mergeAll(
   RpcServer.layer(SeasonRpcs).pipe(Layer.provide(SeasonHandlers)),
   RpcServer.layer(GameRpcs).pipe(Layer.provide(GameHandlers)),
   RpcServer.layer(PlayerRpcs).pipe(Layer.provide(PlayerHandlers)),
-  RpcServer.layer(ContactInfoRpcs).pipe(Layer.provide(ContactInfoHandlers))
+  RpcServer.layer(ContactInfoRpcs).pipe(Layer.provide(ContactInfoHandlers)),
+  RpcServer.layer(TeamRpcs).pipe(Layer.provide(TeamHandlers)),
+  RpcServer.layer(OrganizationRpcs).pipe(Layer.provide(OrganizationHandlers)),
+  RpcServer.layer(AuthRpcs).pipe(Layer.provide(AuthHandlers))
 );
 
 const AllApis = Layer.mergeAll(

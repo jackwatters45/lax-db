@@ -12,7 +12,6 @@ import { desc, eq } from 'drizzle-orm';
 import { Array as Arr, Effect, Layer, ManagedRuntime } from 'effect';
 import { Resource } from 'sst';
 import { OrganizationMembershipError } from './auth/auth.error';
-import * as authSchema from './auth/auth.sql';
 import {
   ac,
   assistantCoach,
@@ -21,6 +20,7 @@ import {
   parent,
   player,
 } from './auth/auth.permissions';
+import * as authSchema from './auth/auth.sql';
 import { DatabaseLive } from './drizzle/drizzle.service';
 import { AuthenticationError, DatabaseError } from './error';
 import {
