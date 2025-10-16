@@ -25,6 +25,9 @@ export const sessionTable = pgTable(
   ]
 );
 
+type SessionSelect = typeof sessionTable.$inferSelect;
+type SessionInsert = typeof sessionTable.$inferInsert;
+
 // Better Auth
 export const accountTable = pgTable(
   'account',
@@ -48,6 +51,9 @@ export const accountTable = pgTable(
   (table) => [index('account_user_id_idx').on(table.userId)]
 );
 
+type AccountSelect = typeof accountTable.$inferSelect;
+type AccountInsert = typeof accountTable.$inferInsert;
+
 // Better Auth
 export const verificationTable = pgTable(
   'verification',
@@ -65,3 +71,6 @@ export const verificationTable = pgTable(
   },
   (table) => [index('verification_identifier_idx').on(table.identifier)]
 );
+
+type VerificationSelect = typeof verificationTable.$inferSelect;
+type VerificationInsert = typeof verificationTable.$inferInsert;

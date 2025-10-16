@@ -10,7 +10,7 @@ import {
   EmailSchema,
   NullableJerseyNumberSchema,
   NullablePlayerNameSchema,
-  PlayerIdSchema,
+  PublicPlayerIdSchema,
   TeamIdSchema,
 } from '@lax-db/core/schema';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -28,7 +28,7 @@ export const getOrgPlayersQK = (organizationId: string) =>
 export class UpdatePlayerAndTeamInput extends Schema.Class<UpdatePlayerAndTeamInput>(
   'UpdatePlayerAndTeamInput'
 )({
-  ...PlayerIdSchema,
+  ...PublicPlayerIdSchema,
   ...TeamIdSchema,
   name: Schema.optional(NullablePlayerNameSchema),
   email: Schema.optional(Schema.NullOr(EmailSchema)),
@@ -58,7 +58,7 @@ export const updatePlayerFn = createServerFn({ method: 'POST' })
           updates.push(
             playerService.updateTeamPlayer({
               teamId,
-              playerId: data.playerId,
+              publicPlayerId: data.publicPlayerId,
               jerseyNumber,
               position,
             })
@@ -85,7 +85,7 @@ export function useUpdatePlayerBase(queryKey: readonly string[]) {
 
       ctx.client.setQueryData<TeamPlayerWithInfo[]>(queryKey, (old = []) =>
         old.map((player) =>
-          player.publicId === variables.playerId
+          player.publicId === variables.publicPlayerId
             ? { ...player, ...variables }
             : player
         )

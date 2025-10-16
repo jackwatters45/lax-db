@@ -1,12 +1,13 @@
+import { PublicIdSchema, PublicPlayerIdSchema } from '@lax-db/core/schema';
 import { type Effect, Schema } from 'effect';
 import type { PlayerContactInfoService } from './contact-info.service';
 
 export class PlayerWithContactInfo extends Schema.Class<PlayerWithContactInfo>(
   'PlayerWithContactInfo'
 )({
-  playerId: Schema.String,
-  name: Schema.NullOr(Schema.String),
-  id: Schema.Number,
+  ...PublicIdSchema,
+  ...PublicPlayerIdSchema,
+  name: Schema.String,
   email: Schema.NullOr(Schema.String),
   phone: Schema.NullOr(Schema.String),
   facebook: Schema.NullOr(Schema.String),

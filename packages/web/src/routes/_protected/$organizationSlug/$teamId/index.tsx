@@ -1,6 +1,7 @@
-import { AuthError, AuthService } from '@lax-db/core/auth';
+import { AuthService } from '@lax-db/core/auth';
 import { RuntimeServer } from '@lax-db/core/runtime.server';
 import { TeamIdSchema } from '@lax-db/core/schema';
+import { TeamOperationError } from '@lax-db/core/team/team.error';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { Effect, Schema } from 'effect';
@@ -48,12 +49,29 @@ const getTeamData = createServerFn({ method: 'GET' })
                   query: { teamId },
                   headers: context.headers,
                 })
-              ).pipe(Effect.mapError(() => new AuthError())),
+              ).pipe(
+                Effect.mapError(
+                  (cause) =>
+                    new TeamOperationError({
+                      message: 'Failed to retrieve team members',
+                      teamId,
+                      cause,
+                    })
+                )
+              ),
               Effect.tryPromise(() =>
                 auth.auth.api.getActiveMember({
                   headers: context.headers,
                 })
-              ).pipe(Effect.mapError(() => new AuthError())),
+              ).pipe(
+                Effect.mapError(
+                  (cause) =>
+                    new TeamOperationError({
+                      message: 'Failed to retrieve active member',
+                      cause,
+                    })
+                )
+              ),
             ],
             { concurrency: 'unbounded' }
           );

@@ -1,5 +1,5 @@
 import { AuthService } from '@lax-db/core/auth';
-import { OrganizationError } from '@lax-db/core/organization/organization.error';
+import { OrganizationOperationError } from '@lax-db/core/organization/organization.error';
 import { RuntimeServer } from '@lax-db/core/runtime.server';
 import { OrganizationSlugSchema } from '@lax-db/core/schema';
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
@@ -40,9 +40,9 @@ const getDashboardData = createServerFn({ method: 'GET' })
             ).pipe(
               Effect.mapError(
                 (cause) =>
-                  new OrganizationError({
+                  new OrganizationOperationError({
+                    message: 'Failed to list organization teams',
                     cause,
-                    message: 'Failed to get teams',
                   })
               )
             ),
@@ -51,9 +51,9 @@ const getDashboardData = createServerFn({ method: 'GET' })
             ).pipe(
               Effect.mapError(
                 (cause) =>
-                  new OrganizationError({
+                  new OrganizationOperationError({
+                    message: 'Failed to retrieve active organization',
                     cause,
-                    message: 'Failed to get active organization',
                   })
               )
             ),

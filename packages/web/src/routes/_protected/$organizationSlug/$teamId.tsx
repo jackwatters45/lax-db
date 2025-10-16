@@ -1,6 +1,6 @@
 import { AuthService } from '@lax-db/core/auth';
 import { RuntimeServer } from '@lax-db/core/runtime.server';
-import { TeamError } from '@lax-db/core/team/team.error';
+import { TeamOperationError } from '@lax-db/core/team/team.error';
 import { createFileRoute, redirect } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { Effect } from 'effect';
@@ -34,9 +34,9 @@ const getTeamDashboardData = createServerFn({ method: 'GET' })
         ).pipe(
           Effect.mapError(
             (cause) =>
-              new TeamError({
-                cause,
+              new TeamOperationError({
                 message: 'Failed to list organization teams',
+                cause,
               })
           )
         );

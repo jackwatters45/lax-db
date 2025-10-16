@@ -4,9 +4,9 @@ import {
   EmailSchema,
   NullablePlayerNameSchema,
   OrganizationIdSchema,
-  PlayerIdSchema,
   PlayerNameSchema,
   PublicIdSchema,
+  PublicPlayerIdSchema,
   TeamIdSchema,
   TimestampsSchema,
 } from '../schema';
@@ -67,7 +67,7 @@ export class GetTeamPlayersInput extends Schema.Class<GetTeamPlayersInput>(
 export class UpdatePlayerInput extends Schema.Class<UpdatePlayerInput>(
   'UpdatePlayerInput'
 )({
-  ...PlayerIdSchema,
+  ...PublicPlayerIdSchema,
   name: Schema.optional(NullablePlayerNameSchema),
   email: Schema.optional(Schema.NullOr(EmailSchema)),
   phone: Schema.optional(Schema.NullOr(Schema.String)),
@@ -78,7 +78,7 @@ export class UpdateTeamPlayerInput extends Schema.Class<UpdateTeamPlayerInput>(
   'UpdateTeamPlayerInput'
 )({
   ...TeamIdSchema,
-  ...PlayerIdSchema,
+  ...PublicPlayerIdSchema,
   jerseyNumber: Schema.optional(JerseyNumberSchema),
   position: Schema.optional(PositionSchema),
 }) {}
@@ -94,7 +94,7 @@ export class AddNewPlayerToTeamInput extends Schema.Class<AddNewPlayerToTeamInpu
 export class AddPlayerToTeamInput extends Schema.Class<AddPlayerToTeamInput>(
   'AddPlayerToTeamInput'
 )({
-  ...PlayerIdSchema,
+  ...PublicPlayerIdSchema,
   ...TeamIdSchema,
   jerseyNumber: JerseyNumberSchema,
   position: PositionSchema,

@@ -61,7 +61,7 @@ export function AddPlayerCommand({
   const handleSelectExistingPlayer = (player: { publicId: string }) => {
     // Just add existing player to team (they already exist in org)
     mutations.addExisting.mutate({
-      playerId: player.publicId,
+      publicPlayerId: player.publicId,
       teamId,
       jerseyNumber: null,
       position: null,

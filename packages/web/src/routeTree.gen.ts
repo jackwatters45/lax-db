@@ -10,7 +10,6 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProtectedRouteImport } from './routes/_protected'
-import { Route as PadIndexRouteImport } from './routes/pad/index'
 import { Route as marketingIndexRouteImport } from './routes/(marketing)/index'
 import { Route as ProtectedRedirectRouteImport } from './routes/_protected/redirect'
 import { Route as ProtectedOrganizationSlugRouteImport } from './routes/_protected/$organizationSlug'
@@ -83,11 +82,6 @@ import { Route as ProtectedOrganizationSlugTeamIdPlayersPlayerIdContactInfoRoute
 
 const ProtectedRoute = ProtectedRouteImport.update({
   id: '/_protected',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PadIndexRoute = PadIndexRouteImport.update({
-  id: '/pad/',
-  path: '/pad/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const marketingIndexRoute = marketingIndexRouteImport.update({
@@ -506,7 +500,6 @@ export interface FileRoutesByFullPath {
   '/$organizationSlug': typeof ProtectedOrganizationSlugRouteWithChildren
   '/redirect': typeof ProtectedRedirectRoute
   '/': typeof marketingIndexRoute
-  '/pad': typeof PadIndexRoute
   '/$organizationSlug/$teamId': typeof ProtectedOrganizationSlugTeamIdRouteWithChildren
   '/$organizationSlug/feedback': typeof ProtectedOrganizationSlugFeedbackRoute
   '/$organizationSlug/plan': typeof ProtectedOrganizationSlugPlanRoute
@@ -577,7 +570,6 @@ export interface FileRoutesByTo {
   '/register': typeof authRegisterRoute
   '/redirect': typeof ProtectedRedirectRoute
   '/': typeof marketingIndexRoute
-  '/pad': typeof PadIndexRoute
   '/$organizationSlug/feedback': typeof ProtectedOrganizationSlugFeedbackRoute
   '/$organizationSlug/plan': typeof ProtectedOrganizationSlugPlanRoute
   '/organizations/create': typeof ProtectedOrganizationsCreateRoute
@@ -650,7 +642,6 @@ export interface FileRoutesById {
   '/_protected/$organizationSlug': typeof ProtectedOrganizationSlugRouteWithChildren
   '/_protected/redirect': typeof ProtectedRedirectRoute
   '/(marketing)/': typeof marketingIndexRoute
-  '/pad/': typeof PadIndexRoute
   '/_protected/$organizationSlug/$teamId': typeof ProtectedOrganizationSlugTeamIdRouteWithChildren
   '/_protected/$organizationSlug/feedback': typeof ProtectedOrganizationSlugFeedbackRoute
   '/_protected/$organizationSlug/plan': typeof ProtectedOrganizationSlugPlanRoute
@@ -724,7 +715,6 @@ export interface FileRouteTypes {
     | '/$organizationSlug'
     | '/redirect'
     | '/'
-    | '/pad'
     | '/$organizationSlug/$teamId'
     | '/$organizationSlug/feedback'
     | '/$organizationSlug/plan'
@@ -795,7 +785,6 @@ export interface FileRouteTypes {
     | '/register'
     | '/redirect'
     | '/'
-    | '/pad'
     | '/$organizationSlug/feedback'
     | '/$organizationSlug/plan'
     | '/organizations/create'
@@ -867,7 +856,6 @@ export interface FileRouteTypes {
     | '/_protected/$organizationSlug'
     | '/_protected/redirect'
     | '/(marketing)/'
-    | '/pad/'
     | '/_protected/$organizationSlug/$teamId'
     | '/_protected/$organizationSlug/feedback'
     | '/_protected/$organizationSlug/plan'
@@ -939,7 +927,6 @@ export interface RootRouteChildren {
   authLogoutRoute: typeof authLogoutRoute
   authRegisterRoute: typeof authRegisterRoute
   marketingIndexRoute: typeof marketingIndexRoute
-  PadIndexRoute: typeof PadIndexRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
@@ -950,13 +937,6 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: ''
       preLoaderRoute: typeof ProtectedRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pad/': {
-      id: '/pad/'
-      path: '/pad'
-      fullPath: '/pad'
-      preLoaderRoute: typeof PadIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/(marketing)/': {
@@ -1683,7 +1663,6 @@ const rootRouteChildren: RootRouteChildren = {
   authLogoutRoute: authLogoutRoute,
   authRegisterRoute: authRegisterRoute,
   marketingIndexRoute: marketingIndexRoute,
-  PadIndexRoute: PadIndexRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport

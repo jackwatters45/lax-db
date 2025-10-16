@@ -40,10 +40,8 @@ export const Base64IdSchema = (msg?: string) =>
   );
 
 // Common Schemas
-export const PlayerIdSchema = {
-  playerId: Schema.UUID.pipe(
-    Schema.minLength(1, { message: () => 'Player ID is required' })
-  ),
+export const PublicPlayerIdSchema = {
+  publicPlayerId: NanoidSchema,
 };
 
 export const OrganizationSlugSchema = {

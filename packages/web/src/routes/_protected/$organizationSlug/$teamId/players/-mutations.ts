@@ -27,7 +27,7 @@ const useUpdatePlayer = (organizationId: string, teamId: string) => {
   );
 
   const handleUpdate = (
-    playerId: string,
+    publicPlayerId: string,
     updates: Partial<TeamPlayerWithInfo>
   ) => {
     const { jerseyNumber, ...rest } = updates;
@@ -35,7 +35,7 @@ const useUpdatePlayer = (organizationId: string, teamId: string) => {
     mutation.mutate({
       ...rest,
       ...(jerseyNumber !== undefined && { jerseyNumber }),
-      playerId,
+      publicPlayerId,
       teamId,
     });
   };
@@ -283,7 +283,7 @@ export const linkPlayerFn = createServerFn({ method: 'POST' })
         });
 
         yield* playerService.addPlayerToTeam({
-          playerId: data.newPlayerData.publicId,
+          publicPlayerId: data.newPlayerData.publicId,
           teamId: data.teamId,
           jerseyNumber: data.jerseyNumber,
           position: data.position,

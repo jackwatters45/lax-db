@@ -77,7 +77,7 @@ function Header() {
   return (
     <PlayerHeader
       organizationSlug={organizationSlug}
-      playerId={contactInfo.playerId}
+      playerId={contactInfo.publicPlayerId}
       teamId={activeTeam.id}
     >
       <BreadcrumbItem>
@@ -98,7 +98,7 @@ function Header() {
             params={{
               organizationSlug,
               teamId: activeTeam.id,
-              playerId: contactInfo.playerId,
+              playerId: contactInfo.publicPlayerId,
             }}
             to="/$organizationSlug/$teamId/players/$playerId/contact-info"
           >
@@ -124,7 +124,7 @@ function Header() {
             params={{
               organizationSlug,
               teamId: activeTeam.id,
-              playerId: contactInfo.playerId,
+              playerId: contactInfo.publicPlayerId,
             }}
             to="/$organizationSlug/$teamId/players/$playerId"
           >
@@ -138,7 +138,7 @@ function Header() {
             params={{
               organizationSlug,
               teamId: activeTeam.id,
-              playerId: contactInfo.playerId,
+              playerId: contactInfo.publicPlayerId,
             }}
             to="/$organizationSlug/$teamId/players/$playerId/contact-info"
           >
