@@ -20,7 +20,7 @@ import {
   headCoach,
   parent,
   player,
-} from './auth/permissions';
+} from './auth/auth.permissions';
 import { DatabaseLive } from './drizzle/drizzle.service';
 import { AuthenticationError, DatabaseError } from './error';
 import {
