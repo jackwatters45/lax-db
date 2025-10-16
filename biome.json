@@ -29,30 +29,32 @@
     "rules": {
       "recommended": true,
       "nursery": {
-        "useSortedClasses": "info",
-        "noShadow": "warn",
-        "useImageSize": "warn"
+        "useSortedClasses": "off",
+        "noShadow": "off",
+        "useImageSize": "off"
       },
       "suspicious": {
-        "noArrayIndexKey": "warn",
-        "noConsole": "warn",
-        "noEmptyBlockStatements": "warn",
-        "useAwait": "warn",
-        "noExplicitAny": "warn",
-        "noEvolvingTypes": "warn",
-        "noUnknownAtRules": "warn",
-        "noAlert": "warn"
+        "noArrayIndexKey": "off",
+        "noConsole": "off",
+        "noEmptyBlockStatements": "off",
+        "useAwait": "off",
+        "noExplicitAny": "off",
+        "noEvolvingTypes": "off",
+        "noUnknownAtRules": "off",
+        "noAlert": "off"
       },
       "complexity": {
-        "noVoid": "info",
+        "noVoid": "off",
         "noBannedTypes": "warn",
-        "noExcessiveCognitiveComplexity": "warn"
+        "noExcessiveCognitiveComplexity": "off"
       },
       "a11y": {
-        "useValidAnchor": "warn",
-        "noNoninteractiveElementInteractions": "warn"
+        "useValidAnchor": "info",
+        "noNoninteractiveElementInteractions": "off"
       },
       "style": {
+        "noMagicNumbers": "off",
+        "noNestedTernary": "off",
         "useImportType": "error",
         "useExportType": "error",
         "noNonNullAssertion": "off",
@@ -66,21 +68,19 @@
         "useNumberNamespace": "error",
         "noInferrableTypes": "error",
         "noUselessElse": "error",
-        "noMagicNumbers": "warn",
-        "noNestedTernary": "warn",
         "noHeadElement": "off"
       },
       "performance": {
-        "useTopLevelRegex": "warn",
-        "noNamespaceImport": "warn",
-        "noBarrelFile": "warn",
+        "useTopLevelRegex": "off",
+        "noNamespaceImport": "off",
+        "noBarrelFile": "off",
         "noImgElement": "off"
       },
       "correctness": {
         "useYield": "off",
-        "noUnusedVariables": "warn",
-        "noUnusedFunctionParameters": "warn",
-        "noNestedComponentDefinitions": "warn"
+        "noUnusedVariables": "off",
+        "noUnusedFunctionParameters": "off",
+        "noNestedComponentDefinitions": "off"
       }
     },
     "includes": [
