@@ -5,7 +5,7 @@ import {
   headCoach,
   parent,
   player,
-} from '@lax-db/core/auth/permissions';
+} from '@lax-db/core/auth/auth.permissions';
 // import { polarClient } from '@polar-sh/better-auth';
 import {
   adminClient,

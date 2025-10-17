@@ -1,6 +1,6 @@
 import { Rpc, RpcGroup } from '@effect/rpc';
-import { AuthContract } from '@lax-db/core/auth/auth.contract';
 import { AuthService } from '@lax-db/core/auth';
+import { AuthContract } from '@lax-db/core/auth/auth.contract';
 import { Effect, Layer } from 'effect';
 
 export class AuthRpcs extends RpcGroup.make(

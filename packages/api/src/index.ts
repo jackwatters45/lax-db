@@ -8,8 +8,13 @@ import {
 import { BunHttpServer, BunRuntime } from '@effect/platform-bun';
 import { RpcSerialization, RpcServer } from '@effect/rpc';
 import { DateTime, Layer } from 'effect';
+import { AuthHandlers, AuthRpcs } from './auth/auth.rpc';
 import { GamesApiLive } from './game/game.api';
 import { GameHandlers, GameRpcs } from './game/game.rpc';
+import {
+  OrganizationHandlers,
+  OrganizationRpcs,
+} from './organization/organization.rpc';
 import { ContactInfoApiLive } from './player/contact-info/contact-info.api';
 import {
   ContactInfoHandlers,
@@ -19,11 +24,6 @@ import { PlayersApiLive } from './player/player.api';
 import { PlayerHandlers, PlayerRpcs } from './player/player.rpc';
 import { SeasonsApiLive } from './season/season.api';
 import { SeasonHandlers, SeasonRpcs } from './season/season.rpc';
-import { AuthHandlers, AuthRpcs } from './auth/auth.rpc';
-import {
-  OrganizationHandlers,
-  OrganizationRpcs,
-} from './organization/organization.rpc';
 import { TeamHandlers, TeamRpcs } from './team/team.rpc';
 
 const AllRpcs = Layer.mergeAll(
