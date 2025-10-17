@@ -6,7 +6,7 @@ import {
   parent,
   player,
 } from '@lax-db/core/auth/auth.permissions';
-// import { polarClient } from '@polar-sh/better-auth';
+import { polarClient } from '@polar-sh/better-auth';
 import {
   adminClient,
   lastLoginMethodClient,
@@ -16,7 +16,7 @@ import { createAuthClient } from 'better-auth/react';
 
 export const authClient = createAuthClient({
   plugins: [
-    // polarClient(),
+    polarClient(),
     organizationClient({
       ac,
       roles: {

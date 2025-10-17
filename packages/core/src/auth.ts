@@ -1,4 +1,12 @@
 import { PgDrizzle } from '@effect/sql-drizzle/Pg';
+import {
+  checkout,
+  polar,
+  portal,
+  usage,
+  webhooks,
+} from '@polar-sh/better-auth';
+import { Polar } from '@polar-sh/sdk';
 import { betterAuth, type Session, type User } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import {
@@ -32,17 +40,10 @@ import { RedisService } from './redis';
 import { teamMemberTable, teamTable } from './team/team.sql';
 import { userTable } from './user/user.sql';
 
-// import { Polar } from '@polar-sh/sdk';
-
-// const _polarClient = new Polar({
-//   accessToken: process.env.POLAR_ACCESS_TOKEN,
-//   // Use 'sandbox' if you're using the Polar Sandbox environment
-//   // Remember that access tokens, products, etc. are completely separated between environments.
-//   // Access tokens obtained in Production are for instance not usable in the Sandbox environment.
-//   server: 'sandbox',
-// });
-//
-//
+const polarClient = new Polar({
+  accessToken: Resource.PolarAccessToken.value,
+  server: Resource.Stage.value === 'production' ? 'production' : 'sandbox',
+});
 
 const runtime = ManagedRuntime.make(
   Layer.mergeAll(RedisService.Default, DatabaseLive)
@@ -84,6 +85,16 @@ export class AuthService extends Effect.Service<AuthService>()('AuthService', {
         cookieCache: {
           enabled: true,
           maxAge: 5 * 60, // Cache duration in seconds
+        },
+      },
+      user: {
+        deleteUser: {
+          enabled: true,
+          afterDelete: async (user, request) => {
+            // await polar.customers.deleteExternal({
+            //   externalId: user.id,
+            // });
+          },
         },
       },
       rateLimit: {
@@ -165,36 +176,36 @@ export class AuthService extends Effect.Service<AuthService>()('AuthService', {
         },
       },
       plugins: [
-        // polar({
-        //   client: polarClient,
-        //   createCustomerOnSignUp: true,
-        //   getCustomerCreateParams: async ({ user: _user }, _request) => ({
-        //     metadata: {
-        //       myCustomProperty: '123',
-        //     },
-        //   }),
-        //   use: [
-        //     checkout({
-        //       products: [
-        //         {
-        //           productId: '123-456-789', // ID of Product from Polar Dashboard
-        //           slug: 'pro', // Custom slug for easy reference in Checkout URL, e.g. /checkout/pro
-        //         },
-        //       ],
-        //       successUrl: '/success?checkout_id={CHECKOUT_ID}',
-        //       authenticatedUsersOnly: true,
-        //     }),
-        //     portal(),
-        //     usage(),
-        //     webhooks({
-        //       secret: process.env.POLAR_WEBHOOK_SECRET!,
-        //       // onCustomerStateChanged: (payload) => // Triggered when anything regarding a customer changes
-        //       // onOrderPaid: (payload) => // Triggered when an order was paid (purchase, subscription renewal, etc.)
-        //       // ...  // Over 25 granular webhook handlers
-        //       // onPayload: (payload) => // Catch-all for all events
-        //     }),
-        //   ],
-        // }),
+        polar({
+          client: polarClient,
+          createCustomerOnSignUp: true,
+          getCustomerCreateParams: async ({ user: _user }, _request) => ({
+            metadata: {
+              myCustomProperty: '123',
+            },
+          }),
+          use: [
+            checkout({
+              products: [
+                {
+                  productId: '9c95ece8-1776-4629-a58a-26f8b46b59b4',
+                  slug: 'teams',
+                },
+              ],
+              successUrl: '/success?checkout_id={CHECKOUT_ID}',
+              authenticatedUsersOnly: true,
+            }),
+            portal(),
+            usage(),
+            webhooks({
+              secret: Resource.PolarWebhookSecret.value,
+              // onCustomerStateChanged: (payload) => // Triggered when anything regarding a customer changes
+              // onOrderPaid: (payload) => // Triggered when an order was paid (purchase, subscription renewal, etc.)
+              // ...  // Over 25 granular webhook handlers
+              // onPayload: (payload) => // Catch-all for all events
+            }),
+          ],
+        }),
         admin(),
         organization({
           ac,
@@ -302,3 +313,9 @@ export class AuthService extends Effect.Service<AuthService>()('AuthService', {
   }),
   dependencies: [DatabaseLive, RedisService.Default],
 }) {}
+
+const getClient = Effect.gen(function* () {
+  return (yield* AuthService).auth;
+}).pipe(Effect.provide(AuthService.Default));
+
+export const auth = await runtime.runPromise(getClient);
