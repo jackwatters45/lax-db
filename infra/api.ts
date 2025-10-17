@@ -4,6 +4,8 @@ import { redis } from './redis';
 import { allSecrets } from './secret';
 import { vpc } from './vpc';
 
+const apiDomain = `api.${domain}`;
+
 const cluster = new sst.aws.Cluster('MyCluster', { vpc });
 
 export const api = new sst.aws.Service('Api', {
@@ -11,7 +13,7 @@ export const api = new sst.aws.Service('Api', {
   cluster,
   loadBalancer: {
     domain: {
-      name: domain,
+      name: apiDomain,
       dns: sst.cloudflare.dns(),
     },
     rules: [{ listen: '80/http', forward: '3001/http' }],
