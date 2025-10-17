@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.6",
-    "@effect/language-service": "^0.44.0",
+    "@effect/language-service": "^0.44.1",
     "@tsconfig/bun": "^1.0.9",
     "@types/bun": "latest",
     "lefthook": "^1.13.6",
@@ -23,7 +23,8 @@
     "turbo": "^2.5.8",
     "typescript": "^5.9.3",
     "ultracite": "5.6.4",
-    "vitest": "latest"
+    "vitest": "latest",
+    "zod": "^4.1.12"
   },
   "dependencies": {
     "effect": "latest",
