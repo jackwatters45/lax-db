@@ -75,6 +75,7 @@ import { Route as ProtectedOrganizationSlugPlaybookPlaysPlayIdRouteImport } from
 import { Route as ProtectedOrganizationSlugGamesGameIdStatsRouteImport } from './routes/_protected/$organizationSlug/games/$gameId/stats'
 import { Route as ProtectedOrganizationSlugGamesGameIdRosterRouteImport } from './routes/_protected/$organizationSlug/games/$gameId/roster'
 import { Route as ProtectedOrganizationSlugGamesGameIdEditRouteImport } from './routes/_protected/$organizationSlug/games/$gameId/edit'
+import { Route as ProtectedOrganizationSlugTeamIdPlayersPlayerIdRouteImport } from './routes/_protected/$organizationSlug/$teamId/players/$playerId'
 import { Route as ProtectedOrganizationSlugTeamIdPlayersPlayerIdIndexRouteImport } from './routes/_protected/$organizationSlug/$teamId/players/$playerId/index'
 import { Route as ProtectedOrganizationSlugPlaybookPlaysPlayIdEditRouteImport } from './routes/_protected/$organizationSlug/playbook/plays/$playId/edit'
 import { Route as ProtectedOrganizationSlugTeamIdPlayersPlayerIdEditRouteImport } from './routes/_protected/$organizationSlug/$teamId/players/$playerId/edit'
@@ -468,11 +469,17 @@ const ProtectedOrganizationSlugGamesGameIdEditRoute =
     path: '/games/$gameId/edit',
     getParentRoute: () => ProtectedOrganizationSlugRoute,
   } as any)
+const ProtectedOrganizationSlugTeamIdPlayersPlayerIdRoute =
+  ProtectedOrganizationSlugTeamIdPlayersPlayerIdRouteImport.update({
+    id: '/players/$playerId',
+    path: '/players/$playerId',
+    getParentRoute: () => ProtectedOrganizationSlugTeamIdRoute,
+  } as any)
 const ProtectedOrganizationSlugTeamIdPlayersPlayerIdIndexRoute =
   ProtectedOrganizationSlugTeamIdPlayersPlayerIdIndexRouteImport.update({
-    id: '/players/$playerId/',
-    path: '/players/$playerId/',
-    getParentRoute: () => ProtectedOrganizationSlugTeamIdRoute,
+    id: '/',
+    path: '/',
+    getParentRoute: () => ProtectedOrganizationSlugTeamIdPlayersPlayerIdRoute,
   } as any)
 const ProtectedOrganizationSlugPlaybookPlaysPlayIdEditRoute =
   ProtectedOrganizationSlugPlaybookPlaysPlayIdEditRouteImport.update({
@@ -482,15 +489,15 @@ const ProtectedOrganizationSlugPlaybookPlaysPlayIdEditRoute =
   } as any)
 const ProtectedOrganizationSlugTeamIdPlayersPlayerIdEditRoute =
   ProtectedOrganizationSlugTeamIdPlayersPlayerIdEditRouteImport.update({
-    id: '/players/$playerId/edit',
-    path: '/players/$playerId/edit',
-    getParentRoute: () => ProtectedOrganizationSlugTeamIdRoute,
+    id: '/edit',
+    path: '/edit',
+    getParentRoute: () => ProtectedOrganizationSlugTeamIdPlayersPlayerIdRoute,
   } as any)
 const ProtectedOrganizationSlugTeamIdPlayersPlayerIdContactInfoRoute =
   ProtectedOrganizationSlugTeamIdPlayersPlayerIdContactInfoRouteImport.update({
-    id: '/players/$playerId/contact-info',
-    path: '/players/$playerId/contact-info',
-    getParentRoute: () => ProtectedOrganizationSlugTeamIdRoute,
+    id: '/contact-info',
+    path: '/contact-info',
+    getParentRoute: () => ProtectedOrganizationSlugTeamIdPlayersPlayerIdRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -528,6 +535,7 @@ export interface FileRoutesByFullPath {
   '/$organizationSlug/players': typeof ProtectedOrganizationSlugPlayersIndexRoute
   '/$organizationSlug/practice': typeof ProtectedOrganizationSlugPracticeIndexRoute
   '/$organizationSlug/scouting': typeof ProtectedOrganizationSlugScoutingIndexRoute
+  '/$organizationSlug/$teamId/players/$playerId': typeof ProtectedOrganizationSlugTeamIdPlayersPlayerIdRouteWithChildren
   '/$organizationSlug/games/$gameId/edit': typeof ProtectedOrganizationSlugGamesGameIdEditRoute
   '/$organizationSlug/games/$gameId/roster': typeof ProtectedOrganizationSlugGamesGameIdRosterRoute
   '/$organizationSlug/games/$gameId/stats': typeof ProtectedOrganizationSlugGamesGameIdStatsRoute
@@ -562,7 +570,7 @@ export interface FileRoutesByFullPath {
   '/$organizationSlug/$teamId/players/$playerId/contact-info': typeof ProtectedOrganizationSlugTeamIdPlayersPlayerIdContactInfoRoute
   '/$organizationSlug/$teamId/players/$playerId/edit': typeof ProtectedOrganizationSlugTeamIdPlayersPlayerIdEditRoute
   '/$organizationSlug/playbook/plays/$playId/edit': typeof ProtectedOrganizationSlugPlaybookPlaysPlayIdEditRoute
-  '/$organizationSlug/$teamId/players/$playerId': typeof ProtectedOrganizationSlugTeamIdPlayersPlayerIdIndexRoute
+  '/$organizationSlug/$teamId/players/$playerId/': typeof ProtectedOrganizationSlugTeamIdPlayersPlayerIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof authLoginRoute
@@ -670,6 +678,7 @@ export interface FileRoutesById {
   '/_protected/$organizationSlug/players/': typeof ProtectedOrganizationSlugPlayersIndexRoute
   '/_protected/$organizationSlug/practice/': typeof ProtectedOrganizationSlugPracticeIndexRoute
   '/_protected/$organizationSlug/scouting/': typeof ProtectedOrganizationSlugScoutingIndexRoute
+  '/_protected/$organizationSlug/$teamId/players/$playerId': typeof ProtectedOrganizationSlugTeamIdPlayersPlayerIdRouteWithChildren
   '/_protected/$organizationSlug/games/$gameId/edit': typeof ProtectedOrganizationSlugGamesGameIdEditRoute
   '/_protected/$organizationSlug/games/$gameId/roster': typeof ProtectedOrganizationSlugGamesGameIdRosterRoute
   '/_protected/$organizationSlug/games/$gameId/stats': typeof ProtectedOrganizationSlugGamesGameIdStatsRoute
@@ -743,6 +752,7 @@ export interface FileRouteTypes {
     | '/$organizationSlug/players'
     | '/$organizationSlug/practice'
     | '/$organizationSlug/scouting'
+    | '/$organizationSlug/$teamId/players/$playerId'
     | '/$organizationSlug/games/$gameId/edit'
     | '/$organizationSlug/games/$gameId/roster'
     | '/$organizationSlug/games/$gameId/stats'
@@ -777,7 +787,7 @@ export interface FileRouteTypes {
     | '/$organizationSlug/$teamId/players/$playerId/contact-info'
     | '/$organizationSlug/$teamId/players/$playerId/edit'
     | '/$organizationSlug/playbook/plays/$playId/edit'
-    | '/$organizationSlug/$teamId/players/$playerId'
+    | '/$organizationSlug/$teamId/players/$playerId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
@@ -884,6 +894,7 @@ export interface FileRouteTypes {
     | '/_protected/$organizationSlug/players/'
     | '/_protected/$organizationSlug/practice/'
     | '/_protected/$organizationSlug/scouting/'
+    | '/_protected/$organizationSlug/$teamId/players/$playerId'
     | '/_protected/$organizationSlug/games/$gameId/edit'
     | '/_protected/$organizationSlug/games/$gameId/roster'
     | '/_protected/$organizationSlug/games/$gameId/stats'
@@ -1394,12 +1405,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedOrganizationSlugGamesGameIdEditRouteImport
       parentRoute: typeof ProtectedOrganizationSlugRoute
     }
-    '/_protected/$organizationSlug/$teamId/players/$playerId/': {
-      id: '/_protected/$organizationSlug/$teamId/players/$playerId/'
+    '/_protected/$organizationSlug/$teamId/players/$playerId': {
+      id: '/_protected/$organizationSlug/$teamId/players/$playerId'
       path: '/players/$playerId'
       fullPath: '/$organizationSlug/$teamId/players/$playerId'
-      preLoaderRoute: typeof ProtectedOrganizationSlugTeamIdPlayersPlayerIdIndexRouteImport
+      preLoaderRoute: typeof ProtectedOrganizationSlugTeamIdPlayersPlayerIdRouteImport
       parentRoute: typeof ProtectedOrganizationSlugTeamIdRoute
+    }
+    '/_protected/$organizationSlug/$teamId/players/$playerId/': {
+      id: '/_protected/$organizationSlug/$teamId/players/$playerId/'
+      path: '/'
+      fullPath: '/$organizationSlug/$teamId/players/$playerId/'
+      preLoaderRoute: typeof ProtectedOrganizationSlugTeamIdPlayersPlayerIdIndexRouteImport
+      parentRoute: typeof ProtectedOrganizationSlugTeamIdPlayersPlayerIdRoute
     }
     '/_protected/$organizationSlug/playbook/plays/$playId/edit': {
       id: '/_protected/$organizationSlug/playbook/plays/$playId/edit'
@@ -1410,28 +1428,47 @@ declare module '@tanstack/react-router' {
     }
     '/_protected/$organizationSlug/$teamId/players/$playerId/edit': {
       id: '/_protected/$organizationSlug/$teamId/players/$playerId/edit'
-      path: '/players/$playerId/edit'
+      path: '/edit'
       fullPath: '/$organizationSlug/$teamId/players/$playerId/edit'
       preLoaderRoute: typeof ProtectedOrganizationSlugTeamIdPlayersPlayerIdEditRouteImport
-      parentRoute: typeof ProtectedOrganizationSlugTeamIdRoute
+      parentRoute: typeof ProtectedOrganizationSlugTeamIdPlayersPlayerIdRoute
     }
     '/_protected/$organizationSlug/$teamId/players/$playerId/contact-info': {
       id: '/_protected/$organizationSlug/$teamId/players/$playerId/contact-info'
-      path: '/players/$playerId/contact-info'
+      path: '/contact-info'
       fullPath: '/$organizationSlug/$teamId/players/$playerId/contact-info'
       preLoaderRoute: typeof ProtectedOrganizationSlugTeamIdPlayersPlayerIdContactInfoRouteImport
-      parentRoute: typeof ProtectedOrganizationSlugTeamIdRoute
+      parentRoute: typeof ProtectedOrganizationSlugTeamIdPlayersPlayerIdRoute
     }
   }
 }
 
-interface ProtectedOrganizationSlugTeamIdRouteChildren {
-  ProtectedOrganizationSlugTeamIdSetupRoute: typeof ProtectedOrganizationSlugTeamIdSetupRoute
-  ProtectedOrganizationSlugTeamIdIndexRoute: typeof ProtectedOrganizationSlugTeamIdIndexRoute
-  ProtectedOrganizationSlugTeamIdPlayersIndexRoute: typeof ProtectedOrganizationSlugTeamIdPlayersIndexRoute
+interface ProtectedOrganizationSlugTeamIdPlayersPlayerIdRouteChildren {
   ProtectedOrganizationSlugTeamIdPlayersPlayerIdContactInfoRoute: typeof ProtectedOrganizationSlugTeamIdPlayersPlayerIdContactInfoRoute
   ProtectedOrganizationSlugTeamIdPlayersPlayerIdEditRoute: typeof ProtectedOrganizationSlugTeamIdPlayersPlayerIdEditRoute
   ProtectedOrganizationSlugTeamIdPlayersPlayerIdIndexRoute: typeof ProtectedOrganizationSlugTeamIdPlayersPlayerIdIndexRoute
+}
+
+const ProtectedOrganizationSlugTeamIdPlayersPlayerIdRouteChildren: ProtectedOrganizationSlugTeamIdPlayersPlayerIdRouteChildren =
+  {
+    ProtectedOrganizationSlugTeamIdPlayersPlayerIdContactInfoRoute:
+      ProtectedOrganizationSlugTeamIdPlayersPlayerIdContactInfoRoute,
+    ProtectedOrganizationSlugTeamIdPlayersPlayerIdEditRoute:
+      ProtectedOrganizationSlugTeamIdPlayersPlayerIdEditRoute,
+    ProtectedOrganizationSlugTeamIdPlayersPlayerIdIndexRoute:
+      ProtectedOrganizationSlugTeamIdPlayersPlayerIdIndexRoute,
+  }
+
+const ProtectedOrganizationSlugTeamIdPlayersPlayerIdRouteWithChildren =
+  ProtectedOrganizationSlugTeamIdPlayersPlayerIdRoute._addFileChildren(
+    ProtectedOrganizationSlugTeamIdPlayersPlayerIdRouteChildren,
+  )
+
+interface ProtectedOrganizationSlugTeamIdRouteChildren {
+  ProtectedOrganizationSlugTeamIdSetupRoute: typeof ProtectedOrganizationSlugTeamIdSetupRoute
+  ProtectedOrganizationSlugTeamIdIndexRoute: typeof ProtectedOrganizationSlugTeamIdIndexRoute
+  ProtectedOrganizationSlugTeamIdPlayersPlayerIdRoute: typeof ProtectedOrganizationSlugTeamIdPlayersPlayerIdRouteWithChildren
+  ProtectedOrganizationSlugTeamIdPlayersIndexRoute: typeof ProtectedOrganizationSlugTeamIdPlayersIndexRoute
 }
 
 const ProtectedOrganizationSlugTeamIdRouteChildren: ProtectedOrganizationSlugTeamIdRouteChildren =
@@ -1440,14 +1477,10 @@ const ProtectedOrganizationSlugTeamIdRouteChildren: ProtectedOrganizationSlugTea
       ProtectedOrganizationSlugTeamIdSetupRoute,
     ProtectedOrganizationSlugTeamIdIndexRoute:
       ProtectedOrganizationSlugTeamIdIndexRoute,
+    ProtectedOrganizationSlugTeamIdPlayersPlayerIdRoute:
+      ProtectedOrganizationSlugTeamIdPlayersPlayerIdRouteWithChildren,
     ProtectedOrganizationSlugTeamIdPlayersIndexRoute:
       ProtectedOrganizationSlugTeamIdPlayersIndexRoute,
-    ProtectedOrganizationSlugTeamIdPlayersPlayerIdContactInfoRoute:
-      ProtectedOrganizationSlugTeamIdPlayersPlayerIdContactInfoRoute,
-    ProtectedOrganizationSlugTeamIdPlayersPlayerIdEditRoute:
-      ProtectedOrganizationSlugTeamIdPlayersPlayerIdEditRoute,
-    ProtectedOrganizationSlugTeamIdPlayersPlayerIdIndexRoute:
-      ProtectedOrganizationSlugTeamIdPlayersPlayerIdIndexRoute,
   }
 
 const ProtectedOrganizationSlugTeamIdRouteWithChildren =
