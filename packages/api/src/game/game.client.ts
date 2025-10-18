@@ -2,6 +2,7 @@ import { FetchHttpClient } from '@effect/platform';
 import { RpcClient } from '@effect/rpc';
 import { AtomHttpApi, AtomRpc } from '@effect-atom/atom-react';
 import { Effect } from 'effect';
+import { Resource } from 'sst';
 import { RpcProtocolLive } from '../protocol';
 import { GamesApi } from './game.api';
 import { GameRpcs } from './game.rpc';
@@ -27,6 +28,6 @@ export class HttpGameClientAtom extends AtomHttpApi.Tag<HttpGameClientAtom>()(
   {
     api: GamesApi,
     httpClient: FetchHttpClient.layer,
-    baseUrl: 'http://localhost:3000',
+    baseUrl: Resource.Api.url,
   }
 ) {}

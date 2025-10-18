@@ -2,6 +2,7 @@ import { FetchHttpClient } from '@effect/platform';
 import { RpcClient } from '@effect/rpc';
 import { AtomHttpApi, AtomRpc } from '@effect-atom/atom-react';
 import { Effect } from 'effect';
+import { Resource } from 'sst';
 import { RpcProtocolLive } from '../../protocol';
 import { ContactInfoApi } from './contact-info.api';
 import { ContactInfoRpcs } from './contact-info.rpc';
@@ -27,6 +28,6 @@ export class HttpContactInfoClientAtom extends AtomHttpApi.Tag<HttpContactInfoCl
   {
     api: ContactInfoApi,
     httpClient: FetchHttpClient.layer,
-    baseUrl: 'http://localhost:3001',
+    baseUrl: Resource.Api.url,
   }
 ) {}
