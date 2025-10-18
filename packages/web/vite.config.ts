@@ -10,6 +10,7 @@ const config = defineConfig({
     nitro({
       config: {
         preset: 'aws-lambda',
+        compatibilityDate: '2025-10-18',
       },
     }),
     tanstackStart(),
