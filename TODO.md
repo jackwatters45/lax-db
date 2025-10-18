@@ -1,16 +1,16 @@
 # TODO
 
--- update team + org of core to use new patterns and add rpc + api
--- wrap auth methods in a service (still include auth but generally want to wrap ones that are used)
-
 - how to handle teamId + org in core repo
-- biome errors
 
 ## Pressing things to eventually do..
 
+- fix deploy for api + ts start
 - Permissions!!
 - Polar
 
 ## Rando
 
 - Remove warns from biome and fix issues
+- Blog some of the specific/unique technical challenges
+  - http + rpc
+  - sst with api
