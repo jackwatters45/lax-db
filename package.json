@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "sst dev",
     "deploy": "sst deploy",
+    "build": "turbo build",
     "typecheck": "turbo typecheck",
     "check": "npx ultracite@latest check",
     "fix": "npx ultracite@latest fix --unsafe",

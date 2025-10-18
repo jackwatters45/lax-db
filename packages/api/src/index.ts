@@ -8,9 +8,11 @@ import {
 import { BunHttpServer, BunRuntime } from '@effect/platform-bun';
 import { RpcSerialization, RpcServer } from '@effect/rpc';
 import { DateTime, Layer } from 'effect';
+import { AuthApiLive } from './auth/auth.api';
 import { AuthHandlers, AuthRpcs } from './auth/auth.rpc';
 import { GamesApiLive } from './game/game.api';
 import { GameHandlers, GameRpcs } from './game/game.rpc';
+import { OrganizationsApiLive } from './organization/organization.api';
 import {
   OrganizationHandlers,
   OrganizationRpcs,
@@ -24,6 +26,7 @@ import { PlayersApiLive } from './player/player.api';
 import { PlayerHandlers, PlayerRpcs } from './player/player.rpc';
 import { SeasonsApiLive } from './season/season.api';
 import { SeasonHandlers, SeasonRpcs } from './season/season.rpc';
+import { TeamsApiLive } from './team/team.api';
 import { TeamHandlers, TeamRpcs } from './team/team.rpc';
 
 const AllRpcs = Layer.mergeAll(
@@ -40,7 +43,10 @@ const AllApis = Layer.mergeAll(
   SeasonsApiLive,
   GamesApiLive,
   PlayersApiLive,
-  ContactInfoApiLive
+  ContactInfoApiLive,
+  AuthApiLive,
+  OrganizationsApiLive,
+  TeamsApiLive
 );
 
 const RpcProtocol = RpcServer.layerProtocolHttp({
